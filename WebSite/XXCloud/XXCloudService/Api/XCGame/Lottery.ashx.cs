@@ -45,8 +45,8 @@ namespace XXCloudService.Api.XCGame
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
             }
 
-            if (storeModel.StoreDBDeployType == 0)
-            { 
+            //if (storeModel.StoreDBDeployType == 0)
+            //{ 
                 XCCloudService.BLL.IBLL.XCGame.IFlwLotteryService lotteryService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IFlwLotteryService>(storeModel.StoreDBName);
                 XCCloudService.BLL.IBLL.XCGame.IHeadService headService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IHeadService>(storeModel.StoreDBName);
                 XCCloudService.BLL.IBLL.XCGame.IGameService gameService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IGameService>(storeModel.StoreDBName);
@@ -116,66 +116,66 @@ namespace XXCloudService.Api.XCGame
                 };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);                
-            }
-            else if (storeModel.StoreDBDeployType == 1)
-            {
-                string sn = System.Guid.NewGuid().ToString().Replace("-","");
-                UDPSocketCommonQueryAnswerModel answerModel = null;
-                string radarToken = string.Empty;
-                //string storeId, string storePassword, string barCode,string icCardId,string mobileName, string phone, string operate, out string errMsg
-                if (DataFactory.SendDataLotteryQuery(sn,storeModel.StoreID, storeModel.StorePassword, barCode,out radarToken, out errMsg))
-                {
+            //}
+            //else if (storeModel.StoreDBDeployType == 1)
+            //{
+            //    string sn = System.Guid.NewGuid().ToString().Replace("-","");
+            //    UDPSocketCommonQueryAnswerModel answerModel = null;
+            //    string radarToken = string.Empty;
+            //    //string storeId, string storePassword, string barCode,string icCardId,string mobileName, string phone, string operate, out string errMsg
+            //    if (DataFactory.SendDataLotteryQuery(sn,storeModel.StoreID, storeModel.StorePassword, barCode,out radarToken, out errMsg))
+            //    {
 
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            //    }
 
-                answerModel = null;
-                int whileCount = 0;
-                while (answerModel == null && whileCount <= 25)
-                {
-                    //获取应答缓存数据
-                    whileCount++;
-                    System.Threading.Thread.Sleep(1000);
-                    answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                }
+            //    answerModel = null;
+            //    int whileCount = 0;
+            //    while (answerModel == null && whileCount <= 25)
+            //    {
+            //        //获取应答缓存数据
+            //        whileCount++;
+            //        System.Threading.Thread.Sleep(1000);
+            //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+            //    }
 
-                if (answerModel != null)
-                {
-                    LotteryQueryResultNotifyRequestModel model = (LotteryQueryResultNotifyRequestModel)(answerModel.Result);
-                    //移除应答缓存数据
-                    UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+            //    if (answerModel != null)
+            //    {
+            //        LotteryQueryResultNotifyRequestModel model = (LotteryQueryResultNotifyRequestModel)(answerModel.Result);
+            //        //移除应答缓存数据
+            //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
 
-                    if (model.Result_Code == "1")
-                    {
-                        var obj = new
-                        {
-                            id = model.Result_Data.Id,
-                            lottery = model.Result_Data.Lottery,//彩票数
-                            gameName = model.Result_Data.GameName,//游戏机名
-                            headInfo = model.Result_Data.HeadInfo,//出票位置
-                            state = model.Result_Data.State,	//小票状态
-                            makeTime = model.Result_Data.PrintDate 	//出票时间                    
-                        };
+            //        if (model.Result_Code == "1")
+            //        {
+            //            var obj = new
+            //            {
+            //                id = model.Result_Data.Id,
+            //                lottery = model.Result_Data.Lottery,//彩票数
+            //                gameName = model.Result_Data.GameName,//游戏机名
+            //                headInfo = model.Result_Data.HeadInfo,//出票位置
+            //                state = model.Result_Data.State,	//小票状态
+            //                makeTime = model.Result_Data.PrintDate 	//出票时间                    
+            //            };
 
-                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
-                    }
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
-                }
-            }
-            else
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店配置无效");
-            }
+            //            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+            //        }
+            //        else
+            //        {
+            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+            //    }
+            //}
+            //else
+            //{
+            //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店配置无效");
+            //}
         }
 
 
@@ -203,8 +203,8 @@ namespace XXCloudService.Api.XCGame
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
             }
 
-            if (storeModel.StoreDBDeployType == 0)
-            {
+            //if (storeModel.StoreDBDeployType == 0)
+            //{
                 XCCloudService.BLL.IBLL.XCGame.IFlwLotteryService lotteryService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IFlwLotteryService>(storeModel.StoreDBName);
                 XCCloudService.BLL.IBLL.XCGame.IMemberService memberService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IMemberService>(storeModel.StoreDBName);
                 XCCloudService.BLL.IBLL.XCGame.IScheduleService scheduleService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IScheduleService>(storeModel.StoreDBName);
@@ -274,57 +274,56 @@ namespace XXCloudService.Api.XCGame
                         throw e;
                     }
                 }
-            }
-            else if (storeModel.StoreDBDeployType == 1)
-            {
-                string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-                UDPSocketCommonQueryAnswerModel answerModel = null;
-                string radarToken = string.Empty;
-                //发送彩票操作
-                if (DataFactory.SendDataLotteryOperate(sn, storeModel.StoreID, storeModel.StorePassword, barCode, icCardId, "0",mobileName,userTokenModel.Mobile,out radarToken,out errMsg))
-                {
+            //}
+            //else if (storeModel.StoreDBDeployType == 1)
+            //{
+            //    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+            //    UDPSocketCommonQueryAnswerModel answerModel = null;
+            //    string radarToken = string.Empty;
+            //    //发送彩票操作
+            //    if (DataFactory.SendDataLotteryOperate(sn, storeModel.StoreID, storeModel.StorePassword, barCode, icCardId, "0",mobileName,userTokenModel.Mobile,out radarToken,out errMsg))
+            //    {
 
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            //    }
 
-                answerModel = null;
-                int whileCount = 0;
-                while (answerModel == null && whileCount <= 25)
-                {
-                    //获取应答缓存数据
-                    whileCount++;
-                    System.Threading.Thread.Sleep(1000);
-                    answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                }
+            //    answerModel = null;
+            //    int whileCount = 0;
+            //    while (answerModel == null && whileCount <= 25)
+            //    {
+            //        //获取应答缓存数据
+            //        whileCount++;
+            //        System.Threading.Thread.Sleep(1000);
+            //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+            //    }
 
-                if (answerModel != null)
-                {
-                    LotteryOperateResultNotifyRequestModel model = (LotteryOperateResultNotifyRequestModel)(answerModel.Result);
-                    //移除应答缓存数据
-                    UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+            //    if (answerModel != null)
+            //    {
+            //        LotteryOperateResultNotifyRequestModel model = (LotteryOperateResultNotifyRequestModel)(answerModel.Result);
+            //        //移除应答缓存数据
+            //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
 
-                    if (model.Result_Code == "1")
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
-                    }
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
-                }
-            }
-            else
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.F, "", Result_Code.T, "门店配置无效");
-            }
-
+            //        if (model.Result_Code == "1")
+            //        {
+            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            //        }
+            //        else
+            //        {
+            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+            //    }
+            //}
+            //else
+            //{
+            //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.F, "", Result_Code.T, "门店配置无效");
+            //}
         }
 
         #endregion

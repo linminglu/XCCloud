@@ -7,6 +7,7 @@ using PalletService.Business.Device;
 using PalletService.Business.Dog;
 using PalletService.Business.SysConfig;
 using PalletService.Business.WorkStation;
+using PalletService.Cache;
 using PalletService.Common;
 using PalletService.DeviceUtility.Common;
 using PalletService.Model;
@@ -48,10 +49,15 @@ namespace PalletService
         private void Form1_Load(object sender, EventArgs e)
         {
             Computer.ComputeInfo();
+            PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "Computer.ComputeInfo()");
             this.SysConfigInit();
+            PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "this.SysConfigInit()");
             this.ContextMenuInit();
+            PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "this.ContextMenuInit()");
             this.UpgradeInit();
-            this.RegisterWorkStation(); 
+            PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "this.UpgradeInit()");
+            this.RegisterWorkStation();
+            PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "this.RegisterWorkStation()");
         }
 
         private void UpgradeInit()
@@ -645,15 +651,20 @@ namespace PalletService
 
         #endregion 
 
-        private void RegisterWorkStation()
+        private bool RegisterWorkStation()
         {
             string token = string.Empty;
             WorkStationRegisterModel model = new WorkStationRegisterModel();
             object result_data = new object();
-
-            if (WorkStationBusiness.Register(Computer.DogId, Computer.WorkStation, ref result_data, out token))
+            DogTokenModel dogTokenModel = null;
+            if (WorkStationBusiness.Register(Computer.DogId, Computer.WorkStation, ref result_data, out token,ref dogTokenModel))
             {
-
+                DogTokenCache.AddToken(dogTokenModel);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

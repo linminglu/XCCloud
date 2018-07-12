@@ -101,6 +101,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\DogTokenCache.cs" />
     <Compile Include="Init\ApplicationInit.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

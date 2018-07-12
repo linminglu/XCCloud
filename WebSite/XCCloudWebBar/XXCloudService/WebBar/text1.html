@@ -1,138 +1,294 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>树形</title>
-    <!--图标样式-->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!--<link href="css/style.css" rel="stylesheet">-->
-    <link href="css/iconfont.css" rel="stylesheet">
-    <!--主要样式-->
-    <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/swiper.min.js"></script>
-    <!-- 引入 Vue -->
-    <script src="js/vue.js"></script>
-    <script src="js/axios.min.js"></script>
-<script type="text/javascript">
-
-$(function(){
-    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-    $('.tree li.parent_li > span').on('click', function (e) {
-        var children = $(this).parent('li.parent_li').find(' > ul > li');
-        if (children.is(":visible")) {
-            children.hide('fast');
-            $(this).attr('title', 'Expand this branch').find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
-        } else {
-            children.show('fast');
-            $(this).attr('title', 'Collapse this branch').find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
-        }
-        e.stopPropagation();
-    });
-});
-</script>
+    <meta charset="utf-8">
+    <title>iview example</title>
+    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
 </head>
-<style>
-    [v-cloak] {
-        display: none;
-    }
-    * {margin:0;padding: 0;word-break:break-all;}
-    html,body{height:100%; font-size:100%;}
-    body{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;background:#fff;color:#2d3e50;margin:0px;line-height:22px; }
-    table{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;margin:0px;padding:0px;border:0px;color:#2d3e50;line-height:22px;}
-    body,figure,h1,h2,h3,h4,h5,h6,p,pre,blockquote,form,fieldset,legend,input,button,select,textarea {margin:0;padding:0;font-family:"Arial","Microsoft YaHei";}
-    address,caption,cite,code,dfn,em,var,i{font-style:normal;font-weight:normal;}
-    ul,ol,li,dl,dt,dd{margin:0;padding: 0; border:0px; list-style:none;}
-    article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display: block;}
-    abbr[title],dfn[title] {border-bottom:1px dotted;cursor:help;}
-    pre,code,kbd,samp{font-family:monospace,sans-serif;_font-family:'Courier New',monospace,sans-serif;font-size: 1em;}
-
-    pre{white-space: pre;/*CSS2*/white-space:pre-wrap;/*CSS2.1*/white-space:pre-line;/*CSS3*/word-wrap:break-word;/*IE*/}
-    blockquote,q{quotes:none;}
-    blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
-    audio[controls],canvas,video{display:inline-block;*display:inline;*zoom:1;}
-    input,textarea{outline:none;}
-    textarea{resize:none;overflow:auto;}
-    input[type="checkbox"],input[type="radio"]{vertical-align:middle;}
-    input[type="button"],input[type="submit"]{ cursor:pointer;}
-    input::-ms-clear{display:none;}
-    input::-ms-reveal{display:none;}
-    img{border:none;}
-    .fl{float: left;}.fr{float: right;}
-    /**/
-    a:link,a:visited{text-decoration:none;cursor:pointer;outline:none;}
-    a:hover,a:active {text-decoration:none;cursor:pointer;}
-
-    .tree{min-height:20px;padding:19px;margin-bottom:20px;background-color:#fbfbfb;border:1px solid #999;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);}
-    .tree ul{padding-left: 35px;}
-    .tree li{list-style-type:none;margin:0;padding:10px 5px 0 5px!important;position:relative}
-    .tree li::before, .tree li::after{content:'';left:-20px;position:absolute;right:auto}
-    .tree li::before{border-left:1px solid #999;bottom:50px;height:100%;top:0;width:1px}
-    .tree li::after{border-top:1px solid #999;height:20px;top:25px;width:25px}
-    .tree li span{-moz-border-radius:5px;-webkit-border-radius:5px;border:1px solid #999;border-radius:5px;display:inline-block;padding:3px 8px;text-decoration:none}
-    .tree li.parent_li>span{cursor:pointer}
-    .tree>ul>li::before, .tree>ul>li::after{border:0}
-    .tree li:last-child::before{height:30px}
-    .tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span{background:#eee;border:1px solid #94a0b4;color:#000}
-
-</style>
 <body>
-<div class="tree" id="app" v-cloak>
-    <ul>
-        <li>
-            <!--02 05 10 11 17 21 05-->
-            <!--05 06 10 16 20 25 12-->
-            <!---->
-            <span><i class="glyphicon glyphicon-move"></i></span><a href="">单品全部</a>
-            <ul>
-                <li>
-                    <span><i class="glyphicon glyphicon-minus"></i></span> <a href="">门票</a>
-                    <ul>
-                        <li>
-                            <span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="">Goes somewhere</a>
-                        </li>
-                    </ul>
-                </li>
-                <li></li>
-                <li>
-                    <span><i class="glyphicon glyphicon-minus"></i></span> <a href="">商品</a>
-                    <ul>
-                        <li>
-                            <span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="">Goes somewhere</a>
-                        </li>
-                        <li>
-                            <span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="">Goes somewhere</a>
-                        </li>
-                        <li>
-                            <span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="">Goes somewhere</a>
-                        </li>
-                        <li>
-                            <span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="">Goes somewhere</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ul>
-</div>
-<script>
-    var vm = new Vue({
-        el: '#app',
-        data:{
+    <div id="app" v-cloak>
+        <!-- <i-table :columns="columns1" :data="data1"></i-table>
+        <i-table border ref="selection" :columns="columns4" :data="data1"></i-table>
+        <Button @click="handleSelectAll(true)">Set all selected</Button>
+        <Button @click="handleSelectAll(false)">Cancel all selected</Button>
+            <i-table:data="tableData1" :columns="tableColumns1" stripe></i-table> -->
+        <!-- <i-table ref="selection" :columns="historyColumns" :data="historyData" @on-select-all="AllData"></i-table>
+        <div style="margin: 10px;overflow: hidden">
+            <div style="float: right;">
+                <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage"></Page>
+            </div>
+        </div>
+        <i-button @click="handleSelectAll(true)">Set all selected</i-button>
+        <i-button @click="handleSelectAll(false)">Cancel all selected</i-button>
+        <p>{{inquireCard.www}}</p> -->
+        <radio-group v-model="phone">
+                <radio label="apple">
+                    <icon type="social-apple"></icon>
+                    <span>Apple</span>
+                </radio>
+                <radio label="android">
+                    <icon type="social-android"></icon>
+                    <span>Android</span>
+                </radio>
+                <radio label="windows">
+                    <icon type="social-windows"></icon>
+                    <span>Windows</span>
+                </radio>
+            </radio-group>
+            
 
-        },
-        mounted: function () {
+    </div>
+    <script>
+        let testData = {
+                "histories": [
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批已通过",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-24 18:11"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批已通过",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-24 18:11"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批已通过",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-24 10:04"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201",
+                        "time": "2017-07-24 10:03"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201",
+                        "time": "2017-07-24 10:02"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批已通过",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-24 10:02"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-24 10:01"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-24 09:56"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-21 14:23"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201 && 所有项目的总净收入 > 5000",
+                        "time": "2017-07-21 14:23"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-21 14:23"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201 && 所有项目的总净收入 > 5000",
+                        "time": "2017-07-21 14:23"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201 && 所有项目的总净收入 > 5000",
+                        "time": "2017-07-21 14:23"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201 && 所有项目的总净收入 > 5000",
+                        "time": "2017-07-21 14:21"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-21 14:21"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-21 14:20"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201 && 所有项目的总净收入 > 5000",
+                        "time": "2017-07-21 14:20"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-21 14:14"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-21 14:13"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-21 14:11"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-21 14:10"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201 && 所有项目的总净收入 > 5000",
+                        "time": "2017-07-20 18:09"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201 && 所有项目的总净收入 > 5000",
+                        "time": "2017-07-20 18:08"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "  收入 > 999 && 支出 < 201 && 所有项目的总净收入 > 5000",
+                        "time": "2017-07-20 18:08"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-20 18:07"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-20 18:05"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批已通过",
+                        "shenpicomments": "wedfqw",
+                        "time": "2017-07-20 15:50"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批已通过",
+                        "shenpicomments": "wedfqw",
+                        "time": "2017-07-20 15:20"
+                    },
+                    {
+                        "username": "智能审批",
+                        "shenpistatus": "审批被拒绝",
+                        "shenpicomments": "自动审批通过",
+                        "time": "2017-07-19 18:27"
+                    }
+                ]
+            }
+            
+        new Vue({
+            el: '#app',
+            data: {
+                phone: 'apple',
+                animal: '0',
+                ajaxHistoryData:[],
+                inquireCard:{
+                    www:"1111"
+                },
+                // 初始化信息总条数
+                dataCount:0,
+                // 每页显示多少条
+                pageSize:10,
+                historyColumns: [
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        title: '人员',
+                        key: 'username'
+                    },
+                    {
+                        title: '操作',
+                        key: 'shenpistatus'
+                    },
+                    {
+                        title: '意见',
+                        key: 'shenpicomments'
+                    },
+                    {
+                        title: '时间',
+                        key: 'time'
+                    }
 
-        },
-        methods: {
-
-        }
-    })
-
-</script>
-
-
+                ],
+                historyData: []
+            },
+            methods:{
+                // 获取历史记录信息
+                handleListApproveHistory(){
+                    // 保存取到的所有数据
+                    this.ajaxHistoryData = testData.histories
+                    this.dataCount = testData.histories.length;
+                    // 初始化显示，小于每页显示条数，全显，大于每页显示条数，取前每页条数显示
+                    if(testData.histories.length < this.pageSize){
+                        this.historyData = this.ajaxHistoryData;
+                    }else{
+                        this.historyData = this.ajaxHistoryData.slice(0,this.pageSize);
+                    }
+                },
+                changepage(index){
+                    var _start = ( index - 1 ) * this.pageSize;
+                    var _end = index * this.pageSize;
+                    this.historyData = this.ajaxHistoryData.slice(_start,_end);
+                },
+                handleSelectAll (status) {
+                    this.$refs.selection.selectAll(status);
+                },
+                AllData(selection){
+                    console.log(selection)
+                }
+            },
+            created(){
+                this.handleListApproveHistory();
+                
+            }
+        })
+    </script>
 </body>
-
 </html>

@@ -5,6 +5,20 @@
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+declare @MerchId varchar(15) = ''
+declare @StoreId varchar(15) = ''
+declare @ErrMsg varchar(200) = ''
+declare @RegisterStoreDogReturn int = 0
+exec @RegisterStoreDogReturn = RegisterWorkStation '99999999','lijunjie',@MerchId output,@StoreId output,@ErrMsg output
+print @RegisterStoreDogReturn
+print @MerchId
+print @StoreId
+print @ErrMsg
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
 declare @MerchId varchar(15) = '100025'
 declare @StoreId varchar(20) = '100025420106001'
 declare @ICCardId int = 10004143

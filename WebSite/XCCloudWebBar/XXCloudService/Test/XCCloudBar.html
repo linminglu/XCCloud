@@ -707,6 +707,7 @@
             var parasObj = {
                 "sysId": "0",
                 "versionNo": "0.0.0.1",
+                "userToken": userToken,
                 "icCardId": $("#txt_do_goodBuyBack_iccardid").val(),
                 "goodId": $("#txt_do_goodBuyBack_goodId").val(),
                 "goodCount": $("#txt_do_goodBuyBack_goodNum").val(),
@@ -718,6 +719,14 @@
             common(url, parasJson);
         }
 
+        function do_RegWorkStation() {
+            var dogId = "99999999";
+            var workStation = "lijunjie";
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "dogId": dogId, "workStation": workStation };
+            var url = "/XCCloud/Workstation?action=registerWorkStation";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
         
     </script>
         
@@ -767,9 +776,9 @@
         商品名称:<input id="txt_do_getFoodChargeInfo_goodName" type="text" value="" />
         <input id="Button_Food_7" type="button" value="do_getFoodChargeInfo(获取商品兑换信息)" onclick="do_getFoodChargeInfo()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
-        会员卡:<input id="txt_do_goodBuyBack_iccardid" type="text" value="" style="width:100px" />
-        商品ID:<input id="txt_do_goodBuyBack_goodId" type="text" value="" style="width:60px" />
-        商品数量:<input id="txt_do_goodBuyBack_goodNum" type="text" value="" style="width:60px" />
+        会员卡:<input id="txt_do_goodBuyBack_iccardid" type="text" value="10004143" style="width:100px" />
+        商品ID:<input id="txt_do_goodBuyBack_goodId" type="text" value="1" style="width:60px" />
+        商品数量:<input id="txt_do_goodBuyBack_goodNum" type="text" value="2" style="width:60px" />
         使用余额类型:<select id="txt_do_goodBuyBack_balance"><option value="1">代币</option><option value="2">积分</option><option value="3">彩票</option></select>
         <input id="Button_Food_8" type="button" value="do_goodBuyBack(商品回购)" onclick="do_goodBuyBack()" />
     </div>
@@ -886,6 +895,7 @@
     </div>
     <div title="WorkStation" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="WorkStation_11111" type="button" value="do_getMd5TokenByRegWorkStation(注册会员)" onclick="do_getMd5TokenByRegWorkStation()" />
+        <input id="WorkStation_22222" type="button" value="do_RegWorkStation(注册工作站)" onclick="do_RegWorkStation()" />
     </div>
 
 

@@ -15,6 +15,9 @@ using System.Transactions;
 using System.Data.Entity.Validation;
 using XXCloudService.Api.XCCloud.Common;
 using XCCloudWebBar.Model.XCCloud;
+using System.Data;
+using XCCloudWebBar.BLL.CommonBLL;
+using XCCloudWebBar.Business.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -24,7 +27,7 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class Workstation : ApiBase
     {
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
         public object AddWorkStation(Dictionary<string, object> dicParas)
         {
             string dogId = dicParas.Get("dogId").ToString();
@@ -60,6 +63,54 @@ namespace XXCloudService.Api.XCCloud
                 workstationService.AddModel(wsModel);
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
             }   
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
+        public object registerWorkStation(Dictionary<string, object> dicParas)
+        {
+            string dogId = dicParas.Get("dogId").ToString();
+            string workStation = dicParas.Get("workStation").ToString();
+
+            string storedProcedure = "RegisterWorkStation";
+            SqlParameter[] sqlParameter = new SqlParameter[6];
+            sqlParameter[0] = new SqlParameter("@DogId", SqlDbType.VarChar,128);
+            sqlParameter[0].Value = dogId;
+
+            sqlParameter[1] = new SqlParameter("@WorkStation", SqlDbType.VarChar);
+            sqlParameter[1].Value = workStation;
+
+            sqlParameter[2] = new SqlParameter("@MerchId", SqlDbType.VarChar, 15);
+            sqlParameter[2].Direction = ParameterDirection.Output;
+
+            sqlParameter[3] = new SqlParameter("@StoreId", SqlDbType.VarChar, 15);
+            sqlParameter[3].Direction = ParameterDirection.Output;
+
+            sqlParameter[4] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+            sqlParameter[4].Direction = ParameterDirection.Output;
+
+            sqlParameter[5] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[5].Direction = ParameterDirection.ReturnValue;
+
+            XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
+
+            if (sqlParameter[5].Value.ToString() == "1")
+            {
+                string merchId = sqlParameter[2].Value.ToString();
+                string storeId = sqlParameter[3].Value.ToString();
+
+                string token = System.Guid.NewGuid().ToString().Replace("-", "");
+                XCCloudMD5KeyBusiness.GetMd5Key(token, merchId, storeId, workStation);
+                var obj = new
+                {
+                    token = token
+                };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+            }
+            else
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[4].Value.ToString());
+            }
         }
 
 

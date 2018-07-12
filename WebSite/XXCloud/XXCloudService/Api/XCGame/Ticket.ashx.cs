@@ -372,6 +372,7 @@ namespace XXCloudService.Api.XCGame
             return "";
         }
 
+        //新入场验票使用
         private bool newEntry(string storeId, string barCode, int? projectId, int deviceId, out string id, out string errMsg)
         {
             errMsg = string.Empty;
@@ -1069,8 +1070,8 @@ namespace XXCloudService.Api.XCGame
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入票编号");
             }
 
-            if (storeModel.StoreDBDeployType == 0)
-            {
+            //if (storeModel.StoreDBDeployType == 0)
+            //{
                 XCCloudService.BLL.IBLL.XCGame.IParametersService parametersService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IParametersService>(storeModel.StoreDBName);
                 var paramDateValidityModel = parametersService.GetModels(p => p.System.Equals("rbnBackDateValidity", StringComparison.OrdinalIgnoreCase)).FirstOrDefault<t_parameters>();
                 if (paramDateValidityModel == null)
@@ -1135,79 +1136,79 @@ namespace XXCloudService.Api.XCGame
                 };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
-            }
-            else if (storeModel.StoreDBDeployType == 1)
-            {
-                string txtCoinPrice = string.Empty;
-                string txtTicketDate = string.Empty;
-                ParamQueryResultModel paramQueryResultModel = null;
-                if (UDPApiService.GetParam(userTokenModel.StoreId, "0", ref paramQueryResultModel, out errMsg))
-                {
-                    txtCoinPrice = paramQueryResultModel.TxtCoinPrice;
-                    txtTicketDate = paramQueryResultModel.TxtTicketDate;
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg); 
-                }
+            //}
+            //else if (storeModel.StoreDBDeployType == 1)
+            //{
+            //    string txtCoinPrice = string.Empty;
+            //    string txtTicketDate = string.Empty;
+            //    ParamQueryResultModel paramQueryResultModel = null;
+            //    if (UDPApiService.GetParam(userTokenModel.StoreId, "0", ref paramQueryResultModel, out errMsg))
+            //    {
+            //        txtCoinPrice = paramQueryResultModel.TxtCoinPrice;
+            //        txtTicketDate = paramQueryResultModel.TxtTicketDate;
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg); 
+            //    }
 
-                string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-                UDPSocketCommonQueryAnswerModel answerModel = null;
-                string radarToken = string.Empty;
-                if (DataFactory.SendDataOutTicketQuery(sn,storeModel.StoreID, storeModel.StorePassword, barCode,out radarToken,out errMsg))
-                {
+            //    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+            //    UDPSocketCommonQueryAnswerModel answerModel = null;
+            //    string radarToken = string.Empty;
+            //    if (DataFactory.SendDataOutTicketQuery(sn,storeModel.StoreID, storeModel.StorePassword, barCode,out radarToken,out errMsg))
+            //    {
 
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            //    }
 
-                answerModel = null;
-                int whileCount = 0;
-                while (answerModel == null && whileCount <= 25)
-                {
-                    //获取应答缓存数据
-                    whileCount++;
-                    System.Threading.Thread.Sleep(1000);
-                    answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                }
+            //    answerModel = null;
+            //    int whileCount = 0;
+            //    while (answerModel == null && whileCount <= 25)
+            //    {
+            //        //获取应答缓存数据
+            //        whileCount++;
+            //        System.Threading.Thread.Sleep(1000);
+            //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+            //    }
 
-                if (answerModel != null)
-                {
-                    OutTicketQueryResultNotifyRequestModel model = (OutTicketQueryResultNotifyRequestModel)(answerModel.Result);
-                    //移除应答缓存数据
-                    UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+            //    if (answerModel != null)
+            //    {
+            //        OutTicketQueryResultNotifyRequestModel model = (OutTicketQueryResultNotifyRequestModel)(answerModel.Result);
+            //        //移除应答缓存数据
+            //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
 
-                    if (model.Result_Code == "1")
-                    {
-                        var obj = new
-                        {
-                            id = model.Result_Data.Id,
-                            coin = model.Result_Data.Coins,
-                            gameName = model.Result_Data.GameName,
-                            headInfo = model.Result_Data.HeadInfo,
-                            state = model.Result_Data.State,
-                            makeTime = model.Result_Data.PrintDate,
-                            exchangeCoinPrice = txtCoinPrice
-                        };
+            //        if (model.Result_Code == "1")
+            //        {
+            //            var obj = new
+            //            {
+            //                id = model.Result_Data.Id,
+            //                coin = model.Result_Data.Coins,
+            //                gameName = model.Result_Data.GameName,
+            //                headInfo = model.Result_Data.HeadInfo,
+            //                state = model.Result_Data.State,
+            //                makeTime = model.Result_Data.PrintDate,
+            //                exchangeCoinPrice = txtCoinPrice
+            //            };
 
-                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
-                    }
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
-                }
-            }
-            else
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
-            }
+            //            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+            //        }
+            //        else
+            //        {
+            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+            //    }
+            //}
+            //else
+            //{
+            //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
+            //}
         }
     }
 }

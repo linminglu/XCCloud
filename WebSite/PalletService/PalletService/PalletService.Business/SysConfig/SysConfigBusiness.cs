@@ -39,6 +39,6 @@ namespace PalletService.Business.SysConfig
 
         public static string StoreId = "100025420106001";
 
-        public static string XCCloudHost = "http://localhost:3288";
+        public static string XCCloudHost = System.Configuration.ConfigurationSettings.AppSettings["XCCloudHost"].ToString();
     }
 }

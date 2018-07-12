@@ -14,9 +14,17 @@ namespace PalletService.Init
     {
         public static void Init()
         {
-            TCPInit();
-            string appStartPath = System.Windows.Forms.Application.StartupPath;
-            SysConfigBusiness.Init(appStartPath);
+            try
+            {
+                TCPInit();
+                string appStartPath = System.Windows.Forms.Application.StartupPath;
+                SysConfigBusiness.Init(appStartPath);
+                LogHelper.SaveLog(TxtLogType.SystemInit, "ApplicationInit.Init()");
+            }
+            catch(Exception e)
+            {
+                LogHelper.SaveLog(TxtLogType.SystemInit, e.Message);
+            }
         }
 
         private static void TCPInit()

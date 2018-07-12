@@ -4341,47 +4341,5 @@ namespace XCCloudService.Api.XCCloud
         #region 余额变化查询
 
         #endregion
-
-        #region MyRegion
-        [Authorize(Roles = "StoreUser")]
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object getBalanceaaaaa(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                string merchId = "100016";
-                string cardId = "10001642011100120180525000056001";
-                string storeId = "100016420111001";
-                //当前会员卡可用余额列表
-                var cardBalances = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == cardId)
-                                   join c in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals c.CardBalanceID
-                                   join b in
-                                       (
-                                           from b in Data_Card_Balance_FreeService.N.GetModels(t => t.CardIndex == cardId)
-                                           join d in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on b.ID equals d.CardBalanceID
-                                           select b
-                                           ) on a.BalanceIndex equals b.BalanceIndex into b1
-                                   from b in b1.DefaultIfEmpty()
-                                   join e in Dict_BalanceTypeService.N.GetModels(t => t.State == 1 && t.MerchID == merchId) on a.BalanceIndex equals e.ID
-                                   select new SourceBalanceModel
-                                   {
-                                       BalanceId = a.ID,
-                                       BalanceIndex = a.BalanceIndex.Value,
-                                       BalanceName = e.TypeName,
-                                       Balance = a.Balance,
-                                       BalanceFree = b == null ? 0 : b.Balance,
-                                       BalanceTotal = a.Balance + (b == null ? 0 : b.Balance)
-                                   };
-
-                var result = cardBalances.ToList();
-
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        } 
-        #endregion
     }
 }

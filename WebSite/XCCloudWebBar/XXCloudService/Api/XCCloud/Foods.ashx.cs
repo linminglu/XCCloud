@@ -43,24 +43,26 @@ namespace XXCloudService.Api.XCCloud
             parameters[1] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
             parameters[2] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
             parameters[3] = new SqlParameter("@WorkStation", userTokenDataModel.WorkStation);
-            parameters[4] = new SqlParameter("@UseId", userTokenDataModel.CreateUserID);
+            parameters[4] = new SqlParameter("@UserId", userTokenDataModel.CreateUserID);
             parameters[5] = new SqlParameter("@ICCardId", icCardId);
             parameters[6] = new SqlParameter("@GoodId", goodId);
             parameters[7] = new SqlParameter("@GoodCount", goodCount);
             parameters[8] = new SqlParameter("@Note", note);
             parameters[9] = new SqlParameter("@UseBalanceTypeId", useBalanceTypeId);
             parameters[10] = new SqlParameter("@ErrMsg",SqlDbType.VarChar,200);
+            parameters[10].Direction = ParameterDirection.Output;
             parameters[11] = new SqlParameter("@Return", SqlDbType.Int);
+            parameters[11].Direction = ParameterDirection.ReturnValue;
 
             XCCloudBLL.ExecuteStoredProcedureSentence(sql, parameters);
 
-            if (int.Parse(parameters[8].Value.ToString()) == 1)
+            if (int.Parse(parameters[11].Value.ToString()) == 1)
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
             }
             else
             {
-                string errMsg = parameters[7].Value.ToString();
+                string errMsg = parameters[10].Value.ToString();
                 return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, errMsg);
             }
         }

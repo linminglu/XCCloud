@@ -8,8 +8,10 @@ using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.Business.Common;
 using XCCloudService.Business.XCGame;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
+using XCCloudService.Common.Extensions;
 using XCCloudService.Model;
 using XCCloudService.Model.CustomModel.XCGame;
 using XCCloudService.ResponseModels;
@@ -24,6 +26,9 @@ using XCCloudService.SocketService.UDP.Factory;
 using XCCloudService.Model.CustomModel.Common;
 using XCCloudService.SocketService.UDP;
 using XCCloudService.Model.Socket.UDP;
+using XCCloudService.Model.XCCloud;
+using XCCloudService.BLL.XCCloud;
+using System.Data;
 
 namespace XCCloudService.Api.XCGame
 {
@@ -72,7 +77,7 @@ namespace XCCloudService.Api.XCGame
                         parameters[3].Direction = System.Data.ParameterDirection.Output;
                         ds = XCGameBLL.ExecuteQuerySentence(sql, storeModel.StoreDBName, parameters);
                         MemberResponseModel memberResponseModel = Utils.GetModelList<MemberResponseModel>(ds.Tables[0])[0];
-                        memberResponseModel.MemberState = MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
+                        memberResponseModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
                         string meberToken = MemberTokenBusiness.SetMemberToken(memberTokenModel.StoreId, memberTokenModel.Mobile, memberResponseModel.MemberLevelName, storeModel.StoreName, memberResponseModel.ICCardID.ToString(), memberResponseModel.EndDate);
                         RegisterMemberTokenResponseModel registerMemberTokenResponseModel = new RegisterMemberTokenResponseModel(memberTokenModel.StoreId, storeModel.StoreName, meberToken, memberResponseModel);
                         return ResponseModelFactory<RegisterMemberTokenResponseModel>.CreateModel(isSignKeyReturn, registerMemberTokenResponseModel);
@@ -87,7 +92,7 @@ namespace XCCloudService.Api.XCGame
                         RegisterMemberResponseModel registerMemberResponseModel = Utils.GetModelList<RegisterMemberResponseModel>(ds.Tables[0])[0];
                         registerMemberResponseModel.StoreId = storeModel.StoreID;
                         registerMemberResponseModel.StoreName = storeModel.StoreName;
-                        registerMemberResponseModel.MemberState = MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
+                        registerMemberResponseModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
                         return ResponseModelFactory<RegisterMemberResponseModel>.CreateModel(isSignKeyReturn, registerMemberResponseModel);
                     }
                 }
@@ -108,7 +113,7 @@ namespace XCCloudService.Api.XCGame
                         parameters[4].Direction = System.Data.ParameterDirection.Output;
                         ds = XCCloudRS232BLL.ExecuteQuerySentence(sql, parameters);
                         MemberResponseModel memberResponseModel = Utils.GetModelList<MemberResponseModel>(ds.Tables[0])[0];
-                        memberResponseModel.MemberState = MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
+                        memberResponseModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
                         string meberToken = MemberTokenBusiness.SetMemberToken(memberTokenModel.StoreId, memberTokenModel.Mobile, memberResponseModel.MemberLevelName, storeModel.StoreName, memberResponseModel.ICCardID.ToString(), memberResponseModel.EndDate);
                         RegisterMemberTokenResponseModel registerMemberTokenResponseModel = new RegisterMemberTokenResponseModel(memberTokenModel.StoreId, storeModel.StoreName, meberToken, memberResponseModel);
                         return ResponseModelFactory<RegisterMemberTokenResponseModel>.CreateModel(isSignKeyReturn, registerMemberTokenResponseModel);
@@ -124,7 +129,7 @@ namespace XCCloudService.Api.XCGame
                         RegisterMemberResponseModel registerMemberResponseModel = Utils.GetModelList<RegisterMemberResponseModel>(ds.Tables[0])[0];
                         registerMemberResponseModel.StoreId = storeModel.StoreID;
                         registerMemberResponseModel.StoreName = storeModel.StoreName;
-                        registerMemberResponseModel.MemberState = MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
+                        registerMemberResponseModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
                         return ResponseModelFactory<RegisterMemberResponseModel>.CreateModel(isSignKeyReturn, registerMemberResponseModel);
                     }
                 }
@@ -198,7 +203,7 @@ namespace XCCloudService.Api.XCGame
                         parameters[3].Direction = System.Data.ParameterDirection.Output;
                         System.Data.DataSet ds = XCGameBLL.ExecuteQuerySentence(sql, storeModel.StoreDBName, parameters);
                         MemberResponseModel memberResponseModel = Utils.GetModelList<MemberResponseModel>(ds.Tables[0])[0];
-                        memberResponseModel.MemberState = MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
+                        memberResponseModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
                         meberToken = MemberTokenBusiness.SetMemberToken(storeId, mobile, memberResponseModel.MemberLevelName, storeModel.StoreName, memberResponseModel.ICCardID.ToString(), memberResponseModel.EndDate);
                         RegisterMemberTokenResponseModel registerMemberTokenResponseModel = new RegisterMemberTokenResponseModel(storeId, storeModel.StoreName, meberToken, memberResponseModel);
                         return ResponseModelFactory<RegisterMemberTokenResponseModel>.CreateModel(isSignKeyReturn, registerMemberTokenResponseModel);
@@ -212,7 +217,7 @@ namespace XCCloudService.Api.XCGame
                         parameters[1] = new SqlParameter("@ICCardID", "0");
                         System.Data.DataSet ds = XCGameBLL.ExecuteQuerySentence(sql, storeModel.StoreDBName, parameters);
                         MemberResponseModel memberResponseModel = Utils.GetModelList<MemberResponseModel>(ds.Tables[0])[0];
-                        memberResponseModel.MemberState = MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
+                        memberResponseModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
                         meberToken = MemberTokenBusiness.SetMemberToken(storeId, mobile, memberResponseModel.MemberLevelName, storeModel.StoreName, memberResponseModel.ICCardID.ToString(), memberResponseModel.EndDate);
                         RegisterMemberTokenResponseModel registerMemberTokenResponseModel = new RegisterMemberTokenResponseModel(storeId, storeModel.StoreName, meberToken, memberResponseModel);
                         return ResponseModelFactory<RegisterMemberTokenResponseModel>.CreateModel(isSignKeyReturn, registerMemberTokenResponseModel);
@@ -235,7 +240,7 @@ namespace XCCloudService.Api.XCGame
                         parameters[4].Direction = System.Data.ParameterDirection.Output;
                         System.Data.DataSet ds = XCCloudRS232BLL.ExecuteQuerySentence(sql, parameters);
                         MemberResponseModel memberResponseModel = Utils.GetModelList<MemberResponseModel>(ds.Tables[0])[0];
-                        memberResponseModel.MemberState = MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
+                        memberResponseModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(memberResponseModel.MemberState);
                         meberToken = MemberTokenBusiness.SetMemberToken(storeId, mobile, memberResponseModel.MemberLevelName, storeModel.StoreName, memberResponseModel.ICCardID.ToString(), memberResponseModel.EndDate);
                         RegisterMemberTokenResponseModel registerMemberTokenResponseModel = new RegisterMemberTokenResponseModel(storeId, storeModel.StoreName, meberToken, memberResponseModel);
                         return ResponseModelFactory<RegisterMemberTokenResponseModel>.CreateModel(isSignKeyReturn, registerMemberTokenResponseModel);
@@ -477,28 +482,325 @@ namespace XCCloudService.Api.XCGame
 
             //if (storeModel.StoreDBDeployType == 0)
             //{ 
-                string storeProc = "TransICCardCoins";
-                SqlParameter[] parameters = new SqlParameter[8];
-                parameters[0] = new SqlParameter("@CardIdOut", cardIdOut);
-                parameters[1] = new SqlParameter("@CardIdOutPassword", cardIdOutPassword);
-                parameters[2] = new SqlParameter("@CardIdIn", cardIdIn);
-                parameters[3] = new SqlParameter("@Coins", coins);
-                parameters[4] = new SqlParameter("@UserId", userTokenModel.UserId);
-                parameters[5] = new SqlParameter("@Mobile", userTokenModel.Mobile);
-                parameters[6] = new SqlParameter("@ErrMsg", System.Data.SqlDbType.VarChar,200);
-                parameters[6].Direction = System.Data.ParameterDirection.Output;
-                parameters[7] = new SqlParameter("@Return", 0);
-                parameters[7].Direction = System.Data.ParameterDirection.ReturnValue;
+            if (string.IsNullOrEmpty(cardIdOut))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡号为空");
+            }
+            if (string.IsNullOrEmpty(cardIdIn))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入卡号为空");
+            }
 
-                XCGameBLL.ExecuteStoredProcedureSentence(storeProc, storeModel.StoreDBName, parameters);
-                if (Convert.ToInt32(parameters[7].Value) == 1)
+            string storeId = userTokenModel.StoreId;
+            string merchID = storeId.Substring(0, 6);
+            string workStation = userTokenModel.Mobile;
+            int userId = userTokenModel.UserId;
+
+            //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+            if (!XCCloudService.Business.XCCloud.MemberBusiness.ExistsCardByICCardId(cardIdOut, merchID, storeId, out errMsg))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            }
+            //转出会员卡
+            Data_Member_Card fromCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == cardIdOut).FirstOrDefault();
+            //判断是否为附属卡
+            if (fromCard.CardType == 1)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不支持附属卡过户转出");
+            }
+            if (!fromCard.CardPassword.Equals(cardIdOutPassword))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出密码错误");
+            }
+
+            Base_MemberInfo fromMember = Base_MemberInfoService.I.GetModels(t => t.ID == fromCard.MemberID).FirstOrDefault();
+            if (fromMember == null)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡会员信息无效");
+            }
+
+            //【转出】会员级别实体
+            Data_MemberLevel fromLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == fromCard.MemberLevelID).FirstOrDefault();
+            if (fromLevel == null)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出会员卡级别无效");
+            }
+
+            //判断转入会员卡是否存在或是否存在多张相同卡号的会员卡
+            if (!XCCloudService.Business.XCCloud.MemberBusiness.ExistsCardByICCardId(cardIdIn, merchID, storeId, out errMsg))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            }
+            //当前会员卡
+            Data_Member_Card toCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == cardIdIn).FirstOrDefault();
+            //判断是否为附属卡
+            if (toCard.CardType == 1)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不支持附属卡过户转入");
+            }
+
+            Base_MemberInfo toMember = Base_MemberInfoService.I.GetModels(t => t.ID == toCard.MemberID).FirstOrDefault();
+            if (toMember == null)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入卡会员信息无效");
+            }
+
+            //【转入】会员级别实体
+            Data_MemberLevel toLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == toCard.MemberLevelID).FirstOrDefault();
+            if (toLevel == null)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入会员卡级别无效");
+            }
+
+            // ========================== 会员等级转出转入判断 =================================//
+            //判断是否启用转出
+            if (fromLevel.AllowTransferOut == 0)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡尚未开通过户权限");
+            }
+            //判断是否启用转入
+            if (toLevel.AllowTransferIn == 0)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "目标卡尚未开通过户权限");
+            }
+            if (fromLevel.MemberLevelID != toLevel.MemberLevelID)
+            {
+                //判断转出级别是否与目标级别匹配
+                if (fromLevel.TransferOutLevelID != toLevel.MemberLevelID)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出级别与目标卡级别不匹配");
                 }
-                else
+
+                //判断转入级别是否与来源匹配
+                if (toLevel.TransferInLevelID != fromLevel.MemberLevelID)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, parameters[6].Value.ToString());
-                }                
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入级别与即将过户的会员卡级别不匹配");
+                }
+            }
+
+            //当前班次
+            Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
+            if (schedule == null)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行过户操作");
+            }
+
+            //【正价】转出卡在当前门店的余额ID集合
+            var fromBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                                   join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                   select new
+                                   {
+                                       BalanceId = a.ID,
+                                       BalanceIndex = a.BalanceIndex
+                                   };
+
+            var fromBalanceList = fromBalanceQuery.ToList();
+
+            //【正价】转入卡在当前门店的余额ID集合
+            var toBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                                 join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                 select new
+                                 {
+                                     BalanceId = a.ID,
+                                     BalanceIndex = a.BalanceIndex
+                                 };
+
+            var toBalanceList = toBalanceQuery.ToList();
+
+            //【赠送】转出卡在当前门店的余额ID集合
+            var fromBalanceFreeQuery = from a in Data_Card_Balance_FreeService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                                       join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                       select new
+                                       {
+                                           BalanceId = a.ID,
+                                           BalanceIndex = a.BalanceIndex
+                                       };
+
+            var fromBalanceFreeList = fromBalanceFreeQuery.ToList();
+
+            //【赠送】转入卡在当前门店的余额ID集合
+            var toBalanceFreeQuery = from a in Data_Card_Balance_FreeService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                                     join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                     select new
+                                     {
+                                         BalanceId = a.ID,
+                                         BalanceIndex = a.BalanceIndex
+                                     };
+
+            var toBalanceFreeList = toBalanceFreeQuery.ToList();
+
+            using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+            {
+                foreach (var item in fromBalanceList)
+                {
+                    //正价变更值、赠送变更值
+                    decimal changeValue = 0;
+                    decimal freeChangeValue = 0;
+
+                    //转出余额
+                    Data_Card_Balance fromBalance = Data_Card_BalanceService.I.GetModels(t => t.ID == item.BalanceId).FirstOrDefault();
+
+                    //转入卡对应类别的余额
+                    var tb = toBalanceList.FirstOrDefault(t => t.BalanceIndex == item.BalanceIndex);
+                    if (tb == null)
+                    {
+                        continue;
+                    }
+                    //转入余额
+                    Data_Card_Balance toBalance = Data_Card_BalanceService.I.GetModels(t => t.ID == tb.BalanceId).FirstOrDefault();
+                    //正价余额转入
+                    toBalance.Balance += fromBalance.Balance;
+                    if (!Data_Card_BalanceService.I.Update(toBalance, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转入卡余额失败");
+                    }
+                    changeValue = fromBalance.Balance.Todecimal(0);
+                    //转出卡清零，正价余额转出
+                    fromBalance.Balance = 0;
+                    if (!Data_Card_BalanceService.I.Update(fromBalance, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转出卡余额失败");
+                    }
+
+                    Data_Card_Balance_Free fromBalanceFree = null;
+                    Data_Card_Balance_Free toBalanceFree = null;
+                    //赠送余额处理
+                    var fromModle = fromBalanceFreeList.FirstOrDefault(t => t.BalanceIndex == item.BalanceIndex);
+                    if (fromModle == null)
+                    {
+                        fromBalanceFree = new Data_Card_Balance_Free();
+                        fromBalanceFree.Balance = 0;
+                    }
+                    else
+                    {
+                        fromBalanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.ID == fromModle.BalanceId).FirstOrDefault();
+                    }
+
+                    var toModle = toBalanceFreeList.FirstOrDefault(t => t.BalanceIndex == item.BalanceIndex);
+                    if (toModle == null)
+                    {
+                        toBalanceFree = new Data_Card_Balance_Free();
+                        toBalanceFree.Balance = 0;
+                    }
+                    else
+                    {
+                        fromBalanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.ID == toModle.BalanceId).FirstOrDefault();
+                    }
+
+                    //赠送余额转入
+                    toBalanceFree.Balance += fromBalanceFree.Balance;
+                    if (!Data_Card_Balance_FreeService.I.Update(toBalanceFree, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转入卡余额失败");
+                    }
+                    freeChangeValue = fromBalanceFree.Balance.Todecimal(0);
+                    //转出卡清零
+                    fromBalanceFree.Balance = 0;
+                    if (!Data_Card_Balance_FreeService.I.Update(fromBalanceFree, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转出卡余额失败");
+                    }
+
+                    //过户记录
+                    Flw_Transfer transfer = new Flw_Transfer();
+                    transfer.id = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    transfer.MerchID = merchID;
+                    transfer.StoreID = storeId;
+                    transfer.OpType = 0;
+                    transfer.CardIDOut = fromCard.ID;
+                    transfer.OutMemberID = fromCard.MemberID;
+                    transfer.CardIDIn = toCard.ID;
+                    transfer.InMemberID = toCard.MemberID;
+                    transfer.TransferBalanceIndex = item.BalanceIndex;
+                    transfer.TransferCount = changeValue + freeChangeValue;
+                    transfer.BalanceOut = fromBalance.Balance + fromBalanceFree.Balance;
+                    transfer.BalanceIn = toBalance.Balance + toBalanceFree.Balance;
+                    transfer.RealTime = DateTime.Now;
+                    transfer.UserID = userId;
+                    transfer.WorkStation = workStation;
+                    transfer.ScheduleID = schedule.ID;
+                    transfer.CheckDate = schedule.CheckDate;
+                    transfer.State = 1;
+                    transfer.Note = "会员过户";
+                    transfer.SyncFlag = 0;
+                    if (!Flw_TransferService.I.Add(transfer, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员过户记录失败");
+                    }
+
+                    //【转出卡】余额变化流水
+                    Flw_MemberData fmd = new Flw_MemberData();
+                    fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    fmd.MerchID = merchID;
+                    fmd.StoreID = storeId;
+                    fmd.MemberID = fromMember.ID;
+                    fmd.MemberName = fromMember.UserName;
+                    fmd.CardIndex = fromCard.ID;
+                    fmd.ICCardID = fromCard.ICCardID;
+                    //fmd.MemberLevelName = levelModel.MemberLevelName;
+                    fmd.ChannelType = (int)MemberDataChannelType.吧台;
+                    fmd.OperationType = (int)MemberDataOperationType.过户转出;
+                    fmd.OPTime = DateTime.Now;
+                    fmd.SourceType = 0;
+                    fmd.SourceID = transfer.id;
+                    fmd.BalanceIndex = item.BalanceIndex;
+                    fmd.ChangeValue = 0 - changeValue;
+                    fmd.Balance = fromBalance.Balance;
+                    fmd.FreeChangeValue = 0 - freeChangeValue;
+                    fmd.FreeBalance = fromBalanceFree.Balance;
+                    fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                    fmd.Note = "过户转出";
+                    fmd.UserID = userId;
+                    fmd.DeviceID = 0;
+                    fmd.ScheduleID = schedule.ID;
+                    fmd.AuthorID = 0;
+                    fmd.WorkStation = workStation;
+                    fmd.CheckDate = schedule.CheckDate;
+                    fmd.SyncFlag = 0;
+                    if (!Flw_MemberDataService.I.Add(fmd, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                    }
+
+                    //【转入卡】余额变化流水
+                    fmd = new Flw_MemberData();
+                    fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    fmd.MerchID = merchID;
+                    fmd.StoreID = storeId;
+                    fmd.MemberID = toMember.ID;
+                    fmd.MemberName = toMember.UserName;
+                    fmd.CardIndex = toCard.ID;
+                    fmd.ICCardID = toCard.ICCardID;
+                    //fmd.MemberLevelName = levelModel.MemberLevelName;
+                    fmd.ChannelType = (int)MemberDataChannelType.吧台;
+                    fmd.OperationType = (int)MemberDataOperationType.过户转入;
+                    fmd.OPTime = DateTime.Now;
+                    fmd.SourceType = 0;
+                    fmd.SourceID = transfer.id;
+                    fmd.BalanceIndex = item.BalanceIndex;
+                    fmd.ChangeValue = changeValue;
+                    fmd.Balance = toBalance.Balance;
+                    fmd.FreeChangeValue = freeChangeValue;
+                    fmd.FreeBalance = toBalanceFree.Balance;
+                    fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                    fmd.Note = "过户转入";
+                    fmd.UserID = userId;
+                    fmd.DeviceID = 0;
+                    fmd.ScheduleID = schedule.ID;
+                    fmd.AuthorID = 0;
+                    fmd.WorkStation = workStation;
+                    fmd.CheckDate = schedule.CheckDate;
+                    fmd.SyncFlag = 0;
+                    if (!Flw_MemberDataService.I.Add(fmd, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                    }
+                }
+
+                ts.Complete();
+            }
+
+            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
             //}
             //else if (storeModel.StoreDBDeployType == 1)
             //{
@@ -577,91 +879,107 @@ namespace XCCloudService.Api.XCGame
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-                if (storeModel.StoreDBDeployType == 0)
-                { 
-                    //如果是门店模式
-                    string sql = " exec GetMember @Mobile,@ICCardID";
-                    SqlParameter[] parameters = new SqlParameter[2];
-                    parameters[0] = new SqlParameter("@Mobile", "");
-                    parameters[1] = new SqlParameter("@ICCardID", icCardId);
-                    ds = XCGameBLL.ExecuteQuerySentence(sql, storeModel.StoreDBName, parameters);
-                    if (ds != null && ds.Tables.Count >= 1)
-                    {
-                        RegisterMemberResponseModel registerMemberResponseModel = Utils.GetModelList<RegisterMemberResponseModel>(ds.Tables[0])[0];
-                        registerMemberResponseModel.StoreId = storeModel.StoreID;
-                        registerMemberResponseModel.StoreName = storeModel.StoreName;
-                        registerMemberResponseModel.MemberState = MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
-                        return ResponseModelFactory<RegisterMemberResponseModel>.CreateModel(isSignKeyReturn, registerMemberResponseModel);
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "");
-                    }                
-                }
-                else if (storeModel.StoreDBDeployType == 1)
+                //if (storeModel.StoreDBDeployType == 0)
+                //{ 
+
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("@MerchID", userTokenModel.StoreId.Substring(0, 6));
+                parameters[1] = new SqlParameter("@StoreID", userTokenModel.StoreId);
+
+                string sqlWhere = " and a.ICCardID='" + icCardId + "' ";                
+                string storedProcedure = "QueryMemberInfo";
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@SqlWhere", sqlWhere);
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@Result", SqlDbType.Int);
+                parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+
+                ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
+                if (parameters[parameters.Length - 1].Value.ToString() != "1")
                 {
-                    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-                    UDPSocketCommonQueryAnswerModel answerModel = null;
-                    string radarToken = string.Empty;
-                    if (DataFactory.SendDataMemberQuery(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, icCardId, out radarToken, out errMsg))
-                    {
-
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
-
-                    answerModel = null;
-                    while (answerModel == null)
-                    {
-                        //获取应答缓存数据
-                        System.Threading.Thread.Sleep(1000);
-                        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                    }
-
-                    if (answerModel != null)
-                    {
-                        MemberQueryResultNotifyRequestModel model = (MemberQueryResultNotifyRequestModel)(answerModel.Result);
-                        //移除应答缓存数据
-                        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
-
-                        if (model.Result_Code == "1")
-                        {
-                            RegisterMemberResponseModel registerMemberResponseModel = new RegisterMemberResponseModel();
-                            registerMemberResponseModel.ICCardID = int.Parse(model.Result_Data.ICCardID);
-                            registerMemberResponseModel.MemberName = model.Result_Data.MemberName;
-                            registerMemberResponseModel.Gender = model.Result_Data.Gender;
-                            registerMemberResponseModel.Birthday = model.Result_Data.Birthday;
-                            registerMemberResponseModel.CertificalID = model.Result_Data.CertificalID;
-                            registerMemberResponseModel.Mobile = model.Result_Data.Mobile;
-                            registerMemberResponseModel.Balance = Convert.ToInt32(model.Result_Data.Balance);
-                            registerMemberResponseModel.Point = Convert.ToInt32(model.Result_Data.Point);
-                            registerMemberResponseModel.Deposit = model.Result_Data.Deposit;
-                            registerMemberResponseModel.MemberState = model.Result_Data.MemberState;
-                            registerMemberResponseModel.Lottery = Convert.ToInt32(model.Result_Data.Lottery);
-                            registerMemberResponseModel.Note = model.Result_Data.Note;
-                            registerMemberResponseModel.EndDate = model.Result_Data.EndDate;
-                            registerMemberResponseModel.MemberLevelName = model.Result_Data.MemberLevelName;
-                            registerMemberResponseModel.StoreId = storeModel.StoreID.ToString();
-                            registerMemberResponseModel.StoreName = storeModel.StoreName;
-                            registerMemberResponseModel.MemberState = MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
-                            return ResponseModelFactory<RegisterMemberResponseModel>.CreateModel(isSignKeyReturn, registerMemberResponseModel);
-                        }
-                        else
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "查询数据出错");
-                        }
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "查询数据出错");
-                    }
+                    errMsg = "查询会员档案数据失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                else
+
+                if (ds.Tables.Count > 1)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
+                    var jsonArr = new
+                    {
+                        table1 = Utils.DataTableToJson(ds.Tables[1]), //会员档案信息
+                        table2 = ds.Tables[0].Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1].ToString()) //余额类别列表
+                    };
+
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, jsonArr);
                 }
+
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "查询数据失败");
+                //}
+                //else if (storeModel.StoreDBDeployType == 1)
+                //{
+                //    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+                //    UDPSocketCommonQueryAnswerModel answerModel = null;
+                //    string radarToken = string.Empty;
+                //    if (DataFactory.SendDataMemberQuery(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, icCardId, out radarToken, out errMsg))
+                //    {
+
+                //    }
+                //    else
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                //    }
+
+                //    answerModel = null;
+                //    while (answerModel == null)
+                //    {
+                //        //获取应答缓存数据
+                //        System.Threading.Thread.Sleep(1000);
+                //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+                //    }
+
+                //    if (answerModel != null)
+                //    {
+                //        MemberQueryResultNotifyRequestModel model = (MemberQueryResultNotifyRequestModel)(answerModel.Result);
+                //        //移除应答缓存数据
+                //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+
+                //        if (model.Result_Code == "1")
+                //        {
+                //            RegisterMemberResponseModel registerMemberResponseModel = new RegisterMemberResponseModel();
+                //            registerMemberResponseModel.ICCardID = int.Parse(model.Result_Data.ICCardID);
+                //            registerMemberResponseModel.MemberName = model.Result_Data.MemberName;
+                //            registerMemberResponseModel.Gender = model.Result_Data.Gender;
+                //            registerMemberResponseModel.Birthday = model.Result_Data.Birthday;
+                //            registerMemberResponseModel.CertificalID = model.Result_Data.CertificalID;
+                //            registerMemberResponseModel.Mobile = model.Result_Data.Mobile;
+                //            registerMemberResponseModel.Balance = Convert.ToInt32(model.Result_Data.Balance);
+                //            registerMemberResponseModel.Point = Convert.ToInt32(model.Result_Data.Point);
+                //            registerMemberResponseModel.Deposit = model.Result_Data.Deposit;
+                //            registerMemberResponseModel.MemberState = model.Result_Data.MemberState;
+                //            registerMemberResponseModel.Lottery = Convert.ToInt32(model.Result_Data.Lottery);
+                //            registerMemberResponseModel.Note = model.Result_Data.Note;
+                //            registerMemberResponseModel.EndDate = model.Result_Data.EndDate;
+                //            registerMemberResponseModel.MemberLevelName = model.Result_Data.MemberLevelName;
+                //            registerMemberResponseModel.StoreId = storeModel.StoreID.ToString();
+                //            registerMemberResponseModel.StoreName = storeModel.StoreName;
+                //            registerMemberResponseModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
+                //            return ResponseModelFactory<RegisterMemberResponseModel>.CreateModel(isSignKeyReturn, registerMemberResponseModel);
+                //        }
+                //        else
+                //        {
+                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "查询数据出错");
+                //        }
+                //    }
+                //    else
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "查询数据出错");
+                //    }
+                //}
+                //else
+                //{
+                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
+                //}
             }
             catch (Exception e)
             {
@@ -698,7 +1016,7 @@ namespace XCCloudService.Api.XCGame
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                     {
                         CattleMemberCardDetailModel cattleMemberCardDetailModel = Utils.GetModelList<CattleMemberCardDetailModel>(ds.Tables[0])[i];
-                        cattleMemberCardDetailModel.MemberState = MemberBusiness.GetMemberStateName(cattleMemberCardDetailModel.MemberState);
+                        cattleMemberCardDetailModel.MemberState = XCCloudService.Business.XCGame.MemberBusiness.GetMemberStateName(cattleMemberCardDetailModel.MemberState);
                         list.Add(cattleMemberCardDetailModel);
                     }
                     CattleMemberCardModel cardModel = new CattleMemberCardModel(storeModel.StoreID, storeModel.StoreName, list);

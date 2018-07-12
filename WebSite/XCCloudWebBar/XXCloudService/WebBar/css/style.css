@@ -194,6 +194,7 @@ input.btnSendCode{line-height: 0;}
 .tab-min{margin-top: 1em;padding: 0;}
 .tab-text{margin: 0.5em 0;}
 .width100{width: 100%;background-color: #349ffd;}
+.width100:hover{width: 100%;background-color: #349ffd;}
 .tab-style{margin-top: 1.2em;line-height: 2em;font-size: 1.2em;}
 
 .mcImg img{width: 10em;height: 13em;margin-top: 1em;}

@@ -269,6 +269,70 @@ namespace XCCloudService.Common.Enum
         BalanceInCard = 6,
     }
 
+    /// <summary>
+    /// 操作渠道
+    /// </summary>
+    public enum MemberDataChannelType
+    {
+        [Description("吧台")]
+        吧台 = 0,
+        [Description("自助设备")]
+        自助设备 = 1,
+        [Description("移动终端")]
+        移动终端 = 2,
+        [Description("莘宸云")]
+        莘宸云 = 3,
+        [Description("美团")]
+        美团 = 4,
+        [Description("大众点评")]
+        大众点评 = 5,
+        [Description("口碑")]
+        口碑 = 6
+    }
+
+    /// <summary>
+    /// 操作类型
+    /// </summary>
+    public enum MemberDataOperationType
+    {
+        [Description("售币")]
+        售币 = 0,
+        [Description("存币")]
+        存币 = 1,
+        [Description("提币")]
+        提币 = 2,
+        [Description("投币")]
+        投币 = 3,
+        [Description("碎票")]
+        碎票 = 4,
+        [Description("退币")]
+        退币 = 5,
+        [Description("消费赠送")]
+        消费赠送 = 6,
+        [Description("生日赠送")]
+        生日赠送 = 7,
+        [Description("输赢赠送")]
+        输赢赠送 = 8,
+        [Description("余额兑换转入")]
+        余额兑换转入 = 9,
+        [Description("余额兑换转出")]
+        余额兑换转出 = 10,
+        [Description("过户转入")]
+        过户转入 = 11,
+        [Description("过户转出")]
+        过户转出 = 12,
+        [Description("退储值金")]
+        退储值金 = 13,
+        [Description("退货返回")]
+        退货返回 = 14,
+        [Description("余额支付")]
+        余额支付 = 15,
+        [Description("礼品回购")]
+        礼品回购 = 16,
+        [Description("手工补币")]
+        手工补币 = 17
+    }
+
     //设备绑定状态枚举
     public enum DeviceBoundStateEnum : int
     {
