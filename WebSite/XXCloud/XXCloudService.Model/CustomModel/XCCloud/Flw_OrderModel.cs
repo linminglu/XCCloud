@@ -56,7 +56,6 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
     public class Flw_OrdersModel
     {
-        public int ID { get; set; }
         public string StoreID { get; set; }
         public string StoreName { get; set; }
         public string OrderID { get; set; }
@@ -73,7 +72,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
     public class Data_FoodInfoModel
     {
-        public int FoodID { get; set; }
+        public int ID { get; set; }
         public string FoodName { get; set; }
         public string StoreID { get; set; }
         public string StoreName { get; set; }

@@ -82,8 +82,8 @@ namespace XXCloudService.Api.XCCloud
                                     a.Note
                                 FROM
                                 	Base_GoodsInfo a
-                                LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
-                                LEFT JOIN Base_MerchantInfo m ON a.MerchID = m.MerchID
+                                LEFT JOIN Base_StoreInfo b ON a.StoreID = b.ID
+                                LEFT JOIN Base_MerchantInfo m ON a.MerchID = m.ID
                                 LEFT JOIN Dict_System c ON a.GoodType = c.ID
                                 WHERE
                                 	a.Status = 1";
@@ -574,10 +574,10 @@ namespace XXCloudService.Api.XCCloud
                                 	d.Note
                                 FROM
                                 	Data_GoodRequest a
-                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.StoreID
-                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.UserID                                
-                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.StoreID
-                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.StoreID
+                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.ID
+                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.ID                                
+                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.ID
+                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.ID
                                 LEFT JOIN Base_DepotInfo requestoutdepot ON a.RequestOutDepotID = requestoutdepot.ID
                                 LEFT JOIN Base_DepotInfo requestindepot ON a.RequestInDepotID = requestindepot.ID
                                 LEFT JOIN (
@@ -755,10 +755,10 @@ namespace XXCloudService.Api.XCCloud
                                     a.RequestReason AS RequestReason
                                 FROM
                                 	Data_GoodRequest a
-                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.StoreID
-                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.UserID                                
-                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.StoreID
-                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.StoreID
+                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.ID
+                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.ID                                
+                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.ID
+                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.ID
                                 LEFT JOIN Base_DepotInfo requestoutdepot ON a.RequestOutDepotID = requestoutdepot.ID
                                 LEFT JOIN Base_DepotInfo requestindepot ON a.RequestInDepotID = requestindepot.ID 
                                 WHERE a.ID = " + requestId;
@@ -867,10 +867,10 @@ namespace XXCloudService.Api.XCCloud
                                     a.RequestReason AS RequestReason
                                 FROM
                                 	Data_GoodRequest a
-                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.StoreID
-                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.UserID                                
-                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.StoreID
-                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.StoreID
+                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.ID
+                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.ID                                
+                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.ID
+                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.ID
                                 LEFT JOIN Base_DepotInfo requestoutdepot ON a.RequestOutDepotID = requestoutdepot.ID
                                 LEFT JOIN Base_DepotInfo requestindepot ON a.RequestInDepotID = requestindepot.ID 
                                 WHERE a.ID = " + requestId;
@@ -988,10 +988,10 @@ namespace XXCloudService.Api.XCCloud
                                     a.RequestReason AS RequestReason
                                 FROM
                                 	Data_GoodRequest a
-                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.StoreID
-                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.UserID                                
-                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.StoreID
-                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.StoreID
+                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.ID
+                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.ID                                
+                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.ID
+                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.ID
                                 LEFT JOIN Base_DepotInfo requestoutdepot ON a.RequestOutDepotID = requestoutdepot.ID
                                 LEFT JOIN Base_DepotInfo requestindepot ON a.RequestInDepotID = requestindepot.ID 
                                 WHERE a.ID = " + requestId;
@@ -1934,10 +1934,10 @@ namespace XXCloudService.Api.XCCloud
                                     a.RequestReason AS RequestReason
                                 FROM
                                 	Data_GoodRequest a
-                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.StoreID
-                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.UserID                                
-                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.StoreID
-                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.StoreID
+                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.ID
+                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.ID                                
+                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.ID
+                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.ID
                                 LEFT JOIN Base_DepotInfo requestoutdepot ON a.RequestOutDepotID = requestoutdepot.ID
                                 LEFT JOIN Base_DepotInfo requestindepot ON a.RequestInDepotID = requestindepot.ID 
                                 WHERE a.ID = " + requestId;
@@ -2315,7 +2315,7 @@ namespace XXCloudService.Api.XCCloud
                                 	a.AuthorFlag
                                 FROM
                                 	Data_GoodStorage a
-                                LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
+                                LEFT JOIN Base_StoreInfo b ON a.StoreID = b.ID
                                 LEFT JOIN (
                                 	SELECT
                                 		StorageOrderID, SUM(ISNULL(TotalPrice,0)) AS TotalPrice
@@ -2323,7 +2323,7 @@ namespace XXCloudService.Api.XCCloud
                                 		Data_GoodStorage_Detail
                                     GROUP BY StorageOrderID
                                 ) c ON a.StorageOrderID = c.StorageOrderID
-                                LEFT JOIN Base_UserInfo u ON a.UserID = u.UserID
+                                LEFT JOIN Base_UserInfo u ON a.UserID = u.ID
                                 LEFT JOIN Base_DepotInfo d ON a.DepotID = d.ID                                
                                 WHERE 1 = 1";
                 sql = sql + " AND a.merchId='" + merchId + "'";
@@ -3707,7 +3707,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) a                                                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
-                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
+                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.ID
                                 WHERE
                                 	b.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;
                 sql = sql + " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
@@ -3796,7 +3796,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) a                                                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
-                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
+                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.ID
                                 WHERE
                                 	b.Status = 1 AND ISNULL(b.StoreID,'')='' AND a.RowNum <= 1 ";    //不能调拨专属商品
                 if (!depotId.IsNull())
@@ -3895,7 +3895,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) a                                                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
-                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
+                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.ID
                                 WHERE
                                 	b.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;                
                 if (!goodId.IsNull())
@@ -3979,7 +3979,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) a                                                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
-                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
+                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.ID
                                 WHERE
                                 	b.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;
                 sql = sql + " AND a.MerchID='" + merchId + "'";
@@ -4209,8 +4209,8 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Data_GoodInventory b ON a.GoodID = b.GoodID AND a.StockType = b.InventoryType AND a.StockIndex = b.InventoryIndex AND ISNULL(b.AuthorID,'')=''
                                 INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID  
                                 LEFT JOIN Dict_System d ON c.GoodType = d.ID
-                                LEFT JOIN Base_UserInfo u ON b.UserID = u.UserID
-                                LEFT JOIN Base_StoreInfo s ON c.StoreID = s.StoreID
+                                LEFT JOIN Base_UserInfo u ON b.UserID = u.ID
+                                LEFT JOIN Base_StoreInfo s ON c.StoreID = s.ID
                                 WHERE
                                 	c.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + stockIndex + " AND a.StockType = " + stockType + " AND c.BarCode = '" + barCode + "'";    //查询未盘点审核的记录
 
@@ -4407,8 +4407,8 @@ namespace XXCloudService.Api.XCCloud
                                 ) b ON a.GoodID = b.GoodID AND a.InventoryType = b.StockType AND a.InventoryIndex = b.StockIndex 
                                 INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID  
                                 LEFT JOIN Dict_System d ON c.GoodType = d.ID
-                                LEFT JOIN Base_UserInfo u ON a.UserID = u.UserID
-                                LEFT JOIN Base_StoreInfo s ON c.StoreID = s.StoreID
+                                LEFT JOIN Base_UserInfo u ON a.UserID = u.ID
+                                LEFT JOIN Base_StoreInfo s ON c.StoreID = s.ID
                                 WHERE
                                 	c.Status = 1 AND b.RowNum <= 1 AND ISNULL(a.AuthorID,'')='' AND a.InventoryIndex = " + stockIndex + " AND a.InventoryType = " + stockType;    //查询未盘点审核的记录
                 sql = sql + sqlWhere;

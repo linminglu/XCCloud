@@ -76,7 +76,7 @@ namespace XXCloudService.Api.XCCloud
                                 		Data_PushRule_MemberLevelList a 
                                     INNER JOIN (SELECT PushRuleID, COUNT(PushRuleID) AS Cnt from Data_PushRule_MemberLevelList group by PushRuleID) c on a.PushRuleID=c.PushRuleID
                                     INNER JOIN 
-                                        Data_MemberLevel b ON a.MemberLevelID = b.MemberLevelID                                                      
+                                        Data_MemberLevel b ON a.MemberLevelID = b.ID                                                      
                                 	WHERE
                                 		a.StoreID='" + storeId + "'" +
                               @") c ON a.ID = c.PushRuleID and c.RowNum <= 1

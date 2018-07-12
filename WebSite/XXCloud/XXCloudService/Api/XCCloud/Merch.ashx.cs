@@ -81,7 +81,7 @@ namespace XXCloudService.Api.XCCloud
             errMsg = string.Empty;
             merchId = string.Empty;
 
-            string sql = "select max(MerchID) from Base_MerchantInfo where MerchID >= '100010'";
+            string sql = "select max(ID) from Base_MerchantInfo where ID >= '100010'";
             string lastMerchID = XCCloudBLL.ExecuteScalar(sql);
             var bNo = 0;
             int.TryParse(lastMerchID, out bNo);
@@ -168,7 +168,7 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                string sql = @"select a.MerchID, a.MerchName, a.Mobil, b.DictKey as MerchTypeStr, a.MerchAccount, d.DictKey as AllowCreateSubStr, a.AllowCreateCount, c.DictKey as MerchStatusStr from Base_MerchantInfo a " +
+                string sql = @"select a.ID as MerchID, a.MerchName, a.Mobil, b.DictKey as MerchTypeStr, a.MerchAccount, d.DictKey as AllowCreateSubStr, a.AllowCreateCount, c.DictKey as MerchStatusStr from Base_MerchantInfo a " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='商户类别' and a.PID=0) b on convert(varchar, a.MerchType)=b.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='商户状态' and a.PID=0) c on convert(varchar, a.MerchStatus)=c.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='创建子账号' and a.PID=0) d on convert(varchar, a.AllowCreateSub)=d.DictValue " +
@@ -837,7 +837,7 @@ namespace XXCloudService.Api.XCCloud
                 #region 商户信息和功能菜单
 
                 //返回商户信息
-                string sql = "select * from Base_MerchantInfo where MerchID=@MerchID";
+                string sql = "select * from Base_MerchantInfo where ID=@MerchID";
                 SqlParameter[] parameters = new SqlParameter[1];
                 if (string.IsNullOrEmpty(merchId))
                 {

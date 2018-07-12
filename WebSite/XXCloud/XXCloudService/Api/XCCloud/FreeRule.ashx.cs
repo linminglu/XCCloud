@@ -49,7 +49,7 @@ namespace XXCloudService.Api.XCCloud
                     " c.NeedCoin, c.FreeCoin, c.ExitCoin, c.StartTime as ST, c.EndTime as ET, c.State from Data_GameFreeRule_List a " +
                     " inner join Data_GameInfo b on a.GameIndexID=b.ID " +
                     " inner join Data_GameFreeRule c on a.RuleID=c.ID " +
-                    " left join Data_MemberLevel d on c.MemberLevelID=d.MemberLevelID" +
+                    " left join Data_MemberLevel d on c.MemberLevelID=d.ID" +
                     " where b.StoreID='" + storeId + "'";
                 sql = sql + sqlWhere;
                 IData_GameFreeRuleService data_GameFreeRuleService = BLLContainer.Resolve<IData_GameFreeRuleService>();

@@ -67,28 +67,28 @@ namespace XCCloudService.Business.XCCloud
 
                     if (payAmount == amount)
                     {
-                        string sql = string.Format("update Flw_Order set OrderStatus={3}, RealPay='{0}', PayTime='{1}' where OrderID='{2}'", payAmount.ToString("0.00"), payTime, orderId, OrderState.AlreadyPaid);
+                        string sql = string.Format("update Flw_Order set OrderStatus={3}, RealPay='{0}', PayTime='{1}' where ID='{2}'", payAmount.ToString("0.00"), payTime, orderId, OrderState.AlreadyPaid);
                         XCCloudBLL.ExecuteSql(sql);
 
                         model.OrderStatus = OrderState.AlreadyPaid;
 
                         if (selttleType == SelttleType.StarPos)
                         {
-                            sql = @"SELECT a.StoreID, SettleFee FROM Base_StoreInfo a
-                                INNER JOIN Flw_Order b ON b.StoreID = a.StoreID
+                            sql = @"SELECT a.ID as StoreID, SettleFee FROM Base_StoreInfo a
+                                INNER JOIN Flw_Order b ON b.StoreID = a.ID
                                 INNER JOIN Base_SettlePPOS c ON c.ID = a.SettleID
-                                WHERE b.OrderID = '" + orderId + "'";
+                                WHERE b.ID = '" + orderId + "'";
                         }
                         else if (selttleType == SelttleType.LcswPay)
                         {
-                            sql = @"SELECT a.StoreID, SettleFee FROM Base_StoreInfo a
-                                INNER JOIN Flw_Order b ON b.StoreID = a.StoreID
+                            sql = @"SELECT a.ID as StoreID, SettleFee FROM Base_StoreInfo a
+                                INNER JOIN Flw_Order b ON b.StoreID = a.ID
                                 INNER JOIN Base_SettleLCPay c ON c.ID = a.SettleID
-                                WHERE b.OrderID = '" + orderId + "'";
+                                WHERE b.ID = '" + orderId + "'";
                         }
                         else
                         {
-                            sql = "SELECT SettleFee FROM Base_StoreInfo a, Base_SettleOrg b WHERE a.SettleID = b.ID AND a.StoreID = '" + StoreID + "'";
+                            sql = "SELECT SettleFee FROM Base_StoreInfo a, Base_SettleOrg b WHERE a.SettleID = b.ID AND a.ID = '" + StoreID + "'";
                         }
 
                         DataTable dt = XCCloudBLL.ExecuterSqlToTable(sql);
@@ -98,7 +98,7 @@ namespace XCCloudService.Business.XCCloud
                             double fee = Convert.ToDouble(dt.Rows[0]["SettleFee"]);
                             double d = Math.Round(Convert.ToDouble(payAmount) * fee, 2, MidpointRounding.AwayFromZero);   //最小单位为0.01元
                             if (d < 0.01) d = 0.01;
-                            sql = "update Flw_Order set PayFee='" + d + "' where OrderID='" + orderId + "'";
+                            sql = "update Flw_Order set PayFee='" + d + "' where ID='" + orderId + "'";
                             XCCloudBLL.ExecuteSql(sql);
                         }
                     }
@@ -106,7 +106,7 @@ namespace XCCloudService.Business.XCCloud
                     {
                         //支付异常
                         //PayList.AddNewItem(out_trade_no, amount);
-                        string sql = string.Format("update Flw_Order set OrderStatus={3}, RealPay='{0}', PayTime='{1}' where OrderID='{2}'", amount.ToString("0.00"), payTime, orderId, OrderState.Alarm);
+                        string sql = string.Format("update Flw_Order set OrderStatus={3}, RealPay='{0}', PayTime='{1}' where ID='{2}'", amount.ToString("0.00"), payTime, orderId, OrderState.Alarm);
                         XCCloudBLL.ExecuteSql(sql);
 
                         model.OrderStatus = OrderState.Alarm;

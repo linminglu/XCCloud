@@ -40,14 +40,14 @@ namespace XCCloudService.DBService.DAL
             sb.Append(" select ROW_NUMBER() over(order by DestroyTime desc) as RowId, ");
             sb.Append(" DestroyTime as StorageTime,isnull(StoreName,a.StoreID) as StoreName, ");
             sb.Append(" ISNULL(a.UserID,c.RealName) as UserName,StorageCount,Note ");
-            sb.Append(" from dbo.Data_CoinStorage a left join Base_StoreInfo b on a.StoreID = b.StoreID "); 
-            sb.Append(" left join Base_UserInfo c on a.UserID = c.UserID ");
+            sb.Append(" from dbo.Data_CoinStorage a left join Base_StoreInfo b on a.StoreID = b.ID "); 
+            sb.Append(" left join Base_UserInfo c on a.UserID = c.ID ");
             sb.Append(where);
             sb.Append(" ) a ");
             sb.Append(string.Format(" where RowId >= {0} and RowId <= {1}", pageIndex * pageSize, (pageIndex + 1) * pageSize));
 
-            sb.Append(" select count(0) from dbo.Data_CoinStorage a left join Base_StoreInfo b on a.StoreID = b.StoreID ");
-            sb.Append(" left join Base_UserInfo c on a.UserID = c.UserID ");
+            sb.Append(" select count(0) from dbo.Data_CoinStorage a left join Base_StoreInfo b on a.StoreID = b.ID ");
+            sb.Append(" left join Base_UserInfo c on a.UserID = c.ID ");
             sb.Append(where);
 
             DataAccess ac = new DataAccess(DataAccessDB.XCCloudDB);
@@ -73,7 +73,7 @@ namespace XCCloudService.DBService.DAL
             sb.Append(" declare @DestroyDate varchar(10) ");
             sb.Append(" select RowId,DestroyTime,StoreName,UserName,DestroyCount,Note from ");
             sb.Append(" ( ");
-            sb.Append(" select ROW_NUMBER() over(order by DestroyTime desc) as RowId,DestroyTime as DestroyTime,isnull(StoreName,a.StoreID) as StoreName,ISNULL(a.UserID,c.RealName) as UserName,StorageCount as DestroyCount,Note from Data_CoinDestory a left join Base_StoreInfo b on a.StoreID = b.StoreID left join Base_UserInfo c on a.UserID = c.UserID ");
+            sb.Append(" select ROW_NUMBER() over(order by DestroyTime desc) as RowId,DestroyTime as DestroyTime,isnull(StoreName,a.StoreID) as StoreName,ISNULL(a.UserID,c.RealName) as UserName,StorageCount as DestroyCount,Note from Data_CoinDestory a left join Base_StoreInfo b on a.StoreID = b.ID left join Base_UserInfo c on a.UserID = c.ID ");
             if (!string.IsNullOrEmpty(destroyDate))
             {
                 sb.Append(string.Format(" and DATEDIFF(DY,DestroyTime,'{0}') = 0 ", destroyDate));

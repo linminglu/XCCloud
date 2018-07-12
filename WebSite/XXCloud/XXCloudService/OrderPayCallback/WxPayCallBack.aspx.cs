@@ -81,12 +81,12 @@ namespace XXCloudService.PayChannel
                     //    if (total_fee == PayCount - FreePay)
                     //    {
                     //        string payTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                    //        string sql = string.Format("update Flw_Order set OrderStatus=2, RealPay='{0}', PayTime='{1}' where OrderID='{2}'", payAmount, payTime, out_trade_no);
+                    //        string sql = string.Format("update Flw_Order set OrderStatus=2, RealPay='{0}', PayTime='{1}' where ID='{2}'", payAmount, payTime, out_trade_no);
                     //        XCCloudBLL.ExecuteSql(sql);
 
                     //        OrderPayNotify.AddOrderPayCache(out_trade_no, payAmount, payTime, 2);
 
-                    //        sql = "SELECT SettleFee FROM Base_StoreInfo a, Base_SettleOrg b WHERE a.SettleID = b.ID AND a.StoreID = '" + order.StoreID + "'";
+                    //        sql = "SELECT SettleFee FROM Base_StoreInfo a, Base_SettleOrg b WHERE a.SettleID = b.ID AND a.ID = '" + order.StoreID + "'";
                     //        DataTable dt = XCCloudBLL.ExecuterSqlToTable(sql);
                     //        if (dt.Rows.Count > 0)
                     //        {
@@ -94,7 +94,7 @@ namespace XXCloudService.PayChannel
                     //            double fee = Convert.ToDouble(dt.Rows[0]["SettleFee"]);
                     //            double d = Math.Round(Convert.ToDouble(payAmount) * fee, 2, MidpointRounding.AwayFromZero);   //最小单位为0.01元
                     //            if (d < 0.01) d = 0.01;
-                    //            sql = "update Flw_Order set PayFee='" + d + "' where OrderID='" + out_trade_no + "'";
+                    //            sql = "update Flw_Order set PayFee='" + d + "' where ID='" + out_trade_no + "'";
                     //            XCCloudBLL.ExecuteSql(sql);
                     //        }
                     //    }
@@ -102,7 +102,7 @@ namespace XXCloudService.PayChannel
                     //    {
                     //        //支付异常
                     //        //PayList.AddNewItem(out_trade_no, amount);
-                    //        string sql = string.Format("update Flw_Order set OrderStatus=3, RealPay='{0}', PayTime=GETDATE() where OrderID='{1}'", payAmount, out_trade_no);
+                    //        string sql = string.Format("update Flw_Order set OrderStatus=3, RealPay='{0}', PayTime=GETDATE() where ID='{1}'", payAmount, out_trade_no);
                     //        XCCloudBLL.ExecuteSql(sql);
                     //    }
                     //} 

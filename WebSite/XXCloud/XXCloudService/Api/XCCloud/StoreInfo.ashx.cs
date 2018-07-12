@@ -68,7 +68,7 @@ namespace XCCloudService.Api.XCCloud
             errMsg = string.Empty;
             storeId = string.Empty;
             IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-            string lastStoreID = base_StoreInfoService.SqlQuery("select * from Base_StoreInfo where StoreID like '" + merchId + adcode + "%'").Max(m => m.ID);
+            string lastStoreID = base_StoreInfoService.SqlQuery("select * from Base_StoreInfo where ID like '" + merchId + adcode + "%'").Max(m => m.ID);
             if (string.IsNullOrEmpty(lastStoreID))
             {
                 lastStoreID = merchId + adcode + "000";
@@ -165,7 +165,7 @@ namespace XCCloudService.Api.XCCloud
                     }
                 }
 
-                string sql = @"select a.StoreID, a.StoreTag, a.MerchID, a.StoreName, a.Password, convert(varchar, a.AuthorExpireDate, 23) AS AuthorExpireDate, a.AreaCode, a.Address, a.Contacts, a.Mobile, b.DictKey as SelttleTypeStr, c.DictKey as StoreStateStr from Base_StoreInfo a " +
+                string sql = @"select a.ID as StoreID, a.StoreTag, a.MerchID, a.StoreName, a.Password, convert(varchar, a.AuthorExpireDate, 23) AS AuthorExpireDate, a.AreaCode, a.Address, a.Contacts, a.Mobile, b.DictKey as SelttleTypeStr, c.DictKey as StoreStateStr from Base_StoreInfo a " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='结算类型' and a.PID=0) b on convert(varchar, a.SelttleType)=b.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='门店状态' and a.PID=0) c on convert(varchar, a.StoreState)=c.DictValue " +
                     " where a.MerchID=@merchId ";
@@ -716,7 +716,7 @@ namespace XCCloudService.Api.XCCloud
                 
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@storeId", storeId);
-                string sqlWhere = string.Empty + " and a.StoreID=@storeId";
+                string sqlWhere = string.Empty + " and a.ID=@storeId";
                 string sql = @"select a.*, b.DictKey as BankTypeStr, c.DictKey as SelttleTypeStr from Base_StoreInfo a " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='银行类别' and a.PID=0) b on convert(varchar, a.BankType)=b.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='结算类型' and a.PID=0) c on convert(varchar, a.SelttleType)=c.DictValue where 1=1 ";

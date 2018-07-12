@@ -47,10 +47,10 @@ namespace XCCloudService.DBService.DAL
             sb.Append(string.Format(" set @ICCardID = '{0}' ",ICCardID));
             sb.Append(" select DestroyTime,ICCardID,UserName,Note from ");
             sb.Append(" ( ");
-            sb.Append(" select Row_Number() over (order by DestroyTime desc) as RowId,DestroyTime,a.ICCardID,ISNULL(b.realName,b.UserID) as UserName,Note from Data_DigitCoinDestroy a left join Base_UserInfo b on a.UserID = b.UserID where DATEDIFF(DY,DestroyTime,@BusinessDate) = 0 and a.ICCardID = @ICCardID ");
+            sb.Append(" select Row_Number() over (order by DestroyTime desc) as RowId,DestroyTime,a.ICCardID,ISNULL(b.realName,b.ID) as UserName,Note from Data_DigitCoinDestroy a left join Base_UserInfo b on a.UserID = b.ID where DATEDIFF(DY,DestroyTime,@BusinessDate) = 0 and a.ICCardID = @ICCardID ");
             sb.Append(" ) a ");
             sb.Append(string.Format(" where RowId >= {0} and RowId <= {1}", pageIndex * pageSize, (pageIndex + 1) * pageSize));
-            sb.Append(" select count(*) from Data_DigitCoinDestroy a left join Base_UserInfo b on a.UserID = b.UserID where DATEDIFF(DY,DestroyTime,@BusinessDate) = 0 and a.ICCardID = @ICCardID ");
+            sb.Append(" select count(*) from Data_DigitCoinDestroy a left join Base_UserInfo b on a.UserID = b.ID where DATEDIFF(DY,DestroyTime,@BusinessDate) = 0 and a.ICCardID = @ICCardID ");
             DataAccess da = new DataAccess(DataAccessDB.XCCloudDB);
             DataSet ds = da.ExecuteQuery(sb.ToString());
             List<DigiteCoinDestroyDetialModel> detail = Utils.GetModelList<DigiteCoinDestroyDetialModel>(ds.Tables[0]);

@@ -1029,15 +1029,15 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                string sql = @"select b.ID, a.StoreID, a.StoreName, b.OrderID, b.FoodCount, b.OrderSource, b.CreateTime, b.PayType, b.OrderStatus," +
+                string sql = @"select b.ID as OrderID, a.ID as StoreID, a.StoreName, b.FoodCount, b.OrderSource, b.CreateTime, b.PayType, b.OrderStatus," +
                     " c.DictKey as OrderSourceStr, d.DictKey as PayTypeStr, e.DictKey as OrderStatusStr, f.FoodName from Base_StoreInfo a " +
-                    " inner join Flw_Order b on a.StoreID=b.StoreID " +
+                    " inner join Flw_Order b on a.ID=b.StoreID " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='订单来源' and a.PID=0) c on convert(varchar, b.OrderSource)=c.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='支付通道' and a.PID=0) d on convert(varchar, b.PayType)=d.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='订单状态' and a.PID=0) e on convert(varchar, b.OrderStatus)=e.DictValue " +
                     " left join (select top 1 a.ID as OrderFlwID, d.FoodName from Flw_Order a inner join Flw_Order_Detail b on a.ID=b.OrderFlwID " +
                     " inner join Flw_Food_Sale c on b.FoodFlwID=c.ID " +
-                    " inner join Data_FoodInfo d on c.FoodID=d.FoodID) f on b.ID=f.OrderFlwID " +
+                    " inner join Data_FoodInfo d on c.FoodID=d.ID) f on b.ID=f.OrderFlwID " +
                     " where a.MerchID=@merchId ";
                 sql = sql + sqlWhere;
                 var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Flw_Order).Namespace);
@@ -1072,8 +1072,8 @@ namespace XXCloudService.Api.XCCloud
                 string sql = @"select d.*, e.StoreName, f.DictKey as FoodTypeStr, g.DictKey as RechargeTypeStr, h.DictKey as FoodStateStr from Flw_Order a" +
                     " inner join Flw_Order_Detail b on a.ID=b.OrderFlwID " +
                     " inner join Flw_Food_Sale c on b.FoodFlwID=c.ID " +
-                    " inner join Data_FoodInfo d on c.FoodID=d.FoodID " +
-                    " left join Base_StoreInfo e on d.StoreID=e.StoreID " +
+                    " inner join Data_FoodInfo d on c.FoodID=d.ID " +
+                    " left join Base_StoreInfo e on d.StoreID=e.ID " +
                     " left join Dict_System f on d.FoodType=f.ID " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='充值方式' and a.PID=0) g on convert(varchar, d.RechargeType)=g.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='套餐状态' and a.PID=0) h on convert(varchar, d.FoodState)=h.DictValue " +
