@@ -42,7 +42,7 @@ namespace XCCloudService.Model.CustomModel.XCGame
         /// 门票类别
         /// </summary>
         [DataMember(Name="ticketTypeName",Order=4)]
-        public string TicketTypeName { set; get; }
+        public string TicketTypeName { get { return ((TicketType?)TicketType).GetDescription(); } set { } }
 
         /// <summary>
         /// 剩余数量
