@@ -475,8 +475,8 @@ namespace XCCloudService.Api.XCGame
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
             }
 
-            if (storeModel.StoreDBDeployType == 0)
-            { 
+            //if (storeModel.StoreDBDeployType == 0)
+            //{ 
                 string storeProc = "TransICCardCoins";
                 SqlParameter[] parameters = new SqlParameter[8];
                 parameters[0] = new SqlParameter("@CardIdOut", cardIdOut);
@@ -499,55 +499,55 @@ namespace XCCloudService.Api.XCGame
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, parameters[6].Value.ToString());
                 }                
-            }
-            else if (storeModel.StoreDBDeployType == 1)
-            {
-                string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-                UDPSocketCommonQueryAnswerModel answerModel = null;
-                string radarToken = string.Empty;
-                if (DataFactory.SendMemberTransOperate(sn, storeModel.StoreID,storeModel.StorePassword, mobileName, userTokenModel.Mobile, cardIdIn, cardIdOut, int.Parse(coins),out radarToken,out errMsg))
-                {
+            //}
+            //else if (storeModel.StoreDBDeployType == 1)
+            //{
+            //    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+            //    UDPSocketCommonQueryAnswerModel answerModel = null;
+            //    string radarToken = string.Empty;
+            //    if (DataFactory.SendMemberTransOperate(sn, storeModel.StoreID,storeModel.StorePassword, mobileName, userTokenModel.Mobile, cardIdIn, cardIdOut, int.Parse(coins),out radarToken,out errMsg))
+            //    {
 
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            //    }
 
-                answerModel = null;
-                int whileCount = 0;
-                while (answerModel == null && whileCount <= 25)
-                {
-                    //获取应答缓存数据
-                    whileCount++;
-                    System.Threading.Thread.Sleep(1000);
-                    answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                }
+            //    answerModel = null;
+            //    int whileCount = 0;
+            //    while (answerModel == null && whileCount <= 25)
+            //    {
+            //        //获取应答缓存数据
+            //        whileCount++;
+            //        System.Threading.Thread.Sleep(1000);
+            //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+            //    }
 
-                if (answerModel != null)
-                {
-                    MemberTransOperateResultNotifyRequestModel model = (MemberTransOperateResultNotifyRequestModel)(answerModel.Result);
-                    //移除应答缓存数据
-                    UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+            //    if (answerModel != null)
+            //    {
+            //        MemberTransOperateResultNotifyRequestModel model = (MemberTransOperateResultNotifyRequestModel)(answerModel.Result);
+            //        //移除应答缓存数据
+            //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
 
-                    if (model.Result_Code == "1")
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
-                    }
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
-                }
-            }
-            else
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
-            }
+            //        if (model.Result_Code == "1")
+            //        {
+            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            //        }
+            //        else
+            //        {
+            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+            //    }
+            //}
+            //else
+            //{
+            //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
+            //}
         }
 
         #endregion

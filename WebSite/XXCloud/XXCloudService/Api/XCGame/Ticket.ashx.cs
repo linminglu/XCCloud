@@ -61,7 +61,7 @@ namespace XXCloudService.Api.XCGame
                                    TicketType = c.TicketType,
                                    State = a.State,
                                    RemainCount = b.RemainCount ?? 0,
-                                   EndTime = (DateTime?)null,
+                                   EndTime = string.Empty,
                                    Note = string.Empty
                                }).FirstOrDefault();
             //获取门票购买详情
@@ -78,6 +78,7 @@ namespace XXCloudService.Api.XCGame
                 return false;
             }
 
+            var expiredTime = (DateTime?)null; //过期时间
             var effactTime = saleTime; //生效时间
             var writeOffDays = flw_Project_TicketInfoModel.WriteOffDays ?? 0; //核销天数
             var firstUseTime = flw_Project_TicketInfoModel.FirstUseTime; //首次使用时间
@@ -125,7 +126,14 @@ namespace XXCloudService.Api.XCGame
                 return false;
             }
 
-            resultModel.EndTime = (writeOffTime != null && writeOffTime < validTime) ? writeOffTime : validTime;
+            expiredTime = (writeOffTime != null && writeOffTime < validTime) ? writeOffTime : validTime;
+            if (expiredTime == null)
+            {
+                errMsg = "该门票过期时间不能为空"; 
+                return false;
+            }
+
+            resultModel.EndTime = expiredTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
 
             //锁定或退票
             var state = flw_Project_TicketInfoModel.State;
@@ -152,7 +160,7 @@ namespace XXCloudService.Api.XCGame
             }
 
             //已过期不可用
-            if (resultModel.EndTime < DateTime.Now)
+            if (expiredTime < DateTime.Now)
             {
                 resultModel.State = (int)TicketState.Expired;
                 return true;

@@ -54,7 +54,7 @@ namespace XCCloudService.Model.CustomModel.XCGame
         /// 有效日期
         /// </summary>
         [DataMember(Name = "endTime", Order = 6)]
-        public DateTime? EndTime { set; get; }
+        public string EndTime { set; get; }
 
         /// <summary>
         /// 使用说明
