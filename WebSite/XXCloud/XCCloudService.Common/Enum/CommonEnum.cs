@@ -229,6 +229,46 @@ namespace XCCloudService.Common.Enum
         Mobile = 2,
     }
 
+    /// <summary>
+    /// 出入闸设备类别
+    /// </summary>
+    public enum InOutDeviceType
+    {
+        [Description("终端设备")]
+        Device = 0,
+
+        [Description("工作站")]
+        WorkStation = 1,
+
+    }
+
+    /// <summary>
+    /// 验票记录方式
+    /// </summary>
+    public enum TicketDeviceLogType
+    {
+        [Description("刷卡")]
+        Card = 0,
+
+        [Description("条码验票")]
+        Barcode = 1,
+
+        [Description("刷脸")]
+        Face = 2,
+
+        [Description("线上")]
+        Online = 3,
+
+        [Description("人工清场")]
+        Clean = 4,
+
+        [Description("现金")]
+        Cash = 5,
+
+        [Description("卡内余额")]
+        BalanceInCard = 6,
+    }
+
     //设备绑定状态枚举
     public enum DeviceBoundStateEnum : int
     {

@@ -20,6 +20,9 @@ using XXCloudService.Utility;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCGame;
+using System.Data.Entity.Validation;
+using XXCloudService.Api.XCCloud.Common;
+using XCCloudService.Model.XCCloud;
 
 namespace XXCloudService.Api.XCGame
 {    
@@ -41,6 +44,7 @@ namespace XXCloudService.Api.XCGame
             //验证门票是否有效
             if (!(from a in flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
                   join b in flw_ProjectTicket_BindService.GetModels(p => p.ProjectID == projectId) on a.Barcode equals b.ProjectCode
+                  join c in flw_ProjectTicket_EntryService.GetModels() on a.Barcode equals c.ProjectCode
                   select 1).Any())
             {
                 errMsg = "该门票无效";
@@ -130,11 +134,15 @@ namespace XXCloudService.Api.XCGame
             if (state == (int)TicketState.UnUse || state == (int)TicketState.Used) resultModel.State = (int)TicketState.Valid;            
 
             //剩余次数为0不可用
-            if (resultModel.RemainCount == 0)
+            var ticketType = flw_ProjectTicket_EntryModel.TicketType;
+            if (ticketType == (int)TicketType.Count || ticketType == (int)TicketType.Group)
             {
-                resultModel.State = (int)TicketState.InValid;
-                return true;
-            }
+                if (resultModel.RemainCount == 0)
+                {
+                    resultModel.State = (int)TicketState.InValid;
+                    return true;
+                }
+            }            
 
             //未生效不可用
             if (effactTime > DateTime.Now)
@@ -195,8 +203,7 @@ namespace XXCloudService.Api.XCGame
                     resultModel.State = (int)TicketState.InValid;
             }
 
-            //判断使用频率
-            var ticketType = flw_Project_TicketInfoModel.TicketType;
+            //判断使用频率            
             if (ticketType == (int)TicketType.Period) //期限票
             {
                 var allowRestrict = flw_ProjectTicket_EntryModel.AllowRestrict;
@@ -357,6 +364,77 @@ namespace XXCloudService.Api.XCGame
             return "";
         }
 
+        private bool newEntry(string storeId, string barCode, int? projectId, int deviceId, out string id, out string errMsg)
+        {
+            errMsg = string.Empty;
+            id = string.Empty;
+
+            var data_ProjectInfoService = Data_ProjectInfoService.I;
+            var flw_Project_TicketInfoService = Flw_Project_TicketInfoService.I;
+            var flw_Project_TicketUseService = Flw_Project_TicketUseService.I;
+            var flw_ProjectTicket_EntryService = Flw_ProjectTicket_EntryService.I;
+            var flw_ProjectTicket_BindService = Flw_ProjectTicket_BindService.I;
+            var ticketInfo = flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var ticketEntry = flw_ProjectTicket_EntryService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var projectTicketBind = flw_ProjectTicket_BindService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase) && p.ProjectID == projectId).FirstOrDefault();
+
+            //开启EF事务
+            using (TransactionScope ts = new TransactionScope())
+            {
+                try
+                {
+                    var ticketUse = new Flw_Project_TicketUse();
+                    ticketUse.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
+                    ticketUse.MerchID = storeId.Substring(0, 6);
+                    ticketUse.StoreID = storeId;
+                    ticketUse.ProjectTicketCode = barCode;
+                    ticketUse.MemberID = ticketInfo.MemberID;
+                    ticketUse.ProjectID = projectId;
+                    ticketUse.InTime = DateTime.Now;
+                    ticketUse.OutMinuteTotal = 0;
+                    ticketUse.InDeviceType = (int)InOutDeviceType.WorkStation;
+                    ticketUse.InDeviceID = deviceId;
+                    if (!flw_Project_TicketUseService.Add(ticketUse))
+                    {
+                        errMsg = "验票失败";
+                        return false;
+                    }
+
+                    id = ticketUse.ID;
+                    ticketInfo.State = (int)TicketState.Used;
+                    if (!flw_Project_TicketInfoService.Update(ticketInfo))
+                    {
+                        errMsg = "验票失败";
+                        return false;
+                    }
+
+                    if (ticketEntry.TicketType == (int)TicketType.Count || ticketEntry.TicketType == (int)TicketType.Group)
+                    {
+                        projectTicketBind.RemainCount -= 1;
+                        if (!flw_ProjectTicket_BindService.Update(projectTicketBind))
+                        {
+                            errMsg = "验票失败";
+                            return false;
+                        }
+                    }
+
+                    ts.Complete();
+                }
+                catch (DbEntityValidationException e)
+                {
+                    errMsg = e.EntityValidationErrors.ToErrors();
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    errMsg = ex.Message;
+                    return false;
+                }
+            }            
+
+            return true;
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object addTicket(Dictionary<string, object> dicParas)
         {
@@ -366,7 +444,7 @@ namespace XXCloudService.Api.XCGame
                 XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
                 var projectId = dicParas.ContainsKey("projectId") ? dicParas["projectId"].Toint() : (int?)null;
-                var useType = dicParas.ContainsKey("useType") ? dicParas["useType"].Toint() : (int?)null; //0进1出
+                var useType = dicParas.ContainsKey("useType") ? dicParas["useType"].Toint() : (int?)null; //0入1出
 
                 if (string.IsNullOrEmpty(barCode))
                 {
@@ -377,12 +455,7 @@ namespace XXCloudService.Api.XCGame
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请选择门票项目");
                 }
-
-                if (useType.IsNull())
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请选择验票方式");
-                }
-
+                
                 //验证是否有效门店
                 StoreCacheModel storeModel = null;
                 StoreBusiness storeBusiness = new StoreBusiness();
@@ -394,7 +467,14 @@ namespace XXCloudService.Api.XCGame
                 //if (storeModel.StoreDBDeployType == 0)
                 //{
 
+                //获取工作站信息
+                var mobile = userTokenModel.Mobile;
+                if (!Data_WorkstationService.I.Any(a => a.WorkStation.Equals(mobile, StringComparison.OrdinalIgnoreCase)))
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请先注册用户");
+                var deviceId = Data_WorkstationService.I.GetModels(p => p.WorkStation.Equals(mobile, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().ID;
+
                 //检查门票使用信息
+                var ticketUserId = string.Empty;
                 TicketModel resultModel = null;
                 if (!checkTicketInfo(barCode, projectId.Value, out resultModel, out errMsg))
                 {
@@ -406,22 +486,123 @@ namespace XXCloudService.Api.XCGame
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票已不可用");
                 }
 
-                //校验顺序
-                var data_ProjectInfoService = Data_ProjectInfoService.I;
-                var adjOrder = data_ProjectInfoService.GetModels(p => p.ID == projectId).Select(o => o.AdjOrder).FirstOrDefault() ?? 0;
-                if (adjOrder == 1) //校验顺序开启
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    if (useType == 0)
+                    try
                     {
-                        
+                        //校验顺序
+                        var data_ProjectInfoService = Data_ProjectInfoService.I;
+                        var flw_Project_TicketInfoService = Flw_Project_TicketInfoService.I;
+                        var flw_Project_TicketUseService = Flw_Project_TicketUseService.I;
+                        var flw_ProjectTicket_EntryService = Flw_ProjectTicket_EntryService.I;
+                        var flw_ProjectTicket_BindService = Flw_ProjectTicket_BindService.I;
+                        var adjOrder = data_ProjectInfoService.GetModels(p => p.ID == projectId).Select(o => o.AdjOrder).FirstOrDefault() ?? 0;
+                        if (adjOrder == 1) //校验顺序开启
+                        {
+                            if (useType.IsNull())
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请选择验票方式");
+                            }
+
+                            //获取最后一次进场记录
+                            var lastTicketUse = flw_Project_TicketUseService.GetModels(p => p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.InTime).FirstOrDefault();                            
+                            var ticketEntry = flw_ProjectTicket_EntryService.GetModels(p=>p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();                            
+                            if (useType == 0) //进
+                            {                                
+                                //新入场
+                                if (lastTicketUse == null)
+                                {
+                                    if(!newEntry(userTokenModel.StoreId, barCode, projectId, deviceId, out ticketUserId, out errMsg))
+                                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                                }
+                                else
+                                {
+                                    if (lastTicketUse.OutTime == null)
+                                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票已入闸");
+
+                                    //离场时间(分钟)
+                                    var leaveTime = (DateTime.Now - lastTicketUse.OutTime.Value).TotalMinutes.Toint();
+
+                                    //出闸是否累计                                    
+                                    var addLeaveTime = getParam(userTokenModel.StoreId, "chkAddLeaveTime").Toint();
+                                    lastTicketUse.OutMinuteTotal = (addLeaveTime == 1) ? (lastTicketUse.OutMinuteTotal + leaveTime) : leaveTime;
+                                    
+                                    //是否超过离场时间
+                                    var allowExitTimes = ticketEntry.AllowExitTimes;
+                                    if (lastTicketUse.OutMinuteTotal <= allowExitTimes)
+                                    {
+                                        //二次入场                                        
+                                        lastTicketUse.OutTime = null;
+                                        lastTicketUse.OutDeviceType = null;
+                                        lastTicketUse.OutDeviceID = null;
+                                        if (!flw_Project_TicketUseService.Update(lastTicketUse))
+                                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验票失败");
+                                        ticketUserId = lastTicketUse.ID;
+                                    }
+                                    else
+                                    {
+                                        //新入场
+                                        if (!newEntry(userTokenModel.StoreId, barCode, projectId, deviceId, out ticketUserId, out errMsg))
+                                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                                    }
+                                }
+                            }
+                            else if (useType == 1) //出
+                            {
+                                if (lastTicketUse == null)
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票未入闸");
+
+                                if (lastTicketUse.OutTime != null)
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票已出闸");
+
+                                lastTicketUse.OutTime = DateTime.Now;
+                                lastTicketUse.OutDeviceType = (int)InOutDeviceType.WorkStation;
+                                lastTicketUse.OutDeviceID = deviceId;
+                                if(!flw_Project_TicketUseService.Update(lastTicketUse))
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验票失败");
+                                ticketUserId = lastTicketUse.ID;
+                            }
+                            else
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验票方式值不正确");
+                        }
+                        else
+                        {
+                            //新入场
+                            if (!newEntry(userTokenModel.StoreId, barCode, projectId, deviceId, out ticketUserId, out errMsg))
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }
+
+                        //添加验票记录
+                        var flw_Project_TicketDeviceLogService = Flw_Project_TicketDeviceLogService.I;
+                        var flw_Project_TicketDeviceLog = new Flw_Project_TicketDeviceLog();
+                        flw_Project_TicketDeviceLog.TicketUseID = ticketUserId;
+                        flw_Project_TicketDeviceLog.ProjectTicketCode = barCode;
+                        flw_Project_TicketDeviceLog.DeviceType = (int)InOutDeviceType.WorkStation;
+                        flw_Project_TicketDeviceLog.DeviceID = deviceId;
+                        flw_Project_TicketDeviceLog.LogTime = DateTime.Now;
+                        flw_Project_TicketDeviceLog.LogType = (int)TicketDeviceLogType.Barcode;
+                        flw_Project_TicketDeviceLog.BalanceIndex = 0;
+                        flw_Project_TicketDeviceLog.Total = 0;
+                        flw_Project_TicketDeviceLog.UseType = null;
+                        flw_Project_TicketDeviceLog.CashTotal = 0;
+                        if (!flw_Project_TicketDeviceLogService.Add(flw_Project_TicketDeviceLog))
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加验票记录失败");
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
-                else
-                { }
 
-
-
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);                
 
                 //}
                 //else if (storeModel.StoreDBDeployType == 1)

@@ -198,8 +198,8 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
         public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
         public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
-        public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
+        public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
     }
 }

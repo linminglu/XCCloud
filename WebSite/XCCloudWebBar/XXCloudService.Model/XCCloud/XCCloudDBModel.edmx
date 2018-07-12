@@ -3516,9 +3516,9 @@
           <EntitySet Name="Flw_Transfer" EntityType="XCCloudDBModel.Flw_Transfer" />
           <EntitySet Name="Flw_Food_SaleDetail" EntityType="XCCloudDBModel.Flw_Food_SaleDetail" />
           <EntitySet Name="Flw_Project_TicketUse" EntityType="XCCloudDBModel.Flw_Project_TicketUse" />
-          <EntitySet Name="Flw_Project_TicketDeviceLog" EntityType="XCCloudDBModel.Flw_Project_TicketDeviceLog" />
           <EntitySet Name="Data_GoodsStock" EntityType="XCCloudDBModel.Data_GoodsStock" />
           <EntitySet Name="Data_GoodStock_Record" EntityType="XCCloudDBModel.Data_GoodStock_Record" />
+          <EntitySet Name="Flw_Project_TicketDeviceLog" EntityType="XCCloudDBModel.Flw_Project_TicketDeviceLog" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -6424,24 +6424,6 @@
           <Property Name="SyncFlag" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Flw_Project_TicketDeviceLog">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="TicketUseID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="ProjectTicketCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceType" Type="Int32" />
-          <Property Name="DeviceID" Type="Int32" />
-          <Property Name="LogTime" Type="DateTime" Precision="3" />
-          <Property Name="LogType" Type="Int32" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="Total" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="UseType" Type="Int32" />
-          <Property Name="CashTotal" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="SyncFlag" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Data_GoodsStock">
           <Key>
             <PropertyRef Name="ID" />
@@ -6477,6 +6459,24 @@
           <Property Name="GoodCost" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_Project_TicketDeviceLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="TicketUseID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectTicketCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceType" Type="Int32" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="LogTime" Type="DateTime" Precision="3" />
+          <Property Name="LogType" Type="Int32" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="Total" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="UseType" Type="Int32" />
+          <Property Name="CashTotal" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="SyncFlag" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -9561,25 +9561,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_Project_TicketDeviceLog">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Project_TicketDeviceLog">
-              <MappingFragment StoreEntitySet="Flw_Project_TicketDeviceLog">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="SyncFlag" ColumnName="SyncFlag" />
-                <ScalarProperty Name="CashTotal" ColumnName="CashTotal" />
-                <ScalarProperty Name="UseType" ColumnName="UseType" />
-                <ScalarProperty Name="Total" ColumnName="Total" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
-                <ScalarProperty Name="LogType" ColumnName="LogType" />
-                <ScalarProperty Name="LogTime" ColumnName="LogTime" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
-                <ScalarProperty Name="ProjectTicketCode" ColumnName="ProjectTicketCode" />
-                <ScalarProperty Name="TicketUseID" ColumnName="TicketUseID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_GoodsStock">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodsStock">
               <MappingFragment StoreEntitySet="Data_GoodsStock">
@@ -9615,6 +9596,25 @@
                 <ScalarProperty Name="SourceType" ColumnName="SourceType" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Project_TicketDeviceLog">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Project_TicketDeviceLog">
+              <MappingFragment StoreEntitySet="Flw_Project_TicketDeviceLog">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="SyncFlag" ColumnName="SyncFlag" />
+                <ScalarProperty Name="CashTotal" ColumnName="CashTotal" />
+                <ScalarProperty Name="UseType" ColumnName="UseType" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="LogType" ColumnName="LogType" />
+                <ScalarProperty Name="LogTime" ColumnName="LogTime" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
+                <ScalarProperty Name="ProjectTicketCode" ColumnName="ProjectTicketCode" />
+                <ScalarProperty Name="TicketUseID" ColumnName="TicketUseID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
