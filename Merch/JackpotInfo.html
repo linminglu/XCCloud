@@ -518,7 +518,7 @@
             })
         };
         xcActionSystem.prototype.setVictherGiftTable=(table,layer,token)=>{
-            let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let _obj={conditions:[{id: '0', field:'CouponType', condition:'6', values: '0'}],'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
 
             $.ajax({
                 type: "post",

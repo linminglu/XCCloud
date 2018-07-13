@@ -82,7 +82,6 @@
                     <select name="SendType" id="SendType" lay-filter="SendType">
                         <option value="0">消费赠券</option>
                         <option value="1">定向派发</option>
-                        <!--<option value="2">抽奖赠券</option>-->
                         <option value="3">街边派送</option>
                     </select>
                 </div>
@@ -1167,9 +1166,6 @@
                 $('#JackpotCount').removeClass('layui-hide').siblings().addClass('layui-hide');
                 $('#tips').text('次');
                 xc.getJackpotList(token, form);
-            } else if (data.value == 1) {
-                $('body').find('li[name="disturbBox"]').eq(0).removeClass('layui-hide').siblings().addClass('layui-hide');
-                $('#JackpotActive').html('');
             } else if (data.value == 0) {
                 $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
                 $('#JackpotActiveBox').addClass('layui-hide');
@@ -1177,7 +1173,7 @@
                 $('#tips').text('张');
                 $('#JackpotActive').html('');
             }
-            form.render('select', 'JackpotActive');
+
         });
         form.on('select(chargeType)', (data) => {
             chargeType = data.value == '-请选择-' ? '' : data.value;
@@ -1347,6 +1343,7 @@
         });
         //点击新增打开弹窗
         $('.add').on('click', () => {
+            $('body').find('form')[0].reset();
             id = '';//新增Id为空
             xc.setSelect('优惠券类别', 'CouponType');
             CouponType = 0;
@@ -1401,9 +1398,7 @@
                 title: '新增优惠券',
                 type: '1',
                 area: '1002px',
-                content: $('#addOrModify'), cancel: function () {
-                    location.reload();
-                }
+                content: $('#addOrModify')
             })
         });
         $('#cancelStorebtn').on('click', () => {
@@ -1860,33 +1855,81 @@
                         if (data.result_code == 1) {
                             let arr=data.result_data;
                             form.val('testform',{
-                                'CouponName':arr.CouponName||'',
+                                'CouponName':arr.CouponName==null?'':arr.CouponName,
                                 'entryCouponFlag':arr.EntryCouponFlag==1?true:false,
-                                'PublishCount':arr.PublishCount||'',
-                                'SendType':arr.SendType,
-                                'OverMoney':arr.OverMoney||'',
-                                'FreeCouponCount':arr.FreeCouponCount||'',
-                                'CouponType':arr.CouponType,
+                                'PublishCount':arr.PublishCount==null?'':arr.PublishCount,
+                                'SendType':arr.SendType==null?'':arr.SendType,
+                                'OverMoney':arr.OverMoney==null?'':arr.OverMoney,
+                                'FreeCouponCount':arr.FreeCouponCount==null?'':arr.FreeCouponCount,
+
                                 'authorFlag':arr.AuthorFlag==1?true:false,
                                 'AllowOverOther':arr.AllowOverOther==1?true:false,
-                                'CouponDiscount':arr.CouponDiscount||'',
-                                'CouponThreshold':arr.CouponThreshold||'',
-                                'CouponValue':arr.CouponValue||'',
-                                'OverUseCount':arr.OverUseCount||'',
-                                'ChargeType':arr.ChargeType||'',
-                                'GoodID':arr.GoodID||'',
-                                'ProjectID':arr.ProjectID||'',
-                                'balanceType':arr.BalanceType||'',
-                                    'ChargeCount':arr.ChargeCount||'',
-                                'StartDate':arr.StartDate||'',
-                                'EndDate':arr.EndDate||'',
-                                'weekType':arr.WeekType||'',
-                                'StartTime':arr.StartTimeStr||'',
-                                'EndTime':arr.EndTimeStr||'',
-                                'NoStartDate':arr.NoStartDate||'',
-                                'NoEndDate':arr.NoEndDate||'',
-                                'Note':arr.Note||'',
-                            })
+                                'CouponDiscount':arr.CouponDiscount==null?'':arr.CouponDiscount,
+                                'CouponThreshold':arr.CouponThreshold==null?'':arr.CouponThreshold,
+                                'CouponValue':arr.CouponValue==null?'':arr.CouponValue,
+                                'OverUseCount':arr.OverUseCount==null?'':arr.OverUseCount,
+                                'ChargeType':arr.ChargeType==null?'':arr.ChargeType,
+                                'GoodID':arr.GoodID==null?'':arr.GoodID,
+                                'ProjectID':arr.ProjectID==null?'':arr.ProjectID,
+                                'balanceType':arr.BalanceType==null?'':arr.BalanceType,
+                                'ChargeCount':arr.ChargeCount==null?'':arr.ChargeCount,
+                                'StartDate':arr.StartDate==null?'':arr.StartDate,
+                                'EndDate':arr.EndDate==null?'':arr.EndDate,
+                                'weekType':arr.WeekType==null?'':arr.WeekType,
+                                'StartTime':arr.StartTimeStr==null?'':arr.StartTimeStr,
+                                'EndTime':arr.EndTimeStr==null?'':arr.EndTimeStr,
+                                'NoStartDate':arr.NoStartDate==null?'':arr.NoStartDate,
+                                'NoEndDate':arr.NoEndDate==null?'':arr.NoEndDate,
+                                'Note':arr.Note==null?'':arr.Note,
+                            });
+                            CouponType=arr.CouponType;
+                            xc.setSelect('优惠券类别', 'CouponType',CouponType);
+                            if (CouponType == 2) {
+                                $('#tokenShow').removeClass('layui-hide');
+                                $('#saleShow').addClass('layui-hide')
+                            } else {
+                                $('#saleShow').removeClass('layui-hide');
+                                $('#tokenShow').addClass('layui-hide');
+                            }
+                            entryCouponFlag=arr.EntryCouponFlag;
+                            authorFlag=arr.AuthorFlag;
+                            AllowOverOther=arr.AllowOverOther;
+                            weekType=arr.WeekType;
+                            week=arr.Week!=''?arr.Week.split('|'):[];
+                            xc.AddWeeks('weekBox');
+                            if(week.length>0){
+                                for(let j in week){
+                                    $('#weekBox').find('input[value="'+week[j]+'"]').attr('checked',true)
+                                }
+                            }
+                            SendType=arr.SendType;
+                            if (SendType == 3) {
+                                $('body').find('li[name="disturbBox"]').each(function () {
+                                    $(this).addClass('layui-hide');
+                                });
+                                $('#JackpotActive').html('');
+                            } else if (SendType == 2) {
+                                $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#JackpotActiveBox').removeClass('layui-hide');
+                                $('#JackpotCount').removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#tips').text('次');
+                                xc.getJackpotList(token, form);
+                            } else if (SendType == 0) {
+                                $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#JackpotActiveBox').addClass('layui-hide');
+                                $('#FreeCouponCount').removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#tips').text('张');
+                                $('#JackpotActive').html('');
+                            }
+                            chargeType=arr.ChargeType;
+                            goodId=arr.GoodID;
+                            projectId=arr.ProjectID;
+
+                            for(let j in arr.StoreIDs){
+                                storeId.push(arr.StoreIDs[j].StoreID)
+                            }
+                            xc.getProjectStoreList(form, token, 'allStoreList',storeId);
+                            form.render();
                             layer.open({
                                 title: '修改优惠券规则',
                                 type: '1',

@@ -92,8 +92,7 @@
         margin-right: 0;
         width: 40px;
         display: inline-block;
-        padding-left: 0;
-        !important;
+        padding-left: 0;!important;
         cursor: pointer;
     }
 </style>
@@ -118,9 +117,9 @@
                         <label class="layui-form-label"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>密码</label>
                         <div class="layui-input-inline" style="margin-right:0;width: 190px">
                             <input type="password" name="username" lay-verify="required" placeholder="请输入密码" autocomplete="off"
-                                   class="layui-input" id="password_login"><input type="text" name="username" lay-verify="required"
-                                                                                  placeholder="password" autocomplete="off" class="layui-input layui-hide" id="password_login_hide"><button type="button" class="layui-input password_login_show " onclick="ifShowPassword()">
-                                <img src="assets/img/browse.svg" alt="">
+                                   class="layui-input" id="password_login"><input type="text" name="username" lay-verify="required" 
+                                    placeholder="password" autocomplete="off" class="layui-input layui-hide" id="password_login_hide"><button type="button" class="layui-input password_login_show " onclick="ifShowPassword()">
+                                <img src="assets/img/browse.svg" alt="" />
                             </button>
                         </div>
 
@@ -148,6 +147,7 @@
 
     </div>
     <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/layui/layui.js"></script>
     <script type="text/javascript">
         //存储session
         function setStorage(key, value) {
@@ -179,7 +179,6 @@
             var username = $('#username_login').val();
             var password = $('#password_login').val();
             var obj = { 'loginName': username, 'password': password };
-            console.log(obj);
             var url = '/xccloud/UserInfo?action=radarLogin';           //登录接口
             var parasJson = JSON.stringify(obj);
             if (username != '' && password != '') {
@@ -190,22 +189,30 @@
                     data: parasJson,
                     success: function (res) {
                         res = JSON.parse(res);
-                        console.log(res)
+                        msgPrompt(res) 
                         if (res.result_code === "1") {
-//                            var userToken = res.result_data.userToken;
-//                            var storeId = res.result_data.storeId;
-//                            setStorage('userToken', userToken);
-//                            setStorage('storeId', storeId);
                             window.location.href = "default.aspx"
                         }
                     }
                 })
             }
         }
+        function msgPrompt(res) {
+                var that = this;
+                if (res.return_code == 0) {
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg(res.return_msg)
+                    });                    
+                } else if (res.result_code == 0) {
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg(res.result_msg)
+                    });                    
+                }
+            }
     </script>
     <script>
-        //    console.log(dogIdToken);
-        //    console.log(machineName );
         var ifshow = 1;
         var clickCounts = "";
         function ifShowPassword() {
@@ -231,10 +238,6 @@
         }
         $(function () {
             $('#codeBox').find('iframe').css({ 'height': '300px' });
-
-            console.log(ifshow);
-
-
         });
         //    var obj = new WxLogin({
         //        id:"codeBox",

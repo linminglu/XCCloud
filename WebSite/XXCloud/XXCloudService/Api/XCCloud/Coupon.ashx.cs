@@ -334,7 +334,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var data_CouponInfo = new Data_CouponInfo();
+                        var data_CouponInfo = Data_CouponInfoService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_CouponInfo();
                         Utils.GetModel(dicParas, ref data_CouponInfo);                        
                         data_CouponInfo.OpUserID = userId;
                         data_CouponInfo.CreateTime = DateTime.Now;
@@ -354,7 +354,7 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (!Data_CouponInfoService.I.Any(p => p.ID == id))
+                            if (data_CouponInfo.ID == 0)
                             {
                                 errMsg = "该优惠券信息不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
