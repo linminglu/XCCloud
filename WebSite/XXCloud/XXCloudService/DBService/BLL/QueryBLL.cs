@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Web;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -67,12 +68,32 @@ namespace XCCloudService.DBService.BLL
                         errMsg = "查询条件为不支持的类型";
                         return false;
                     }
-                    
-                    QueryDAL.GetInitModel(id, field, ref initModel, ref listDict_SystemModel);
-                    if (initModel.DataType.Equals("literals") || initModel.DataType.Equals("bit"))
+
+                    string dataType = (dicPara.ContainsKey("dataType") && dicPara["dataType"] != null) ? dicPara["dataType"].ToString() : string.Empty;
+                    int dictId = (dicPara.ContainsKey("dictId") && Utils.isNumber(dicPara["dictId"])) ? Convert.ToInt32(dicPara["dictId"]) : -1;
+                    if (id > 0)
+                    {
+                        QueryDAL.GetInitModel(id, field, ref initModel, ref listDict_SystemModel);
+                        dataType = initModel.DataType;
+                    }
+                    else
+                    {
+                        listDict_SystemModel = Dict_SystemService.I.GetModels(p => p.PID == dictId && p.Enabled == 1).Select(o =>
+                            new Dict_SystemModel
+                            {
+                                ID = o.ID,
+                                PID = o.PID ?? 0,
+                                Commnet = o.Comment,
+                                DictKey = o.DictKey,
+                                DictValue = o.DictValue,
+                                Enabled = o.Enabled ?? 0
+                            }).ToList();
+                    }
+
+                    if (dataType.Equals("literals") || dataType.Equals("bit"))
                     {
                         var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
-                        if (initModel.DataType.Equals("literals"))
+                        if (dataType.Equals("literals"))
                         {
                             var dict_SystemModel = listDict_SystemModel.Where(w => w.DictKey.Equals(values, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             values = (dict_SystemModel != null) ? dict_SystemModel.DictValue : string.Empty;
@@ -283,7 +304,7 @@ namespace XCCloudService.DBService.BLL
                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
 
                     int id = (dicPara.ContainsKey("id") && Utils.isNumber(dicPara["id"])) ? Convert.ToInt32(dicPara["id"]) : 0;
-                    string field = (dicPara.ContainsKey("field") && dicPara["field"] != null) ? dicPara["field"].ToString() : string.Empty;
+                    string field = (dicPara.ContainsKey("field") && dicPara["field"] != null) ? dicPara["field"].ToString() : string.Empty;                    
                     var condition = dicPara.Get("condition").Toint();
                     if (string.IsNullOrEmpty(field))
                     {
@@ -303,11 +324,31 @@ namespace XCCloudService.DBService.BLL
                         return false;
                     }
 
-                    QueryDAL.GetInitModel(id, field, ref initModel, ref listDict_SystemModel);
-                    if (initModel.DataType.Equals("literals") || initModel.DataType.Equals("bit"))
+                    string dataType = (dicPara.ContainsKey("dataType") && dicPara["dataType"] != null) ? dicPara["dataType"].ToString() : string.Empty;
+                    int dictId = (dicPara.ContainsKey("dictId") && Utils.isNumber(dicPara["dictId"])) ? Convert.ToInt32(dicPara["dictId"]) : -1;
+                    if (id > 0)
+                    {
+                        QueryDAL.GetInitModel(id, field, ref initModel, ref listDict_SystemModel);
+                        dataType = initModel.DataType;
+                    }
+                    else
+                    {
+                        listDict_SystemModel = Dict_SystemService.I.GetModels(p => p.PID == dictId && p.Enabled == 1).Select(o =>
+                            new Dict_SystemModel
+                            {
+                                ID = o.ID,
+                                PID = o.PID ?? 0,
+                                Commnet = o.Comment,
+                                DictKey = o.DictKey,
+                                DictValue = o.DictValue,
+                                Enabled = o.Enabled ?? 0
+                            }).ToList();
+                    }
+
+                    if (dataType.Equals("literals") || dataType.Equals("bit"))
                     {
                         var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
-                        if (initModel.DataType.Equals("literals"))
+                        if (dataType.Equals("literals"))
                         {
                             var dict_SystemModel = listDict_SystemModel.Where(w => w.DictKey.Equals(values, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             values = (dict_SystemModel != null) ? dict_SystemModel.DictValue : string.Empty;
@@ -328,7 +369,7 @@ namespace XCCloudService.DBService.BLL
                                     var v0 = values[0];
                                     if (!v0.IsNull())
                                     {
-                                        sb.Append(string.Format(" and {1}{0} >= {2} ", field, alias, initModel.DataType.Equals("number") ? v0 : ("'" + v0 + "'")));
+                                        sb.Append(string.Format(" and {1}{0} >= {2} ", field, alias, dataType.Equals("number") ? v0 : ("'" + v0 + "'")));
                                     }
                                 }
 
@@ -337,7 +378,7 @@ namespace XCCloudService.DBService.BLL
                                     var v1 = values[1];
                                     if (!v1.IsNull())
                                     {
-                                        sb.Append(string.Format(" and {1}{0} <= {2} ", field, alias, initModel.DataType.Equals("number") ? v1 : ("'" + v1 + "'")));
+                                        sb.Append(string.Format(" and {1}{0} <= {2} ", field, alias, dataType.Equals("number") ? v1 : ("'" + v1 + "'")));
                                     }
                                 }
                             }
@@ -352,7 +393,7 @@ namespace XCCloudService.DBService.BLL
                             var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
                             if (!values.IsNull())
                             {
-                                sb.Append(string.Format(" and {1}{0} {2} {3} ", field, alias, ((QueryTemplateCondition?)condition).GetDescription(), initModel.DataType.Equals("number") ? values : ("'" + values + "'")));
+                                sb.Append(string.Format(" and {1}{0} {2} {3} ", field, alias, ((QueryTemplateCondition?)condition).GetDescription(), dataType.Equals("number") ? values : ("'" + values + "'")));
                             }
                         }
                     }                                       

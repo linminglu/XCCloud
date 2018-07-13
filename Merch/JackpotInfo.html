@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <style>
-    .layui-form-onswitch{
-        border-color: #5FB878!important;
-        background-color: #5FB878!important;
+    .layui-form-onswitch {
+        border-color: #5FB878 !important;
+        background-color: #5FB878 !important;
     }
-    .layui-form-switch{
+
+    .layui-form-switch {
         height: 22px;
         line-height: 22px;
         width: 42px;
@@ -18,11 +19,14 @@
         border-radius: 20px;
         background-color: #fff;
     }
-    .layui-form-switch em{
+
+    .layui-form-switch em {
         width: 25px;
-        color: #999!important;
-        font-size: 12px;}
-    .layui-form-switch i{
+        color: #999 !important;
+        font-size: 12px;
+    }
+
+    .layui-form-switch i {
         left: 5px;
         top: 3px;
         width: 16px;
@@ -30,19 +34,20 @@
         border-radius: 20px;
         background-color: #d2d2d2;
     }
-    .layui-form-onswitch i{
+
+    .layui-form-onswitch i {
         left: 32px;
     }
 </style>
 <body>
 <div class="layui-row" style="padding: 10px">
-    <form action="" class="layui-form layui-form-pane" >
+    <form action="" class="layui-form layui-form-pane">
         <blockquote class="layui-elem-quote" style="text-align: right">
             <button type="button" class="layui-btn layui-btn-normal">查询模板</button>
             <button type="button" class="layui-btn layui-btn-normal add">新增</button>
         </blockquote>
         <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
-            <table class="layui-hide" id="JackpotTable"  lay-filter="JackpotTable"></table>
+            <table class="layui-hide" id="JackpotTable" lay-filter="JackpotTable"></table>
         </div>
     </form>
 </div>
@@ -50,74 +55,77 @@
 <div id="addOrModify" style="display: none;padding: 15px;">
     <form class="layui-form layui-form-pane">
         <div class="layui-form-item" style="margin-bottom: 0;">
-                <label class="layui-form-label">活动名称</label>
-                <div class="layui-input-block">
-                    <input type="text" class="layui-input" required id="activeName">
-                </div>
+            <label class="layui-form-label">活动名称</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" required id="activeName">
+            </div>
             <br>
             <div class="layui-inline">
                 <label class="layui-form-label">活动时间</label>
-                <div class="layui-input-inline" style="width: 95px">
+                <div class="layui-input-inline" style="width: 145px">
                     <input type="text" class="layui-input" required id="startTime">
                 </div>
                 <div class="layui-form-mid">至</div>
-                <div class="layui-input-inline"  style="width: 95px">
+                <div class="layui-input-inline" style="width: 145px">
                     <input type="text" class="layui-input" required id="endTime">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">消费额度</label>
-                <div class="layui-input-inline">
+                <div class="layui-input-inline" style="width: 90px">
                     <input type="text" class="layui-input" required id="threshold">
                 </div>
             </div>
             <div class="layui-inline">
-                <input type="checkbox" name="like[write]" checked title="需要关注公众号" lay-skin="primary" id="concerned" lay-filter="concerned">
+                <input type="checkbox" name="like[write]" checked title="需要关注公众号" lay-skin="primary" id="concerned"
+                       lay-filter="concerned">
             </div>
         </div>
 
-         <h2 class="layui-btn layui-btn-sm">设置中奖规则</h2>
-         <div class=" ">
-                                <div class="layui-col-md12 layui-col-sm12">
-                                    <div class="layui-form-item" style="margin-bottom: 0;">
-                                        <div class="layui-inline">
-                                            <label class="layui-form-label" style="width:80px;padding: 8px 0;">奖品等级</label>
-                                            <div class="layui-input-inline" style="width: 50px">
-                                                <input type="text" class="layui-input" required id="giftsLevel">
-                                            </div>
-                                        </div>
-                                        <div class="layui-inline">
-                                            <label class="layui-form-label" style="width:80px;padding: 8px 0;">奖品数量</label>
-                                            <div class="layui-input-inline" style="width: 50px">
-                                                <input type="text" class="layui-input" required id="giftsNumber">
-                                            </div>
-                                        </div>
-                                        <div class="layui-inline">
-                                            <label class="layui-form-label" style="width:80px;padding: 8px 0;">中奖概率</label>
-                                            <div class="layui-input-inline" style="width: 50px">
-                                                <input type="text" class="layui-input" required id="probability">
-                                            </div>
-                                            <div class="layui-form-mid">%</div>
-                                        </div>
-                                        <div class="layui-inline">
-                                            <button type="button" class="layui-btn" id="giftsSelectBtn">选择奖品</button>
-                                            <!--<span type="text" class="layui-input" style="width: 100px"></span>-->
-                                            <button type="button" class="layui-btn layui-btn-primary" id="addJackpotRule">添加中奖规则</button>
-                                        </div>
-                                    </div>
-                                </div>
+        <h2 class="layui-btn layui-btn-sm">设置中奖规则</h2>
+        <div class=" ">
+            <div class="layui-col-md12 layui-col-sm12">
+                <div class="layui-form-item" style="margin-bottom: 0;">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width:80px;padding: 8px 0;">奖品等级</label>
+                        <div class="layui-input-inline" style="width: 130px">
+                            <input type="text" class="layui-input" required id="giftsLevel">
                         </div>
-         <h2 class="layui-btn layui-btn-sm">查看中奖规则</h2>
-         <div class=" ">
-                            <div id="roluResult" style="height: 300px;width: 820px;">
-                                <table class="layui-hide" id="resultTable" lay-filter="resultTable"></table>
-                            </div>
-                            <div style="text-align: right;margin-right: 100px;">
-                                <button type="button" class="layui-btn-normal layui-btn" id="cancelBtn">取消</button>
-                                <button type="reset" class="layui-btn layui-btn-danger" id="resetBtn"><i class="layui-icon">&#x1002;</i>重置</button>
-                                <button type="submit" class="layui-btn layui-btn-normal" id="saveBtn"><i class="layui-icon">&#xe6af;</i>确定</button>
-                            </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width:80px;padding: 8px 0;">奖品数量</label>
+                        <div class="layui-input-inline" style="width: 130px">
+                            <input type="text" class="layui-input" required id="giftsNumber">
                         </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width:80px;padding: 8px 0;">中奖概率</label>
+                        <div class="layui-input-inline" style="width: 130px">
+                            <input type="text" class="layui-input" required id="probability">
+                        </div>
+                        <div class="layui-form-mid">%</div>
+                    </div>
+                    <div class="layui-inline">
+                        <button type="button" class="layui-btn" id="giftsSelectBtn">选择奖品</button>
+                        <!--<span type="text" class="layui-input" style="width: 100px"></span>-->
+                        <!--<button type="button" class="layui-btn layui-btn-primary" id="addJackpotRule">添加中奖规则</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 class="layui-btn layui-btn-sm">查看中奖规则</h2>
+        <div class=" ">
+            <div id="roluResult" style="height: 300px;width: 820px;">
+                <table class="layui-hide" id="resultTable" lay-filter="resultTable"></table>
+            </div>
+            <div style="text-align: right;margin-right: 100px;">
+                <button type="button" class="layui-btn-normal layui-btn" id="cancelBtn">取消</button>
+                <button type="reset" class="layui-btn layui-btn-danger" id="resetBtn"><i class="layui-icon">&#x1002;</i>重置
+                </button>
+                <button type="submit" class="layui-btn layui-btn-normal" id="saveBtn"><i class="layui-icon">&#xe6af;</i>确定
+                </button>
+            </div>
+        </div>
 
     </form>
 </div>
@@ -129,8 +137,8 @@
             <button type="button" class="layui-btn layui-btn-normal" id="couponGift">虚拟奖品</button>
         </div>
         <div class="layui-inline">
-            <div class="layui-input-inline"style="width: 275px;">
-                <input type="text" class="layui-input" >
+            <div class="layui-input-inline" style="width: 275px;">
+                <input type="text" class="layui-input">
             </div>
             <div class="layui-input-inline">
                 <button type="button" class="layui-btn layui-btn-normal">
@@ -139,7 +147,8 @@
             </div>
         </div>
     </div>
-    <table class="layui-hide" id="giftTable" lay-filter="giftTable" lay-data="{skin:'line', even:true, size:'sm'}"></table>
+    <table class="layui-hide" id="giftTable" lay-filter="giftTable"
+           lay-data="{skin:'line', even:true, size:'sm'}"></table>
     <div style="text-align:right; padding-right: 100px;">
         <button type="button" class="layui-btn layui-btn-sm" id="saveGiftBtn">确定</button>
         <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="cancelGiftBtn">取消</button>
@@ -150,120 +159,122 @@
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
 <script>
-    let xc=xcActionSystem.prototype;
-    let token=xc.getStorage('token');
-    let Id='';
-    let concerned=1;
+    let xc = xcActionSystem.prototype;
+    let token = xc.getStorage('token');
+    let Id = '';
+    let concerned = 1;
     //初始化table
-    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-        'url':'/XCCloud/Jackpot?action=QueryJackpotInfo',
-        'elem':'#JackpotTable',
-        'cols':[
-            {field:'ID', title:'流水号', align: 'center', sort: true}
-            ,{field:'MerchInfo',title: '商户名', align: 'center'}
-            ,{field:'ActiveName',title: '活动名称', align: 'center'}
-            ,{field:'Threshold', title: '消费门槛', align: 'center'}
-            ,{field:'StartTime', title: '有效期开始时间', align: 'center',templet:'#time1'}
-            ,{field:'EndTime', title: '有效期结束时间', align: 'center',templet:'#time2'}
-            ,{field:'Concerned', title: '是否需要关注微信', align: 'center',templet:'#state'}
-            ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo'}]
+    let parm = {
+        'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'url': '/XCCloud/Jackpot?action=QueryJackpotInfo',
+        'elem': '#JackpotTable',
+        'cols': [
+            {field: 'ID', title: '流水号', align: 'center', sort: true}
+            , {field: 'MerchInfo', title: '商户名', align: 'center'}
+            , {field: 'ActiveName', title: '活动名称', align: 'center'}
+            , {field: 'Threshold', title: '消费门槛', align: 'center'}
+            , {field: 'StartTime', title: '有效期开始时间', align: 'center', templet: '#time1'}
+            , {field: 'EndTime', title: '有效期结束时间', align: 'center', templet: '#time2'}
+            , {field: 'Concerned', title: '是否需要关注微信', align: 'center', templet: '#state'}
+            , {fixed: 'right', title: '操作', width: 140, align: 'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
     //选中奖品的id
-    let giftsId=''; let giftsName='';
+    let giftsId = '';
+    let giftsName = '';
 
 
     //中间规则集合
-    let arr=[];
-    layui.use(['form','layer','table','laydate','element'],()=>{
-        let form=layui.form;
-        let layer=layui.layer;
-        let table=layui.table;
-        let laydate=layui.laydate;
-        let element=layui.element;
+    let arr = [];
+    layui.use(['form', 'layer', 'table', 'laydate', 'element'], () => {
+        let form = layui.form;
+        let layer = layui.layer;
+        let table = layui.table;
+        let laydate = layui.laydate;
+        let element = layui.element;
         //监听
         laydate.render({
             elem: '#startTime'
-            ,type: 'datetime'
-            ,value: new Date()
+            , type: 'datetime'
+
         });
         laydate.render({
             elem: '#endTime'
-            ,type: 'datetime'
-            ,value: new Date()
+            , type: 'datetime'
+
         });
-        form.on('checkbox(concerned)',(data)=>{
-            if(data.elem.checked==true){
-                concerned=1;
-            }else {
-                concerned=0;
+        form.on('checkbox(concerned)', (data) => {
+            if (data.elem.checked == true) {
+                concerned = 1;
+            } else {
+                concerned = 0;
             }
         });
         //监听table工具栏
-        table.on('tool(JackpotTable)',(obj)=>{
+        table.on('tool(JackpotTable)', (obj) => {
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event;
-            if(layEvent === 'edit'){ //查看
-                Id=data.ID;
-                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            if (layEvent === 'edit') { //查看
+                Id = data.ID;
+                let _obj = {'id': data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
-                    type:'post',
-                    url:'/XCCloud/Jackpot?action=GetJackpotInfo',
+                    type: 'post',
+                    url: '/XCCloud/Jackpot?action=GetJackpotInfo',
                     contentType: "application/json; charset=utf-8",
-                    data:{parasJson: parseJson},
+                    data: {parasJson: parseJson},
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
-                            let arr1=data.result_data;
-                            concerned=arr1.Concerned;
-                            xc.setGiftTable(table,layer,token);
+                            let arr1 = data.result_data;
+                            concerned = arr1.Concerned;
+                            xc.setGiftTable(table, layer, token);
                             $('#endTime').val(arr1.EndTime);
                             $('#startTime').val(arr1.StartTime);
                             $('#threshold').val(arr1.Threshold);
                             $('#activeName').val(arr1.ActiveName);
-                            if(arr1.Concerned==1){
-                                $('#concerned').attr({'checked':true})
-                            }else {
-                                $('#concerned').attr({'checked':false})
+                            if (arr1.Concerned == 1) {
+                                $('#concerned').attr({'checked': true})
+                            } else {
+                                $('#concerned').attr({'checked': false})
                             }
                             $('#lookruleLi').trigger('click');
-                            arr=arr1.JackpotLevels;
+                            arr = arr1.JackpotLevels;
                             table.render({
                                 elem: '#resultTable'
-                                , height:'250px'
+                                , height: '250px'
                                 , data: arr1.JackpotLevels
-                                ,size:'sm'
-                                , cols: [[{field:'LevelName', title:'奖品等级', align: 'center'}
-                                    ,{field:'GoodCount',title: '奖品数量', align: 'center'} //width 支持：数字、百分比和不填写。
-                                    ,{field:'Probability', title: '中奖概率', align: 'center',templet:'#prob'}
-                                    ,{field:'GoodName', title: '奖品名称', align: 'center'}
-                                    ,{fixed: 'right',title: '操作' , align:'center', toolbar: '#barDemo1'}]]
-                                , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
+                                , size: 'sm'
+                                , cols: [[{field: 'LevelName', title: '奖品等级', align: 'center'}
+                                    , {field: 'GoodCount', title: '奖品数量', align: 'center'} //width 支持：数字、百分比和不填写。
+                                    , {field: 'Probability', title: '中奖概率', align: 'center', templet: '#prob'}
+                                    , {field: 'GoodName', title: '奖品名称', align: 'center'}
+                                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo1'}]]
+                                , page: {page: true, limits: [5, 10, 15, 20, 30, 50, 100]}
                                 , limit: 10
                             });
                             form.render();
                             layer.open({
-                                title:'编辑中奖参数设置',
-                                type:'1',
-                                area:'880px',
-                                content:$('#addOrModify')
+                                title: '编辑中奖参数设置',
+                                type: '1',
+                                area: '880px',
+                                content: $('#addOrModify')
                             })
                         } else {
                             layer.msg(data.result_msg);
                         }
                     }
                 })
-            } else if(layEvent === 'del'){ //删除
-                layer.confirm('真的删除行么', function(index){
-                    Id=data.ID;
-                    let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('真的删除行么', function (index) {
+                    Id = data.ID;
+                    let _obj = {'id': data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
-                        type:'post',
-                        url:'/XCCloud/Jackpot?action=DelJackpotInfo',
+                        type: 'post',
+                        url: '/XCCloud/Jackpot?action=DelJackpotInfo',
                         contentType: "application/json; charset=utf-8",
-                        data:{parasJson: parseJson},
+                        data: {parasJson: parseJson},
                         success: function (data) {
                             data = JSON.parse(data);
 
@@ -279,164 +290,181 @@
             }
         });
         //监听选中商品
-        table.on('checkbox(giftTable)', function(obj){
+        table.on('checkbox(giftTable)', function (obj) {
             if (obj.type == "all") {
                 var csss = $(".layui-table-cell.laytable-cell-checkbox");
-                csss.each(function(index, e){
+                csss.each(function (index, e) {
                     e.children[0].checked = false;
-                    e.children[1].className="layui-unselect layui-form-checkbox";
-                    giftsId='';giftsName='';
+                    e.children[1].className = "layui-unselect layui-form-checkbox";
+                    giftsId = '';
+                    giftsName = '';
                 });
             } else {
-                if(obj.checked==true){
-                    giftsName=obj.data.GoodName||obj.data.CouponName;
-                    giftsId=obj.data.ID;
-                }else {
-                    giftsId='';giftsName='';
+                if (obj.checked == true) {
+                    giftsName = obj.data.GoodName || obj.data.CouponName;
+                    giftsId = obj.data.ID;
+                } else {
+                    giftsId = '';
+                    giftsName = '';
                 }
                 var csss = $(".layui-table-cell.laytable-cell-checkbox");
-                csss.each(function(index, e){
+                csss.each(function (index, e) {
                     var dataIndex = e.parentNode.parentNode.getAttribute("data-index");
                     if (dataIndex != null) {
-                        if(dataIndex != obj.data.LAY_TABLE_INDEX){
+                        if (dataIndex != obj.data.LAY_TABLE_INDEX) {
                             e.children[0].checked = false;
-                            e.children[1].className="layui-unselect layui-form-checkbox";
+                            e.children[1].className = "layui-unselect layui-form-checkbox";
                         }
                     } else {
                         e.children[0].checked = false;
-                        e.children[1].className="layui-unselect layui-form-checkbox";
+                        e.children[1].className = "layui-unselect layui-form-checkbox";
                     }
                 });
             }
         });
-        table.on('tool(resultTable)',(obj)=>{
+        table.on('tool(resultTable)', (obj) => {
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event;
-            if(layEvent === 'del'){ //查看
-               for (var i in arr){
-                   if(arr[i].LevelName==data.LevelName){
-                       arr.splice(i,1);
-                       obj.del();
-                   }
-               }
-               console.log(arr)
+            if (layEvent === 'del') { //查看
+                for (var i in arr) {
+                    if (arr[i].LevelName == data.LevelName) {
+                        arr.splice(i, 1);
+                        obj.del();
+                    }
+                }
+                console.log(arr)
             }
         });
         //点击新增打开弹窗
-        $('.add').on('click',()=>{
-            Id='';//新增Id为空
-            concerned=1;arr=[];
+        $('.add').on('click', () => {
+            Id = '';//新增Id为空
+            concerned = 1;
+            arr = [];
             $('#resetBtn').trigger('click');
             laydate.render({
                 elem: '#startTime'
-                ,type: 'date'
-                ,value: new Date()
+                , type: 'date'
+
             });
             laydate.render({
                 elem: '#endTime'
-                ,type: 'date'
-                ,value: new Date()
+                , type: 'date'
+
             });
             table.render({
                 elem: '#resultTable'
-                , height:'250px'
+                , height: '250px'
                 , data: []
-                ,size:'sm'
+                , size: 'sm'
                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                , cols: [[{field:'LevelName', title:'奖品等级', align: 'center'}
-                    ,{field:'GoodCount',title: '奖品数量', align: 'center'} //width 支持：数字、百分比和不填写。
-                    ,{field:'Probability', title: '中奖概率', align: 'left',templet:'#prob'}
-                    ,{field:'GoodName', title: '奖品名称', align: 'left'}
-                    ,{fixed: 'right',title: '操作' , align:'center', toolbar: '#barDemo1'}]]
-                , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
+                , cols: [[{field: 'LevelName', title: '奖品等级', align: 'center'}
+                    , {field: 'GoodCount', title: '奖品数量', align: 'center'} //width 支持：数字、百分比和不填写。
+                    , {field: 'Probability', title: '中奖概率', align: 'left', templet: '#prob'}
+                    , {field: 'GoodName', title: '奖品名称', align: 'left'}
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo1'}]]
+                , page: {page: true, limits: [5, 10, 15, 20, 30, 50, 100]}
                 , limit: 10
             });
             layer.open({
-                title:'新增抽奖规则',
-                type:'1',
-                area:'880px',
-                content:$('#addOrModify')
+                title: '新增抽奖规则',
+                type: '1',
+                area: '880px',
+                content: $('#addOrModify')
             })
         });
         var index1;
-        $('#giftsSelectBtn').on('click',()=>{
-            xc.setGiftTable(table,layer,token);
-               index1=layer.open({
-                title:'选择奖品',
-                type:1,
-                area:['800px','400px'],
-                content:$('.gifts')
+        $('#giftsSelectBtn').on('click', () => {
+            xc.setGiftTable(table, layer, token);
+            index1 = layer.open({
+                title: '选择奖品',
+                type: 1,
+                area: ['800px', '400px'],
+                content: $('.gifts')
             })
         });
-        $('#saveGiftBtn').on('click',()=>{
+        $('#saveGiftBtn').on('click', () => {
+            if ($('#giftsLevel').val() != '' && $('#giftsNumber').val() != '' && $('#probability').val() != '' && giftsId != '') {
+                $('.layui-col-itemSec').trigger('click');
+                if (arr.length > 0) {
+                    let flag = false;
+                    for (var i in arr) {
+                        if (arr[i].LevelName == $('#giftsLevel').val()) {
+                            flag = true;
+                        }
+                    }
+                    if (flag == false) {
+                        $('#lookruleLi').trigger('click');
+                        arr.push({
+                            'LevelName': $('#giftsLevel').val(),
+                            'GoodCount': $('#giftsNumber').val(),
+                            'Probability': $('#probability').val(),
+                            'GoodId': giftsId, 'GoodName': giftsName
+                        });
+                    } else {
+                        layer.msg('该中奖等级已存在，请更换名称！')
+                    }
+                } else {
+                    $('#lookruleLi').trigger('click');
+                    arr.push({
+                        'LevelName': $('#giftsLevel').val(),
+                        'GoodCount': $('#giftsNumber').val(),
+                        'Probability': $('#probability').val(),
+                        'GoodId': giftsId, 'GoodName': giftsName
+                    });
+                }
+
+                table.render({
+                    elem: '#resultTable'
+                    , height: '250px'
+                    , data: arr
+                    , size: 'sm'
+                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    , cols: [[{field: 'LevelName', title: '奖品等级', align: 'center', width: 160}
+                        , {field: 'GoodCount', title: '奖品数量', align: 'center', width: 160} //width 支持：数字、百分比和不填写。
+                        , {field: 'Probability', title: '中奖概率', align: 'center', width: 160, templet: '#prob'}
+                        , {field: 'GoodName', title: '奖品名称', align: 'center', width: 160}
+                        , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo1'}]]
+                    , page: {page: true, limits: [5, 10, 15, 20, 30, 50, 100]}
+                    , limit: 10
+                });
+
+            } else {
+                layer.msg('必填项不能为空！')
+            }
             layer.close(index1)
         });
-        $('#cancelGiftBtn').on('click',()=>{
+        $('#cancelGiftBtn').on('click', () => {
             layer.close(index1);
-            giftsId='';giftsName=''
+            giftsId = '';
+            giftsName = ''
         });
         //切换奖品类型
-        $('#goodsGift').on('click',()=>{
-            xc.setGiftTable(table,layer,token)
+        $('#goodsGift').on('click', () => {
+            xc.setGiftTable(table, layer, token)
+            $(this).addClass('lay-btn-warm').siblings().removeClass('lay-btn-warm')
         });
-        $('#couponGift').on('click',()=>{
-            xc.setVictherGiftTable(table,layer,token)
+        $('#couponGift').on('click', () => {
+            xc.setVictherGiftTable(table, layer, token)
+            $(this).addClass('lay-btn-warm').siblings().removeClass('lay-btn-warm')
         });
         //新增中奖规则
-        $('#addJackpotRule').on('click',()=>{
-      if($('#giftsLevel').val()!=''&&$('#giftsNumber').val()!=''&&$('#probability').val()!=''&&giftsId!=''){
-          $('.layui-col-itemSec').trigger('click');
-          if(arr.length>0){
-              let flag=false;
-              for(var i in arr){
-                  if (arr[i].LevelName==$('#giftsLevel').val()){
-                      flag=true;
-                  }
-              }
-              if(flag==false){
-                  $('#lookruleLi').trigger('click');
-                  arr.push({'LevelName':$('#giftsLevel').val(),
-                      'GoodCount':$('#giftsNumber').val(),
-                      'Probability':$('#probability').val(),
-                      'GoodId':giftsId,'GoodName':giftsName});
-              }else {
-                  layer.msg('该中奖等级已存在，请更换名称！')
-              }
-          }else {
-              $('#lookruleLi').trigger('click');
-              arr.push({'LevelName':$('#giftsLevel').val(),
-                  'GoodCount':$('#giftsNumber').val(),
-                  'Probability':$('#probability').val(),
-                  'GoodId':giftsId,'GoodName':giftsName});
-          }
+        $('#addJackpotRule').on('click', () => {
 
-          table.render({
-              elem: '#resultTable'
-              , height:'250px'
-              , data: arr
-              ,size:'sm'
-              , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-              , cols: [[{field:'LevelName', title:'奖品等级', align: 'center',width:160}
-                  ,{field:'GoodCount',title: '奖品数量', align: 'center',width:160} //width 支持：数字、百分比和不填写。
-                  ,{field:'Probability', title: '中奖概率', align: 'center',width:160,templet:'#prob'}
-                  ,{field:'GoodName', title: '奖品名称', align: 'center',width:160}
-                  ,{fixed: 'right',title: '操作' , align:'center', toolbar: '#barDemo1'}]]
-              , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
-              , limit: 10
-          });
-      }else {
-          layer.msg('必填项不能为空！')
-      }
 
         });
-        $('#saveBtn').on('click',()=>{
+        $('#saveBtn').on('click', () => {
             xc.saveGift(layer)
         });
         //监听table工具栏
-        form.on('switch(test)', function(data){
-            let ids=data.othis.parents('td').siblings('td[data-field="ID"]').children('div')[0].innerHTML;
-            let _obj={'id':ids,'state':data.elem.checked==true?1:0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-            let url='/XCCloud/Coupon?action=EnCouponInfo';
+        form.on('switch(test)', function (data) {
+            let ids = data.othis.parents('td').siblings('td[data-field="ID"]').children('div')[0].innerHTML;
+            let _obj = {
+                'id': ids,
+                'state': data.elem.checked == true ? 1 : 0,
+                'userToken': token,
+                'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
+            let url = '/XCCloud/Coupon?action=EnCouponInfo';
             let parseJson = JSON.stringify(_obj);
             $.ajax({
                 type: "post",
@@ -455,28 +483,30 @@
             })
         });
         //保存优惠券信息
-        xcActionSystem.prototype.saveGift=(layer)=>{
-            let obj={'id':Id,
-                'activeName':$('#activeName').val(),
-                'threshold':$('#threshold').val(),
-                'concerned':concerned,
-                'startTime':$('#startTime').val(),
-                'endTime':$('#endTime').val(),
-                'jackpotLevels':arr,
-                'userToken':token,
-                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        xcActionSystem.prototype.saveGift = (layer) => {
+            let obj = {
+                'id': Id,
+                'activeName': $('#activeName').val(),
+                'threshold': $('#threshold').val(),
+                'concerned': concerned,
+                'startTime': $('#startTime').val(),
+                'endTime': $('#endTime').val(),
+                'jackpotLevels': arr,
+                'userToken': token,
+                'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
             let parseJson = JSON.stringify(obj);
             $.ajax({
-                type:'post',
-                url:'/XCCloud/Jackpot?action=SaveJackpotInfo',
+                type: 'post',
+                url: '/XCCloud/Jackpot?action=SaveJackpotInfo',
                 contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
+                data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                         layer.msg('保存成功！');
                         layer.closeAll();
-                        setInterval(xc.getInitData(parm),1000);
+                        setInterval(xc.getInitData(parm), 1000);
                         $('#resetBtn').trigger('click');
                     } else {
                         layer.msg(data.result_msg);
@@ -484,8 +514,8 @@
                 }
             })
         };
-        xcActionSystem.prototype.setGiftTable=(table,layer,token)=>{
-            let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        xcActionSystem.prototype.setGiftTable = (table, layer, token) => {
+            let _obj = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
 
             $.ajax({
                 type: "post",
@@ -494,31 +524,35 @@
                 data: {parasJson: JSON.stringify(_obj)},
                 success: function (data) {
                     data = JSON.parse(data);
-                    if (data.result_code==1) {
-                     let   tableData = data.result_data;
-                            table.render({
-                                elem: '#giftTable'
-                                , data: tableData
-                                ,height:'200px'
-                                ,size:'sm'
-                                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                                , cols: [[ {type:'checkbox'}
-                                    ,{field:'ID', title:'奖品ID', align: 'center', sort: true}
-                                    ,{field:'GoodTypeStr',title: '奖品类别', align: 'center'}
-                                    ,{field:'GoodName',title: '奖品名称', align: 'center'}
-                                   ]]
-                                , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
-                                , limit: 5
-                            });
+                    if (data.result_code == 1) {
+                        let tableData = data.result_data;
+                        table.render({
+                            elem: '#giftTable'
+                            , data: tableData
+                            , height: '200px'
+                            , size: 'sm'
+                            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                            , cols: [[{type: 'checkbox'}
+                                , {field: 'ID', title: '奖品ID', align: 'center', sort: true}
+                                , {field: 'GoodTypeStr', title: '奖品类别', align: 'center'}
+                                , {field: 'GoodName', title: '奖品名称', align: 'center'}
+                            ]]
+                            , page: {page: true, limits: [5, 10, 15, 20, 30, 50, 100]}
+                            , limit: 5
+                        });
 
-                    }  else {
-                            layer.msg(data.result_msg);
+                    } else {
+                        layer.msg(data.result_msg);
                     }
                 }
             })
         };
-        xcActionSystem.prototype.setVictherGiftTable=(table,layer,token)=>{
-            let _obj={conditions:[{id: '0', field:'CouponType', condition:'6', values: '0'}],'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        xcActionSystem.prototype.setVictherGiftTable = (table, layer, token) => {
+            let _obj = {
+                conditions: [{id: '0', field: 'EntryCouponFlag', condition: '0', values: '0',dataType:'bit'}],
+                'userToken': token,
+                'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
 
             $.ajax({
                 type: "post",
@@ -527,30 +561,30 @@
                 data: {parasJson: JSON.stringify(_obj)},
                 success: function (data) {
                     data = JSON.parse(data);
-                    if (data.result_code==1) {
-                        let   tableData = data.result_data;
+                    if (data.result_code == 1) {
+                        let tableData = data.result_data;
                         table.render({
                             elem: '#giftTable'
                             , data: tableData
-                            ,height:'200px'
-                            ,size:'sm'
+                            , height: '200px'
+                            , size: 'sm'
                             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                            , cols: [[ {type:'checkbox'}
-                                ,{field:'ID', title:'奖品ID', align: 'center', sort: true}
-                                ,{field:'CouponTypeStr',title: '奖品类别', align: 'center'}
-                                ,{field:'CouponName',title: '奖品名称', align: 'center'}
+                            , cols: [[{type: 'checkbox'}
+                                , {field: 'ID', title: '奖品ID', align: 'center', sort: true}
+                                , {field: 'CouponTypeStr', title: '奖品类别', align: 'center'}
+                                , {field: 'CouponName', title: '奖品名称', align: 'center'}
                             ]]
-                            , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
+                            , page: {page: true, limits: [5, 10, 15, 20, 30, 50, 100]}
                             , limit: 5
                         });
 
-                    }  else {
+                    } else {
                         layer.msg(data.result_msg);
                     }
                 }
             })
         };
-        xcActionSystem.prototype.returnPro=(a)=> {
+        xcActionSystem.prototype.returnPro=(a)=>{
             return a+'%'
         }
     });
@@ -566,24 +600,24 @@
 </script>
 <script type="text/html" id="state">
     {{# if(d.Concerned==1){ }}
-    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" disabled >
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" disabled>
     {{# }else{ }}
     <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" disabled>
     {{#  } }}
 </script>
 <!--<script type="text/html" id="time1">-->
-    <!--{{# if(d.StartTime!=null&&d.StartTime!=''){ }}-->
-    <!--{{xcActionSystem.prototype.timeStampDate(d.StartTime)}}-->
-    <!--{{# }else{ }}-->
-    <!--{{d.StartTime}}-->
-    <!--{{#  } }}-->
+<!--{{# if(d.StartTime!=null&&d.StartTime!=''){ }}-->
+<!--{{xcActionSystem.prototype.timeStampDate(d.StartTime)}}-->
+<!--{{# }else{ }}-->
+<!--{{d.StartTime}}-->
+<!--{{#  } }}-->
 <!--</script>-->
 <!--<script type="text/html" id="time2">-->
-    <!--{{# if(d.EndTime!=null&&d.EndTime!=''){ }}-->
-    <!--{{xcActionSystem.prototype.timeStampDate(d.EndTime)}}-->
-    <!--{{# }else{ }}-->
-    <!--{{d.EndTime}}-->
-    <!--{{#  } }}-->
+<!--{{# if(d.EndTime!=null&&d.EndTime!=''){ }}-->
+<!--{{xcActionSystem.prototype.timeStampDate(d.EndTime)}}-->
+<!--{{# }else{ }}-->
+<!--{{d.EndTime}}-->
+<!--{{#  } }}-->
 <!--</script>-->
 <script type="text/html" id="prob">
     {{# if(d.Probability!=null&&d.Probability!=''){ }}
