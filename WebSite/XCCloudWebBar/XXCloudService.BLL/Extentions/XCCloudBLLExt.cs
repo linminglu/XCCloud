@@ -44,7 +44,7 @@ namespace XCCloudWebBar.BLL.XCCloud
                         if (!merchId.IsNull())
                         {
                             var dbContext = DbContextFactory.CreateByModelNamespace("XCCloudWebBar.Model.XCCloud");
-                            merchSecret = dbContext.Set<Base_MerchantInfo>().Where(w => w.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                            merchSecret = dbContext.Set<Base_MerchantInfo>().Where(w => w.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                                 .Select(o => o.MerchSecret).FirstOrDefault() ?? string.Empty;
                         }
                     }

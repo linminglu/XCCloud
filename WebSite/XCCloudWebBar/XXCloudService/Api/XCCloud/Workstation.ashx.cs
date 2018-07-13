@@ -102,6 +102,10 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudMD5KeyBusiness.GetMd5Key(token, merchId, storeId, workStation);
                 var obj = new
                 {
+                    dogId = dogId,
+                    workStation = workStation,
+                    merchId = merchId,
+                    storeId = storeId,
                     token = token
                 };
 

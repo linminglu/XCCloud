@@ -14,7 +14,7 @@ namespace XCCloudWebBar.Model.XCCloud
     
     public partial class Base_UserInfo
     {
-        public int UserID { get; set; }
+        public int ID { get; set; }
         public Nullable<int> AgentID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }

@@ -36,13 +36,11 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Base_SettleOrg> Base_SettleOrg { get; set; }
         public virtual DbSet<Base_SettlePPOS> Base_SettlePPOS { get; set; }
         public virtual DbSet<Base_StoreHKConfig> Base_StoreHKConfig { get; set; }
-        public virtual DbSet<Base_StoreInfo> Base_StoreInfo { get; set; }
         public virtual DbSet<Base_StoreWeight> Base_StoreWeight { get; set; }
         public virtual DbSet<Base_StoreWeight_Game> Base_StoreWeight_Game { get; set; }
         public virtual DbSet<Base_UserGrant> Base_UserGrant { get; set; }
         public virtual DbSet<Base_UserGroup> Base_UserGroup { get; set; }
         public virtual DbSet<Base_UserGroup_Grant> Base_UserGroup_Grant { get; set; }
-        public virtual DbSet<Base_UserInfo> Base_UserInfo { get; set; }
         public virtual DbSet<Base_WechatFunction> Base_WechatFunction { get; set; }
         public virtual DbSet<BUF_UserAnalysis> BUF_UserAnalysis { get; set; }
         public virtual DbSet<Data_BalanceChargeRule> Data_BalanceChargeRule { get; set; }
@@ -108,7 +106,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_WorkFlow_Node> Data_WorkFlow_Node { get; set; }
         public virtual DbSet<Data_WorkFlowConfig> Data_WorkFlowConfig { get; set; }
         public virtual DbSet<Dict_Area> Dict_Area { get; set; }
-        public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
         public virtual DbSet<Divide_ProjectInfo> Divide_ProjectInfo { get; set; }
         public virtual DbSet<Flw_CheckDate> Flw_CheckDate { get; set; }
         public virtual DbSet<Flw_Digite_Coin> Flw_Digite_Coin { get; set; }
@@ -116,7 +113,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
         public virtual DbSet<Flw_Game_WinPrize> Flw_Game_WinPrize { get; set; }
         public virtual DbSet<Flw_Good_Detail> Flw_Good_Detail { get; set; }
-        public virtual DbSet<Flw_Goods> Flw_Goods { get; set; }
         public virtual DbSet<Flw_Jackpot> Flw_Jackpot { get; set; }
         public virtual DbSet<Flw_Lottery> Flw_Lottery { get; set; }
         public virtual DbSet<Flw_Order_SerialNumber> Flw_Order_SerialNumber { get; set; }
@@ -127,7 +123,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Search_Template_Detail> Search_Template_Detail { get; set; }
         public virtual DbSet<Store_GameTotal> Store_GameTotal { get; set; }
         public virtual DbSet<Store_HeadTotal> Store_HeadTotal { get; set; }
-        public virtual DbSet<XC_WorkInfo> XC_WorkInfo { get; set; }
         public virtual DbSet<Data_DigitCoin> Data_DigitCoin { get; set; }
         public virtual DbSet<Data_LotteryInventory> Data_LotteryInventory { get; set; }
         public virtual DbSet<Data_LotteryStorage> Data_LotteryStorage { get; set; }
@@ -147,8 +142,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_Card_Right> Data_Card_Right { get; set; }
         public virtual DbSet<Data_Card_Right_StoreList> Data_Card_Right_StoreList { get; set; }
         public virtual DbSet<Data_GoodRequest> Data_GoodRequest { get; set; }
-        public virtual DbSet<Flw_MemberCard_Change> Flw_MemberCard_Change { get; set; }
-        public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
         public virtual DbSet<Data_GoodExit_Detail> Data_GoodExit_Detail { get; set; }
         public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
         public virtual DbSet<Data_GoodOutOrder_Detail> Data_GoodOutOrder_Detail { get; set; }
@@ -161,14 +154,12 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
         public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
         public virtual DbSet<Data_Workstation> Data_Workstation { get; set; }
-        public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
         public virtual DbSet<Data_Project_BindDevice> Data_Project_BindDevice { get; set; }
         public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
-        public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Entry> Flw_ProjectTicket_Entry { get; set; }
         public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
         public virtual DbSet<Flw_Schedule> Flw_Schedule { get; set; }
@@ -177,21 +168,17 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
         public virtual DbSet<Flw_Order_Detail> Flw_Order_Detail { get; set; }
         public virtual DbSet<Flw_Game_Watch> Flw_Game_Watch { get; set; }
-        public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
-        public virtual DbSet<Flw_Order> Flw_Order { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Dict_System> Dict_System { get; set; }
         public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
         public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
-        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_MemberLevelFree_Detail> Flw_MemberLevelFree_Detail { get; set; }
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
         public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
         public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
         public virtual DbSet<Data_MemberLevelFree> Data_MemberLevelFree { get; set; }
         public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
-        public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
         public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
@@ -201,5 +188,21 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
         public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
+        public virtual DbSet<Base_UserInfo> Base_UserInfo { get; set; }
+        public virtual DbSet<Flw_MemberCard_Change> Flw_MemberCard_Change { get; set; }
+        public virtual DbSet<Base_StoreInfo> Base_StoreInfo { get; set; }
+        public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
+        public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
+        public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
+        public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
+        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
+        public virtual DbSet<Flw_Food_Exit_Pay> Flw_Food_Exit_Pay { get; set; }
+        public virtual DbSet<Flw_Good_Buyback> Flw_Good_Buyback { get; set; }
+        public virtual DbSet<Flw_Goods> Flw_Goods { get; set; }
+        public virtual DbSet<Flw_Order> Flw_Order { get; set; }
+        public virtual DbSet<XC_SyncBuf> XC_SyncBuf { get; set; }
+        public virtual DbSet<XC_WorkInfo> XC_WorkInfo { get; set; }
+        public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
+        public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
     }
 }

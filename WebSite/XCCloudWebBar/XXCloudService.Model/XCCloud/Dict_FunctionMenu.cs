@@ -14,7 +14,7 @@ namespace XCCloudWebBar.Model.XCCloud
     
     public partial class Dict_FunctionMenu
     {
-        public int FunctionID { get; set; }
+        public int ID { get; set; }
         public Nullable<int> ParentID { get; set; }
         public string FunctionName { get; set; }
         public Nullable<int> OrderID { get; set; }

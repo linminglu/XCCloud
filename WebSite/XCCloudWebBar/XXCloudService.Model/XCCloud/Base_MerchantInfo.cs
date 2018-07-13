@@ -14,7 +14,7 @@ namespace XCCloudWebBar.Model.XCCloud
     
     public partial class Base_MerchantInfo
     {
-        public string MerchID { get; set; }
+        public string ID { get; set; }
         public Nullable<int> MerchType { get; set; }
         public string MerchAccount { get; set; }
         public Nullable<int> MerchStatus { get; set; }

@@ -1086,17 +1086,19 @@ print @FoodSalePrice
 
 
 ----------------------------------------------------------------------------------------------------
+
 declare @FoodDetailCount int
-declare @FoodDetail [FoodDetailType]
-insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(3,1,98305,100)
-insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(1,1,0,1000)
-insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(6,1,98306,100)
-insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(4,1,98307,100)
-insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(7,1,98308,100)
-insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(5,1,98309,100)
-insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(8,1,98315,500)
+declare @FoodDetail [FoodSaleDetailListType]
+insert into @FoodDetail(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,1,98305,100)
+insert into @FoodDetail(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1000)
+insert into @FoodDetail(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+insert into @FoodDetail(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+insert into @FoodDetail(FoodId,Category,FoodCount,PayType,PayNum) values(7,0,1,98308,100)
+insert into @FoodDetail(FoodId,Category,FoodCount,PayType,PayNum) values(5,0,1,98309,100)
+insert into @FoodDetail(FoodId,Category,FoodCount,PayType,PayNum) values(8,0,1,98315,500)
 exec GetFoodDetailCount @FoodDetail,@FoodDetailCount output
 print @FoodDetailCount
+
 ----------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------

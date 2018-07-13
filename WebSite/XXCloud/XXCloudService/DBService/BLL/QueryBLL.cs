@@ -261,6 +261,112 @@ namespace XCCloudService.DBService.BLL
             sql = sql + sb.ToString();
 
             return true;
+        }
+
+        public static bool GenDynamicSql(object[] conditions, string prefix, ref string sql, out string errMsg)
+        {
+            errMsg = string.Empty;
+            if (conditions == null || conditions.Length == 0)
+            {
+                errMsg = "查询条件为空";
+                return false;
+            }
+
+            var sb = new StringBuilder();
+            var initModel = new InitModel();
+            var listDict_SystemModel = new List<Dict_SystemModel>();
+            var alias = !string.IsNullOrEmpty(prefix) ? (prefix.Substring(prefix.Length - 1, 1) == "." ? prefix : (prefix + ".")) : string.Empty;
+            foreach (IDictionary<string, object> el in conditions)
+            {
+                if (el != null)
+                {
+                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+
+                    int id = (dicPara.ContainsKey("id") && Utils.isNumber(dicPara["id"])) ? Convert.ToInt32(dicPara["id"]) : 0;
+                    string field = (dicPara.ContainsKey("field") && dicPara["field"] != null) ? dicPara["field"].ToString() : string.Empty;
+                    var condition = dicPara.Get("condition").Toint();
+                    if (string.IsNullOrEmpty(field))
+                    {
+                        errMsg = "查询字段不明确";
+                        return false;
+                    }
+
+                    if (condition.IsNull())
+                    {
+                        errMsg = "查询条件不明确";
+                        return false;
+                    }
+
+                    if (!Enum.IsDefined(typeof(QueryTemplateCondition), condition ?? 0))
+                    {
+                        errMsg = "查询条件为不支持的类型";
+                        return false;
+                    }
+
+                    QueryDAL.GetInitModel(id, field, ref initModel, ref listDict_SystemModel);
+                    if (initModel.DataType.Equals("literals") || initModel.DataType.Equals("bit"))
+                    {
+                        var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
+                        if (initModel.DataType.Equals("literals"))
+                        {
+                            var dict_SystemModel = listDict_SystemModel.Where(w => w.DictKey.Equals(values, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            values = (dict_SystemModel != null) ? dict_SystemModel.DictValue : string.Empty;
+                        }
+
+                        sb.Append(string.Format(" and {1}{0} = {2} ", field, alias, values));
+                        
+                    }
+                    else
+                    {
+                        if (condition == (int)QueryTemplateCondition.Between)
+                        {
+                            var values = dicPara.ContainsKey("values") ? (object[])dicPara["values"] : null;
+                            if (values != null && values.Length > 0)
+                            {
+                                if (values.Length >= 1)
+                                {
+                                    var v0 = values[0];
+                                    if (!v0.IsNull())
+                                    {
+                                        sb.Append(string.Format(" and {1}{0} >= {2} ", field, alias, initModel.DataType.Equals("number") ? v0 : ("'" + v0 + "'")));
+                                    }
+                                }
+
+                                if (values.Length >= 2)
+                                {
+                                    var v1 = values[1];
+                                    if (!v1.IsNull())
+                                    {
+                                        sb.Append(string.Format(" and {1}{0} <= {2} ", field, alias, initModel.DataType.Equals("number") ? v1 : ("'" + v1 + "'")));
+                                    }
+                                }
+                            }
+                        }
+                        else if (condition == (int)QueryTemplateCondition.Like)
+                        {
+                            var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
+                            sb.Append(string.Format(" and {1}{0} like '%{2}%' ", field, alias, values));
+                        }
+                        else
+                        {
+                            var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
+                            if (!values.IsNull())
+                            {
+                                sb.Append(string.Format(" and {1}{0} {2} {3} ", field, alias, ((QueryTemplateCondition?)condition).GetDescription(), initModel.DataType.Equals("number") ? values : ("'" + values + "'")));
+                            }
+                        }
+                    }                                       
+                }
+                else
+                {
+                    errMsg = "提交数据包含空对象";
+                    return false;
+                }
+            }
+
+            sql = sql + sb.ToString();
+
+            return true;
         }        
     }
 }

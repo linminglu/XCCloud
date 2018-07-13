@@ -14,7 +14,7 @@ namespace XCCloudWebBar.Model.XCCloud
     
     public partial class XC_WorkInfo
     {
-        public int WorkID { get; set; }
+        public int ID { get; set; }
         public Nullable<int> WorkType { get; set; }
         public Nullable<int> SenderID { get; set; }
         public Nullable<System.DateTime> SenderTime { get; set; }

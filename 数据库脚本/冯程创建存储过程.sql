@@ -827,7 +827,7 @@ as
 	SET @sql = @sql + 'select a.* from ('
 	SET @sql = @sql + 'select a.*, b.* from ('
 	SET @sql = @sql + 
-	'select a.ID, a.StoreID, a.ICCardID, a.CardName, c.MemberLevelID, c.MemberLevelName,
+	'select a.ID, a.StoreID, a.ICCardID, a.CardName, a.MemberLevelID, c.MemberLevelName,
 	 a.CardType, a.Deposit, a.UpdateTime, a.EndDate, a.CardSex,
 	 b.Mobile, b.IDCard, a.CreateTime, d.StoreName, a.CardStatus '+    
     ' from Data_Member_Card a'+
@@ -866,7 +866,7 @@ as
 	SET @ss = @ss + ' from ('
 	SET @ss = @ss + @s + ') a group by a.CardIndex'	
 	SET @sql = @sql + @ss + ') b on a.ID=b.CardIndex'       
-    SET @sql = @sql + ') a' + ISNULL(@SqlWhere,'')
+    SET @sql = @sql + ') a where 1=1 ' + ISNULL(@SqlWhere,'')
 	
 	--print @sql
 	exec (@sql)	
@@ -882,7 +882,7 @@ as
 	SET @sql = ''
 	SET @sql = @sql + 'select a.* from ('
 	SET @sql = @sql + 
-	'select a.ICCardID, a.CardName, c.MemberLevelID, c.MemberLevelName, a.CreateTime, a.EndDate, a.JoinChannel, a.OrderID,
+	'select a.ICCardID, a.CardName, a.MemberLevelID, c.MemberLevelName, a.CreateTime, a.EndDate, a.JoinChannel, a.OrderID,
 	 b.Deposit, b.OpenFee, d.StoreName, o.CheckDate, sd.ScheduleName, o.WorkStation, u.LogName AS UserName, o.Note ' +    
     ' from Data_Member_Card a' +
     ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID ' +
@@ -894,7 +894,7 @@ as
     ' left join Base_UserInfo u on o.UserID=u.ID ' +  
     ' left join Flw_Schedule sd on o.ScheduleID=sd.ID ' +     
     ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
-    SET @sql = @sql + ') a' + ISNULL(@SqlWhere,'')
+    SET @sql = @sql + ') a where 1=1 ' + ISNULL(@SqlWhere,'')
 	
 	--print @sql
 	exec (@sql)	
