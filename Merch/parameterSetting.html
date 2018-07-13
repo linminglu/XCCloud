@@ -912,9 +912,21 @@ let parmData=[];
         });
 
         form.on('switch()',function (data) {
-            console.log(data.elem.id)
-            if(data.elem){
-
+            // console.log(data.elem.id)
+            for(let i in parmData){
+                if(parmData[i].System==data.elem.name){
+                    parmData[i].ParameterValue=data.elem.checked?1:0
+                    break
+                }
+            }
+        })
+        form.on('checkbox()',function (data) {
+            console.log(data.elem)
+            for(let i in parmData){
+                if(parmData[i].System==data.elem.name){
+                    parmData[i].ParameterValue=data.elem.checked?1:0
+                    break
+                }
             }
         })
         $('#rulesBtn').on('click',function (){
