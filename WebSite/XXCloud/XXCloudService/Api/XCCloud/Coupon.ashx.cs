@@ -143,6 +143,8 @@ namespace XXCloudService.Api.XCCloud
                 var linq = new
                 {
                     data_CouponInfo = data_CouponInfo,
+                    StartTimeStr = Utils.TimeSpanToStr(data_CouponInfo.StartTime),
+                    EndTimeStr = Utils.TimeSpanToStr(data_CouponInfo.EndTime),
                     StoreIDs = StoreIDs
                 }.AsFlatDictionary();
 

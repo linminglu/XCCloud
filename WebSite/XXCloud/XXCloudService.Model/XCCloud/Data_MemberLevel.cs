@@ -33,9 +33,11 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> ChangeFee { get; set; }
         public Nullable<decimal> RechargeFee { get; set; }
         public Nullable<decimal> ContinueFee { get; set; }
-        public Nullable<int> ContinueUsePoint { get; set; }
+        public Nullable<int> ContinueUseBalanceIndex { get; set; }
+        public Nullable<decimal> ContinueUseCount { get; set; }
         public Nullable<decimal> ConsumeTotle { get; set; }
-        public Nullable<int> UpdateUsePoint { get; set; }
+        public Nullable<int> UpdateUseBalanceIndex { get; set; }
+        public Nullable<decimal> UpdateUseCount { get; set; }
         public Nullable<int> UpdateLevelID { get; set; }
         public Nullable<int> NonActiveDays { get; set; }
         public Nullable<int> ReduceLevelID { get; set; }
@@ -45,6 +47,10 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> FreeType { get; set; }
         public Nullable<int> FreeNeedWin { get; set; }
         public Nullable<int> BirthdayFree { get; set; }
+        public Nullable<int> AllCreatePoint { get; set; }
+        public Nullable<decimal> CashBase { get; set; }
+        public Nullable<int> PointBalanceIndex { get; set; }
+        public Nullable<decimal> PointGet { get; set; }
         public Nullable<int> FoodID { get; set; }
         public Nullable<int> MinCoin { get; set; }
         public Nullable<int> MaxCoin { get; set; }

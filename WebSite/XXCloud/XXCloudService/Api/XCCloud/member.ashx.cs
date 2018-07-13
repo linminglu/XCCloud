@@ -685,7 +685,7 @@ namespace XCCloudService.Api.XCCloud
                     Deposit = oo.MemberLevelModel.Deposit,
                     Validday = oo.MemberLevelModel.Validday,
                     ContinueFee = oo.MemberLevelModel.ContinueFee,
-                    UpdateUsePoint = oo.MemberLevelModel.UpdateUsePoint,
+                    UpdateUsePoint = oo.MemberLevelModel.UpdateUseCount,
                     ConsumeTotle = oo.MemberLevelModel.ConsumeTotle,                   
                     BirthdayFreeStr = oo.BirthdayFree.Any(s => s.DictValue.Equals(oo.MemberLevelModel.BirthdayFree + "")) ? oo.BirthdayFree.Single(s => s.DictValue.Equals(oo.MemberLevelModel.BirthdayFree + "")).DictKey : string.Empty,
                     FreeTypeStr = oo.FreeType.Any(s => s.DictValue.Equals(oo.MemberLevelModel.FreeType + "")) ? oo.FreeType.Single(s => s.DictValue.Equals(oo.MemberLevelModel.FreeType + "")).DictKey : string.Empty
