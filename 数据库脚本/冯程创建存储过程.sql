@@ -883,11 +883,11 @@ as
 	SET @sql = @sql + 'select a.* from ('
 	SET @sql = @sql + 
 	'select a.ICCardID, a.CardName, a.MemberLevelID, c.MemberLevelName, a.CreateTime, a.EndDate, a.JoinChannel, a.OrderID,
-	 b.Deposit, b.OpenFee, d.StoreName, o.CheckDate, sd.ScheduleName, o.WorkStation, u.LogName AS UserName, o.Note ' +    
+	 b.Deposit, b.OpenFee, d.StoreName, o.CheckDate, sd.ScheduleName, o.WorkStation, u.LogName AS UserName, a.Note ' +    
     ' from Data_Member_Card a' +
     ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID ' +
-    ' inner join Flw_Order o on a.OrderID=o.OrderID ' +
-    ' inner join Flw_Order_Detail od on o.OrderID=od.OrderFlwID ' +
+    ' inner join Flw_Order o on a.OrderID=o.ID ' +
+    ' inner join Flw_Order_Detail od on o.ID=od.OrderFlwID ' +
     ' inner join Flw_Food_Sale b on od.FoodFlwID=b.ID ' +
     ' inner join Data_MemberLevel c on a.MemberLevelID=c.ID ' +
     ' left join Base_StoreInfo d on a.StoreID=d.ID ' + 
