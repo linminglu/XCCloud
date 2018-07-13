@@ -234,7 +234,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户名或密码错误");
                     }
                     //开班
-                    if (!ScheduleBusiness.GetCurrentSchedule(userModel.MerchID, userModel.StoreID, userModel.UserID, workStation, out scheduleName, out currentSchedule, out openTime,out checkDate, out errMsg))
+                    if (!ScheduleBusiness.GetCurrentSchedule(userModel.MerchID, userModel.StoreID, userModel.ID, workStation, out scheduleName, out currentSchedule, out openTime, out checkDate, out errMsg))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                     }
@@ -248,16 +248,16 @@ namespace XCCloudWebBar.Api.XCCloud
 
                     var storeId = userModel.StoreID;
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                    if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                    if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店号无效");
                     }
-                    var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(userModel.StoreID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(userModel.StoreID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                     //设置用户token
-                    TokenDataModel TokenDataModel = new TokenDataModel(userModel.MerchID, userModel.StoreID, password, workStation, userModel.UserID, workStationId);
-                    XCCloudUserTokenBusiness.RemoveStoreUserTokenByWorkStaion(userModel.UserID.ToString(), workStation);
-                    string userToken = XCCloudUserTokenBusiness.SetUserToken(userModel.UserID.ToString(), (int)RoleType.StoreUser, TokenDataModel);
+                    TokenDataModel TokenDataModel = new TokenDataModel(userModel.MerchID, userModel.StoreID, password, workStation, userModel.ID, workStationId);
+                    XCCloudUserTokenBusiness.RemoveStoreUserTokenByWorkStaion(userModel.ID.ToString(), workStation);
+                    string userToken = XCCloudUserTokenBusiness.SetUserToken(userModel.ID.ToString(), (int)RoleType.StoreUser, TokenDataModel);
 
                     var dataObj = new {
                         userToken = userToken,
@@ -376,7 +376,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     }
 
                     IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                    var base_UserInfoModel = base_UserInfoService.GetModels(p => p.UserID.ToString().Equals(userId)).FirstOrDefault();
+                    var base_UserInfoModel = base_UserInfoService.GetModels(p => p.ID.ToString().Equals(userId)).FirstOrDefault();
                     if (base_UserInfoModel == null)
                     {
                         errMsg = "该用户不存在";
@@ -497,20 +497,20 @@ namespace XCCloudWebBar.Api.XCCloud
                     {                        
                         int.TryParse(userId, out iUserId);
                         IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        if (base_UserInfoService.Any(p => p.UserID != iUserId && p.LogName.Equals(logName, StringComparison.OrdinalIgnoreCase)))
+                        if (base_UserInfoService.Any(p => p.ID != iUserId && p.LogName.Equals(logName, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "该用户名已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var base_UserInfoModel = base_UserInfoService.GetModels(p => p.UserID == iUserId).FirstOrDefault() ?? new Base_UserInfo();
+                        var base_UserInfoModel = base_UserInfoService.GetModels(p => p.ID == iUserId).FirstOrDefault() ?? new Base_UserInfo();
                         base_UserInfoModel.LogName = logName;
                         base_UserInfoModel.RealName = realName;
                         base_UserInfoModel.Mobile = mobile;
                         base_UserInfoModel.ICCardID = iCCardId;
                         base_UserInfoModel.Status = Convert.ToInt32(status);
                         base_UserInfoModel.UserGroupID = Convert.ToInt32(userGroupId);
-                        if (base_UserInfoModel.UserID == 0)
+                        if (base_UserInfoModel.ID == 0)
                         {                            
                             pwd = Utils.GetCheckCode(6);
                             base_UserInfoModel.OpenID = openId;
@@ -535,7 +535,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             }
                         }
 
-                        iUserId = base_UserInfoModel.UserID;
+                        iUserId = base_UserInfoModel.ID;
 
                         if (userGrants != null && userGrants.Count() >= 0)
                         {
@@ -634,7 +634,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     string userId = userInfoCacheModel.UserID.ToString();
                     string pwd = Utils.GetCheckCode(6);
                     IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                    var base_UserInfoModel = base_UserInfoService.GetModels(p => p.UserID.ToString().Equals(userId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    var base_UserInfoModel = base_UserInfoService.GetModels(p => p.ID.ToString().Equals(userId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     base_UserInfoModel.LogPassword = Utils.MD5(pwd);
                     if (!base_UserInfoService.Update(base_UserInfoModel))
                     {
@@ -672,13 +672,13 @@ namespace XCCloudWebBar.Api.XCCloud
                     int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                    var storeIds = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid)).Select(o => o.StoreID).ToList();                    
+                    var storeIds = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid)).Select(o => o.ID).ToList();                    
                     IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>();
                     int UserStatusId = dict_SystemService.GetModels(p => p.DictKey.Equals("员工状态")).FirstOrDefault().ID;
 
                     var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserInfo).Namespace);
-                    var linq = from a in dbContext.Set<Base_UserInfo>().Where(p => ((p.UserID != userId && p.IsAdmin == 1) || (p.IsAdmin ?? 0) == 0) && (storeIds.Contains(p.StoreID) || merchId.Equals(p.MerchID, StringComparison.OrdinalIgnoreCase)))
-                               join b in dbContext.Set<Base_StoreInfo>() on a.StoreID equals b.StoreID into b1
+                    var linq = from a in dbContext.Set<Base_UserInfo>().Where(p => ((p.ID != userId && p.IsAdmin == 1) || (p.IsAdmin ?? 0) == 0) && (storeIds.Contains(p.StoreID) || merchId.Equals(p.MerchID, StringComparison.OrdinalIgnoreCase)))
+                               join b in dbContext.Set<Base_StoreInfo>() on a.StoreID equals b.ID into b1
                                from b in b1.DefaultIfEmpty()
                                join c in dbContext.Set<Base_UserGroup>() on a.UserGroupID equals c.ID into c1
                                from c in c1.DefaultIfEmpty()
@@ -686,7 +686,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                from d in d1.DefaultIfEmpty()
                                select new
                                {
-                                   UserID = a.UserID,
+                                   UserID = a.ID,
                                    RealName = a.RealName,
                                    LogName = a.LogName,
                                    Mobile = a.Mobile,
@@ -732,7 +732,7 @@ namespace XCCloudWebBar.Api.XCCloud
 
                     int iUserId = Convert.ToInt32(userId);
                     IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                    if (!base_UserInfoService.Any(p => p.UserID == iUserId))
+                    if (!base_UserInfoService.Any(p => p.ID == iUserId))
                     {
                         errMsg = "该用户不存在";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -742,7 +742,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     int UserStatusId = dict_SystemService.GetModels(p => p.DictKey.Equals("员工状态")).FirstOrDefault().ID;
                     int UserTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("用户类型")).FirstOrDefault().ID;
                     var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserInfo).Namespace);
-                    var linq = from a in dbContext.Set<Base_UserInfo>().Where(p => p.UserID == iUserId)
+                    var linq = from a in dbContext.Set<Base_UserInfo>().Where(p => p.ID == iUserId)
                                join c in dbContext.Set<Base_UserGroup>() on a.UserGroupID equals c.ID into c1
                                from c in c1.DefaultIfEmpty()
                                join d in dbContext.Set<Dict_System>().Where(p => p.PID == UserStatusId) on (a.Status + "") equals d.DictValue into d1
@@ -751,7 +751,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                from b in b1.DefaultIfEmpty()
                                select new
                                {
-                                   UserID = a.UserID,
+                                   UserID = a.ID,
                                    RealName = a.RealName,
                                    LogName = a.LogName,
                                    Mobile = a.Mobile,
@@ -854,14 +854,14 @@ namespace XCCloudWebBar.Api.XCCloud
                     {
                         //修改用户信息                                                                                                
                         IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        var base_UserInfo = userInfoService.GetModels(p => p.UserID == iUserId).FirstOrDefault();
+                        var base_UserInfo = userInfoService.GetModels(p => p.ID == iUserId).FirstOrDefault();
                         if (base_UserInfo == null)
                         {
                             errMsg = "该用户不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                    if (userInfoService.Any(p => p.UserID != iUserId && p.LogName.Equals(logName, StringComparison.OrdinalIgnoreCase)))
+                        if (userInfoService.Any(p => p.ID != iUserId && p.LogName.Equals(logName, StringComparison.OrdinalIgnoreCase)))
                     {
                         errMsg = "该用户名已使用";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -892,7 +892,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
 
                         string storeId = base_UserInfo.StoreID;
-                        if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.UserID != iUserId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                        if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.ID != iUserId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "同一个门店只能有一个管理员";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1042,7 +1042,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             }
 
                             IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                            var base_UserInfo = userInfoService.GetModels(p => p.UserID.Equals(iUserId)).FirstOrDefault();
+                            var base_UserInfo = userInfoService.GetModels(p => p.ID.Equals(iUserId)).FirstOrDefault();
                             if (base_UserInfo == null)
                             {
                                 errMsg = "该用户不存在";
@@ -1059,7 +1059,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
 
                         string storeId = base_UserInfo.StoreID;
-                            if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.UserID != iUserId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                        if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.ID != iUserId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                             {
                                 errMsg = "同一个门店只能有一个管理员";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1206,7 +1206,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 System.Data.DataTable dt = ds.Tables[0];
                 if (dt.Rows.Count > 0)
                 {
-                    var UserInfoModel = base_UserInfoService.GetModels(p => p.UserID == iUserId).FirstOrDefault();
+                    var UserInfoModel = base_UserInfoService.GetModels(p => p.ID == iUserId).FirstOrDefault();
                     var list = Utils.GetModelList<Base_UserGroup>(ds.Tables[0]).ToList();
                     var linq = list.Select(o => new
                     {
@@ -1301,12 +1301,12 @@ namespace XCCloudWebBar.Api.XCCloud
                 }
 
                 //验证雷达登录权限
-                if (!CheckUserGrant("路由器登录", userModel.UserID, out errMsg))
+                if (!CheckUserGrant("路由器登录", userModel.ID, out errMsg))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-                HttpContext.Current.Session["UserID"] = userModel.UserID;
+                HttpContext.Current.Session["UserID"] = userModel.ID;
                 HttpContext.Current.Session.Timeout = 30;
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);

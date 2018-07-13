@@ -59,7 +59,7 @@ namespace XXCloudService.Api.XCCloud
                 string sqlWhere = string.Empty;
                 if (conditions != null && conditions.Length > 0)
                 {
-                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, out errMsg))
                     {
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }

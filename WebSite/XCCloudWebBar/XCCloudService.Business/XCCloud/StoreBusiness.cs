@@ -19,7 +19,7 @@ namespace XCCloudWebBar.Business.XCCloud
         public static bool IsEffectiveStore(string storeId)
         {
             XCCloudWebBar.BLL.IBLL.XCCloud.IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<XCCloudWebBar.BLL.IBLL.XCCloud.IBase_StoreInfoService>();
-            return base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+            return base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
         }
 
         public static bool IsSingleStore(string merchId)
@@ -32,7 +32,7 @@ namespace XCCloudWebBar.Business.XCCloud
             storeId = string.Empty;
             if (IsSingleStore(merchId))
             {
-                storeId = Base_StoreInfoService.I.GetModels(p => p.MerchID.Equals(merchId)).FirstOrDefault().StoreID;
+                storeId = Base_StoreInfoService.I.GetModels(p => p.MerchID.Equals(merchId)).FirstOrDefault().ID;
                 return true;
             }
 
@@ -124,7 +124,7 @@ namespace XCCloudWebBar.Business.XCCloud
 
         public static Data_MemberLevel GetMemberLevel(int memberLevelId)
         {
-            Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberLevelId).FirstOrDefault();
+            Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.ID == memberLevelId).FirstOrDefault();
             return level;
         }
 

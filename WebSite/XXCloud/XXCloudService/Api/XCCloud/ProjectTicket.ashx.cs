@@ -357,14 +357,14 @@ namespace XXCloudService.Api.XCCloud
                                     var projcetType = dicPar.Get("projcetType").Toint();
                                     var projcetId = dicPar.Get("projcetId").Toint();
 
-                                    //离场时间大于0时，门票绑定的游乐项目的校验顺序必须开启，即必须绑定一进一出设备
-                                    if (allowExitTimes > 0 && !Data_ProjectInfoService.I.Any(a => a.ID == projcetId && a.State == 1 && a.AdjOrder == 1)
-                                        && !(Data_Project_BindDeviceService.I.Any(a=>a.ProjectID == projcetId && a.WorkType == (int)ProjectBindDeviceWorkType.Entry)
-                                                && Data_Project_BindDeviceService.I.Any(a => a.ProjectID == projcetId && a.WorkType == (int)ProjectBindDeviceWorkType.Exit)))
-                                    {
-                                        errMsg = "离场时间大于0时，门票绑定的游乐项目的校验顺序必须开启，即必须绑定一进一出设备";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
+                                    ////离场时间大于0时，门票绑定的游乐项目的校验顺序必须开启，即必须绑定一进一出设备
+                                    //if (allowExitTimes > 0 && !Data_ProjectInfoService.I.Any(a => a.ID == projcetId && a.State == 1 && a.AdjOrder == 1)
+                                    //    && !(Data_Project_BindDeviceService.I.Any(a=>a.ProjectID == projcetId && a.WorkType == (int)ProjectBindDeviceWorkType.Entry)
+                                    //            && Data_Project_BindDeviceService.I.Any(a => a.ProjectID == projcetId && a.WorkType == (int)ProjectBindDeviceWorkType.Exit)))
+                                    //{
+                                    //    errMsg = "离场时间大于0时，门票绑定的游乐项目的校验顺序必须开启，即必须绑定一进一出设备";
+                                    //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    //}
 
                                     var bindModel = new Data_ProjectTicket_Bind();
                                     bindModel.MerchID = merchId;

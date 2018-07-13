@@ -55,7 +55,7 @@ var seachModel = function (options) {
                             for (j in d[i].list) {
                                 html += '<option value="' + j + '">' + d[i].list[j] + '</option>'
                             }
-                            __domStr2 += html;
+                            _domStr2 += html;
                             _domStr2 += '</select></div></div>';
                         } else if (d[i].type == 'bit') {
                             _domStr2 += ' <div class="layui-inline lay-bit ' + d[i].field + 'sh"><label class="layui-form-label">' + d[i].title + '</label>' +

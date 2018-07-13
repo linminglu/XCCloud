@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>电子优惠券</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <style>
     .autoSort .layui-input-inline {
@@ -11,16 +12,34 @@
     }
 </style>
 <body>
-<div class="layui-row" style="padding: 10px">
-    <form action="" class="layui-form layui-form-pane">
-        <blockquote class="layui-elem-quote" style="text-align: right">
-            <button type="button" class="layui-btn layui-btn-normal">查询模板</button>
-            <button type="button" class="layui-btn layui-btn-normal add">新增</button>
-        </blockquote>
-        <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
-            <table class="layui-hide" id="couponSetTable" lay-filter="couponSetTable"></table>
+<div class="layui-row settingPage">
+    <div class="row-box">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" style="position: relative;height: 38px;border: 1px #999 solid">
+                    <div class="layui-form layui-form-pane" id="form2" style="position: absolute; display: none;top: 38px;border:1px #999 solid ;z-index: 9999999999999999999">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
         </div>
-    </form>
+
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <table class="layui-hide" id="couponSetTable" lay-filter="couponSetTable"></table>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="timeBtn">计时项目</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="bindBtn">设备绑定</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-normal add" i18n-content="新增">新增</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+        </div>
+    </div>
 </div>
 <!--//弹窗-->
 <div id="addOrModify" style="padding: 10px;display: none" class="goodIsAll">
@@ -60,7 +79,7 @@
                     <select name="" id="SendType" lay-filter="SendType">
                         <option value="0">消费赠券</option>
                         <option value="1">定向派发</option>
-                        <option value="2">抽奖赠券</option>
+                        <!--<option value="2">抽奖赠券</option>-->
                         <option value="3">街边派送</option>
                     </select>
                 </div>
@@ -80,17 +99,17 @@
                         <div class="layui-form-mid">送</div>
                         <div class="layui-input-inline" style="width: 140px">
                             <input type="text" class="layui-input" name="disturbInput" id="FreeCouponCount">
-                            <input type="text" class="layui-input layui-hide" name="disturbInput" id="JackpotCount">
+                            <!--<input type="text" class="layui-input layui-hide" name="disturbInput" id="JackpotCount">-->
                             <span class="layui-unit" id="tips">张</span>
                         </div>
                         <!--<div class="layui-form-mid" id="tips">张</div>-->
                     </div>
-                    <div class="layui-inline layui-hide" id="JackpotActiveBox">
-                        <label class="layui-form-label">抽奖活动</label>
-                        <div class="layui-input-inline" style="width: 142px">
-                            <select name="" id="JackpotActive" lay-filter="JackpotActive"></select>
-                        </div>
-                    </div>
+                    <!--<div class="layui-inline layui-hide" id="JackpotActiveBox">-->
+                        <!--<label class="layui-form-label">抽奖活动</label>-->
+                        <!--<div class="layui-input-inline" style="width: 142px">-->
+                            <!--<select name="" id="JackpotActive" lay-filter="JackpotActive"></select>-->
+                        <!--</div>-->
+                    <!--</div>-->
                 </li>
             </ul>
 
@@ -965,6 +984,7 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     layui.addcss('layui_font.css');
 </script>
@@ -984,7 +1004,11 @@
             , {field: 'CouponTypeStr', title: '券类别', align: 'center'}
             , {field: 'PublishCount', title: '发行张数', align: 'center'}
             , {field: 'NotAssignedCount', title: '未分配数量', align: 'center'}
-            , {field: 'AssignedCount', title: '已调拨数量', align: 'center', templet: '#assigned'}
+            , {field: 'AssignedCount', title: '已调拨数量', align: 'center', templet: function (d) {
+                    return  '<div class="layui-progress layui-progress-big" lay-showPercent="yes"  data-id="'+d.AssignedCount+'" id="'+d.ID+'" name="couponSendBtn">' +
+                        '<div class="layui-progress-bar layui-bg-green" lay-percent="'+d.AssignedCount/d.PublishCount*100+'%" ></div>' +
+                        '</div>'
+                }}
             , {field: 'SendCount', title: '派发张数', align: 'center'}
             , {field: 'UseCount', title: '已使用张数', align: 'center'}
             , {field: 'ActivatedCount', title: '剩余张数', align: 'center'}
@@ -1023,11 +1047,26 @@
     let noArrSend = [];
     let noArrSendText = '已选择号码段:';
 
-    layui.use(['form', 'layer', 'table', 'laydate'], () => {
+    layui.use(['form', 'layer', 'table', 'laydate','element'], () => {
         let form = layui.form;
         let layer = layui.layer;
         let table = layui.table;
         let laydate = layui.laydate;
+        let element=layui.element;
+
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'couponInfoSearch',
+            'processname': 'couponInfoSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'xc':xc,
+            'laydate':laydate,
+            'parm':parm
+        })
         $('#toaddNextNo').click(function () {
             indexLayer = layer.open({
                 title: '添加号码段，点击可再次添加',
@@ -1463,7 +1502,7 @@
 
         });
         //调拨信息明细
-        $('body').on('click', 'button[name="couponSendBtn"]', function () {
+        $('body').on('click', 'div[name="couponSendBtn"]', function () {
             let _couponid = $(this).prop('id');
             let _AssignedCount = $(this).attr('data-id');
             let obj = {
@@ -2136,10 +2175,14 @@
     {{#  } }}
 </script>
 <script type="text/html" id="assigned">
-    <button type="button" class="layui-btn layui-btn-xs layui-bg-orange" name='couponSendBtn'
-            data-id="{{d.AssignedCount}}" style="width: 80px" id="{{d.ID}}"><i
-            class="layui-icon layui-icon-zcamber-l"></i>{{d.AssignedCount}}
-    </button>
+
+    <div class="layui-progress layui-progress-big" lay-showPercent="yes"  data-id="{{d.AssignedCount}}" id="{{d.ID}}">
+        <div class="layui-progress-bar layui-bg-green" lay-percent="{{d.AssignedCount/d.PublishCount}}" ></div>
+    </div>
+    <!--<button type="button" class="layui-btn layui-btn-xs layui-bg-orange" name='couponSendBtn'-->
+            <!--data-id="{{d.AssignedCount}}" style="width: 80px" id="{{d.ID}}"><i-->
+            <!--class="layui-icon layui-icon-zcamber-l"></i>{{d.AssignedCount}}-->
+    <!--</button>-->
 </script>
 <script type="text/html" id="barDemo2">
     {{# if(d.IsLock==1){ }}

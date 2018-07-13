@@ -42,14 +42,14 @@ namespace XCCloudWebBar.Pay.WeiXinPay.Business
             WxPayData data = new WxPayData();
             data.SetValue("body", subject);//商品描述
             data.SetValue("attach", order.Note);//附加数据
-            data.SetValue("out_trade_no", order.OrderID);//订单号
+            data.SetValue("out_trade_no", order.ID);//订单号
             //data.SetValue("out_trade_no", WxPayApi.GenerateOutTradeNo());//订单号
             data.SetValue("total_fee", Convert.ToInt32(amount * 100));//总金额，单位：分
             data.SetValue("time_start", DateTime.Now.ToString("yyyyMMddHHmmss"));//交易起始时间
             data.SetValue("time_expire", DateTime.Now.AddMinutes(10).ToString("yyyyMMddHHmmss"));//交易结束时间
-            data.SetValue("goods_tag", order.OrderID.ToString());//商品标记
+            data.SetValue("goods_tag", order.ID.ToString());//商品标记
             data.SetValue("trade_type", "NATIVE");//交易类型
-            data.SetValue("product_id", order.OrderID);//商品ID，商户自定义
+            data.SetValue("product_id", order.ID);//商品ID，商户自定义
 
             WxPayData result = WxPayApi.UnifiedOrder(data);//调用统一下单接口
             //qr_url = result.GetValue("code_url").ToString();//获得统一下单接口返回的二维码链接

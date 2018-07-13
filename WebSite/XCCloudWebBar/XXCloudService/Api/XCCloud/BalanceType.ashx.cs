@@ -45,7 +45,7 @@ namespace XXCloudService.Api.XCCloud
                                 join b in
                                     (
                                         from b in Data_BalanceType_StoreListService.N.GetModels()
-                                        join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID
+                                        join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.ID
                                         select new { b.BalanceIndex, c.StoreName }
                                         ) on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()

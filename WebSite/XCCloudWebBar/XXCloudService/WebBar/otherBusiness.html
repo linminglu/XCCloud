@@ -163,7 +163,7 @@
     </div>
     <!--查询获取卡列表-->
     <modal v-model="cardListModel" title="温馨提示！" width="900">
-        <row>
+        <row v-if="cardListModel">
             <i-col span="12">
                 <i-input v-model="inquireCard.mobileCode">
                     <span slot="prepend" style="width: 160px">验证码：</span>
@@ -174,7 +174,7 @@
                 <i-button type="button" class="readCard" @click="getMember('2')">按手机号查询</i-button>
             </i-col>
         </row>
-        <row>
+        <row v-if="cardListModel">
             <i-col span="24">
                 <table class="table table-bordered">
                     <tr v-for="(item,index) in cardList" @click="radioCard(index)">
@@ -476,18 +476,8 @@
                         <input type="text" class="form-control" placeholder="订单号" v-model="orderInquiry.orderNo"/>
                     </div>
                 </div>
-                <date-picker type="daterange" split-panels placeholder="Select date" format="yyyy-MM-dd" style="width: 200px" v-model="orderInquiry.dataTime"></date-picker>
-
-                <!-- <div class="input-group date form_date col-md-4 menu-style padding_right" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
-                    <span class="input-group-addon">销售日期：</span>
-                    <input class="form-control"  type="text" v-model="orderInquiry.stratTime" readonly>
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                </div>
-                <div class="input-group date form_date col-md-3 menu-style padding_left" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
-                    <span class="input-group-addon">至</span>
-                    <input class="form-control"  type="text" v-model="orderInquiry.endTime" readonly>
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                </div> -->
+                <date-picker type="daterange" split-panels placeholder="Select date" format="yyyy-MM-dd" style="width: 200px" @on-change="timechoose" editable="true"></date-picker>
+                
                 <div class="col-md-1 col-sm-1 menu-style">
                     <button type="button" class="btn btn-primary" @click="getOrders">查询</button>
                 </div>
@@ -855,755 +845,47 @@
         </row>
         
         
-    <div class="container-fluid">
-        <div class="row">
-            <ul class="menu">
-                <li class="menuli" tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-batai"></i>收银台</span>
-                    <div class="content">
-                    </div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-jingdianmenpiao"></i>终端扣门票</span>
-                    <div class="content"><span class="close">x</span>
-                        <div class="menu-main container-fluid">
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="col-md-4 col-sm-4 menu-style">
-                                        <div class="input-group col-lg-12 col-md-12 menu-style">
-                                            <span class="input-group-addon">扣费项目：</span>
-                                            <input type="text" class="form-control" placeholder="扣费项目"/>
-                                        </div>
-                                        <div class="input-group col-lg-12 col-md-12 menu-style">
-                                            <span class="input-group-addon">会员卡号：</span>
-                                            <input type="text" class="form-control" placeholder="门票票码"/>
-                                            <div class="input-group-btn">
-                                                <button type="button" class="btn btn-default">读卡</button>
-                                            </div>
-                                        </div>
-                                        <div class="input-group col-lg-12 col-md-12 menu-style">
-                                            <span class="input-group-addon">门票票码：</span>
-                                            <input type="text" class="form-control" placeholder="门票票码"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-3 menu-style">
-                                        <div class="radio col-md-12 col-sm-12 menu-style">
-                                            <label class="menu-radio">
-                                                <input type="radio" name="optionsRadios" value="option1" checked>
-                                                入闸
-                                            </label>
-                                            <label class="menu-radio">
-                                                <input type="radio" name="optionsRadios" value="option2">
-                                                出闸
-                                            </label>
-                                        </div>
-                                        <div class="input-group col-lg-12 col-md-12 menu-style">
-                                            <span class="input-group-addon">验票次数：</span>
-                                            <input type="text" class="form-control" placeholder="次数"/>
-                                        </div>
 
-                                    </div>
-                                    <div class="col-md-5 col-sm-5 menu-style">
-                                        <label class="col-sm-12 control-label menu-style">使用说明</label>
-                                        <div class="col-sm-12 menu-style">
-                                            <textarea class="form-control" rows="3"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 col-sm-12 margin1">
-                                    <table class="table table-bordered">
-                                        <thead style="background: #f5f5f5">
-                                        <tr>
-                                            <th>门票</th>
-                                            <th>类型</th>
-                                            <th>购买时间</th>
-                                            <th>过期时间</th>
-                                            <th> 总次数</th>
-                                            <th>已使用</th>
-                                            <th>剩余次数</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr v-for="items in refundData">
-                                            <td>{{items.balanceType}}</td>
-                                            <td>{{items.balance}}</td>
-                                            <td>{{items.balance1}}</td>
-                                            <td>{{items.balance2}}</td>
-                                            <td>{{items.balance3}}</td>
-                                            <td>{{items.balance4}}</td>
-                                            <td>{{items.balance5}}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-peitongruxue"></i>陪同票</span>
-                    <div class="content"><span class="close">x</span>
-                        <div class="menu-main container-fluid">
-                            <div class="row menu-marginTop">
-                                
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title"> <i class="icon iconfont icon-jishi"></i>计时票补、退款</span>
-                    <div class="content"><span class="close">x</span>
-                        <div class="menu-main container-fluid">
-                            <div class="row menu-marginTop">
-                                <div class="col-md-3 col-sm-3"></div>
-                                <div class="col-md-6 col-sm-6 menu-style">
-                                    <div class="input-group col-md-12 col-sm-12 menu-style">
-                                        <span class="input-group-addon">门票票码：</span>
-                                        <input type="text" class="form-control" placeholder="门票票码"/>
-                                    </div>
-                                    <div class="input-group col-md-12 col-sm-12 menu-style">
-                                        <span class="input-group-addon">门票名称：</span>
-                                        <input type="text" class="form-control" placeholder="门票名称"/>
-                                    </div>
-                                    <div class="input-group col-md-12 col-sm-12 menu-style">
-                                        <span class="input-group-addon">入闸时间：</span>
-                                        <input type="text" class="form-control" placeholder="入闸时间"/>
-                                    </div>
-                                    <div class="input-group col-md-12 col-sm-12 menu-style">
-                                        <span class="input-group-addon">已缴费：</span>
-                                        <input type="text" class="form-control" placeholder="已缴费"/>
-                                    </div>
-                                    <div class="input-group col-md-12 col-sm-12 menu-style">
-                                        <span class="input-group-addon">入闸消费：</span>
-                                        <input type="text" class="form-control" placeholder="入闸消费"/>
-                                    </div>
-                                    <div class="input-group col-md-12 col-sm-12 menu-style">
-                                        <span class="input-group-addon">出闸缴费：</span>
-                                        <input type="text" class="form-control" placeholder="出闸缴费"/>
-                                    </div>
-                                    <div class="col-md-12 col-sm-12 menu-btn">
-                                        <button type="button" class="btn btn-primary">退费</button>
-                                        <button type="button" class="btn btn-primary">补交</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-3"></div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title" @click="clearUp"><i class="icon iconfont icon-qinglikehu"></i>手工清场</span>
-                    <div class="content"><span class="close">x</span>
-                        <div class="content"><span class="close">x</span>
-                            <div class="menu-main container-fluid">
-                                <div class="row menu-marginTop">
-                                    <div class="col-md-12 col-sm-12 menu-style">
-                                        <div class="input-group col-md-5 col-sm-5 menu-style">
-                                            <span class="input-group-addon">扣费项目：</span>
-                                            <i-select v-model="siteClearing.selectValue" style="width:200px">
-                                                <i-option v-for="item in siteClearing.optionList" :value="item.ProjectId" :key="item.ProjectId">{{ item.ProjectName }}</i-option>
-                                            </i-select>
-                                        </div>
-                                        <div class="col-md-4 col-sm-3 menu-style">
-                                            <radio-group v-model="siteClearing.radioValue">
-                                                <radio label="0">今天</radio>
-                                                <radio label="1">全部日期</radio>
-                                            </radio-group>
-                                            <!-- <label class="menu-radio margin-02">
-                                                <input type="radio" name="optionsRadios" value="option1" checked>
-                                                今天
-                                            </label>
-                                            <label class="menu-radio margin-02">
-                                                <input type="radio" name="optionsRadios" value="option2">
-                                                全部日期
-                                            </label> -->
-                                        </div>
-                                        <div class="col-md-3 col-sm-2 menu-style width50">
-                                                <i-button @click="sluiceList('1')">刷新</i-button>
-                                            <!-- <button type="button" class="btn btn-info"></button> -->
-                                        </div>
-                                        <div class="col-md-12 col-sm-12 menu-style" v-if="siteClearing.clearUpShow">
-                                                <i-table height="360" ref="selection" :columns="historyColumns" :data="historyData" @on-select-all="AllData" @on-selection-change="tableChecked"></i-table>
-                                                <div style="margin: 10px;overflow: hidden">
-                                                    <div style="float: right;">
-                                                        <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage"></Page>
-                                                    </div>
-                                                </div>
-                                                <i-button @click="handleSelectAll(true)">全选</i-button>
-                                                <i-button @click="clearNotSluice">清场</i-button>
-                                        </div>
-                                    </div>
-                                    <!-- <div class="col-md-12 col-sm-12 margin1">
-                                        <i-table ref="selection" :columns="historyColumns" :data="historyData" @on-select-all="AllData"></i-table>
-                                    </div>
-                                    <div style="margin: 10px;overflow: hidden">
-                                        <div style="float: right;">
-                                            <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage"></Page>
-                                        </div>
-                                    </div>
-                                    <Button @click="handleSelectAll(true)">批量清场</Button> -->
-                                    <!-- <div class="col-md-12 col-sm-12 margin1">
-                                        <table id="NotSluiceList" class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th data-field="ProjectName">项目名称</th>
-                                                    <th data-field="Payment">扣费方式</th>
-                                                    <th data-field="MemberName">会员</th>
-                                                    <th data-field="InTime">进场时间</th>
-                                                    <th data-field="Expenses">入闸扣费</th>
-                                                    <th data-field="UnpaidAmount">待缴场内消费</th>
-                                                    <th data-field="TotalAmount">总费用</th>
-                                                    <th data-field="orderStatusName">清场</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                        <table class="table table-bordered">
-                                            <thead style="background: #f5f5f5">
-                                            <tr>
-                                                <th>项目名称</th>
-                                                <th>扣费方式</th>
-                                                <th>会员</th>
-                                                <th>进场时间</th>
-                                                <th>入闸扣费</th>
-                                                <th>待缴场内消费</th>
-                                                <th>总费用</th>
-                                                <th>清场</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(item,index) in siteClearing.NotSluiceList">
-                                                <td>{{item.ProjectName}}</td>
-                                                <td>{{item.Payment}}</td>
-                                                <td>{{item.MemberName}}</td>
-                                                <td>{{item.InTime}}</td>
-                                                <td>{{item.Expenses}}</td>
-                                                <td>{{item.UnpaidAmount}}</td>
-                                                <td>{{item.TotalAmount}}</td>
-                                                <td><button type="button" class="btn btn-info">清场</button></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div> -->
-                                    <!-- <div class="col-md-12 col-sm-12 menu-r-btn"><button type="button" class="btn btn-primary">批量清场</button></div> -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-dingdanchaxun1"></i>订单查询</span>
-                    <div class="content"><span class="close">x</span>
-                        <div class="menu-main container-fluid">
-                            <div class="row menu-marginTop">
-                                <div class="col-md-4 col-sm-4 menu-style">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">订单号：</span>
-                                        <input type="text" class="form-control" placeholder="订单号" v-model="orderInquiry.orderNo"/>
-                                    </div>
-                                </div>
-                               
-                                <div class="input-group date form_date col-md-4 menu-style padding_right" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
-                                    <span class="input-group-addon">销售日期：</span>
-                                    <input class="form-control"  type="text" v-model="orderInquiry.stratTime" readonly>
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                                </div>
-                                <div class="input-group date form_date col-md-3 menu-style padding_left" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
-                                    <span class="input-group-addon">至</span>
-                                    <input class="form-control"  type="text" v-model="orderInquiry.endTime" readonly>
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                                </div>
-                                <div class="col-md-1 col-sm-1 menu-style">
-                                    <button type="button" class="btn btn-primary" @click="getOrders">查询</button>
-                                </div>
-
-                                <div class="col-md-12 col-sm-12 heightOver">
-                                    <div class="col-md-6 col-sm-6 menu-style">
-                                        <table id="table" class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th data-field="orderId">订单号</th>
-                                                    <th data-field="saleTime">销售日期</th>
-                                                    <th data-field="icCardId">会员</th>
-                                                    <th data-field="payCount">支付金额</th>
-                                                    <th data-field="orderStatusName">状态</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                        <!-- <table class="table table-bordered">
-                                            <thead style="background: #f5f5f5">
-                                            <tr>
-                                                <th>订单号</th>
-                                                <th>销售日期</th>
-                                                <th>会员</th>
-                                                <th>支付金额</th>
-                                                <th>状态</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(item,index) in orderInquiry.orderListData" @click.stop="orderDetails(index)">
-                                                <td>{{item.orderId}}</td>
-                                                <td>{{item.saleTime}}</td>
-                                                <td>{{item.icCardId}}</td>
-                                                <td>{{item.payCount}}</td>
-                                                <td>{{item.orderStatusName}}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table> -->
-                                        <table class="table table-bordered">
-                                                <thead style="background: #f5f5f5">
-                                                <tr>
-                                                    <th>支付渠道</th>
-                                                    <th>支付类别</th>
-                                                    <th>支付</th>
-                                                    <th>优惠</th>
-                                                    <th>流水号</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr v-for="(item,index) in orderInquiry.orderPayData">
-                                                    <td>{{item.balanceType}}</td>
-                                                    <td>{{item.balanceIndex}}</td>
-                                                    <td>{{item.payCount}}</td>
-                                                    <td>{{item.balance2}}</td>
-                                                    <td>{{item.balance3}}</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                    </div>
-                                    <div class="col-md-6 col-sm-6 order-style">
-                                        <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon otherAddon">订单号：</span>
-                                            <input type="text" class="form-control" placeholder="订单号" v-model="orderInquiry.orderNo"/>
-                                        </div>
-                                        <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon otherAddon">销售日期：</span>
-                                            <input type="text" class="form-control" placeholder="销售日期" v-model="orderInquiry.theData"/>
-                                        </div>
-                                        <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon otherAddon">应付金额：</span>
-                                            <input type="text" class="form-control" placeholder="应付金额" v-model="orderInquiry.payable"/>
-                                        </div>
-                                        <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon otherAddon">优惠金额：</span>
-                                            <input type="text" class="form-control" placeholder="优惠金额" v-model="orderInquiry.preferential"/>
-                                        </div>
-                                        <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon otherAddon">实付金额：</span>
-                                            <input type="text" class="form-control" placeholder="实付金额" v-model="orderInquiry.realPay"/>
-                                        </div>
-                                        <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon otherAddon">收银员：</span>
-                                            <input type="text" class="form-control" placeholder="收银员" v-model="orderInquiry.cashier"/>
-                                        </div>
-                                        <div class="input-group col-md-12 col-sm-12 order-style">
-                                            <span class="input-group-addon otherAddon">备注：</span>
-                                            <textarea class="form-control" rows="2" v-model="orderInquiry.note"></textarea>
-                                        </div>
-                                        <div class="col-md-12 col-sm-12 order-style">
-                                            <table class="table table-bordered">
-                                                <thead style="background: #f5f5f5">
-                                                <tr>
-                                                    <th></th>
-                                                    <th>商品名称</th>
-                                                    <th>商品类别</th>
-                                                    <th>购买数量</th>
-                                                    <th>单价</th>
-                                                    <th>小计</th>
-                                                    <th>税率（%）</th>
-                                                    <th>税费</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr v-for="(item,index) in orderInquiry.goodsData">
-                                                    <td><input type="checkbox" :value="index" v-model="orderInquiry.exitChecked" @click.stop=""></td>
-                                                    <td>{{item.foodName}}</td>
-                                                    <td>{{item.category}}</td>
-                                                    <td>{{item.saleCount}}</td>
-                                                    <td>{{item.singlePrice}}</td>
-                                                    <td>{{item.salePrice}}</td>
-                                                    <td>{{item.taxFee}}</td>
-                                                    <td>{{item.taxTotal}}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td></td>
-                                                    <td>合计</td>
-                                                    <td></td>
-                                                    <td>{{orderInquiry.saleCount}}</td>
-                                                    <td></td>
-                                                    <td>{{orderInquiry.salePrice}}</td>
-                                                    <td></td>
-                                                    <td>{{orderInquiry.taxTotal}}</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                            
-                                        </div>
-                                        <div class="col-md-12 col-sm-12 order-btn">
-                                            <div class="col-md-3 col-sm-3"></div>
-                                            <div class="col-md-3 col-sm-3">
-                                                <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled" @click="exitFood">退货</button>
-                                                <!-- :disabled="orderInquiry.disabled" -->
-                                            </div>
-                                            <div class="col-md-3 col-sm-3">
-                                                <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled">重打小票</button>
-                                            </div>
-                                            <div class="col-md-3 col-sm-3">
-                                                <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled">重打门票</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-lipinhuigou"></i>礼品回购</span>
-                    <div class="content">
-                        <span class="close">x</span>
-                        <div class="menu-main container-fluid">
-                            <div class="row menu-marginTop">
-                                <div class="col-md-12 col-sm-12 margin1">
-                                    <div class="input-group col-md-6 col-sm-6 menu-style">
-                                        <input type="text" class="form-control" placeholder="条码号/商品名称..." aria-describedby="basic-addon2">
-                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-search"></span></span>
-                                    </div>
-                                    <div class="col-md-2 col-sm-2"></div>
-                                    <div class="input-group col-md-3 col-sm-3 menu-style">
-                                        <input type="text" class="form-control" placeholder="会员卡号" aria-describedby="basic-addon2">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button">读卡</button>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="col-md-7 col-sm-7 margin1">
-                                    <table class="table table-bordered">
-                                        <thead style="background: #f5f5f5">
-                                        <tr>
-                                            <th>商品条码</th>
-                                            <th>商品名称</th>
-                                            <th>零售价</th>
-                                            <th>回购代币数</th>
-                                            <th>回购彩票数</th>
-                                            <th>回购积分数</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr v-for="items in refundData">
-                                            <td>{{items.balanceType}}</td>
-                                            <td>{{items.balance}}</td>
-                                            <td>{{items.balance1}}</td>
-                                            <td>{{items.balance2}}</td>
-                                            <td>{{items.balance3}}</td>
-                                            <td>{{items.balance4}}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-md-5 col-sm-5 margin1">
-                                    <div class="col-md-12 col-sm-12 menu-style">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">会员姓名：</span>
-                                            <input type="text" class="form-control" placeholder="会员姓名"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-sm-12 menu-style">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">会员级别：</span>
-                                            <input type="text" class="form-control" placeholder="会员级别"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-sm-12 margin1">
-                                        <table class="table table-bordered">
-                                            <thead style="background: #f5f5f5">
-                                            <tr>
-                                                <th>余额种类</th>
-                                                <th>余额</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="items in refundData">
-                                                <td>{{items.balanceType}}</td>
-                                                <td>{{items.balance}}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 col-sm-12 margin1">
-                                    <div class="col-md-4 col-sm-4 menu-style">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">兑换种类：</span>
-                                            <input type="text" class="form-control" placeholder="兑换种类"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4 menu-style">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">兑换数量：</span>
-                                            <input type="text" class="form-control" placeholder="兑换种类"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4 menu-style">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">兑换价值：</span>
-                                            <input type="text" class="form-control" placeholder="兑换种类"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-sm-12 menu-r-btn"><button type="button" class="btn btn-primary">兑换</button></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-icon"></i>会员过户操作</span>
-                    <div class="content">
-                        <span class="close">x</span>
-                        <div class="menu-main container-fluid">
-                            <div class="row menu-marginTop">
-                                <div class="col-lg-4 col-md-4">
-                                    
-                                    <div class="btn-group dropup col-lg-12 col-md-12">
-                                        <button type="button" class="btn btn-default">转出卡卡号：</button>
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu cardChoosesty">
-                                            <li @click="transferChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span><em>读卡器</em></li>
-                                            <li @click="transferChoose('1')"><span class="iconfont icon-3"></span><em>手动输入</em></li>
-                                        </ul>
-                                        <input  class="form-control" placeholder="请输入会员姓名" v-model="transferData.fromICCardId"/>
-                                        <button type="button" class="btn btn-default readCard" :disabled="loading" @click="fromICCardIdReadCard">{{transferData.dropChooseTxt1}}</button>
-                                    </div> 
-                                    <div class="input-group col-lg-12 col-md-12 tab-style">
-                                        <span class="input-group-addon addonWidth">转出卡密码：</span>
-                                        <input type="password" class="form-control" v-model="transferData.pwd"/>
-                                    </div>
-                                    <div class="btn-group dropup col-lg-12 col-md-12">
-                                        <button type="button" class="btn btn-default">接收卡卡号：</button>
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu cardChoosesty">
-                                            <li @click="transferChoose('2')"><span class="iconfont icon-icqiaduqiaqi"></span><em>读卡器</em></li>
-                                            <li @click="transferChoose('3')"><span class="iconfont icon-3"></span><em>手动输入</em></li>
-                                        </ul>
-                                        <input  class="form-control" placeholder="请输入会员姓名" v-model="transferData.toICCardId"/>
-                                        <button type="button" class="btn btn-default readCard" :disabled="loading" @click="toICCardIdReadCard">{{transferData.dropChooseTxt2}}</button>
-                                    </div> 
-                                    <!-- <div class="input-group col-lg-12 col-md-12 tab-style">
-                                        <span class="input-group-addon addonWidth">接收卡卡号：</span>
-                                        <input  class="form-control" v-model="transferData.toICCardId"/>
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn btn-default readCard" :disabled="loading" @click="toICCardIdReadCard">读取</button>
-                                        </div>
-                                    </div> -->
-                                    <div class="col-lg-8 col-md-8 tab-style">
-                                        
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 tab-style">
-                                        <button type="button" class="btn btn-default width100" :disabled="loading" @click="memberTransfer">转换</button>
-                                    </div>
-                                </div>
-                                <div class="col-lg-8 col-md-8">
-                                    <div class="row">
-                                        <div class="col-lg-10 col-md-10 tab-min">
-                                            <div class="tab-text col-lg-12 col-md-12">
-                                                <div class="input-group col-lg-4 col-md-6">
-                                                    <span class="input-group-addon addonWidth">手机号码：</span>
-                                                    <input   class="form-control" v-model="memberInfo.Mobile" maxlength="11" placeholder="请输入手机号"/>
-                                                </div>
-                                                <div class="input-group col-lg-4 col-md-6">
-                                                    <span class="input-group-addon addonWidth">证件号码：</span>
-                                                    <input   class="form-control" v-model="memberInfo.IDCardNo"/>
-                                                </div>
-                                                <div class="input-group col-lg-4 col-md-6">
-                                                    <span class="input-group-addon addonWidth">会员姓名：</span>
-                                                    <input   class="form-control" v-model="memberInfo.UserName" placeholder="请输入会员姓名"/>
-                                                </div>
-                                            </div>
-                                            <div class="tab-text col-lg-12 col-md-12">
-                                                <div class="input-group col-lg-4 col-md-6">
-                                                    <span class="input-group-addon addonWidth">生日：</span>
-                                                    <input    class="form-control" v-model="memberInfo.Birthday" readonly/>
-                                                </div>
-                                                <div class="input-group col-lg-4 col-md-6 marg1200">
-                                                    <span class="input-group-addon addonWidth">性别：</span>
-                                                    <select  class="form-control" v-model="memberInfo.Gender">
-                                                        <option value="0">男</option>
-                                                        <option value="1">女</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="tab-text col-lg-12 col-md-12">
-                                                <div class="input-group col-lg-12 col-md-12">
-                                                    <span class="input-group-addon addonWidth">备注：</span>
-                                                    <textarea class="form-control" v-model="memberInfo.Note"></textarea>
-                                                </div>
-                                            </div>
-                                            <!-- <div class="tab-text col-lg-12 col-md-12">
-                                                <div class="input-group col-lg-3 col-md-4">
-                                                    <span class="input-group-addon addonWidth">允许投币：</span>
-                                                    <div class="switchZdy" @click="switchFnc('0')">
-                                                        <div :class="[onSwitch0 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
-                                                        <div class="col-lg-6 col-md-6">允许</div>
-                                                        <div class="col-lg-6 col-md-6">禁止</div>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group col-lg-3 col-md-4">
-                                                    <span class="input-group-addon addonWidth">允许退币：</span>
-                                                    <div class="switchZdy" @click="switchFnc('1')">
-                                                        <div :class="[onSwitch1 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
-                                                        <div class="col-lg-6 col-md-6">允许</div>
-                                                        <div class="col-lg-6 col-md-6">禁止</div>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group col-lg-3 col-md-4">
-                                                    <span class="input-group-addon addonWidth">允许售币：</span>
-                                                    <div class="switchZdy" @click="switchFnc('2')">
-                                                        <div :class="[onSwitch2 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
-                                                        <div class="col-lg-6 col-md-6">允许</div>
-                                                        <div class="col-lg-6 col-md-6">禁止</div>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group col-lg-3 col-md-4">
-                                                    <span class="input-group-addon addonWidth">允许存币：</span>
-                                                    <div class="switchZdy" @click="switchFnc('3')">
-                                                        <div :class="[onSwitch3 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
-                                                        <div class="col-lg-6 col-md-6">允许</div>
-                                                        <div class="col-lg-6 col-md-6">禁止</div>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-                                            <!-- <div class="tab-text col-lg-12 col-md-12">
-                                                <div class="input-group col-lg-3 col-md-4">
-                                                    <span class="input-group-addon addonWidth">允许送币：</span>
-                                                    <div class="switchZdy" @click="switchFnc('4')">
-                                                        <div :class="[onSwitch4 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
-                                                        <div class="col-lg-6 col-md-6">允许</div>
-                                                        <div class="col-lg-6 col-md-6">禁止</div>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group col-lg-3 col-md-4">
-                                                    <span class="input-group-addon addonWidth">允许兑币：</span>
-                                                    <div class="switchZdy" @click="switchFnc('5')">
-                                                        <div :class="[onSwitch5 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
-                                                        <div class="col-lg-6 col-md-6">允许</div>
-                                                        <div class="col-lg-6 col-md-6">禁止</div>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group col-lg-3 col-md-4">
-                                                    <span class="input-group-addon addonWidth">允许续卡：</span>
-                                                    <div class="switchZdy" @click="switchFnc('6')">
-                                                        <div :class="[onSwitch6 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
-                                                        <div class="col-lg-6 col-md-6">允许</div>
-                                                        <div class="col-lg-6 col-md-6">禁止</div>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-                                        </div>
-                                        <div class="mcImg col-lg-2 col-md-2">
-                                            <img :src="memberInfo.Avatar" alt="会员头像">
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top: 1em;">
-                                        <div class="col-lg-4 col-md-4">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr class="tableCenter">
-                                                        <th  colspan="1" rowspan="2" data-valign="middle">余额种类</th>
-                                                        <th colspan="3" data-valign="middle">余额</th>
-                                                    </tr>
-                                                    <tr class="tableCenter">
-                                                        <th>正价</th>
-                                                        <th>赠送</th>
-                                                        <th>总计</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="(item,index) in balanceData" :key="index">
-                                                        <td class="billingSty">{{item.BalanceName}}</td>
-                                                        <td class="billingColor">{{item.Balance}}</td>
-                                                        <td class="billingColor">{{item.BalanceFree}}</td>
-                                                        <td class="billingColor">{{item.TotalBalance}}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="col-lg-8 col-md-8">
-                                            <div class="col-lg-9 col-md-9">
-                                                <ul class="nav nav-tabs" role="tablist">
-                                                    <li role="presentation" class="active"><a href="#ViceCard" aria-controls="ViceCard" role="tab" data-toggle="tab">主卡信息</a></li>
-                                                    <li role="presentation" v-for="(item,index) in childCardList" :key="index">
-                                                        <a :href="item.titleHref" :aria-controls="item.titleIndex" role="tab" data-toggle="tab">{{item.indexTxt}}</a>
-                                                    </li>
-                                                </ul>
-                                                <div class="tab-content">
-                                                    <div role="tabpanel" class="tab-pane active" id="ViceCard">
-                                                        <div class="col-lg-6 col-md-6">
-                                                            <p class="cardListSty"><span class="cardListSpan">卡号：</span><span class="cardListTxt">{{memberInput.ICCardId}}</span></p>
-                                                            <p class="cardListSty"><span class="cardListSpan">到期日期：</span><span class="cardListTxt">{{memberInput.EndDate}}</span></p>
-                                                            <p class="cardListSty"><span class="cardListSpan">押金：</span><span class="cardListTxt">{{memberInput.Deposit}}</span></p>
-                                                            <p class="cardListSty"><span class="cardListSpan">级别：</span><span class="cardListTxt">{{memberInput.LevelName}}</span></p>
-                                                            <p class="cardLockList" v-for="(item,index) in memberInput.LockList"><span class="colorRed">{{item.LockExplain}}</span><span @click="cardUnLock(index)" class="iconfont icon-jiesuo cardLockUp">解锁</span></p>
-                                                        </div>
-                                                    
-                                                        <div class="col-lg-3 col-md-3">
-                                                            <img class="cardListImg" :src="memberInput.CardAvatar" alt="会员头像">
-                                                        </div>
-                                                    </div>
-                                                    <div role="tabpanel" class="tab-pane" v-for="(item,index) in childCardList" :key="index" :id="item.titleIndex" >
-                                                        <div class="col-lg-4 col-md-4">
-                                                            <p class="cardListSty"><span class="viceSty">卡号：</span><span class="cardListTxt">{{item.ChildICCardId}}</span></p>
-                                                            <p class="cardListSty"><span class="viceSty">类别：</span><span class="cardListTxt">{{item.CardShape}}</span></p>
-                                                            <p class="cardListSty"><span class="viceSty">押金：</span><span class="cardListTxt">{{item.Deposit}}元</span></p>
-                                                        </div>
-                                                        <div class="col-lg-4 col-md-4">
-                                                            <p class="cardListSty"><span class="viceSty">姓名：</span><span class="cardListTxt">{{item.UserName}}</span></p>
-                                                            <p class="cardListSty"><span class="viceSty">性别：</span><span class="cardListTxt">{{item.Gender}}</span></p>
-                                                            <p class="cardListSty"><span class="viceSty">生日：</span><span class="cardListTxt">{{item.Birthday}}元</span></p>
-                                                        </div>
-                                                        <div class="col-lg-3 col-md-3">
-                                                            <img class="cardListImg" :src="item.Avatar" alt="会员头像">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-jiaobanguanli"></i>交班总结</span>
-                    <div class="content"><span class="close">x</span></div>
-                </li>
-                <li class="menuli" tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-jiabi"></i>吧台加币</span>
-                    <div class="content"><span class="close">x</span>
-
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
     
     <div class="footer">
-        <div class="btn-group dropup col-lg-3 col-md-3">
-            <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt1}}</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropChoosesty">
-                <li @click="dropChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span>读卡器</li>
-                <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
-                <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
-            </ul>
-            <input  class="form-control" placeholder="请输入会员姓名" v-model="inquireCard.keyInput"/>
-            <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt2}}</button>
-        </div>       
+        <row type="flex" justify="center" align="middle" class="code-row-bg">
+            <i-col span="1">
+                <dropdown trigger="click" style="margin-left: 20px;" placement="top" @on-click="dropChoose">
+                    <a href="javascript:void(0)">
+                        {{inquireCard.dropChooseTxt1}}
+                        <icon type="arrow-up-b"></icon>
+                    </a>
+                    <dropdown-menu slot="list">
+                        <dropdown-item name="0"><span class="iconfont icon-icqiaduqiaqi"></span>读卡器</dropdown-item>
+                        <dropdown-item name="1"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</dropdown-item>
+                        <dropdown-item name="2"><span class="iconfont icon-3"></span>手动输入</dropdown-item>
+                    </dropdown-menu>
+                </dropdown>
+            </i-col>
+            <i-col span="4">
+                <i-input v-model="inquireCard.keyInput">
+                    <span slot="append">{{inquireCard.dropChooseTxt2}}</span>
+                </i-input>
+            </i-col>
+            <i-col span="19">
+
+            </i-col>
+            
+        </row>
+        <!-- <div class="btn-group dropup col-lg-3 col-md-3">
+                
+        <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt1}}</button>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropChoosesty">
+            <li @click="dropChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span>读卡器</li>
+            <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
+            <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
+        </ul>
+        <input  class="form-control" placeholder="请输入会员姓名" v-model="inquireCard.keyInput"/>
+        <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt2}}</button>
+        </div>        -->
     </div>
 </div>
 
@@ -2085,12 +1367,11 @@
 				}
             },
 //			选择读卡方式
-            dropChoose:function(index){
+            dropChoose:function(name){
+                console.log(name)
                 var that = this;
-                
-				switch (index){
+				switch (name){
 					case "0":
-                        console.log(index)
                         that.inquireCard.dropChooseTxt1 = "读卡器";
                         that.inquireCard.dropChooseTxt2 = "读卡";
 					    break;
@@ -2461,7 +1742,16 @@
                     that.sluiceList("0")
                 }, 1000);
             },
-           
+//          时间选择
+            timechoose:function(e){
+                console.log(e);
+                if(e[0] == ""){
+                    this.orderInquiry.dataTime = ["",""];
+                }else{
+                    this.orderInquiry.dataTime = e;
+                }
+                console.log(this.orderInquiry.dataTime)
+            },
 //          刷新按钮
             sluiceList:function(type){
                 var that = this;

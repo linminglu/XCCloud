@@ -25,7 +25,7 @@ namespace XXCloudService.Api.XCCloud
         private bool getUserLogResponseModel(Base_UserInfo base_UserInfoModel, ref UserLogResponseModel userLogResponseModel, out string errMsg)
         {
             errMsg = string.Empty;
-            int userId = base_UserInfoModel.UserID;
+            int userId = base_UserInfoModel.ID;
             int userType = (int)base_UserInfoModel.UserType;
             int logType = (int)RoleType.XcUser; //默认普通员工登录
             int auditorId = base_UserInfoModel.Auditor ?? 0;
@@ -56,12 +56,12 @@ namespace XXCloudService.Api.XCCloud
                 merchId = base_UserInfoModel.MerchID;
                 var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId };
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "您所访问的门店不存在";
                     return false;
                 }
-                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.Tag = base_StoreInfoModel.StoreTag;
                 userLogResponseModel.MerchID = merchId;
@@ -79,12 +79,12 @@ namespace XXCloudService.Api.XCCloud
                 logType = (int)RoleType.MerchUser;
                 merchId = base_UserInfoModel.MerchID;
                 IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                if (!base_MerchantInfoService.Any(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "您所访问的商户不存在";
                     return false;
                 }
-                var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 var dataModel = new TokenDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.Tag = base_MerchantInfoModel.MerchTag;
@@ -172,12 +172,12 @@ namespace XXCloudService.Api.XCCloud
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
                     IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                    if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                    if (!base_MerchantInfoService.Any(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                     {
                         errMsg = "您所访问的商户不存在";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                    var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     tag = base_MerchantInfoModel.MerchTag;
                     var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                     userTokenKeyModel.DataModel = TokenDataModel;
@@ -185,12 +185,12 @@ namespace XXCloudService.Api.XCCloud
                 else if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                    if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                    if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                     {
                         errMsg = "您所访问的门店不存在";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                    var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     tag = base_StoreInfoModel.StoreTag;
                     var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), StoreID = storeId, MerchID = merchId };
                     userTokenKeyModel.DataModel = TokenDataModel;

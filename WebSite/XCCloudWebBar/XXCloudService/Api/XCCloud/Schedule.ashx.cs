@@ -121,7 +121,7 @@ namespace XXCloudService.Api.XCCloud
                             flw_Schedule_UserInfoService.UpdateModel(currScheduleUserInfoModel, false);
 
                             //通知所有吧台用户
-                            var openId = Base_UserInfoService.I.GetModels(p => p.UserID == userId).Select(o => o.OpenID).FirstOrDefault();
+                            var openId = Base_UserInfoService.I.GetModels(p => p.ID == userId).Select(o => o.OpenID).FirstOrDefault();
                             DoSchedulePush(openId, scheduleId, userId ?? 0, currScheduleModel.ScheduleName, currScheduleModel.OpenTime.Value, currScheduleModel.ShiftTime.Value, model.PayCount ?? 0, model.RealPay ?? 0, model.FreePay ?? 0);
                         }
 

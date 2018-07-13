@@ -238,8 +238,8 @@ namespace XXCloudService.Api.XCCloud
 
                 var storeTag = Base_StoreInfoService.I.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreTag).FirstOrDefault() ?? 0;
                 var paramId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("运营参数设定", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
-                var data_Parameter = from a in Dict_SystemService.N.GetModels(p => p.PID == paramId && p.MerchID == (storeTag + ""))
-                                     join b in Data_ParametersService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.DictKey equals b.System into b1
+                var data_Parameter = from a in Dict_SystemService.N.GetModels(p => p.PID == paramId && p.MerchID == (storeTag + "") && p.Enabled == 1)
+                                     join b in Data_ParametersService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.IsAllow == 1) on a.DictKey equals b.System into b1
                                      from b in b1.DefaultIfEmpty()
                                      select new 
                                      {
@@ -270,7 +270,8 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = dicParas.Get("storeId");
                 string system = dicParas.Get("system");
                 string isAllow = dicParas.Get("isAllow");
-                string pValue = dicParas.Get("pValue");
+                string pName = dicParas.Get("parameterName");
+                string pValue = dicParas.Get("parameterValue");
                 string note = dicParas.Get("note");
 
                 //验证参数信息
@@ -299,6 +300,7 @@ namespace XXCloudService.Api.XCCloud
                     data_ParameterModel.StoreID = storeId;
                     data_ParameterModel.System = system;
                     data_ParameterModel.IsAllow = !string.IsNullOrEmpty(isAllow) ? Convert.ToInt32(isAllow) : (int?)null;
+                    data_ParameterModel.ParameterName = pName;
                     data_ParameterModel.ParameterValue = pValue;
                     data_ParameterModel.Note = note;
                     if (!Data_ParametersService.I.Add(data_ParameterModel))
@@ -311,6 +313,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     var data_ParameterModel = data_Parameter.FirstOrDefault();
                     data_ParameterModel.IsAllow = !string.IsNullOrEmpty(isAllow) ? Convert.ToInt32(isAllow) : (int?)null;
+                    data_ParameterModel.ParameterName = pName;
                     data_ParameterModel.ParameterValue = pValue;
                     data_ParameterModel.Note = note;
                     if (!Data_ParametersService.I.Update(data_ParameterModel))

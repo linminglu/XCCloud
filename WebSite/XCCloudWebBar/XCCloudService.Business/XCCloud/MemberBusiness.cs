@@ -119,7 +119,7 @@ namespace XCCloudWebBar.Business.XCCloud
                     fmd.MemberName = member.UserName;
                     fmd.CardIndex = memberCard.ID;
                     fmd.ICCardID = memberCard.ICCardID;
-                    fmd.MemberLevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault().MemberLevelName;
+                    fmd.MemberLevelName = Data_MemberLevelService.I.GetModels(m => m.ID == memberCard.MemberLevelID).FirstOrDefault().MemberLevelName;
                     fmd.ChannelType = (int)MemberDataChannelType.吧台;
                     fmd.OperationType = operationType;
                     fmd.OPTime = DateTime.Now;
@@ -164,7 +164,7 @@ namespace XCCloudWebBar.Business.XCCloud
                     fmd.MemberName = member.UserName;
                     fmd.CardIndex = memberCard.ID;
                     fmd.ICCardID = memberCard.ICCardID;
-                    fmd.MemberLevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault().MemberLevelName;
+                    fmd.MemberLevelName = Data_MemberLevelService.I.GetModels(m => m.ID == memberCard.MemberLevelID).FirstOrDefault().MemberLevelName;
                     fmd.ChannelType = (int)MemberDataChannelType.吧台;
                     fmd.OperationType = operationType;
                     fmd.OPTime = DateTime.Now;

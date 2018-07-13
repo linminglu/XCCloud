@@ -233,7 +233,7 @@ namespace XXCloudService.Api.XCGameMana
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
                     }
-                    userId = userModel.UserID;
+                    userId = userModel.ID;
                 }
                 else
                 {

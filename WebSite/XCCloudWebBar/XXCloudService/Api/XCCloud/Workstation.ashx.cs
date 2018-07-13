@@ -228,7 +228,7 @@ namespace XXCloudService.Api.XCCloud
                             }).Union
                            (from a in Data_WorkstationService.N.GetModels(p => p.ID == id)
                             join b in Data_Food_WorkStationService.N.GetModels() on a.ID equals b.WorkStationID
-                            join c in Data_FoodInfoService.N.GetModels() on b.FoodID equals c.FoodID
+                            join c in Data_FoodInfoService.N.GetModels() on b.FoodID equals c.ID
                             join d in Dict_SystemService.N.GetModels() on c.FoodType equals d.ID into d1
                             from d in d1.DefaultIfEmpty()                            
                             select new

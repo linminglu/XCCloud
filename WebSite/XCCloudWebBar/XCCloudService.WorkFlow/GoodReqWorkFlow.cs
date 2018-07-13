@@ -128,7 +128,7 @@ namespace XCCloudWebBar.WorkFlow
         /// </summary>
         private void GetUserInfo()
         {
-            var base_UserInfo = Base_UserInfoService.I.GetModels(p => p.UserID == _userId).FirstOrDefault() ?? new Base_UserInfo();
+            var base_UserInfo = Base_UserInfoService.I.GetModels(p => p.ID == _userId).FirstOrDefault() ?? new Base_UserInfo();
             _userType = base_UserInfo.UserType ?? 0;
             _merchId = base_UserInfo.MerchID ?? "";
         }

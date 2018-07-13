@@ -66,7 +66,7 @@ namespace XCCloudWebBar.Api.XCCloud
             errMsg = string.Empty;
             storeId = string.Empty;
             IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-            string lastStoreID = base_StoreInfoService.SqlQuery("select * from Base_StoreInfo where StoreID like '" + merchId + adcode + "%'").Max(m => m.StoreID);
+            string lastStoreID = base_StoreInfoService.SqlQuery("select * from Base_StoreInfo where StoreID like '" + merchId + adcode + "%'").Max(m => m.ID);
             if (string.IsNullOrEmpty(lastStoreID))
             {
                 lastStoreID = merchId + adcode + "000";
@@ -191,9 +191,9 @@ namespace XCCloudWebBar.Api.XCCloud
                 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                 var base_StoreInfo = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid)
-                    && !p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));  
-   
-                Dictionary<string, string> pStoreList = base_StoreInfo.Select(o => new { StoreID = o.StoreID, StoreName = o.StoreName }).Distinct()
+                    && !p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+
+                Dictionary<string, string> pStoreList = base_StoreInfo.Select(o => new { StoreID = o.ID, StoreName = o.StoreName }).Distinct()
                     .ToDictionary(d => d.StoreID, d => d.StoreName, StringComparer.OrdinalIgnoreCase);
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, pStoreList);
@@ -298,7 +298,7 @@ namespace XCCloudWebBar.Api.XCCloud
 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                 IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (base_MerchantInfo.AllowCreateSub != 1)
                 {
                     errMsg = "指定商户不允许创建门店";
@@ -499,18 +499,18 @@ namespace XCCloudWebBar.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                int senderId = base_UserInfoService.GetModels(p => p.OpenID.Equals(base_MerchantInfo.WxOpenID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().UserID;
+                int senderId = base_UserInfoService.GetModels(p => p.OpenID.Equals(base_MerchantInfo.WxOpenID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().ID;
                 int authorId;
                 string authorOpenId;
                 if (base_MerchantInfo.CreateType == (int)CreateType.Agent) //如果门店的商户是代理商，就发送给代理商的创建者审核
                 {
-                    authorId = Convert.ToInt32(base_MerchantInfoService.GetModels(p => p.MerchID.Equals(base_MerchantInfo.CreateUserID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().CreateUserID);
+                    authorId = Convert.ToInt32(base_MerchantInfoService.GetModels(p => p.ID.Equals(base_MerchantInfo.CreateUserID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().CreateUserID);
                 }
                 else
                 {
                     authorId = Convert.ToInt32(base_MerchantInfo.CreateUserID);
                 }
-                authorOpenId = base_UserInfoService.GetModels(p => p.UserID == authorId).FirstOrDefault().OpenID;
+                authorOpenId = base_UserInfoService.GetModels(p => p.ID == authorId).FirstOrDefault().OpenID;
 
                 IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
                 //商户一次只能有一个待审核门店
@@ -544,7 +544,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        base_StoreInfo.StoreID = storeId;
+                        base_StoreInfo.ID = storeId;
                         if (!base_StoreInfoService.Add(base_StoreInfo))
                         {
                             errMsg = "保存门店信息失败";
@@ -554,7 +554,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         ts.Complete();
 
                         //已提交工单，等待管理员审核
-                        MessagePush(authorOpenId, base_MerchantInfo.MerchAccount, xC_WorkInfo.SenderTime.Value.ToString("f"), storeName, xC_WorkInfo.WorkID.ToString());
+                        MessagePush(authorOpenId, base_MerchantInfo.MerchAccount, xC_WorkInfo.SenderTime.Value.ToString("f"), storeName, xC_WorkInfo.ID.ToString());
                     }
                     catch (Exception ex)
                     {
@@ -662,7 +662,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 #endregion
 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                Base_StoreInfo base_StoreInfo = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                Base_StoreInfo base_StoreInfo = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (base_StoreInfo == null)
                 {
                     errMsg = "门店信息不存在";
@@ -827,7 +827,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     try
                     {
                         IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                        var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                         if (base_StoreInfoModel == null)
                         {
                             errMsg = "门店信息不存在";
@@ -1009,8 +1009,8 @@ namespace XCCloudWebBar.Api.XCCloud
 
                         //修改工单
                         IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();                        
-                        var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
+                        var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                         var wxOpenId = base_MerchantInfo.WxOpenID;
                         if (!base_UserInfoService.Any(p => p.OpenID.Equals(wxOpenId, StringComparison.OrdinalIgnoreCase)))
                         {
@@ -1018,7 +1018,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        int senderId = base_UserInfoService.GetModels(p => p.OpenID.Equals(wxOpenId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().UserID;
+                        int senderId = base_UserInfoService.GetModels(p => p.OpenID.Equals(wxOpenId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().ID;
                         IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
                         var xC_WorkInfo = xC_WorkInfoService.GetModels(p => p.WorkType == (int)WorkType.StoreCheck && p.WorkState == (int)WorkState.Pending && p.SenderID == senderId).FirstOrDefault();
                         if (xC_WorkInfo == null)
@@ -1069,7 +1069,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 }
 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (base_StoreInfoModel == null)
                 {
                     errMsg = "门店信息不存在";
@@ -1107,7 +1107,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 }
 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (base_StoreInfoModel == null)
                 {
                     errMsg = "门店信息不存在";
@@ -1141,9 +1141,9 @@ namespace XCCloudWebBar.Api.XCCloud
 
             var storeId = dataModel.StoreID;
             IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-            if (base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+            if (base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
             {
-                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 var obj = new
                 {
                     storePassword = base_StoreInfoModel.Password

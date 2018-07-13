@@ -125,7 +125,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query
-                             join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.StoreID into b1
+                             join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.ID into b1
                              from b in b1.DefaultIfEmpty()
                              orderby a.ID
                              select new

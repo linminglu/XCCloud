@@ -86,7 +86,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_MerchantInfo m ON a.MerchID = m.ID
                                 LEFT JOIN Dict_System c ON a.GoodType = c.ID
                                 WHERE
-                                	a.Status = 1";
+                                	a.Status = 1AND a.AllowStorage = 1 ";
                 sql = sql + " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql = sql + " AND a.StoreID='" + storeId + "'";
@@ -117,7 +117,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var storeIds = dicParas.Get("storeIds");
 
-                var query = Base_GoodsInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.Status == 1);
+                var query = Base_GoodsInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.Status == 1 && p.AllowStorage == 1);
                 if (storeIds.IsNull() || storeIds.Contains("|"))
                 {
                     query = query.Where(w => (w.StoreID ?? "") == "");
@@ -718,7 +718,7 @@ namespace XXCloudService.Api.XCCloud
                                 	AND a.PID = 0
                                 ) e ON CONVERT (VARCHAR, a.LogistType) = e.DictValue
                                 LEFT JOIN Base_DepotInfo f ON a.OutDepotID = f.ID 
-                                WHERE c.Status = 1
+                                WHERE c.Status = 1 AND c.AllowStorage = 1 
                             ";
                 sql += " AND a.RequestID=" + requestId;
               
@@ -740,13 +740,13 @@ namespace XXCloudService.Api.XCCloud
                                 	/*调拨方式*/
                                 	a.RequstType,
                                     /*调拨出库门店*/
-                                    requestoutstore.StoreID AS OutStoreID,
+                                    requestoutstore.ID AS OutStoreID,
                                     requestoutstore.StoreName AS OutStoreName,
                                     /*调拨出库仓库*/
                                     requestoutdepot.ID AS OutDepotID,
                                 	requestoutdepot.DepotName AS OutDepotName,                                    
                                 	/*调拨入库门店*/
-                                    requestinstore.StoreID AS InStoreID,
+                                    requestinstore.ID AS InStoreID,
                                 	requestinstore.StoreName AS InStoreName,
                                 	/*调拨入库仓库*/
                                     requestindepot.ID AS InDepotID,
@@ -830,7 +830,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) a                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID 
                                 INNER JOIN Dict_System c ON b.GoodType = c.ID                              
-                                WHERE b.Status = 1
+                                WHERE b.Status = 1 AND b.AllowStorage = 1 
                             ";
                 sql += " AND a.RequestID=" + requestId;
                 
@@ -852,13 +852,13 @@ namespace XXCloudService.Api.XCCloud
                                 	/*调拨方式*/
                                 	a.RequstType,
                                     /*调拨出库门店*/
-                                    requestoutstore.StoreID AS OutStoreID,
+                                    requestoutstore.ID AS OutStoreID,
                                     requestoutstore.StoreName AS OutStoreName,
                                     /*调拨出库仓库*/
                                     requestoutdepot.ID AS OutDepotID,
                                 	requestoutdepot.DepotName AS OutDepotName,                                    
                                 	/*调拨入库门店*/
-                                    requestinstore.StoreID AS InStoreID,
+                                    requestinstore.ID AS InStoreID,
                                 	requestinstore.StoreName AS InStoreName,
                                 	/*调拨入库仓库*/
                                     requestindepot.ID AS InDepotID,
@@ -950,7 +950,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) a                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID
                                 INNER JOIN Dict_System c ON b.GoodType = c.ID                              
-                                WHERE b.Status = 1                                
+                                WHERE b.Status = 1 AND b.AllowStorage = 1                                 
                             ";
                 sql += " AND a.RequestID=" + requestId;
                 sql += " ORDER BY a.SendTime";
@@ -973,13 +973,13 @@ namespace XXCloudService.Api.XCCloud
                                 	/*调拨方式*/
                                 	a.RequstType,
                                     /*调拨出库门店*/
-                                    requestoutstore.StoreID AS OutStoreID,
+                                    requestoutstore.ID AS OutStoreID,
                                     requestoutstore.StoreName AS OutStoreName,
                                     /*调拨出库仓库*/
                                     requestoutdepot.ID AS OutDepotID,
                                 	requestoutdepot.DepotName AS OutDepotName,                                    
                                 	/*调拨入库门店*/
-                                    requestinstore.StoreID AS InStoreID,
+                                    requestinstore.ID AS InStoreID,
                                 	requestinstore.StoreName AS InStoreName,
                                 	/*调拨入库仓库*/
                                     requestindepot.ID AS InDepotID,
@@ -1896,7 +1896,7 @@ namespace XXCloudService.Api.XCCloud
                                     WHERE a.SourceType = 1 AND a.SourceOrderID = " + requestCode +
                                 @"  GROUP BY b.GoodID
                                 ) d ON a.GoodID = d.GoodID                             
-                                WHERE b.Status = 1                                
+                                WHERE b.Status = 1 AND b.AllowStorage = 1                                
                             ";
                 sql += " AND a.RequestID=" + requestId;
                 sql += " ORDER BY a.SendTime";
@@ -1919,13 +1919,13 @@ namespace XXCloudService.Api.XCCloud
                                 	/*调拨方式*/
                                 	a.RequstType,
                                     /*调拨出库门店*/
-                                    requestoutstore.StoreID AS OutStoreID,
+                                    requestoutstore.ID AS OutStoreID,
                                     requestoutstore.StoreName AS OutStoreName,
                                     /*调拨出库仓库*/
                                     requestoutdepot.ID AS OutDepotID,
                                 	requestoutdepot.DepotName AS OutDepotName,                                    
                                 	/*调拨入库门店*/
-                                    requestinstore.StoreID AS InStoreID,
+                                    requestinstore.ID AS InStoreID,
                                 	requestinstore.StoreName AS InStoreName,
                                 	/*调拨入库仓库*/
                                     requestindepot.ID AS InDepotID,
@@ -2511,10 +2511,19 @@ namespace XXCloudService.Api.XCCloud
                                     if (!dicPara.Get("tax").Validdecimal("税率", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                                    var goodId = dicPara.Get("goodId").Toint();
                                     var taxPrice = dicPara.Get("taxPrice").Todecimal(0);
                                     var storageCount = dicPara.Get("storageCount").Toint(0);
+
+                                    if (!Base_GoodsInfoService.I.Any(p => p.ID == goodId && p.AllowStorage == 1))
+                                    {
+                                        var goodName = Base_GoodsInfoService.I.GetModels(p => p.ID == goodId).Select(o => o.GoodName).FirstOrDefault();
+                                        errMsg = "商品[" + goodName + "]不允许入库";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
                                     var detailModel = new Data_GoodStorage_Detail();
-                                    Utils.GetModel(dicPara, ref detailModel);
+                                    Utils.GetModel(dicPara, ref detailModel); 
                                     detailModel.StorageOrderID = model.StorageOrderID;
                                     detailModel.DepotID = model.DepotID;
                                     detailModel.MerchID = merchId;   
@@ -3032,7 +3041,7 @@ namespace XXCloudService.Api.XCCloud
                                 		Data_GoodOutOrder_Detail   
                                     GROUP BY OrderID                                                                       	
                                 ) b ON a.OrderID = b.OrderID
-                                LEFT JOIN Base_UserInfo u ON a.OPUserID = u.UserID
+                                LEFT JOIN Base_UserInfo u ON a.OPUserID = u.ID
                                 LEFT JOIN Base_DepotInfo c ON a.DepotID = c.ID                                
                                 WHERE 1 = 1";
                 sql = sql + " AND a.merchId='" + merchId + "'";
@@ -3064,7 +3073,7 @@ namespace XXCloudService.Api.XCCloud
                                     (case when IsNull(a.CheckDate,'')='' then '' else convert(varchar,a.CheckDate,23) end) AS CheckDate
                                 FROM
                                 	Data_GoodExitInfo a                                
-                                LEFT JOIN Base_UserInfo u ON a.UserID = u.UserID
+                                LEFT JOIN Base_UserInfo u ON a.UserID = u.ID
                                 LEFT JOIN Base_DepotInfo c ON a.DepotID = c.ID                                
                                 WHERE 1 = 1";
                 sql2 = sql2 + " AND a.merchId='" + merchId + "'";
@@ -3709,7 +3718,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.ID
                                 WHERE
-                                	b.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;
+                                	b.Status = 1 AND b.AllowStorage = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;
                 sql = sql + " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql = sql + " AND a.StoreID='" + storeId + "'";
@@ -3798,7 +3807,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.ID
                                 WHERE
-                                	b.Status = 1 AND ISNULL(b.StoreID,'')='' AND a.RowNum <= 1 ";    //不能调拨专属商品
+                                	b.Status = 1 AND b.AllowStorage = 1 AND ISNULL(b.StoreID,'')='' AND a.RowNum <= 1 ";    //不能调拨专属商品
                 if (!depotId.IsNull())
                     sql += " AND a.StockIndex=" + depotId;
                 if (!merchId.IsNull())
@@ -3897,7 +3906,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.ID
                                 WHERE
-                                	b.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;                
+                                	b.Status = 1 AND b.AllowStorage = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;                
                 if (!goodId.IsNull())
                     sql += sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
@@ -3981,7 +3990,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.ID
                                 WHERE
-                                	b.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;
+                                	b.Status = 1 AND b.AllowStorage = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;
                 sql = sql + " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql = sql + " AND a.StoreID='" + storeId + "'";
@@ -4212,7 +4221,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON b.UserID = u.ID
                                 LEFT JOIN Base_StoreInfo s ON c.StoreID = s.ID
                                 WHERE
-                                	c.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + stockIndex + " AND a.StockType = " + stockType + " AND c.BarCode = '" + barCode + "'";    //查询未盘点审核的记录
+                                	c.Status = 1 AND c.AllowStorage = 1 AND a.RowNum <= 1 AND a.StockIndex = " + stockIndex + " AND a.StockType = " + stockType + " AND c.BarCode = '" + barCode + "'";    //查询未盘点审核的记录
 
                 #endregion
                
@@ -4410,7 +4419,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.UserID = u.ID
                                 LEFT JOIN Base_StoreInfo s ON c.StoreID = s.ID
                                 WHERE
-                                	c.Status = 1 AND b.RowNum <= 1 AND ISNULL(a.AuthorID,'')='' AND a.InventoryIndex = " + stockIndex + " AND a.InventoryType = " + stockType;    //查询未盘点审核的记录
+                                	c.Status = 1 AND c.AllowStorage = 1 AND b.RowNum <= 1 AND ISNULL(a.AuthorID,'')='' AND a.InventoryIndex = " + stockIndex + " AND a.InventoryType = " + stockType;    //查询未盘点审核的记录
                 sql = sql + sqlWhere;
 
                 #endregion

@@ -343,14 +343,14 @@ namespace XXCloudService.Api.XCCloud
                     {
                         var merchPassword = Utils.MD5(pwd);
                         IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                        if (base_MerchantInfoService.Any(p => !p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
+                        if (base_MerchantInfoService.Any(p => !p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "账号名称已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
                         
                         var base_MerchantInfo = new Base_MerchantInfo();
-                        base_MerchantInfo.MerchID = merchId;
+                        base_MerchantInfo.ID = merchId;
                         base_MerchantInfo.MerchType = Convert.ToInt32(merchType);
                         base_MerchantInfo.MerchStatus = Convert.ToInt32(merchStatus);
                         base_MerchantInfo.ProxyType = proxyType.Toint(0);
@@ -610,13 +610,13 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                        if (base_MerchantInfoService.Any(p => !p.MerchID.Equals(merchId) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
+                        if (base_MerchantInfoService.Any(p => !p.ID.Equals(merchId) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "账号名称已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId)).FirstOrDefault();
+                        var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId)).FirstOrDefault();
                         var merchAccount_old = base_MerchantInfo.MerchAccount;
                         IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();                       
                         if (base_UserInfoService.Any(p => p.LogName.Equals(merchAccount_old, StringComparison.OrdinalIgnoreCase)))
@@ -781,9 +781,9 @@ namespace XXCloudService.Api.XCCloud
                 #endregion
                 
                 IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                if (base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                if (base_MerchantInfoService.Any(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                 {
-                    var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     if (base_MerchantInfoModel.CreateType == (int)CreateType.Agent && !base_MerchantInfoModel.CreateUserID.Equals(createUserId, StringComparison.OrdinalIgnoreCase)) //代理商创建
                     {
                         errMsg = "该商户只有所属代理商能删除";
@@ -945,8 +945,8 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var StoreShops = from a in data_MerchAlipay_ShopService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)) 
-                                 join b in base_StoreInfoService.GetModels() on a.StoreID equals b.StoreID
+                var StoreShops = from a in data_MerchAlipay_ShopService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                                 join b in base_StoreInfoService.GetModels() on a.StoreID equals b.ID
                                  select new {
                                     StoreID = a.StoreID,
                                     StoreName = b.StoreName,
@@ -1152,13 +1152,13 @@ namespace XXCloudService.Api.XCCloud
                 }    
 
                 IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                if (!base_MerchantInfoService.Any(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "该商户不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                                                            
-                var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+                var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 string pwd = Utils.GetCheckCode(6);
                 base_MerchantInfoModel.MerchPassword = Utils.MD5(pwd);
                 if (!base_MerchantInfoService.Update(base_MerchantInfoModel))
