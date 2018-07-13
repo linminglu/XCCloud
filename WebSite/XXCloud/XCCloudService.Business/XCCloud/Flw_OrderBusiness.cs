@@ -21,7 +21,7 @@ namespace XCCloudService.Business.XCCloud
         /// 订单列表
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<Model.XCCloud.Flw_Order> GetOrderList()
+        public static IQueryable<Model.XCCloud.Flw_Order> GetOrderList()
         {
             BLL.IBLL.XCCloud.IFlw_OrderService orderService = BLLContainer.Resolve<BLL.IBLL.XCCloud.IFlw_OrderService>();
             var orderList = orderService.GetModels(d => true);

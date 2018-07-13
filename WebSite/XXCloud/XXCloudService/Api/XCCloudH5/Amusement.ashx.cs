@@ -74,6 +74,16 @@ namespace XXCloudService.Api.XCCloudH5
                 {
                     //获取默认电子卡开卡级别
                     Data_Parameters defaultMemberLevelId = Data_ParametersService.I.GetModels(t => t.StoreID == storeId && t.System == "cmbCardOpenLevel").FirstOrDefault();
+                    if(defaultMemberLevelId == null)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "获取电子会员卡等级失败");
+                    }
+                    int defaultLevelId = defaultMemberLevelId.ParameterValue.Toint(0);
+                    Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.ID == defaultLevelId).FirstOrDefault();
+                    if(level == null)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "获取电子会员卡等级失败");
+                    }
 
                     using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
@@ -91,7 +101,7 @@ namespace XXCloudService.Api.XCCloudH5
                         card.CardBirthDay = member.Birthday;
                         card.CardLimit = 0;
                         card.MemberID = member.ID;
-                        card.MemberLevelID = defaultMemberLevelId != null ? Convert.ToInt32(defaultMemberLevelId.ParameterValue) : 0;
+                        card.MemberLevelID = level.ID;
                         card.CreateTime = DateTime.Now;
                         card.EndDate = DateTime.Now.AddYears(1);
                         card.LastStore = storeId;
@@ -225,19 +235,28 @@ namespace XXCloudService.Api.XCCloudH5
                     }
                     else
                     {
+                        string cardId = cardIds.FirstOrDefault().CardId;
                         //默认卡
-                        card = Data_Member_CardService.I.GetModels(t => t.ID == cardIds.FirstOrDefault().CardId).FirstOrDefault();
+                        card = Data_Member_CardService.I.GetModels(t => t.ID == cardId).FirstOrDefault();
                     }
                 }
 
                 MemberCard cacheCard = new MemberCard();
                 cacheCard.CardId = card.ID;
                 cacheCard.ICCardId = card.ICCardID;
+                cacheCard.StoreId = card.StoreID;
                 cacheCard.StoreName = Base_StoreInfoService.I.GetModels(s => s.ID == card.StoreID).FirstOrDefault().StoreName ?? "";
                 cacheCard.MemberLevelId = card.MemberLevelID.Value;
-                cacheCard.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
+                cacheCard.MemberLevelName = XCCloudStoreBusiness.GetMemberLevelName(card.MemberLevelID.Value);
                 //卡余额
-                cacheCard.CardBalanceList = XCCloudStoreBusiness.GetCardStoreBalanceList(device.MerchID, storeId, card.ID);
+                cacheCard.CardBalanceList = MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, card.ICCardID).Select(t => new CardBalance
+                {
+                    BalanceIndex = t.BalanceIndex,
+                    BalanceName = t.TypeName,
+                    TotalQuantity = t.Total,
+                    Balance = t.Balance,
+                    BalanceFree = t.BalanceFree
+                }).ToList();
                 model.CurrentCardInfo = cacheCard;
                 //更新缓存
                 MemberTokenCache.AddToken(token, model);
@@ -269,31 +288,58 @@ namespace XXCloudService.Api.XCCloudH5
                     //获取当前会员投币规则
                     List<GamePushRule> coinRules = XCCloudStoreBusiness.GetGamePushRule(device.MerchID, storeId, game.ID, card.MemberLevelID.Value);
 
-                    if (coinRules.Count > 0 && cacheCard.CardBalanceList.Sum(t => t.Quantity) > 0)
-                    {
+                    //可用的会员投币规则（用户余额可直接支付的）
+                    List<GamePushRule> memberCoinRuleList = new List<GamePushRule>();
 
+                    if (coinRules.Count > 0 && cacheCard.CardBalanceList.Sum(t => t.TotalQuantity) > 0)
+                    {
+                        foreach (var item in coinRules)
+                        {
+                            bool isEnable = false;
+                            //判断投币种1
+                            var balance1 = cacheCard.CardBalanceList.FirstOrDefault(t => t.BalanceIndex == item.PushBalanceIndex1);
+                            if (item.PushCoin1 > 0 && balance1 != null && balance1.TotalQuantity >= item.PushCoin1)
+                            {
+                                isEnable = true;
+                            }
+                            //判断投币种2
+                            var balance2 = cacheCard.CardBalanceList.FirstOrDefault(t => t.BalanceIndex == item.PushBalanceIndex2);
+                            if (item.PushCoin2 > 0 && balance2 != null && balance2.TotalQuantity >= item.PushCoin2)
+                            {
+                                isEnable = true;
+                            }
+                            //当余额大于等于当前投币币种时，将当前投币规则加入集合
+                            if(isEnable)
+                            {
+                                memberCoinRuleList.Add(item);
+                            }
+                        }
+                    }
+
+                    //如果有可用会员投币规则就显示会员的规则，没有就显示散客规则
+                    if (memberCoinRuleList.Count > 0)
+                    {
                         gameInfo.GamePushRules = coinRules.Select(t => new MemberPushRule
-                                                {
-                                                    Id = t.Id,
-                                                    Allow_In = t.Allow_In,
-                                                    Allow_Out = t.Allow_Out,
-                                                    PushPlanName = t.PushCoin1 + t.PushBalanceName1 + (t.PushCoin2 > 0 ? " + " + t.PushCoin2 + t.PushBalanceName2 : "")
-                                                }).ToList();
+                        {
+                            Id = t.Id,
+                            Allow_In = t.Allow_In,
+                            Allow_Out = t.Allow_Out,
+                            PushPlanName = t.PushCoin1 + t.PushBalanceName1 + (t.PushCoin2 > 0 ? " + " + t.PushCoin2 + t.PushBalanceName2 : "")
+                        }).ToList();
                     }
                     else
                     {
                         //散客扫码支付
-                        gameInfo.GameCoinList = Data_GameAPP_RuleService.I.GetModels(t => t.GameID == device.GameIndexID && t.StoreID == device.StoreID)
-                            .Select(t => new
-                            {
-                                CoinRuleId = t.ID,
-                                PlayCount = t.PlayCount,
-                                Amount = t.PayCount
-                            }).OrderBy(t => t.PlayCount).ToList().Select(t => new GameCoinInfo
-                            {
-                                CoinRuleId = t.CoinRuleId,
-                                CoinRuleName = string.Format("{0}元{1}局", t.Amount, t.PlayCount)
-                            }).ToList();
+                        gameInfo.GameCoinList = Data_GameAPP_RuleService.I.GetModels(t => t.GameID == device.GameIndexID && t.StoreID == device.StoreID).Select(t => new
+                        {
+                            CoinRuleId = t.ID,
+                            PlayCount = t.PlayCount,
+                            Amount = t.PayCount
+                        }).OrderBy(t => t.PlayCount).ToList().Select(t => new GameCoinInfo
+                        {
+                            CoinRuleId = t.CoinRuleId,
+                            CoinRuleName = string.Format("{0}元{1}局", t.Amount, t.PlayCount)
+                        }).ToList();
                     }
                 }
                 else

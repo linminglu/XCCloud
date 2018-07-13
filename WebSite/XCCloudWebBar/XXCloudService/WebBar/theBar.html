@@ -841,14 +841,14 @@
 			</div>
 			<!--中间菜单-->
 			<ul class="majorMenu fl heightKz">
-				<!--<li @click="addCount"><a class="iconfont icon-icon_jia" href="javascript:void(0)"></a></li>-->
-				<!--<li @click="reduceCount"><a class="iconfont icon-jian" href="javascript:void(0)"></a></li>-->
+				<li @click="addCount"><a class="iconfont icon-icon_jia" href="javascript:void(0)"></a></li>
+				<li @click="reduceCount"><a class="iconfont icon-jian" href="javascript:void(0)"></a></li>
 				<li @click="membership" :class="{cur:memberShow}"><a href="javascript:void(0)">入会办卡</a></li>
 				<li @click="FastSell"><a href="javascript:void(0)">快速售币</a></li>
 				<li @click="salesAll" :class="{cur:saleShow}"><a id="sales" href="javascript:void(0)">产品销售</a></li>
 				<li @click="operationFnc" :class="{cur:operationShow}"><a href="javascript:void(0)">会员信息</a></li>
                 <li><a href="javascript:void(0)" @click="currency">会员提币</a></li>
-				<li><a href="other.html">其他业务</a></li>
+				<li><a href="otherBusiness.html">其他业务</a></li>
 			</ul>
 			<!--右边显示内容-->
 			<div class="heightKz">
@@ -1322,6 +1322,7 @@
     var versionNo= "0.01"; //版本号
     var machineName ="";
     var dogIdToken ="";
+    // 20110013
     var ws = new WebSocket("ws://127.0.0.1:12880");
     var destroy =[
         {"no":1,"name":"2017-09-04 12:44:30","name1":108,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108},
@@ -1514,7 +1515,7 @@
                 mobileInput:"",
                 codeBtn:"获取验证码",
                 disabled:false,
-                icCardId:"20110013",
+                icCardId:"",
                 IDCardNo:"",
                 IDCardInput:"",
                 outCoinCard:"",

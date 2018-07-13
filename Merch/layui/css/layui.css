@@ -176,12 +176,12 @@ a cite {
     font-family:layui-icon;src:url(../font/iconfont.eot?v=226_rc2);
     src:url(../font/iconfont.eot?v=226_rc2#iefix) format('embedded-opentype'),
     url(../font/iconfont.svg?v=226_rc2#iconfont) format('svg'),
-    url(//res.layui.com/layui/dist/font/iconfont.woff?v=230) format('woff'),
+    url(../font/iconfont.woff?v=230) format('woff'),
     url(../font/iconfont.ttf?v=226_rc2) format('truetype')
     /*font-family:layui-icon;src:url(../font/iconfont.eot?v=226_rc2);*/
     /*src:url(../font/iconfont.eot?v=226_rc2#iefix) format('embedded-opentype'),*/
     /*url(../font/iconfont.svg?v=226_rc2#iconfont) format('svg'),*/
-    /*url(//res.layui.com/layui/dist/font/iconfont.woff?v=230) format('woff'),*/
+    /*url(../font/iconfont.woff?v=230) format('woff'),*/
     /*url(../font/iconfont.ttf?v=226_rc2) format('truetype')*/
 }
 

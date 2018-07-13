@@ -4000,13 +4000,13 @@ namespace XCCloudWebBar.Api.XCCloud
                     Data_MemberLevel levelModel = Data_MemberLevelService.I.GetModels(m => m.ID == memberCard.MemberLevelID).FirstOrDefault();
                     if(levelModel == null || levelModel.AllowGetCoin == 0)
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该会员卡等级尚未开通提币权限");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该会员卡没有提币权限");
                     }
 
                     //判断消费密码
                     if(memberCard.CardPassword != outCoinCode)
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "密码错误");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡密码错误");
                     }
                     //判断是否为附属卡
                     if (memberCard.CardType == 1)
@@ -4937,7 +4937,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 }
                 if (!fromCard.CardPassword.Equals(pwd))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出密码错误");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡密码错误");
                 }
 
                 Base_MemberInfo fromMember = Base_MemberInfoService.I.GetModels(t => t.ID == fromCard.MemberID).FirstOrDefault();

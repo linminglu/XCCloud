@@ -46,7 +46,7 @@
 </div>
 <!--//弹窗-->
 <div id="addOrModify" style="padding: 10px;display: none" class="goodIsAll">
-    <form class="layui-form layui-form-pane" style="padding-left: 15px;">
+    <form class="layui-form layui-form-pane" style="padding-left: 15px;" lay-filter="testform">
         <div class="layui-form-item">
             <label class="layui-form-label">适用门店</label>
             <div class="layui-input-block" id="allStoreList">
@@ -57,20 +57,20 @@
             <div class="layui-inline">
                 <label class="layui-form-label">优惠券名</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" required id="CouponName">
+                    <input type="text" class="layui-input" name="CouponName" id="CouponName">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">本券类型</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" name="switch" lay-skin="switch" lay-text="实物券|电子券" id='entryCouponFlag'
+                    <input type="checkbox" name="entryCouponFlag" lay-skin="switch" lay-text="实物券|电子券" id='entryCouponFlag'
                            lay-filter="entryCouponFlag">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">发行数量</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" lay-verify="number" id="PublishCount">
+                    <input type="text" class="layui-input" lay-verify="number" id="PublishCount" name="PublishCount">
                     <span class="layui-unit">张</span>
                 </div>
             </div>
@@ -79,7 +79,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">派发途径</label>
                 <div class="layui-input-inline">
-                    <select name="" id="SendType" lay-filter="SendType">
+                    <select name="SendType" id="SendType" lay-filter="SendType">
                         <option value="0">消费赠券</option>
                         <option value="1">定向派发</option>
                         <!--<option value="2">抽奖赠券</option>-->
@@ -96,12 +96,12 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">消费满</label>
                         <div class="layui-input-inline" style="width: 90px">
-                            <input type="text" class="layui-input" id="OverMoney" name="disturbInput">
+                            <input type="text" class="layui-input disturbInput" id="OverMoney" name="OverMoney">
                             <span class="layui-unit">元</span>
                         </div>
                         <div class="layui-form-mid">送</div>
                         <div class="layui-input-inline" style="width: 140px">
-                            <input type="text" class="layui-input" name="disturbInput" id="FreeCouponCount">
+                            <input type="text" class="layui-input disturbInput" name="FreeCouponCount" id="FreeCouponCount">
                             <!--<input type="text" class="layui-input layui-hide" name="disturbInput" id="JackpotCount">-->
                             <span class="layui-unit" id="tips">张</span>
                         </div>
@@ -121,17 +121,17 @@
             <div class="layui-inline">
                 <label class="layui-form-label">优惠券类别</label>
                 <div class="layui-input-inline" style="width: 138px;">
-                    <select id="CouponType" lay-filter="CouponType">
+                    <select id="CouponType" lay-filter="CouponType" name="CouponType">
 
                     </select>
                 </div>
             </div>
             <div class="layui-inline">
-                <input type="checkbox" checked name="like[write]" title="使用需要授权" lay-skin="primary" id="authorFlag"
+                <input type="checkbox" checked name="authorFlag" title="使用需要授权" lay-skin="primary" id="authorFlag"
                        lay-filter="authorFlag">
             </div>
             <div class="layui-inline">
-                <input type="checkbox" name="like[write]" title="允许叠加使用" lay-skin="primary" id="AllowOverOther"
+                <input type="checkbox" name="AllowOverOther" title="允许叠加使用" lay-skin="primary" id="AllowOverOther"
                        lay-filter="AllowOverOther">
             </div>
         </div>
@@ -140,7 +140,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">折扣</label>
                 <div class="layui-input-inline" style="width: 109px;">
-                    <input type="text" class="layui-input" required id="CouponDiscount">
+                    <input type="text" class="layui-input" required id="CouponDiscount" name="CouponDiscount">
                   <span class="layui-unit">折</span>
                 </div>
                 <!--<div class="layui-form-mid">折</div>-->
@@ -148,14 +148,14 @@
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">使用门槛</label>
                 <div class="layui-input-inline" style="width: 109px;">
-                    <input type="text" class="layui-input" required placeholder="￥" id="CouponThreshold">
+                    <input type="text" class="layui-input" required placeholder="￥" id="CouponThreshold" name="CouponThreshold">
                     <span class="layui-unit">元</span>
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">价值(抵用金额)</label>
                 <div class="layui-input-inline" style="width: 109px;">
-                    <input type="text" class="layui-input" required placeholder="￥" id="couponValue">
+                    <input type="text" class="layui-input" required placeholder="￥" id="couponValue" name="CouponValue">
                     <span class="layui-unit">元</span>
 
                 </div>
@@ -163,7 +163,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">同时使用张数</label>
                 <div class="layui-input-inline" style="width: 109px;">
-                    <input type="text" class="layui-input" required placeholder="" id="OverUseCount">
+                    <input type="text" class="layui-input" required placeholder="" id="OverUseCount" name="OverUseCount">
                     <span class="layui-unit">张</span>
 
                 </div>
@@ -174,7 +174,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">兑换类型</label>
                 <div class="layui-input-inline">
-                    <select name="" id="ChargeType" lay-filter="chargeType">
+                    <select name="ChargeType" id="ChargeType" lay-filter="chargeType">
                         <option>-请选择-</option>
                         <option value="0">礼品</option>
                         <option value="1">游乐项目</option>
@@ -185,25 +185,25 @@
             <div class="layui-inline chargeContentBox chargeGoods">
                 <label class="layui-form-label">兑换内容</label>
                 <div class="layui-input-inline">
-                    <select name="" id="GoodID" lay-filter="GoodID"></select>
+                    <select name="GoodID" id="GoodID" lay-filter="GoodID"></select>
                 </div>
             </div>
             <div class="layui-inline chargeContentBox chargeProgect layui-hide">
                 <label class="layui-form-label">兑换内容</label>
                 <div class="layui-input-inline">
-                    <select name="" id="ProjectID" lay-filter="ProjectID"></select>
+                    <select name="ProjectID" id="ProjectID" lay-filter="ProjectID"></select>
                 </div>
             </div>
             <div class="layui-inline chargeContentBox chargeBalance layui-hide">
                 <label class="layui-form-label">余额类别</label>
                 <div class="layui-input-inline">
-                    <select name="" id="balanceType" lay-filter="balanceType"></select>
+                    <select name="balanceType" id="balanceType" lay-filter="balanceType"></select>
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">兑换数量</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="ChargeCount">
+                    <input type="text" class="layui-input" id="ChargeCount" name="ChargeCount">
                     <span class="layui-unit" id="ChargeCountUnit">个</span>
 
                 </div>
@@ -225,11 +225,11 @@
                     </select>
                 </div>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="StartDate" disabled>
+                    <input type="text" class="layui-input" id="StartDate" name="StartDate" disabled>
                 </div>
                 <div class="layui-form-mid">至</div>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="EndDate" disabled>
+                    <input type="text" class="layui-input" id="EndDate" name="EndDate" disabled>
                 </div>
             </div>
         </div>
@@ -237,7 +237,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">时段类型</label>
                 <div class="layui-input-inline" style="width: 130px">
-                    <select id="weekType" lay-filter="weekType">
+                    <select id="weekType" lay-filter="weekType" name="weekType">
                         <option value="0">自定义</option>
                         <option value="1">工作日</option>
                         <option value="2">周末</option>
@@ -255,13 +255,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label">使用时段</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="StartTime">
+                    <input type="text" class="layui-input" id="StartTime" name="StartTime">
                 </div>
                 <div class="layui-form-mid">
                     至
                 </div>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="EndTime">
+                    <input type="text" class="layui-input" id="EndTime" name="EndTime">
                 </div>
             </div>
         </div>
@@ -283,13 +283,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label">不可用期限</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="NoStartDate" disabled placeholder="请设置开始日期">
+                    <input type="text" name="NoStartDate" class="layui-input" id="NoStartDate" disabled placeholder="请设置开始日期">
                 </div>
                 <div class="layui-form-mid">
                     至
                 </div>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="NoEndDate" disabled placeholder="请设置结束日期">
+                    <input type="text" name="NoEndDate" class="layui-input" id="NoEndDate" disabled placeholder="请设置结束日期">
                 </div>
             </div>
         </div>
@@ -297,7 +297,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">备注</label>
                 <div class="layui-input-inline" style="width: 835px">
-                    <input type="text" class="layui-input" required id="Note">
+                    <input type="text" class="layui-input" required id="Note" name="Note">
                 </div>
             </div>
         </div>
@@ -1153,7 +1153,7 @@
         form.on('select(SendType)', (data) => {
             SendType = data.value == '-请选择-' ? '' : data.value;
             jackpotId = '';
-            $('body').find('input[name="disturbInput"]').each(function () {
+            $('body').find('.disturbInput').each(function () {
                 $(this).val("");
             });
             if (data.value == 3) {
@@ -1858,16 +1858,45 @@
                         data = JSON.parse(data);
                         console.log(data)
                         if (data.result_code == 1) {
-
+                            let arr=data.result_data;
+                            form.val('testform',{
+                                'CouponName':arr.CouponName||'',
+                                'entryCouponFlag':arr.EntryCouponFlag==1?true:false,
+                                'PublishCount':arr.PublishCount||'',
+                                'SendType':arr.SendType,
+                                'OverMoney':arr.OverMoney||'',
+                                'FreeCouponCount':arr.FreeCouponCount||'',
+                                'CouponType':arr.CouponType,
+                                'authorFlag':arr.AuthorFlag==1?true:false,
+                                'AllowOverOther':arr.AllowOverOther==1?true:false,
+                                'CouponDiscount':arr.CouponDiscount||'',
+                                'CouponThreshold':arr.CouponThreshold||'',
+                                'CouponValue':arr.CouponValue||'',
+                                'OverUseCount':arr.OverUseCount||'',
+                                'ChargeType':arr.ChargeType||'',
+                                'GoodID':arr.GoodID||'',
+                                'ProjectID':arr.ProjectID||'',
+                                'balanceType':arr.BalanceType||'',
+                                    'ChargeCount':arr.ChargeCount||'',
+                                'StartDate':arr.StartDate||'',
+                                'EndDate':arr.EndDate||'',
+                                'weekType':arr.WeekType||'',
+                                'StartTime':arr.StartTimeStr||'',
+                                'EndTime':arr.EndTimeStr||'',
+                                'NoStartDate':arr.NoStartDate||'',
+                                'NoEndDate':arr.NoEndDate||'',
+                                'Note':arr.Note||'',
+                            })
+                            layer.open({
+                                title: '修改优惠券规则',
+                                type: '1',
+                                area: '1002px',
+                                content: $('#addOrModify')
+                            })
                         }
                     }
                 });
-                // layer.open({
-                //     title: '选择导出优惠券',
-                //     type: '1',
-                //     area: '670px',
-                //     content: $('.couponExport')
-                // })
+
 
             } else {
                 layer.msg('请且勾选一条数据！')

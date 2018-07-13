@@ -84,48 +84,52 @@ namespace XCCloudService.Business.XCCloud
             return currList;
         }
 
-        public static List<CardBalance> GetCardStoreBalanceList(string merchId, string storeId, string cardId)
-        {
-            //当前门店正价余额集合
-            var balances = from a in Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchId && t.CardIndex == cardId)
-                           join b in Data_Card_Balance_StoreListService.I.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
-                           join c in Dict_BalanceTypeService.I.GetModels(t => t.MerchID == merchId) on a.BalanceIndex equals c.ID
-                           select new
-                           {
-                               BalanceIndex = a.BalanceIndex,
-                               BalanceName = c.TypeName,
-                               Balance = a.Balance
-                           };
-            //当前门店赠送余额集合
-            var balanceFrees = from a in Data_Card_Balance_FreeService.I.GetModels(t => t.MerchID == merchId && t.CardIndex == cardId)
-                               join b in Data_Card_Balance_StoreListService.I.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
-                               join c in Dict_BalanceTypeService.I.GetModels(t => t.MerchID == merchId) on a.BalanceIndex equals c.ID
-                               select new
-                               {
-                                   BalanceIndex = a.BalanceIndex,
-                                   BalanceName = c.TypeName,
-                                   Balance = a.Balance
-                               };
-            var balanceList = balances.Concat(balanceFrees).ToList();
-            var balanceGroup = balanceList.GroupBy(t => new { t.BalanceIndex, t.BalanceName })
-                .Select(t => new { BalanceIndex = t.Key.BalanceIndex.Value, BalanceName = t.Key.BalanceName, Quantity = t.Sum(item => item.Balance.Value) }).ToList();
+        //public static List<CardBalance> GetCardStoreBalanceList(string merchId, string storeId, string cardId)
+        //{
+        //    //当前门店正价余额集合
+        //    var balances = from a in Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchId && t.CardIndex == cardId)
+        //                   join b in Data_Card_Balance_StoreListService.I.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+        //                   join c in Dict_BalanceTypeService.I.GetModels(t => t.MerchID == merchId) on a.BalanceIndex equals c.ID
+        //                   select new
+        //                   {
+        //                       BalanceIndex = a.BalanceIndex,
+        //                       BalanceName = c.TypeName,
+        //                       Balance = a.Balance
+        //                   };
+        //    //当前门店赠送余额集合
+        //    var balanceFrees = from a in Data_Card_Balance_FreeService.I.GetModels(t => t.MerchID == merchId && t.CardIndex == cardId)
+        //                       join b in Data_Card_Balance_StoreListService.I.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+        //                       join c in Dict_BalanceTypeService.I.GetModels(t => t.MerchID == merchId) on a.BalanceIndex equals c.ID
+        //                       select new
+        //                       {
+        //                           BalanceIndex = a.BalanceIndex,
+        //                           BalanceName = c.TypeName,
+        //                           Balance = a.Balance
+        //                       };
+        //    var balanceList = balances.Concat(balanceFrees).ToList();
+        //    var balanceGroup = balanceList.GroupBy(t => new { t.BalanceIndex, t.BalanceName })
+        //        .Select(t => new { BalanceIndex = t.Key.BalanceIndex.Value, BalanceName = t.Key.BalanceName, Quantity = t.Sum(item => item.Balance.Value) }).ToList();
 
-            List<CardBalance> list = new List<CardBalance>();
-            foreach (var item in balanceGroup)
-            {
-                CardBalance cb = new CardBalance();
-                cb.BalanceIndex = item.BalanceIndex;
-                cb.BalanceName = item.BalanceName;
-                cb.Quantity = item.Quantity;
-                list.Add(cb);
-            }
-            return list;
-        }
+        //    List<CardBalance> list = new List<CardBalance>();
+        //    foreach (var item in balanceGroup)
+        //    {
+        //        CardBalance cb = new CardBalance();
+        //        cb.BalanceIndex = item.BalanceIndex;
+        //        cb.BalanceName = item.BalanceName;
+        //        cb.Quantity = item.Quantity;
+        //        list.Add(cb);
+        //    }
+        //    return list;
+        //}
 
-        public static Data_MemberLevel GetMemberLevel(int memberLevelId)
+        public static string GetMemberLevelName(int memberLevelId)
         {
             Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.ID == memberLevelId).FirstOrDefault();
-            return level;
+            if(level != null)
+            {
+                return level.MemberLevelName;
+            }
+            return string.Empty;
         }
 
         public static List<FoodInfoViewModel> GetFoodInfoList(string merchId, string storeId, int memberLevelId)

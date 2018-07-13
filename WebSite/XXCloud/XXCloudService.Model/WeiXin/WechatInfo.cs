@@ -58,6 +58,8 @@ namespace XCCloudService.Model.WeiXin
 
         public string ICCardId { get; set; }
 
+        public string StoreId { get; set; }
+
         public string StoreName { get; set; }
 
         public int MemberLevelId { get; set; }
@@ -73,6 +75,10 @@ namespace XCCloudService.Model.WeiXin
 
         public string BalanceName { get; set; }
 
-        public decimal Quantity { get; set; }
+        public decimal TotalQuantity { get; set; }
+
+        public decimal Balance { get; set; }
+
+        public decimal BalanceFree { get; set; }
     }
 }

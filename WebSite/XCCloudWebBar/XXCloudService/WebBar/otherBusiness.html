@@ -12,54 +12,12 @@
     <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/swiper.min.css">
-    <!-- <link href="css/bootstrap-table.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="css/iconfont.css">
     <link href="css/style.css" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" rel="external nofollow" > -->
  
     <style>
         /*新style*/
-        .menu{width: 840px;margin: 100px auto;/*padding: 15px;list-style: none;counter-reset: li;/*background: #eee;*//*-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-moz-border-radius: 10px;*//*-webkit-border-radius: 10px;*//*border-radius: 10px;*/}
-        .menu:before, .menu:after{content: "";display: table;}
-        .menu:after{clear: both;}
-        .menu{zoom:1;}
-        .menuli{position: relative;float: left;cursor: pointer;height: 120px;width: 200px;margin: 10px 0 0 10px;color: #333;}
-        .menuli:hover, .menuli:focus{background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, .2)), to(rgba(255, 255, 255, 0)));background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -moz-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -ms-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -o-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));}
-        .menu .cover{z-index: 2;}
-        .menu .cover:focus{outline: 0;}
-        .menuli::after{content: counter(li);counter-increment: li;font: italic bold 10px serif, georgia;position: absolute;color: rgba(255, 255, 255, .1);opacity: 0;/*-webkit-transition: all .2s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;*/transition: all 0.5s ease-out;}
-        .menuli:hover::after, .menuli:focus::after{font-size: 100px;opacity: 1;}
-        .menu .cover::after{z-index: -1;}
-        /* .menu li.menuli.menuli:nth-child(1), .menu li.menuli.menuli:nth-child(1) .content, .menu li.menuli.menuli:nth-child(1) .close{background-color: #DA70D6;}
-        .menu li.menuli:nth-child(2), .menu li.menuli:nth-child(2) .content, .menu li.menuli:nth-child(2) .close{background-color: #fff;}
-        .menu li.menuli:nth-child(3), .menu li.menuli:nth-child(3) .content, .menu li.menuli:nth-child(3) .close{background-color: #349ffd;}
-        .menu li.menuli:nth-child(4), .menu li.menuli:nth-child(4) .content, .menu li.menuli:nth-child(4) .close{background-color: #349ffd;}
-        .menu li.menuli:nth-child(5), .menu li.menuli:nth-child(5) .content, .menu li.menuli:nth-child(5) .close{background-color: #349ffd;}
-        .menu li.menuli:nth-child(6), .menu li.menuli:nth-child(6) .content, .menu li.menuli:nth-child(6) .close{background-color: rgb(190, 178, 178);}
-        .menu li.menuli:nth-child(7), .menu li.menuli:nth-child(7) .content, .menu li.menuli:nth-child(7) .close{background-color: rgb(190, 178, 178);}
-        .menu li.menuli:nth-child(8), .menu li.menuli:nth-child(8) .content, .menu li.menuli:nth-child(8) .close{background-color: rgb(190, 178, 178);}
-        .menu li.menuli:nth-child(9), .menu li.menuli:nth-child(9) .content, .menu li.menuli:nth-child(9) .close{background-color: #808080;}
-        .menu li.menuli:nth-child(10), .menu li.menuli:nth-child(10) .content, .menu li.menuli:nth-child(10) .close{background-color: #808080;}
-        .menu li.menuli:nth-child(11), .menu li.menuli:nth-child(11) .content, .menu li.menuli:nth-child(11) .close{background-color: #808080;}
-        .menu li.menuli:nth-child(12), .menu li.menuli:nth-child(12) .content, .menu li.menuli:nth-child(12) .close{background-color: #808080;} */
-        .menu .content{opacity: 0;display: none;overflow:visible;font: 12px Arial, Helvetica;position: fixed;height: 120px;width: 200px; left: 50%;margin-left: -100px;top: 40%;margin-top: -40px; /*-webkit-transition: all .3s ease-out;-moz-transition: all .3s ease-out;-ms-transition: all .3s ease-out;-o-transition: all .3s ease-out;transition: all .3s ease-out;*/}
-        .menu .expanded{opacity: .95;display: block;overflow: visible;padding: 40px;height: 300px;width: 540px;transition: all 3s ease-out;}
-        .menu li.menuli:nth-child(3n) .content{/* 3,6,9*/right: 0;}
-        .menu li.menuli:nth-child(3n-1) .expanded{/* 2,5,8*/left: 50%;margin-left: -310px;}
-        .menu li.menuli:nth-child(7) .content,
-        .menu li.menuli:nth-child(8) .content, .menu li.menuli:nth-child(9) .content, .menu li.menuli:nth-child(10) .content{bottom: 0;}
-        .menu li.menuli:nth-child(4) .expanded,
-        .menu li.menuli:nth-child(5) .expanded, .menu li.menuli:nth-child(6) .expanded{margin-top: -190px;top: 50%;}
-        .menu .title{position: absolute;height: 100%;width: 100%;text-align: center;font: italic bold 1.3em/120px 'trebuchet MS', Arial, helvetica;opacity: .3;}
-        .menu .title i{font-size: 40px;}
-        .menuli:hover .title{opacity: .7;}
-        .menu .close{display: none;border: 5px solid #fff;color: #fff;cursor: pointer;height: 50px;width: 50px;font: bold 20px/40px arial, helvetica;position: absolute;text-align: center;top: -20px;right: -20px;-moz-border-radius: 40px;-webkit-border-radius: 40px;border-radius: 40px;z-index: 99999;}
-        .menu .cover .close{display: block;}
-
-        .menu-marginTop{margin-top: 1.5em;}
         .menu-style{margin-top: 1em;line-height: 2em;font-size: 1.1em;}
-        .pad_0{padding-left: 0;padding-right: 0;}
         .menu-radio{margin:0 0.5em;}
         .menu-radio input{height: 1.2em;width: 1.2em;}
         .margin1{margin-top: 1em;}
@@ -69,9 +27,6 @@
         .margin-02 input{margin-top: -0.3em}
         .width50 button{width: 50%}
         .order-style{margin-top: 0.5em;line-height: 1.6em;font-size: 1em;padding-left: 10px!important;padding-right: 10px!important;}
-        /*.order-style input{height: 1.6em;width: 100%;line-height:2em;padding-left: 0.5em;}*/
-        /*.order-style label{padding-left: 10px;padding-right: 0;}*/
-        /*.order-style textarea{height: 3.2em;font-size: 0.8em;line-height: 1em;}*/
         .heightOver{overflow-y: auto;overflow-x: hidden;height: 500px;padding: 0;}
         .order-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 2em;padding: 0 1em;}
         .menu-btn button{width: 30%;margin: 0 1em;}
@@ -105,6 +60,10 @@
         .cardChoosesty li:nth-child(2) span{color: #00ffff;font-size:1.1em;}
         .readCard:hover{background-color: #b196fd;color: #fefefe;}
         .vertical-center-modal{display: flex;align-items: center;justify-content: center;margin-top:-20%;}
+
+        .dropdown-grounp{display: flex;flex-direction: row;}
+        .dropdownSty{min-width: 70px;margin-left: 1em;}
+        .dropdownInput{top:10px;}
     </style>
 </head>
 <body>
@@ -207,23 +166,6 @@
         <p>{{ msg }}</p>
         <div slot="footer"> </div>
     </modal>
-    <!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
-                </div>
-                <div class="modal-body">
-                        {{ msg }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
     <i-menu mode="horizontal" theme="light" active-name="1" @on-select="chooseMenu">
             <menu-item name="1">
                 <span class="iconfont icon-batai"></span>
@@ -461,6 +403,7 @@
                         <i-table height="360" ref="selection" :columns="historyColumns" :data="historyData" @on-select-all="AllData" @on-selection-change="tableChecked"></i-table>
                         <div style="margin: 10px;overflow: hidden">
                             <div style="float: right;">
+                                
                                 <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage"></Page>
                             </div>
                         </div>
@@ -601,94 +544,81 @@
                 </div>
             </i-col>
             <i-col span="24" v-if="minuData.MenuShow6">
-                    <div class="col-md-12 col-sm-12 margin1">
-                            <div class="input-group col-md-6 col-sm-6 menu-style">
-                                <input type="text" class="form-control" placeholder="条码号/商品名称..." aria-describedby="basic-addon2">
-                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-search"></span></span>
-                            </div>
-                            <div class="col-md-2 col-sm-2"></div>
-                            <div class="input-group col-md-3 col-sm-3 menu-style">
-                                <input type="text" class="form-control" placeholder="会员卡号" aria-describedby="basic-addon2">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">读卡</button>
-                                </span>
+                <row class="menu-style">
+                    <i-col span="4">
+                        <i-input v-model="buyBack.search" icon="search" placeholder="条码号/商品名称..." style="width: 100%" @on-click="getFoodChargeInfo" @on-enter="getFoodChargeInfo"></i-input>
+                    </i-col>
+                    <i-col span="16"></i-col>
+                    <i-col span="4">
+                            <!-- <i-input v-model="icCardId" placeholder="会员卡号">
+                                <span slot="append">读卡</span>
+                            </i-input> -->
+                    </i-col>
+                </row>
+                <row class="menu-style">
+                    <i-col span="15">
+                        <i-table highlight-row ref="currentRowTable" :columns="buyBack.columns" :data="buyBack.listData" @on-current-change="buyBackChoose"></i-table>
+                        <div style="margin: 10px;overflow: hidden">
+                            <div style="float: right;">
+                                <Page :total="buyBack.dataCount" :page-size="buyBack.pageSize" show-total class="paging" @on-change="changepage"></Page>
                             </div>
                         </div>
-                        <div class="col-md-7 col-sm-7 margin1">
+                        
+                    </i-col>
+                    <i-col span="9">
+                        <div class="col-md-12 col-sm-12 menu-style">
+                            <div class="input-group">
+                                <span class="input-group-addon">会员姓名：</span>
+                                <input type="text" class="form-control" placeholder="会员姓名"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 menu-style">
+                            <div class="input-group">
+                                <span class="input-group-addon">会员级别：</span>
+                                <input type="text" class="form-control" placeholder="会员级别"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 margin1">
                             <table class="table table-bordered">
                                 <thead style="background: #f5f5f5">
                                 <tr>
-                                    <th>商品条码</th>
-                                    <th>商品名称</th>
-                                    <th>零售价</th>
-                                    <th>回购代币数</th>
-                                    <th>回购彩票数</th>
-                                    <th>回购积分数</th>
+                                    <th>余额种类</th>
+                                    <th>余额</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr v-for="items in refundData">
                                     <td>{{items.balanceType}}</td>
                                     <td>{{items.balance}}</td>
-                                    <td>{{items.balance1}}</td>
-                                    <td>{{items.balance2}}</td>
-                                    <td>{{items.balance3}}</td>
-                                    <td>{{items.balance4}}</td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-md-5 col-sm-5 margin1">
-                            <div class="col-md-12 col-sm-12 menu-style">
-                                <div class="input-group">
-                                    <span class="input-group-addon">会员姓名：</span>
-                                    <input type="text" class="form-control" placeholder="会员姓名"/>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-12 menu-style">
-                                <div class="input-group">
-                                    <span class="input-group-addon">会员级别：</span>
-                                    <input type="text" class="form-control" placeholder="会员级别"/>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-12 margin1">
-                                <table class="table table-bordered">
-                                    <thead style="background: #f5f5f5">
-                                    <tr>
-                                        <th>余额种类</th>
-                                        <th>余额</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr v-for="items in refundData">
-                                        <td>{{items.balanceType}}</td>
-                                        <td>{{items.balance}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                    </i-col>
+                </row>
+                <row class="menu-style">
+                    <i-col span="15">
+                        <div class="input-group col-md-4 col-sm-4">
+                            <span class="input-group-addon">兑换种类：</span>
+                            <i-select v-model="buyBack.useBalanceTypeId" style="width:200px">
+                                <!-- <i-option v-for="item in buyBack.useBalance" :value="item.value" :key="item.value">{{ item.label }}</i-option> -->
+                            </i-select>
                         </div>
-                        <div class="col-md-12 col-sm-12 margin1">
-                            <div class="col-md-4 col-sm-4 menu-style">
-                                <div class="input-group">
-                                    <span class="input-group-addon">兑换种类：</span>
-                                    <input type="text" class="form-control" placeholder="兑换种类"/>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4 menu-style">
-                                <div class="input-group">
-                                    <span class="input-group-addon">兑换数量：</span>
-                                    <input type="text" class="form-control" placeholder="兑换种类"/>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4 menu-style">
-                                <div class="input-group">
-                                    <span class="input-group-addon">兑换价值：</span>
-                                    <input type="text" class="form-control" placeholder="兑换种类"/>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-12 menu-r-btn"><button type="button" class="btn btn-primary">兑换</button></div>
+                        <div class="input-group col-md-4 col-sm-4">
+                            <span class="input-group-addon">兑换数量：</span>
+                            <input type="text" class="form-control" placeholder="兑换数量" v-model="buyBack.goodCount"/>
                         </div>
+                        <div class="input-group col-md-4 col-sm-4">
+                            <span class="input-group-addon">兑换价值：</span>
+                            <input type="text" class="form-control" placeholder="兑换价值" v-model="buyBack.goodValue" readonly/>
+                        </div>
+                    </i-col>
+                    <i-col span="6"> &nbsp;
+                    </i-col>
+                    <i-col span="2">
+                        <button type="button" class="btn btn-primary" @click="goodBuyBack">兑换</button>
+                    </i-col>
+                </row>
             </i-col>
             <i-col span="24" v-if="minuData.MenuShow7">
                     <div class="col-lg-4 col-md-4">
@@ -843,14 +773,10 @@
 
             </i-col>
         </row>
-        
-        
-
-    
     <div class="footer">
         <row type="flex" justify="center" align="middle" class="code-row-bg">
-            <i-col span="1">
-                <dropdown trigger="click" style="margin-left: 20px;" placement="top" @on-click="dropChoose">
+            <i-col span="5" class="dropdown-grounp">
+                <dropdown trigger="click" placement="top" @on-click="dropChoose" class="dropdownSty">
                     <a href="javascript:void(0)">
                         {{inquireCard.dropChooseTxt1}}
                         <icon type="arrow-up-b"></icon>
@@ -861,36 +787,18 @@
                         <dropdown-item name="2"><span class="iconfont icon-3"></span>手动输入</dropdown-item>
                     </dropdown-menu>
                 </dropdown>
-            </i-col>
-            <i-col span="4">
-                <i-input v-model="inquireCard.keyInput">
+                <i-input v-model="inquireCard.keyInput" class="dropdownInput">
                     <span slot="append">{{inquireCard.dropChooseTxt2}}</span>
                 </i-input>
             </i-col>
             <i-col span="19">
-
             </i-col>
-            
         </row>
-        <!-- <div class="btn-group dropup col-lg-3 col-md-3">
-                
-        <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt1}}</button>
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu dropChoosesty">
-            <li @click="dropChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span>读卡器</li>
-            <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
-            <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
-        </ul>
-        <input  class="form-control" placeholder="请输入会员姓名" v-model="inquireCard.keyInput"/>
-        <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt2}}</button>
-        </div>        -->
     </div>
 </div>
 
-<script src="js/jquery-2.1.3.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<!-- <script src="js/jquery-2.1.3.min.js"></script> -->
+<!-- <script src="js/bootstrap.min.js"></script> -->
 <!-- 引入 Vue -->
 <!-- <script src="js/vue.js"></script> -->
 <script src="js/axios.min.js"></script>
@@ -1128,6 +1036,18 @@
                 MenuShow7:false,
                 MenuShow8:false,
             },
+            buyBack:{
+                search:"",
+                columns:[{title: '商品条码',key: 'barcode'},{title: '商品名称',key: 'goodName'},{title: '零售价',key: 'price'},{title: '回购代币数',key: 'allowCoin'},{title: '回购彩票数',key: 'allowLottery'},{title: '回购积分数',key: 'allowPoint'}],
+                listData:[],
+                pageSize:6,
+                dataCount:0,
+                goodValue:"",
+                useBalance:[],
+                useBalanceTypeId:"",
+                goodCount:"",
+                currentRow:[]
+            },
             inquireCard:{
                 show:false,
                 mobileCode:"",
@@ -1158,8 +1078,8 @@
 			},
             childCardList:null,
             orderInquiry:{
-                orderNo:"20180707075017323100025420106001",
-                dataTime:[],
+                orderNo:"",
+                dataTime:["",""],
                 theData:"",
                 payable:"",
                 preferential:"",
@@ -1559,84 +1479,77 @@
             getOrders:function(){
                 var that = this;
                 console.log(that.orderInquiry.dataTime)
-                // that.orderInquiry = {
-                //     orderNo:that.orderInquiry.orderNo,
-                //     stratTime:that.orderInquiry.stratTime,
-                //     endTime:that.orderInquiry.endTime,
-                //     theData:"",
-                //     payable:"",
-                //     preferential:"",
-                //     realPay:"",
-                //     cashier:"",
-                //     note:"",
-                //     exitChecked:[],
-                //     saleCount:"",
-                //     salePrice:"",
-                //     taxTotal:"",
-                //     disabled:false,
-                //     orderListData:[],
-                //     orderPayData:[],
-                //     goodsData:[]
-                // };
-                // var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.orderInquiry.orderNo,icCardId:that.icCardId,startDate:"2017-07-04",endDate:"2018-10-04"};
-                // console.log(obj);
-                // axios.post('/xccloud/order?action=getOrders', obj).then(function (res) {
-                //     console.log(res.data);
-                //     that.msgPrompt(res.data);
-                //     if (res.data.result_code === '1') {
-                //         that.orderInquiry.orderListData=res.data.result_data;
-                //         var orderData = res.data.result_data;
-                //         $("#table").bootstrapTable('destroy');
-                //         setTimeout(function () {
-                //             that.createTable(orderData);
-                //         }, 50);
+                that.orderInquiry = {
+                    orderNo:that.orderInquiry.orderNo,
+                    dataTime:that.orderInquiry.dataTime,
+                    theData:"",
+                    payable:"",
+                    preferential:"",
+                    realPay:"",
+                    cashier:"",
+                    note:"",
+                    exitChecked:[],
+                    saleCount:"",
+                    salePrice:"",
+                    taxTotal:"",
+                    disabled:false,
+                    orderListData:[],
+                    orderPayData:[],
+                    goodsData:[]
+                };
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.orderInquiry.orderNo,icCardId:that.icCardId,startDate:that.orderInquiry.dataTime[0],endDate:that.orderInquiry.dataTime[1]};
+                console.log(obj);
+                axios.post('/xccloud/order?action=getOrders', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.orderInquiry.orderListData=res.data.result_data;
+                        var orderData = res.data.result_data;
+                        $("#table").bootstrapTable('destroy');
+                        setTimeout(function () {
+                            that.createTable(orderData);
+                        }, 50);
                         
-                //     }
-                // }).catch(function (err) {
-                //     console.log(err);
-                // });
-            },
-//          表格分页
-            createTable:function (tableData){       //表格
-                var that = this; 
-                $("#table").bootstrapTable({ // 对应table标签的id
-                    data:tableData,
-                    toolbar: '.toolbar',                //工具按钮用哪个容器
-                    striped: true,                      //是否显示行间隔色
-                    cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-                    toggle:"table",
-                    undefinedText:"",
-                    pagination: true,                   //是否显示分页（*）
-                    sortable: false,                     //是否启用排序
-                    sortOrder: "asc",                   //排序方式
-                    pageNumber:1,                       //初始化加载第一页，默认第一页
-                    pageSize: 10,                       //每页的记录行数（*）
-                    pageList: [5,10, 25],        //可供选择的每页的行数（*）
-                    search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
-                    strictSearch: true,
-                    showColumns: false,                  //是否显示所有的列
-                    showRefresh: false,                  //是否显示刷新按钮
-                    minimumCountColumns: 2,             //最少允许的列数
-                    clickToSelect: true,                //是否启用点击选中行
-                    height: 320,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-                    // height: $(window.top).height()-400,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-                    uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
-                    showToggle:false,
-                    showFooter:false,                 //是否显示详细视图和列表视图的切换按钮
-                    cardView: false,                    //是否显示详细视图
-                    detailView: false,
-                    // columns: columns,
-                    onClickRow:function(row){
-                        console.log(row)
-                        that.orderDetails(row)
-                    },
-                    onLoadSuccess: function(){  //加载成功时执行
-                        console.info("加载成功");
-                    },
-                    onLoadError: function(){  //加载失败时执行
-                        console.info("加载数据失败");
                     }
-                })
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+//          获取兑换商品信息
+            getFoodChargeInfo:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,barCode:"",goodName:"小黄鸭"};
+                console.log(obj);
+                axios.post('/XCCloud/Foods?action=getFoodChargeInfo', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.buyBack.dataCount = res.data.result_data.length;
+                        that.buyBack.listData = res.data.result_data;
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+//          商品回购信息
+            goodBuyBack:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.ICCardId,goodId:this.buyBack.currentRow.id,goodCount:this.buyBack.goodCount,useBalanceTypeId:this.buyBack.useBalanceTypeId,note:""};
+                console.log(obj);
+                axios.post('/XCCloud/Foods?action=goodBuyBack', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+//          获取选中的表格数据
+            buyBackChoose:function(currentRow){
+                console.log(currentRow)
+                this.buyBack.currentRow = currentRow
             },
 //          查询订单详情
             orderDetails:function(rowData){
@@ -1856,37 +1769,6 @@
             this.handleListApproveHistory();
         }
     });
-
-    (function(){
-        $('.menu .content').append('<span class="close">x</span>');
-        function showContent(elem){
-            elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "1600px","height":"600px","margin-left": "-800px","margin-top": "-200px"},800);
-            elem.addClass('cover');
-        }
-
-        $('.menuli').click(function() {
-            console.log($(this).index());
-            if($(this).index() == 0){
-                window.location.href='theBar.html';
-            }else {
-                $(this).find('.content').css("display","block");
-                showContent($(this));
-            }
-        });
-        $('.menuli').keypress(function(e) {
-            if (e.keyCode == 13) {
-                showContent($(this));
-            }
-        });
-
-        $('.menu .close').click(function(e) {
-            e.stopPropagation();
-            $(this).parent().stop(true,true).animate({"opacity": 0,"width": "200px","height":"120px","margin-left": "-100px","margin-top": "-40px"});
-            $(this).parent().css("display","none");
-//            $('.menu .content').removeClass('expanded');
-            $('.menuli').removeClass('cover');
-        });
-    })();
 
     //存储session
     function setStorage(key,value) {
