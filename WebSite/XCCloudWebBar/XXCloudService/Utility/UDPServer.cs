@@ -11,6 +11,8 @@ using XCCloudWebBar.Common.Enum;
 using XXCloudService.Utility.Info;
 using XCCloudWebBar.Model.XCCloudRS232;
 using RadarService;
+using Microsoft.AspNet.SignalR;
+using XXCloudService;
 
 namespace XCCloudWebBar.Utility
 {
@@ -19,34 +21,6 @@ namespace XCCloudWebBar.Utility
         private static readonly Object thisMessageLock = new Object();
 
         delegate void DelegShowMsg(string msg);
-        //static void server_OnShowMsg(string msg)
-        //{
-        //    MessageStore(msg, true);
-        //}
-
-        private static int MessageCount = 0;
-
-        public static void MessageStore(string msg, bool flag)
-        {
-            lock (thisMessageLock)
-            {
-                if (flag)
-                {
-                    MessageCount++;
-                    if (PerMinuteCount <= MessageCount && !isReckon)
-                    {
-                        PerMinuteCount = MessageCount;
-                    }
-                    当前消息列表.Add(msg.Replace("\r\n", "<br />"));
-                }
-                else
-                {
-                    当前消息列表.Clear();
-                }
-            }
-        }
-
-        static Thread thRun;
 
         //public static UDPServerHelper server = new UDPServerHelper();
 
@@ -65,21 +39,37 @@ namespace XCCloudWebBar.Utility
             server = new HostServer(merchID, storeID, dbConnectString, 6066, "192.168.1.73", 12888, "192.168.1.119", 5753);
             server.StartServer();
             server.OnRadarDataShow += server_OnRadarDataShow;
-            //server.Init(6066);
-            //server.OnShowMsg += new UDPServerHelper.消息显示(server_OnShowMsg);
-            //server.OnChangeState += new UDPServerHelper.状态更新(server_OnChangeState);
+            server.OnTransferSpeed += server_OnTransferSpeed;
+            ////server.Init(6066);
+            ////server.OnShowMsg += new UDPServerHelper.消息显示(server_OnShowMsg);
+            ////server.OnChangeState += new UDPServerHelper.状态更新(server_OnChangeState);
 
-            InitRouterDevices();
+            //InitRouterDevices();
 
-            thRun = new Thread(new ThreadStart(Run));
-            thRun.Name = "云雷达检测服务线程";
-            thRun.IsBackground = true;
-            thRun.Start();
+        }
+
+        static void server_OnTransferSpeed(int RecvSpeed, int SendSpeed)
+        {
+            string date = DateTime.Now.ToString("HH:mm:ss");
+
+            TransferSpeedModel speed = new TransferSpeedModel() { RecvSpeed = RecvSpeed, SendSpeed = SendSpeed, Step = date };
+
+            IHubContext _myHubContext = GlobalHost.ConnectionManager.GetHubContext<MyHub>();
+            _myHubContext.Clients.All.NetworkSpeed(speed);
         }
 
         static void server_OnRadarDataShow(string ShowText)
         {
-            MessageStore(ShowText, true);
+            XXCloudService.MyHub.InstMessage message = new MyHub.InstMessage() { MsgContent = ShowText.Replace("=", "").Replace("\r\n", "<br />").Trim("<br />".ToCharArray()) };
+            IHubContext _myHubContext = GlobalHost.ConnectionManager.GetHubContext<MyHub>();
+            _myHubContext.Clients.All.ShowMessage(message);
+        }
+
+        class TransferSpeedModel
+        {
+            public long RecvSpeed { get; set; }
+            public long SendSpeed { get; set; }
+            public string Step { get; set; }
         }
 
         //static void server_OnChangeState(Recv机头网络状态报告 cmd)
@@ -122,25 +112,6 @@ namespace XCCloudWebBar.Utility
         //        }
         //    }
         //}
-
-        private static void Run()
-        {
-            while (true)
-            {
-                try
-                {
-                    PerMinuteCount = MessageCount;
-                    MessageCount = 0;
-                    //System.Diagnostics.Debug.WriteLine(string.Format("线程执行： PerMinuteCount: {0}, MessageCount: {1}", PerMinuteCount, MessageCount));
-                }
-                catch (Exception ex)
-                {
-
-                }
-
-                Thread.Sleep(60 * 1000);
-            }
-        }
 
         /// <summary>
         /// 控制器列表

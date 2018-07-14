@@ -5,266 +5,180 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
-    <link rel="stylesheet" href="assets/css/layui.css">
-    <link href="assets/css/style.css" rel="stylesheet" />
-    <link href="assets/css/iconfont.css" rel="stylesheet">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="assets/css/iconfont.css">
+	<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel='icon' href='assets/xinchen.ico ' type='image/x-ico'/>
 </head>
 <style>
-    body {
-        min-width: 670px;
+    body{min-width: 670px;}
+    body{background-color: #68cce9}
+    .bg-image{
+        width: 100%; height: 600px;position: absolute;left: 0;top: 50%;margin-top: -300px;
+        background: url("assets/img/bgImg.png")no-repeat left center;background-size: 100% 100%;
     }
-
-    body {
-        background-color: #68cce9;
+    .registerBox,.loginBox{
+        width: 400px;margin-top:90px;border-radius: 5px;border: 1px solid #999;margin-right: 20%;  float: right;background-color: #fef2f8;
     }
-
-    .bg-image {
-        width: 100%;
-        height: 600px;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        margin-top: -300px;
-        background: url("assets/img/bgImg.png")no-repeat left center;
-        background-size: 100% 100%;
+    .loginBox{width: 350px;height: 350px;position: relative;}
+    .tips-img{width: 52px;height: 52px;position: absolute;right: 10px;top: 10px; cursor: pointer;}
+    .registerBox form,.loginBox form{width: 100%;height: 100%}
+    .loginBox form{width: 300px;height: 300px;margin: 25px;}
+    .loginBox form label{width: 108px;}
+    .regTitle{
+        width: 100%;height: 50px;line-height: 50px;font-size: 16px;;
     }
-
-    .registerBox, .loginBox {
-        width: 400px;
-        margin-top: 90px;
-        border-radius: 5px;
-        border: 1px solid #999;
-        margin-right: 20%;
-        float: right;
-        background-color: #fef2f8;
-    }
-
-    .loginBox {
-        width: 350px;
-        height: 350px;
-        position: relative;
-    }
-
-    .tips-img {
-        width: 52px;
-        height: 52px;
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        cursor: pointer;
-    }
-
-    .registerBox form, .loginBox form {
-        width: 100%;
-        height: 100%;
-    }
-
-    .loginBox form {
-        width: 300px;
-        height: 300px;
-        margin: 25px;
-    }
-
-        .loginBox form label {
-            width: 108px;
-        }
-
-    .regTitle {
-        width: 100%;
-        height: 50px;
-        line-height: 50px;
-        font-size: 16px;
-        ;
-    }
-
-    .loginBox .layui-form-item {
-        padding: 0 auto;
-    }
-
-    #password_login, #password_login_hide {
-        margin-right: 0;
-        width: 150px;
-        display: inline-block;
-        !important;
-    }
-
-    .password_login_show {
-        margin-right: 0;
-        width: 40px;
-        display: inline-block;
-        padding-left: 0;
-        !important;
-        cursor: pointer;
-    }
+    .login-pwd{padding: 20px;}
+    .width100{width: 100px!important;background-color: #fef2f8;}
+    .input-group .password{margin-right:0;width: 156px!important;display: inline-block;}
+    .password_login_show{margin-right:0;width: 40px;display: inline-block;padding-left: 8px;cursor: pointer;}
+    .password_btn{width: 40px;}
+    .iconfont{margin-right: 5px;font-size: 1em;}
+    .margin{margin-top: 1.5em;}
+    .color{background-color: #FF5722}
 </style>
 <body>
-    <div class="container-fluid">
-        <div class="bg-image">
-            <div class="loginBox" style="display: block">
-
-                <div class="tips-img" onclick="changeLoginWay()">
-                    <img src="assets/img/code.png" alt="">
+    <div id="app" v-cloak>
+        <!-- Modal(通用提示框) -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{ msg }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
-                <!-- 密码登录 -->
-                <form action="" class="layui-form layui-form-pane login-pwd">
-                    <div class="regTitle" style="margin:15px 0;">登录账号</div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>用户名</label>
-                        <div class="layui-input-inline" style="margin-right:0;">
-                            <input type="text" name="username" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" id="username_login">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>密码</label>
-                        <div class="layui-input-inline" style="margin-right:0;width: 190px">
-                            <input type="password" name="username" lay-verify="required" placeholder="请输入密码" autocomplete="off"
-                                   class="layui-input" id="password_login"><input type="text" name="username" lay-verify="required"
-                                <img src="assets/img/browse.svg" alt="">
-                            </button>
-                        </div>
-
-                    </div>
-                    <div class="layui-form-item" style="text-align:center;">
-                        <button class="layui-btn layui-btn-danger" btnalign="center" type="button" style="width:298px;" onclick="login_merch()">登录</button>
-                    </div>
-                    <div class="layui-form-item">
-                        <a href="#" onclick="toLoginCode1()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>扫码登录</a>
-                    </div>
-
-                </form>
-                <!-- 扫码登录 -->
-                <form action="" class="layui-hide login-code">
-                    <div class="code-msg">
-                        <div class="msg-ok">
-                            <div id="codeBox">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
             </div>
         </div>
-
+        <div class="container-fluid">
+            <div class="bg-image">
+                <div class="loginBox" style="display: block">
+                    <div class="tips-img">
+                        <img src="assets/img/code.png" alt="">
+                    </div>
+                    <!-- 密码登录 -->
+                    <div class="login-pwd">
+                        <div class="regTitle" style="margin:15px 0;">登录账号</div>
+                        <div class="input-group">
+                            <span class="input-group-addon width100"><span class="iconfont icon-yonghuming"></span>用户名</span>
+                            <input class="form-control" placeholder="请输入用户名" v-model="username"/>
+                        </div>
+                        <div class="input-group margin">
+                            <span class="input-group-addon width100"><span class="iconfont icon-mima"></span>密码</span>
+                            <input type="password" placeholder="请输入密码" autocomplete="off" v-if="ifShowPassword" class="form-control password" v-model="password">
+                                <input type="text" placeholder="请输入密码" autocomplete="off" v-else class="form-control password" v-model="password">
+                            <div class="input-group-btn password_btn">
+                                <button type="button" class="form-control password_login_show" @click="ifShow"><img src="assets/img/browse.svg" alt=""></button>
+                            </div>
+                        </div>
+                        <div class="input-group margin" style="text-align:center;">
+                            <button class="btn btn-danger color" btnalign="center" type="button" style="width:298px;" @click="login">登录</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/layui/layui.js"></script>
-    <script type="text/javascript">
-        //存储session
-        function setStorage(key, value) {
-            if (window.localStorage) {
-                value = JSON.stringify(value); //转化为JSON字符串
-                var storage = window.localStorage;
-                storage.setItem(key, value);
-            }
-        }
-        //删除session
-        function removeStorage(key) {
-            if (window.localStorage) {
-                var storage = window.localStorage;
-                storage.removeItem(key);
-            }
-        }
-        //获取session
-        function getStorage(key) {
-            if (window.localStorage) {
-                value = JSON.parse(localStorage.getItem(key));
-                return value;
-            }
-        }
-        var machineName = "";
-        var dogIdToken = "";
+    
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- 引入 Vue -->
+<script src="assets/js/vue.min.js"></script>
+<script src="assets/js/axios.min.js"></script>
 
-        //登陆页面--login.html
-        function login_merch() {
-            var username = $('#username_login').val();
-            var password = $('#password_login').val();
-            var obj = { 'loginName': username, 'password': password };
-            var url = '/xccloud/UserInfo?action=radarLogin';           //登录接口
-            var parasJson = JSON.stringify(obj);
-            if (username != '' && password != '') {
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: parasJson,
-                    success: function (res) {
-                        res = JSON.parse(res);
-                        msgPrompt(res) 
-                        if (res.result_code === "1") {
-                            window.location.href = "default.aspx"
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.01"; //版本号
+    var vm = new Vue({
+        el: '#app',
+        data:{
+            loading:false,
+            ifShowPassword:true,
+            username:'',
+            password:'',
+            msg:"",
+        },
+        mounted: function () {
+        },
+        watch: {
+
+        },
+        methods: {
+//          登录
+            login:function(){
+                var that = this;
+                if(that.username == "" || that.password == ""){
+                    that.msg = "输入不能为空！";
+                    $('#myModal').modal('show');
+                    setTimeout(function () {
+                        $('#myModal').modal('hide');
+                    }, 1500);
+                }else{
+                    that.loading = true;
+                    var obj={'loginName':that.username,'password':that.password};
+                    console.log(obj);
+                    axios.post('/xccloud/UserInfo?action=radarLogin', obj).then(function (res) {
+                        console.log(res.data);
+                        that.loading = false;
+                        if (res.data.result_code === '1') {
+                            window.location.href='default.aspx';
+                        }else{
+                            that.msg = res.data.result_msg;
+                            $('#myModal').modal('show');
+                            setTimeout(function () {
+                                $('#myModal').modal('hide');
+                            }, 1500);
                         }
-                    }
-                })
-            }
-        }
-        function msgPrompt(res) {
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
+            },
+            ifShow:function(){
+                this.ifShowPassword = !this.ifShowPassword
+            },
+//			通用消息提示
+            msgPrompt:function (res) {
                 var that = this;
                 if(res.return_code == 0){
-                    layui.use('layer',function(){
-                        layui.layer.msg(res.return_msg,{time:2000})
-                    })
-                    // that.msg = res.return_msg;
-                    // $('#myModal').modal('show');
+                    that.msg = res.return_msg;
+                    $('#myModal').modal('show');
                 }else if(res.result_code == 0){
-                    layui.use('layer',function(){
-                        layui.layer.msg(res.result_msg,{time:2000})
-                    })
-                    // that.msg = res.result_msg;
-                    // $('#myModal').modal('show');
+                    that.msg = res.result_msg;
+                    $('#myModal').modal('show');
                 }
             }
-    </script>
-    <script>
-        var ifshow = 1;
-        var clickCounts = "";
-        function ifShowPassword() {
-
-            if (ifshow % 2 == 1) {
-                $('#password_login').addClass('layui-hide');
-                $('#password_login_hide').removeClass('layui-hide');
-            } else {
-                $('#password_login_hide').addClass('layui-hide');
-                $('#password_login').removeClass('layui-hide');
-            }
-            ifshow++;
         }
-        function changeLoginWay() {
-            if (clickCounts % 2 == 0) {
-                $('.tips-img img').attr('src', 'images/password.png');
-                $('.login-code').removeClass('layui-hide').siblings('form').addClass('layui-hide');
-            } else {
-                $('.tips-img img').attr('src', 'images/code.png');
-                $('.login-pwd').removeClass('layui-hide').siblings('form').addClass('layui-hide');
-            }
-            clickCounts++;
+    });
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
         }
-        $(function () {
-            $('#codeBox').find('iframe').css({ 'height': '300px' });
-        });
-        //    var obj = new WxLogin({
-        //        id:"codeBox",
-        //        appid: "wx643b076d171ecb3c",
-        //        scope: "snsapi_login",
-        //        redirect_uri: "ws://192.168.1.145:12880",
-        //        // state: "<{$state}>",
-        //        style: "black",
-        //        href: "hws://192.168.1.145:12880"
-        //    });
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key) {
+        if(window.localStorage){
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+</script>
 
-
-
-        //    var clickCounts=0,ifshow=0;
-        $("body").keydown(function () {
-            if (event.keyCode == "13") {//keyCode=13是回车键
-                login_merch();
-            }
-        });
-        $('#password_login').on('change', function () {
-            $('#password_login_hide').val($(this).val());
-        });
-        $('#password_login_hide').on('change', function () {
-            $('#password_login').val($(this).val());
-        });
-    </script>
 </body>
 </html>

@@ -75,6 +75,14 @@ namespace RadarService
                 {
                     isRun = true;
 
+                    if (tRun == null)
+                    {
+                        tRun = new Thread(new ThreadStart(RunSpeed));
+                        tRun.IsBackground = true;
+                        tRun.Name = "速度计算线程";
+                        tRun.Start();
+                    }
+
                     client = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                     byte[] optionInValue = { Convert.ToByte(false) };
                     byte[] optionOutValue = new byte[4];

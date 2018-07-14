@@ -5,6 +5,24 @@
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+declare @FoodSaleDetailList [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98308,100)
+
+declare @MemberBalanceList [MemberBalanceListType3]
+declare @MemberBalanceFreeList [MemberBalanceListType3]
+
+insert @MemberBalanceList(DataCardBalanceId,BalanceIndex,BalanceName,Balance)
+exec GetMemberBalanceInfo '100025','10002542010600120180521000060000',2,0
+
+insert @MemberBalanceFreeList(DataCardBalanceId,BalanceIndex,BalanceName,Balance)
+exec GetMemberBalanceInfo '100025','10002542010600120180521000060000',2,1
+exec UpdateMemberBalance '100025',@MemberBalanceList,@MemberBalanceFreeList,@FoodSaleDetailList
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
 dbo.F_GetDateVerifictionStr(@CheckDate)
 dbo.F_GetDatetimeVerifictionStr(@RealTime)
 dbo.F_GetDecimalVerifictionStr(@TotalMoney)
@@ -408,29 +426,34 @@ print '@OrderFlwId:' + @OrderFlwId
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
+
+
 declare @Result int = 0
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180521' + '000018'
 declare @FlwOrderId varchar(32) = '10002542010600120180517100010001'
+declare @MerchId varchar(15) = '100025'
 declare @StoreID varchar(15) = '100025420106001'
 declare @WorkStation varchar(50) = 'lijunjie'
+declare @WorkStationId int = 3
 declare @Mobile varchar(11) = '15618920033'
 declare @ICCardId int = 0
 declare @RealPay decimal(18,2) = 0
 declare @PayType int = 0
 declare @ErrMsg varchar(200) = ''
 
-declare @FoodSaleDetailList as [FoodSaleDetailListType]
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
-
 declare @RegisterMember as [RegisterMemberType]
-insert @RegisterMember(Mobile,WeChat,QQ,IMME,CardShape,MemberName,MemberPassword,Birthday,Gender,IdentityCard,
-EMail,LeftHandCode,RightHandCode,Photo,RepeatCode,ICCardId,Deposit,ICCardUID,Note)
-values('15618920033','','','','0','≤‚ ‘','123456789','2018-05-23','1','1',
-'','','','',132,'10004143',10,11111111,'')
+insert @RegisterMember
+(Mobile,WechatOpenID,AlipayOpenID,QQ,IMME,
+CardShape,UserName,UserPassword,Gender,Birthday,
+IDCard,EMail,LeftHandCode,RightHandCode,Photo,
+RepeatCode,ICCardId,ICCardUID,Note)
+values
+('15618920033','','','','',
+'0','lijunjie','123456','1','2018-01-01',
+'420300197610102511','','','','',
+'132',10004143,123,'Note')
 
-exec @Result = PayOrder @FoodSaleDetailList,@RegisterMember,@StoreID,@WorkStation,@FlwOrderId,@Mobile,@ICCardId,@RealPay,@PayType,@ErrMsg output
+exec @Result = PayOrder @RegisterMember,@FlwSeedId,@MerchId,@StoreID,@WorkStationId,@FlwOrderId,@Mobile,@RealPay,@PayType,@ErrMsg output
 print '@Result:' + cast(@Result as varchar)
 print '@ErrMsg:' + cast(@ErrMsg as varchar)
 

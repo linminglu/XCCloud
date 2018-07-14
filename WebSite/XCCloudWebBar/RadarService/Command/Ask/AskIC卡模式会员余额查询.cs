@@ -58,7 +58,7 @@ namespace RadarService.Command.Ask
                 机头地址 = Convert.ToByte(head.机头短地址, 16);
                 bool isAllowOut, isAllowIn, isAllowZKZY;
                 int pcoin;
-                UInt32 balance, lottery, point;
+                UInt32 balance;
                 byte cardType;
                 流水号 = SN;
 

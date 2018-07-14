@@ -320,10 +320,8 @@ namespace XXCloudService.Api.XCCloud
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
             string freePay = dicParas.ContainsKey("freePay") ? dicParas["freePay"].ToString() : string.Empty; 
-            string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
             string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
             string openFee = dicParas.ContainsKey("openFee") ? dicParas["openFee"].ToString() : string.Empty;
-            string scheduleId = dicParas.ContainsKey("scheduleId") ? dicParas["scheduleId"].ToString() : string.Empty;
             string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
             string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
             string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;

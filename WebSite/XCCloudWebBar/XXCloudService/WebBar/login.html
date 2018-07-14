@@ -8,10 +8,6 @@
     <link rel="stylesheet" href="css/layui.css">
     	<!-- 引入样式 -->
 	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<!-- <link href="css/style.css" rel="stylesheet"> -->
-	<link href="css/iconfont.css" rel="stylesheet">
-	<link rel="stylesheet" href="css/swiper.min.css">
-	<link href="css/bootstrap-table.css" rel="stylesheet">
     <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
 </head>
 <style>
@@ -259,114 +255,7 @@
             return value;
         }
     }
-// </script>
-// <script type="text/javascript">
-
-//     //登陆页面--login.html
-//     function login_merch(){
-//         var username=$('#username_login').val();
-//         var password=$('#password_login').val();
-//         // var obj={'loginName':"lijunjie",'password':"123456",'workStation':'lijunjie','dogId':'22222222'};
-// //        10004143
-//         // var obj={'loginName':"45",'password':"123456",'workStation':'tietou','dogId':'22222222'};
-//         // var obj={'loginName':"zwf",'password':"123456",'workStation':'tietou','dogId':'22222222'};
-        
-//         var obj={'loginName':username,'password':password,'workStation':'tietou','dogId':'22222222'};
-//         console.log(obj)
-// //        28801810;
-//         var url='/xccloud/UserInfo?action=barLogin';           //登录接口
-//         var parasJson = JSON.stringify(obj);
-//         if(username!=''&&password!=''){
-//             $.ajax({
-//                 type: "post",
-//                 url: url,
-//                 contentType: "application/json; charset=utf-8",
-//                 data: parasJson,
-//                 success: function (res) {
-//                     console.log(res);
-//                     res=JSON.parse(res);
-//                     msgPrompt(res);
-//                     if(res.result_code=== "1"){
-//                         console.log(JSON.parse(parasJson));
-//                         var userToken =res.result_data.userToken;
-//                         console.log(userToken);
-//                         var storeId =res.result_data.storeId;
-//                         console.log(storeId);
-//                         setStorage('userToken',userToken);
-//                         setStorage('storeId',storeId);
-// //                        window.location.href='theBar.html';
-//                     }
-//                 }
-//             })
-//         }
-//     }
-//     function msgPrompt(res) {
-//         var that = this;
-//         if(res.return_code == 0){
-//             that.msg = res.return_msg;
-//             $('#myModal').modal('show');
-//         }else if(res.result_code == 0){
-//             that.msg = res.result_msg;
-//             $('#myModal').modal('show');
-//         }
-//     }
 </script>
-<script>
 
-//         var  ifshow = 1;
-//         var  clickCounts ="";
-// function ifShowPassword(){
-
-//     if(ifshow%2==1){
-//         $('#password_login').addClass('layui-hide');
-//         $('#password_login_hide').removeClass('layui-hide');
-//     }else{
-//         $('#password_login_hide').addClass('layui-hide');
-//         $('#password_login').removeClass('layui-hide');
-//     }
-//     ifshow++;
-// }
-// function changeLoginWay(){
-//     if(clickCounts%2==0){
-//         $('.tips-img img').attr('src','images/password.png');
-//         $('.login-code').removeClass('layui-hide').siblings('form').addClass('layui-hide');
-//     }else{
-//         $('.tips-img img').attr('src','images/code.png');
-//         $('.login-pwd').removeClass('layui-hide').siblings('form').addClass('layui-hide');
-//     }
-//     clickCounts++;
-// }
-// $(function () {
-//     $('#codeBox').find('iframe').css({'height':'300px'});
-
-//     console.log(ifshow);
-
-
-// });
-// //    var obj = new WxLogin({
-// //        id:"codeBox",
-// //        appid: "wx643b076d171ecb3c",
-// //        scope: "snsapi_login",
-// //        redirect_uri: "ws://192.168.1.145:12880",
-// //        // state: "<{$state}>",
-// //        style: "black",
-// //        href: "hws://192.168.1.145:12880"
-// //    });
-
-
-
-// //    var clickCounts=0,ifshow=0;
-//     $("body").keydown(function() {
-//         if (event.keyCode == "13") {//keyCode=13是回车键
-//             login_merch();
-//         }
-//     });
-//     $('#password_login').on('change',function () {
-//         $('#password_login_hide').val($(this).val());
-//     });
-//     $('#password_login_hide').on('change',function () {
-//         $('#password_login').val($(this).val());
-//     });
-</script>
 </body>
 </html>

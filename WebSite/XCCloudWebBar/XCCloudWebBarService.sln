@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudWebBar", "XXCloudService\XCCloudWebBar.csproj", "{FEBC527E-778E-4217-8CD0-A84FD101CBCB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{D7AE906D-C902-4EB9-AD57-A18B64375C48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudWebBar.Model", "XXCloudService.Model\XCCloudWebBar.Model.csproj", "{1E38EC5A-0A89-4D9E-9CDF-6F79C580B6A1}"
 EndProject
@@ -44,6 +42,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarService.PublicHelper", "RadarService.PublicHelper\RadarService.PublicHelper.csproj", "{A572252C-2D34-4E15-B304-B48CA6E652B8}"
 EndProject
 Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -57,13 +59,6 @@ Global
 		{FEBC527E-778E-4217-8CD0-A84FD101CBCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEBC527E-778E-4217-8CD0-A84FD101CBCB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FEBC527E-778E-4217-8CD0-A84FD101CBCB}.Release|x64.ActiveCfg = Release|Any CPU
-		{D7AE906D-C902-4EB9-AD57-A18B64375C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7AE906D-C902-4EB9-AD57-A18B64375C48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7AE906D-C902-4EB9-AD57-A18B64375C48}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D7AE906D-C902-4EB9-AD57-A18B64375C48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7AE906D-C902-4EB9-AD57-A18B64375C48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7AE906D-C902-4EB9-AD57-A18B64375C48}.Release|x64.ActiveCfg = Release|x64
-		{D7AE906D-C902-4EB9-AD57-A18B64375C48}.Release|x64.Build.0 = Release|x64
 		{1E38EC5A-0A89-4D9E-9CDF-6F79C580B6A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1E38EC5A-0A89-4D9E-9CDF-6F79C580B6A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E38EC5A-0A89-4D9E-9CDF-6F79C580B6A1}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -178,9 +173,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8987684-994E-4FDB-8500-F8D795692239}
-	EndGlobalSection
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal

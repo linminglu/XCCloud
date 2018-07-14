@@ -37,7 +37,7 @@
                     <span>Windows</span>
                 </radio>
             </radio-group>
-            
+            <i-button @click="closable">Display a closable message</i-button>
 
     </div>
     <script>
@@ -257,7 +257,7 @@
                     }
 
                 ],
-                historyData: []
+                historyData: [],
             },
             methods:{
                 // 获取历史记录信息
@@ -282,7 +282,14 @@
                 },
                 AllData(selection){
                     console.log(selection)
-                }
+                },
+                closable () {
+                this.$Message.info({
+                    content: 'Tips for manual closing',
+                    duration: 10,
+                    closable: true
+                });
+            }
             },
             created(){
                 this.handleListApproveHistory();

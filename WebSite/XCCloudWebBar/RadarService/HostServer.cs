@@ -10,6 +10,8 @@ using System.Data;
 using RadarService.PublicHelper;
 using RadarService.Notify;
 using DSS;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace RadarService
 {
@@ -23,7 +25,47 @@ namespace RadarService
         public static int 当前小票指令数 = 0;
         public static int 当前错误指令数 = 0;
         public static int 当前返还指令数 = 0;
+        class IPAddressConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return (objectType == typeof(IPAddress));
+            }
 
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                writer.WriteValue(value.ToString());
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                return IPAddress.Parse((string)reader.Value);
+            }
+        }
+        class IPEndPointConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return (objectType == typeof(IPEndPoint));
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                IPEndPoint ep = (IPEndPoint)value;
+                JObject jo = new JObject();
+                jo.Add("Address", JToken.FromObject(ep.Address, serializer));
+                jo.Add("Port", ep.Port);
+                jo.WriteTo(writer);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                JObject jo = JObject.Load(reader);
+                IPAddress address = jo["Address"].ToObject<IPAddress>(serializer);
+                int port = (int)jo["Port"];
+                return new IPEndPoint(address, port);
+            }
+        }
         static XCHelper xcClient = null;
         DSS.Client.Client dsClient = null;
         class RouteData
@@ -61,7 +103,6 @@ namespace RadarService
         int ServerPort = 0;
         string DSServerIP = "";
         int DSServerPort = 0;
-        bool _initSuccess = false;
         string GetSystemParameter(string key)
         {
             DataAccess ac = new DataAccess();
@@ -83,13 +124,13 @@ namespace RadarService
             DSServerPort = dsServerPort;
 
             DataAccess ac = new DataAccess();
-            DataTable dt = ac.ExecuteQueryReturnTable("select MerchSecret,ProxyType from Base_MerchantInfo where MerchID='" + merchID + "'");
+            DataTable dt = ac.ExecuteQueryReturnTable("select MerchSecret,ProxyType from Base_MerchantInfo where ID='" + merchID + "'");
             if (dt.Rows.Count > 0)
             {
                 PublicHelper.SystemDefiner.AppSecret = dt.Rows[0]["MerchSecret"].ToString();
                 PublicHelper.SystemDefiner.ProxyType = Convert.ToInt32(dt.Rows[0]["ProxyType"]);
             }
-            dt = ac.ExecuteQueryReturnTable("select Password,StoreName from Base_StoreInfo where StoreID='" + storeID + "'");
+            dt = ac.ExecuteQueryReturnTable("select Password,StoreName from Base_StoreInfo where ID='" + storeID + "'");
             if (dt.Rows.Count > 0)
             {
                 PublicHelper.SystemDefiner.StorePassword = dt.Rows[0]["Password"].ToString();
@@ -101,52 +142,88 @@ namespace RadarService
         }
 
         #region 路由器设备列表
+        ///// <summary>
+        ///// key->code,value->udp
+        ///// </summary>
+        //Dictionary<string, EndPoint> 路由器通讯列表 = new Dictionary<string, EndPoint>();
+        ///// <summary>
+        ///// key->code,value->segment
+        ///// </summary>
+        //Dictionary<string, string> 路由器段号校验列表 = new Dictionary<string, string>();
+        ///// <summary>
+        ///// key->segment,value->code
+        ///// </summary>
+        //Dictionary<string, string> 路由器段码对照表 = new Dictionary<string, string>();
+
+        public class RouteStatusItem
+        {
+            public string Segment { get; set; }
+            public string DeviceName { get; set; }
+            public string RemotePoint { get; set; }
+            public bool Online { get; set; }
+            public DateTime UpdateTime { get; set; }
+        }
         /// <summary>
-        /// key->code,value->udp
+        /// 缓存雷达对象到radis
         /// </summary>
-        Dictionary<string, EndPoint> 路由器通讯列表 = new Dictionary<string, EndPoint>();
+        /// <param name="token">雷达令牌</param>
+        /// <param name="item">雷达对象</param>
+        void UpdateRadarStatus(string token, RouteStatusItem item)
+        {
+            XCCloudSerialNo.SerialNoHelper.StringSet<RouteStatusItem>("radarinfo_" + token.ToLower(), item);
+        }
         /// <summary>
-        /// key->code,value->segment
+        /// 根据路由器段号从radis获取雷达对象
         /// </summary>
-        Dictionary<string, string> 路由器段号校验列表 = new Dictionary<string, string>();
+        /// <param name="segment">路由器段号</param>
+        /// <returns></returns>
+        public RouteStatusItem GetRadarStatusBySegment(string segment)
+        {
+            string token = GetRadarSegment(segment);
+            return GetRadarStatusByToken(token);
+        }
         /// <summary>
-        /// key->segment,value->code
+        /// 根据雷达令牌从radis获取雷达对象
         /// </summary>
-        Dictionary<string, string> 路由器段码对照表 = new Dictionary<string, string>();
+        /// <param name="token">雷达令牌</param>
+        /// <returns></returns>
+        public RouteStatusItem GetRadarStatusByToken(string token)
+        {
+            return XCCloudSerialNo.SerialNoHelper.StringGet<RouteStatusItem>("radarinfo_" + token.ToLower());
+        }
+        /// <summary>
+        /// 设置路由器段号和令牌的对应关系
+        /// </summary>
+        /// <param name="token">雷达令牌</param>
+        /// <param name="segment">路由器段号</param>
+        void SetRadarSegment(string token, string segment)
+        {
+            XCCloudSerialNo.SerialNoHelper.StringSet("radarsegmentinfo_" + segment, token.ToLower());
+        }
+        /// <summary>
+        /// 根据路由器段号获取雷达令牌
+        /// </summary>
+        /// <param name="segment">路由器段号</param>
+        /// <returns></returns>
+        string GetRadarSegment(string segment)
+        {
+            return XCCloudSerialNo.SerialNoHelper.StringGet("radarsegmentinfo_" + segment);
+        }
 
         public void LoadAllRoute()
         {
             DataAccess ac = new DataAccess();
-            DataTable dt = ac.ExecuteQueryReturnTable("select Token,segment from Base_DeviceInfo where type='8' and token <> ''");
-            路由器段号校验列表.Clear();
-            路由器段码对照表.Clear();
+            DataTable dt = ac.ExecuteQueryReturnTable("select Token,DeviceName,segment from Base_DeviceInfo where type='8' and token <> ''");
             foreach (DataRow row in dt.Rows)
             {
-                路由器段号校验列表.Add(row["Token"].ToString().ToLower(), row["segment"].ToString().ToLower());
-                路由器段码对照表.Add(row["segment"].ToString().ToLower(), row["Token"].ToString().ToLower());
+                RouteStatusItem item = new RouteStatusItem();
+                item.DeviceName = row["DeviceName"].ToString();
+                item.Segment = row["segment"].ToString();
+                item.UpdateTime = DateTime.Now;
+                UpdateRadarStatus(row["Token"].ToString().ToLower(), item);
+                SetRadarSegment(row["Token"].ToString().ToLower(), row["segment"].ToString());
             }
         }
-
-        void UpdateRouteSegment(string code, string segment)
-        {
-            if (路由器段号校验列表.ContainsKey(code))
-            {
-                路由器段号校验列表[code] = segment;
-            }
-        }
-
-        void UpdateRoute(string code, EndPoint p)
-        {
-            if (路由器通讯列表.ContainsKey(code))
-            {
-                路由器通讯列表[code] = p;
-            }
-            else
-            {
-                路由器通讯列表.Add(code, p);
-            }
-        }
-
         #endregion
 
         #region 重复性检查
@@ -326,7 +403,8 @@ namespace RadarService
         static string curMCUID = "";
         public bool SendMCUFunction(string MCUID, string RouteToken)
         {
-            if (!路由器通讯列表.ContainsKey(RouteToken)) return false;
+            RouteStatusItem route = GetRadarStatusByToken(RouteToken);
+            if (route == null) return false;
             curMCUID = MCUID;
             List<byte> send = new List<byte>();
             send.AddRange(Coding.ConvertData.StringToByte(MCUID));
@@ -339,7 +417,7 @@ namespace RadarService
             FrameData data = new FrameData();
             data.routeAddress = "FFFF";
             byte[] Senddata = Coding.ConvertData.GetFrameDataBytes(data, sendRe.ToArray(), CommandType.设置机头长地址);
-            udp.SendData(Senddata, 路由器通讯列表[RouteToken]);
+            udp.SendData(Senddata, Converstring2Endpoint(route.RemotePoint));
             return true;
         }
 
@@ -357,7 +435,8 @@ namespace RadarService
         #region 路由器时间控制
         public bool 路由器时间控制(string date, int IsSet, string RouteToken)
         {
-            if (!路由器通讯列表.ContainsKey(RouteToken)) return false;
+            RouteStatusItem item = GetRadarStatusByToken(RouteToken);
+            if (item == null) return false;
             FrameData data = new FrameData();
             data.commandType = CommandType.路由器时间控制;
             data.routeAddress = "FFFF";
@@ -374,7 +453,7 @@ namespace RadarService
             }
 
             byte[] Send = Coding.ConvertData.GetFrameDataBytes(data, dataList.ToArray(), CommandType.路由器时间控制);
-            udp.SendData(Send, 路由器通讯列表[RouteToken]);
+            udp.SendData(Send, Converstring2Endpoint(item.RemotePoint));
             return true;
         }
         #endregion
@@ -611,7 +690,6 @@ namespace RadarService
 
                 dsClient = new DSS.Client.Client(DSServerIP, DSServerPort, PublicHelper.SystemDefiner.StoreID, PublicHelper.SystemDefiner.MerchID, PublicHelper.SystemDefiner.AppSecret);
                 dsClient.Init();
-                _initSuccess = true;
             }
             catch (Exception ex)
             {
@@ -669,8 +747,9 @@ namespace RadarService
                         else if (contorl.action == "6") info = "远程投币";
 
                         Console.WriteLine("莘宸服务器接收【" + info + "】");
-
-                        Command.Ask.Ask远程投币上分数据 a = new Command.Ask.Ask远程投币上分数据(head, Convert.ToInt32(contorl.count), info, SystemDefiner.雷达主发流水号, (zkzyvalue == 1), 路由器通讯列表[路由器段码对照表[head.路由器段号]]);
+                        RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
+                        if (route == null) return;
+                        Command.Ask.Ask远程投币上分数据 a = new Command.Ask.Ask远程投币上分数据(head, Convert.ToInt32(contorl.count), info, SystemDefiner.雷达主发流水号, (zkzyvalue == 1), Converstring2Endpoint(route.RemotePoint));
 
                         List<JsonObject.StatusItem> changeList = new List<JsonObject.StatusItem>();
                         JsonObject.StatusItem item = new JsonObject.StatusItem();
@@ -683,7 +762,9 @@ namespace RadarService
                     else if (contorl.action == "7")
                     {
                         Console.WriteLine("莘宸服务器接收【远程退币】");
-                        Command.Ask.Ask远程被动退分解锁指令 function = new Command.Ask.Ask远程被动退分解锁指令(head, 路由器通讯列表[路由器段码对照表[head.路由器段号]]);
+                        RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
+                        if (route == null) return;
+                        Command.Ask.Ask远程被动退分解锁指令 function = new Command.Ask.Ask远程被动退分解锁指令(head, Converstring2Endpoint(route.RemotePoint));
                     }
                     else
                     {
@@ -704,9 +785,14 @@ namespace RadarService
         {
             byte[] recvData = data.Skip(16).Take(data.Length - 16).ToArray();
             string code = Coding.ConvertData.BytesToString(data.Take(16).ToArray()).Replace(" ", "").ToLower();
-            UpdateRoute(code, p);
-            if (路由器段号校验列表.ContainsKey(code))
+            RouteStatusItem route = GetRadarStatusByToken(code);
+            if (route != null)
             {
+                route.RemotePoint = ConverEndpoint2string(p);
+                route.Online = true;
+                route.UpdateTime = DateTime.Now;
+                UpdateRadarStatus(code, route);
+
                 RouteData r = new RouteData();
                 r.RecvData = recvData;
                 r.RemotePoint = p;
@@ -741,10 +827,10 @@ namespace RadarService
             {
                 byte[] data = route.RecvData;
                 FrameData f = new FrameData(data);
-                if (路由器段号校验列表.ContainsKey(route.Token))
-                {
-                    //if (f.routeAddress != 路由器段号校验列表[route.Token]) return;   //如果收到的路由器编号不一致为非法数据，直接退出
-                }
+                //if (路由器段号校验列表.ContainsKey(route.Token))
+                //{
+                //    //if (f.routeAddress != 路由器段号校验列表[route.Token]) return;   //如果收到的路由器编号不一致为非法数据，直接退出
+                //}
                 DateTime processTime = DateTime.Now;
                 Console.WriteLine(string.Format("接收：{0}", Coding.ConvertData.BytesToString(f.recvData)));
                 当前总指令数++;
@@ -785,7 +871,6 @@ namespace RadarService
                     case CommandType.设置路由器地址应答:
                         {
                             string routeVer = Encoding.ASCII.GetString(f.commandData);
-                            UpdateRouteSegment(route.Token, f.routeAddress);
                             ClearBodyItem(CommandType.设置路由器地址应答, null);
                             StringBuilder sb = new StringBuilder();
                             sb.Append("=============================================\r\n");
@@ -1127,6 +1212,34 @@ namespace RadarService
                 LogHelper.LogHelper.WriteLog(ex, route.RecvData);
             }
         }
+        /// <summary>
+        /// EndPoint序列化准备
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public string ConverEndpoint2string(EndPoint p)
+        {
+            var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new IPAddressConverter());
+            settings.Converters.Add(new IPEndPointConverter());
+            settings.Formatting = Formatting.Indented;
+
+            return JsonConvert.SerializeObject(p, settings);
+        }
+        /// <summary>
+        /// Endpoint反序列化准备
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public EndPoint Converstring2Endpoint(string v)
+        {
+            var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new IPAddressConverter());
+            settings.Converters.Add(new IPEndPointConverter());
+            settings.Formatting = Formatting.Indented;
+
+            return JsonConvert.DeserializeObject<IPEndPoint>(v, settings);
+        }
 
         public void Test()
         {
@@ -1144,21 +1257,14 @@ namespace RadarService
         public bool 路由器复位(string segment, out string errMsg)
         {
             errMsg = "";
-            if (路由器段码对照表.ContainsKey(segment))
+            RouteStatusItem route = GetRadarStatusBySegment(segment);
+            if (route != null)
             {
-                if (路由器通讯列表.ContainsKey(路由器段码对照表[segment]))
-                {
-                    Command.Ask.Ask设置路由器地址 ask = new Command.Ask.Ask设置路由器地址(segment, 路由器通讯列表[路由器段码对照表[segment]]);
-                    return true;
-                }
-                else
-                {
-                    errMsg = "非法路由器设备";
-                }
+                Command.Ask.Ask设置路由器地址 ask = new Command.Ask.Ask设置路由器地址(segment, Converstring2Endpoint(route.RemotePoint));
             }
             else
             {
-                errMsg = "路由器段号错误";
+                errMsg = "非法路由器设备";
             }
             return false;
         }
@@ -1170,17 +1276,11 @@ namespace RadarService
                 Info.DeviceInfo.机头信息 head = Info.DeviceInfo.GetBufMCUIDDeviceInfo(mcuid);
                 if (head != null)
                 {
-                    if (路由器段码对照表.ContainsKey(head.路由器段号))
+                    RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
+                    if (route != null)
                     {
-                        if (路由器通讯列表.ContainsKey(路由器段码对照表[head.路由器段号]))
-                        {
-                            Command.Ask.Ask远程被动退分解锁指令 ask = new Command.Ask.Ask远程被动退分解锁指令(head, 路由器通讯列表[路由器段码对照表[head.路由器段号]]);
-                            return true;
-                        }
-                        else
-                        {
-                            errMsg = "非法路由器设备";
-                        }
+                        Command.Ask.Ask远程被动退分解锁指令 ask = new Command.Ask.Ask远程被动退分解锁指令(head, Converstring2Endpoint(route.RemotePoint));
+                        return true;
                     }
                     else
                     {
@@ -1207,17 +1307,11 @@ namespace RadarService
                 Info.DeviceInfo.机头信息 head = Info.DeviceInfo.GetBufMCUIDDeviceInfo(mcuid);
                 if (head != null)
                 {
-                    if (路由器段码对照表.ContainsKey(head.路由器段号))
+                    RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
+                    if (route != null)
                     {
-                        if (路由器通讯列表.ContainsKey(路由器段码对照表[head.路由器段号]))
-                        {
-                            Command.Ask.Ask远程投币上分数据 ask = new Command.Ask.Ask远程投币上分数据(head, coin, pushTypeName, PublicHelper.SystemDefiner.雷达主发流水号, ZKZY, 路由器通讯列表[路由器段码对照表[head.路由器段号]]);
-                            return true;
-                        }
-                        else
-                        {
-                            errMsg = "非法路由器设备";
-                        }
+                        Command.Ask.Ask远程投币上分数据 ask = new Command.Ask.Ask远程投币上分数据(head, coin, pushTypeName, PublicHelper.SystemDefiner.雷达主发流水号, ZKZY, Converstring2Endpoint(route.RemotePoint));
+                        return true;
                     }
                     else
                     {
@@ -1244,20 +1338,14 @@ namespace RadarService
                 Info.DeviceInfo.机头信息 head = Info.DeviceInfo.GetBufMCUIDDeviceInfo(mcuid);
                 if (head != null)
                 {
-                    if (路由器段码对照表.ContainsKey(head.路由器段号))
+                    RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
+                    if (route != null)
                     {
-                        if (路由器通讯列表.ContainsKey(路由器段码对照表[head.路由器段号]))
-                        {
-                            Command.Ask.Ask机头锁定解锁指令 ask = new Command.Ask.Ask机头锁定解锁指令(head, isLock, 路由器通讯列表[路由器段码对照表[head.路由器段号]]);
-                            if (!ask.IsSuccess)
-                                errMsg = "执行错误";
-                            else
-                                return true;
-                        }
+                        Command.Ask.Ask机头锁定解锁指令 ask = new Command.Ask.Ask机头锁定解锁指令(head, isLock, Converstring2Endpoint(route.RemotePoint));
+                        if (!ask.IsSuccess)
+                            errMsg = "执行错误";
                         else
-                        {
-                            errMsg = "非法路由器设备";
-                        }
+                            return true;
                     }
                     else
                     {
@@ -1287,7 +1375,11 @@ namespace RadarService
                 Info.DeviceInfo.机头信息 head = Info.DeviceInfo.GetBufMCUIDDeviceInfo(mcuid);
                 if (head.状态.在线状态)
                 {
-                    Command.Ask.Ask机头地址修改 a = new Command.Ask.Ask机头地址修改(mcuid, head.机头短地址, head.路由器段号, 路由器通讯列表[路由器段码对照表[head.路由器段号]]);
+                    RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
+                    if (route != null)
+                    {
+                        Command.Ask.Ask机头地址修改 a = new Command.Ask.Ask机头地址修改(mcuid, head.机头短地址, head.路由器段号, Converstring2Endpoint(route.RemotePoint));
+                    }
                 }
             }
         }
@@ -1299,7 +1391,11 @@ namespace RadarService
             {
                 if (head.状态.在线状态)
                 {
-                    Command.Ask.Ask机头地址修改 a = new Command.Ask.Ask机头地址修改(mcuid, address, head.路由器段号, 路由器通讯列表[路由器段码对照表[head.路由器段号]]);
+                    RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
+                    if (route != null)
+                    {
+                        Command.Ask.Ask机头地址修改 a = new Command.Ask.Ask机头地址修改(mcuid, address, head.路由器段号, Converstring2Endpoint(route.RemotePoint));
+                    }
                 }
             }
         }

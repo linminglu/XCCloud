@@ -509,7 +509,7 @@ namespace RadarService.Info
         static bool 电子退币SQL(DeviceInfo.机头信息 head, UInt16 SN, int Coins, string ICCard, int RepeadCode, CoinType cType, EndPoint p, ref DataMember.IC卡模式进出币应答结构 投币应答, ref string msg)
         {
             bool res = false;
-            int pCoin = 0, bValue = 0;
+            int  bValue = 0;
             bool isAllowOut = false, isAllowIn = false, isAllowZKZY = false;
             bool 是否超分报警 = false;
             Info.GameInfo.游戏机信息 game = XCCloudSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
@@ -923,7 +923,6 @@ namespace RadarService.Info
         public static DataMember.IC卡模式进出币应答结构 刷卡投币(string ICCard, int Coins, UInt16 SN, CoinType cType, int RepeadCode, Info.DeviceInfo.机头信息 head, EndPoint p, ref string msg, bool isPush, string PushAddr, out int FreeCoin)
         {
             FreeCoin = 0;
-            int gInCoin, gOutCoin, headCount;
             bool skip = false;
             msg = "";
             DataMember.IC卡模式进出币应答结构 投币应答 = new DataMember.IC卡模式进出币应答结构();

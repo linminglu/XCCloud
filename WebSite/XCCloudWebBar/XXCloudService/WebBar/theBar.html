@@ -20,6 +20,8 @@
     .navT{width: 80px;margin-top: 1.25em;padding-left: 10px;color: #7d8184;font-weight: 600;font-size: 1em}
     .operationBtn{text-align: right;margin: 2em;padding:0 1em;}
     .operationBtn button{display: inline-block;width: 10em;margin: 0 0.5em;}
+    .operationBtn button:hover{display: inline-block;width: 10em;margin: 0 0.5em;}
+
     .tableCenter{background-color: #fefefe;}
     .tableCenter th{text-align: center;}
     .table>thead>tr>th {vertical-align: middle;}
@@ -1347,7 +1349,7 @@
 			dataObj:[],
             userToken:'',
             storeId:'',
-            memberLevelId:1,
+            memberLevelId:0,
 			saleData:[],
 			saleGood:[],
 			saleTicket:[],
@@ -1816,7 +1818,7 @@
                 var that = this;
                 $('#fastModal').modal('show');
                 this.onFocus = true;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,mobile:"15827149648"};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,mobile:""};
                 axios.post('/xccloud/foods?action=getQuickFood', obj).then(function (res) {	//获取会员等级
                     console.log(res.data);
                     that.msgPrompt(res.data);
@@ -2167,6 +2169,7 @@
                         break;
 				}
 			},
+//          footer读卡操作
             AllReadCard:function(){
                 var that = this;
 				switch (that.dropChooseTxt2){
@@ -2176,8 +2179,8 @@
                         ws.send(msgType4);
 					    break;
                     case "读取":
-                        var msgType5 =JSON.stringify({"msgType":"5", "sObj": {"userToken": that.userToken}});
-                        ws.send(msgType5);
+                        var msgType3 =JSON.stringify({"msgType":"3", "sObj": {"userToken": that.userToken}});
+                        ws.send(msgType3);
                         break;
                     case "查询":
                         // if(){}

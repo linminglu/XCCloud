@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 引入样式 -->
     <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
-    <script type="text/javascript" src="js/vue.min.js"></script>
-    <script type="text/javascript" src="js/iview.min.js"></script>
+    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
     <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -403,7 +403,6 @@
                         <i-table height="360" ref="selection" :columns="historyColumns" :data="historyData" @on-select-all="AllData" @on-selection-change="tableChecked"></i-table>
                         <div style="margin: 10px;overflow: hidden">
                             <div style="float: right;">
-                                
                                 <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage"></Page>
                             </div>
                         </div>
@@ -546,7 +545,10 @@
             <i-col span="24" v-if="minuData.MenuShow6">
                 <row class="menu-style">
                     <i-col span="4">
-                        <i-input v-model="buyBack.search" icon="search" placeholder="条码号/商品名称..." style="width: 100%" @on-click="getFoodChargeInfo" @on-enter="getFoodChargeInfo"></i-input>
+                        <i-input v-model="buyBack.barCode" icon="search" placeholder="条码号" style="width: 100%" @on-click="getFoodChargeInfo('0')" @on-enter="getFoodChargeInfo('0')"></i-input>
+                    </i-col>
+                    <i-col span="4">
+                        <i-input v-model="buyBack.goodName" icon="search" placeholder="商品名称" style="width: 100%" @on-click="getFoodChargeInfo('1')" @on-enter="getFoodChargeInfo('1')"></i-input>
                     </i-col>
                     <i-col span="16"></i-col>
                     <i-col span="4">
@@ -557,10 +559,10 @@
                 </row>
                 <row class="menu-style">
                     <i-col span="15">
-                        <i-table highlight-row ref="currentRowTable" :columns="buyBack.columns" :data="buyBack.listData" @on-current-change="buyBackChoose"></i-table>
+                        <i-table highlight-row ref="currentRowTable" :columns="buyBack.columns" :data="buyBack.listDataShow" @on-current-change="buyBackChoose"></i-table>
                         <div style="margin: 10px;overflow: hidden">
                             <div style="float: right;">
-                                <Page :total="buyBack.dataCount" :page-size="buyBack.pageSize" show-total class="paging" @on-change="changepage"></Page>
+                                <Page :total="buyBack.dataCount" :page-size="buyBack.pageSize" show-total class="paging" @on-change="buyBackChangepage"></Page>
                             </div>
                         </div>
                         
@@ -788,7 +790,7 @@
                     </dropdown-menu>
                 </dropdown>
                 <i-input v-model="inquireCard.keyInput" class="dropdownInput">
-                    <span slot="append">{{inquireCard.dropChooseTxt2}}</span>
+                    <span slot="append" @click="AllReadCard">{{inquireCard.dropChooseTxt2}}</span>
                 </i-input>
             </i-col>
             <i-col span="19">
@@ -1040,12 +1042,15 @@
                 search:"",
                 columns:[{title: '商品条码',key: 'barcode'},{title: '商品名称',key: 'goodName'},{title: '零售价',key: 'price'},{title: '回购代币数',key: 'allowCoin'},{title: '回购彩票数',key: 'allowLottery'},{title: '回购积分数',key: 'allowPoint'}],
                 listData:[],
+                listDataShow:[],
                 pageSize:6,
                 dataCount:0,
                 goodValue:"",
                 useBalance:[],
                 useBalanceTypeId:"",
                 goodCount:"",
+                barCode:"",
+                goodName:"",
                 currentRow:[]
             },
             inquireCard:{
@@ -1120,30 +1125,7 @@
             dataCount:0,
             // 每页显示多少条
             pageSize:6,
-            historyColumns: [
-                {
-                    type: 'selection',
-                    width: 60,
-                    align: 'center'
-                },
-                {
-                    title: '人员',
-                    key: 'username'
-                },
-                {
-                    title: '操作',
-                    key: 'shenpistatus'
-                },
-                {
-                    title: '意见',
-                    key: 'shenpicomments'
-                },
-                {
-                    title: '时间',
-                    key: 'time'
-                }
-
-            ],
+            historyColumns: [{type: 'selection',width: 60,align: 'center'},{title: '项目名称',key: 'ProjectName'},{title: '扣费方式',key: 'Payment'},{title: '会员',key: 'MemberName'},{title: '进场时间',key: 'InTime'},{title: '入闸扣费',key: 'Expenses'},{title: '待缴场内消费',key: 'UnpaidAmount'},{title: '总费用',key: 'TotalAmount'}],
             historyData: []
         },
         mounted: function () {
@@ -1192,7 +1174,8 @@
                                         that.outCoinData.icCardId = receivedMsg.dataObj.icCardId;
                                         that.getBalanceTypeByICCardId()
                                     }else if(that.msgReadCard === "1"){
-
+                                        that.icCardId = receivedMsg.dataObj.icCardId;
+                                        that.getMenberCardInfo(that.icCardId,"2")
                                     }else if(that.msgReadCard === "2"){
                                         that.transferData.fromICCardId = receivedMsg.dataObj.icCardId;
                                     }else if(that.msgReadCard === "3"){
@@ -1324,6 +1307,8 @@
                         break;
                     case "5":
                         that.minuData.MenuShow4 =true;
+                        that.clearUp();
+                        that.sluiceList("0")
                         break;
                     case "6":
                         that.minuData.MenuShow5 =true;
@@ -1339,6 +1324,23 @@
 				}
                 console.log(MenuItem)
             },
+            AllReadCard:function(){
+                var that = this;
+				switch (that.inquireCard.dropChooseTxt2){
+					case "读卡":
+                        var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
+                        that.msgReadCard = "1";
+                        ws.send(msgType4);
+					    break;
+                    case "读取":
+                        var msgType3 =JSON.stringify({"msgType":"3", "sObj": {"userToken": that.userToken}});
+                        ws.send(msgType3);
+                        break;
+                    case "查询":
+                        // if(){}
+                        break;
+				}
+			},
 //			选择会员卡
             radioCard:function(index){
                 var that = this;
@@ -1353,7 +1355,7 @@
 				}
                 that.cardListModel = false;
                 that.radioValue = "";
-                that.getMenberCardInfo()
+                that.getMenberCardInfo(that.icCardId,"")
 			},
 //          按会员卡查询会员及卡信息
             getMenberCardInfo:function(icCardId,type){
@@ -1516,9 +1518,13 @@
                 });
             },
 //          获取兑换商品信息
-            getFoodChargeInfo:function(){
+            getFoodChargeInfo:function(type){
                 var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,barCode:"",goodName:"小黄鸭"};
+                if(type == "0"){
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,barCode:that.buyBack.barCode,goodName:""};
+                }else if(type == "1"){
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,barCode:"",goodName:that.buyBack.goodName};
+                }
                 console.log(obj);
                 axios.post('/XCCloud/Foods?action=getFoodChargeInfo', obj).then(function (res) {
                     console.log(res.data);
@@ -1526,6 +1532,12 @@
                     if (res.data.result_code === '1') {
                         that.buyBack.dataCount = res.data.result_data.length;
                         that.buyBack.listData = res.data.result_data;
+                        if(that.buyBack.dataCount < that.buyBack.pageSize){
+                            that.buyBack.listDataShow = that.buyBack.listData;
+                        }else{
+                            that.buyBack.listDataShow = that.buyBack.listData.slice(0,that.buyBack.pageSize);
+                        }
+                        
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -1550,6 +1562,13 @@
             buyBackChoose:function(currentRow){
                 console.log(currentRow)
                 this.buyBack.currentRow = currentRow
+            },
+//          回购分页按钮
+            buyBackChangepage:function(index){
+                var that = this;
+                var _start = ( index - 1 ) * that.buyBack.pageSize;
+                var _end = index * that.buyBack.pageSize;
+                that.buyBack.listDataShow = that.buyBack.listData.slice(_start,_end);
             },
 //          查询订单详情
             orderDetails:function(rowData){
@@ -1650,10 +1669,7 @@
                 }).catch(function (err) {
                     console.log(err);
                 });
-                setTimeout(function () {
-                    that.siteClearing.clearUpShow = true;
-                    that.sluiceList("0")
-                }, 1000);
+                
             },
 //          时间选择
             timechoose:function(e){
@@ -1679,44 +1695,20 @@
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        
+                        that.ajaxHistoryData = res.data.result_data;
+                        that.dataCount = res.data.result_data.length;
+                        // 初始化显示，小于每页显示条数，全显，大于每页显示条数，取前每页条数显示
+                        if(that.dataCount < that.pageSize){
+                            that.historyData = that.ajaxHistoryData;
+                        }else{
+                            that.historyData = that.ajaxHistoryData.slice(0,that.pageSize);
+                        }
                     }
                 }).catch(function (err) {
                     console.log(err);
                 });
             },
-//          手动清除未出闸游乐信息
-            clearNotSluice:function(){
-                this.modalDelete = true;
-                
-            },
-            okClearUp:function(){
-                var that = this;
-                var projectTicketId = "";
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,projectTicketId:projectTicketId};
-                console.log(obj);
-                axios.post('/XCCloud/ProjectTicket?action=getProjectNotSluiceList', obj).then(function (res) {
-                    console.log(res.data);
-                    that.msgPrompt(res.data);
-                    if (res.data.result_code === '1') {
-
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-                });
-            },
-//          获取历史记录信息
-            handleListApproveHistory(){
-                // 保存取到的所有数据
-                this.ajaxHistoryData = testData.histories
-                this.dataCount = testData.histories.length;
-                // 初始化显示，小于每页显示条数，全显，大于每页显示条数，取前每页条数显示
-                if(testData.histories.length < this.pageSize){
-                    this.historyData = this.ajaxHistoryData;
-                }else{
-                    this.historyData = this.ajaxHistoryData.slice(0,this.pageSize);
-                }
-            },
+//          页码切换
             changepage(index){
                 var _start = ( index - 1 ) * this.pageSize;
                 var _end = index * this.pageSize;
@@ -1726,47 +1718,73 @@
             handleSelectAll (status) {
                 this.$refs.selection.selectAll(status);
             },
-//          全选返回数据
-            AllData(selection){
-                this.siteClearing.selection = selection;
-                console.log(selection)
-            },
 //          表格改变返回数据        
             tableChecked:function(selection){
                 this.siteClearing.selection = selection;
                 console.log(selection)
             },
+//          全选返回数据
+            AllData(selection){
+                this.siteClearing.selection = selection;
+                console.log(selection)
+            },
+//          手动清除未出闸游乐信息
+            clearNotSluice:function(){
+                var that = this;
+                console.log(that.siteClearing.selection)
+                if(that.siteClearing.selection.length == 0){
+                    this.$Message.warning('请先选择清场目标');
+                }else{
+                    that.modalDelete = true;
+                }
+            },
+            okClearUp:function(){
+                var that = this;
+                    var projectTicketId = that.siteClearing.selection[0].TicketUseId+"";
+                    for(var i = 1;i<that.siteClearing.selection.length;i++){
+                        projectTicketId =projectTicketId+","+that.siteClearing.selection[i].TicketUseId
+                    }
+                    console.log(projectTicketId)
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,projectTicketId:projectTicketId};
+                    console.log(obj);
+                    axios.post('/XCCloud/ProjectTicket?action=clearNotSluiceTicket', obj).then(function (res) {
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            that.msg = "清理成功！";
+                            that.myModal = true;
+                            that.sluiceList("1")
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                
+            },
+
 //			通用消息提示
             msgPrompt:function (res) {
                 var that = this;
                 if(res.return_code == 0){
                     that.msg = res.return_msg;
+                    that.myModal = true;
                     if(that.msg == "用户令牌已失效, 请重新登录"){
-                        that.myModal = true;
                         setTimeout(function () {
                             window.location.href='login.html';
                         }, 3000);
-                    }else{
-                        that.myModal = true;
                     }
                    
                 }else if(res.result_code == 0){
                     that.msg = res.result_msg;
+                    that.myModal = true;
                     if(that.msg == "用户令牌已失效, 请重新登录"){
-                        that.myModal = true;
                         setTimeout(function () {
                             window.location.href='login.html';
                         }, 3000);
-                        
-                    }else{
-                        that.myModal = true;
                     }
-                    
                 }
             }
         },
         created(){
-            this.handleListApproveHistory();
         }
     });
 

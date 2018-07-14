@@ -98,8 +98,8 @@
                         </a>
                         <ul class="am-dropdown-content">
                             <li><a href="#" @click="doInitDevice"><span id="reInitDevice" class="am-icon-refresh"></span> 初始化设备</a></li>
-                            <!--<li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
-                            <li><a href="#"><span class="am-icon-power-off"></span> 退出</a></li>-->
+                            <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
+                            <li><a href="#"><span class="am-icon-power-off"></span> 退出</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -185,8 +185,8 @@
                     </div>
                 </div>
 
-                <!--<div class="tpl-content-scope">
-                    <div class="note note-info"RecvLength>
+                <div class="tpl-content-scope">
+                    <div class="note note-info">
                         <label for="doc-vld-name">控制器令牌：</label>
                         <input type="text" placeholder="控制器令牌" value="f482d424" style="width:100px;" />
                         <label for="doc-vld-name">机头地址：</label>
@@ -198,7 +198,7 @@
                         <button type="button" @click="doInCoin" class="am-btn am-btn-primary">投币</button>
                         <button type="button" @click="doOutCoin" class="am-btn am-btn-secondary">退币</button>
                     </div>
-                </div>-->
+                </div>
 
                 <div class="row">
                     <div class="am-u-md-12 am-u-sm-12 row-mb">
@@ -384,7 +384,7 @@
                                                 <li>
                                                     <div class="am-checkbox-inline">
                                                         <label>
-                                                            <input type="checkbox" v-model="Commands.NetworkState.isCheck" @click="doListenMessage(Commands.NetworkState)"> 机头网络状态报告
+                                                            <input type="checkbox" v-model="Commands.NetworkState.isCheck" @click="doListenMessage(Commands.NetworkState)" /> 机头网络状态报告
                                                         </label>
                                                     </div>
                                                 </li>
@@ -501,26 +501,10 @@
         var interval = null;
         var curHub = $.connection.MyHub;
 
+        //接收服务端信息
         curHub.client.pullInst = function (data) {
             if (data.status == 200) {
                 vm.RecvData = data;
-                vm.appendMessage(data.Messages);
-
-                if (vm.SendLength.length == 0) {
-                    vm.SendLength = data.SendLengthList;
-                    vm.RecvLength = data.RecvLengthList;
-                }
-                else {
-                    if (vm.SendLength.length >= 50) {
-                        vm.SendLength.shift();
-                        vm.RecvLength.shift();
-                    }
-
-                    vm.SendLength.push(data.SendLength);
-                    vm.RecvLength.push(data.RecvLength);
-                }                
-
-                randomData(vm.SendLength, vm.RecvLength, data.SendLength.y, data.RecvLength.y);
                 window.setTimeout(function () {
                     $('.dropdown-uler').dropdown({ justify: $('.dropdown-wrapper').parent() });
                 }, 500)
@@ -531,7 +515,25 @@
         };
 
         curHub.client.hubCall = function (data) {
-            //console.log(data);
+            console.log(data);
+        };
+
+        //接收指令消息
+        curHub.client.showMessage = function (data) {
+            vm.appendMessage(data);
+        };
+
+        //接收速率
+        curHub.client.networkSpeed = function (data) {
+            if (vm.SpeedData.RecvList.length >= 100) {
+                vm.SpeedData.RecvList.shift();
+                vm.SpeedData.SendList.shift();
+            }
+            vm.SpeedData.RecvList.push(data.RecvSpeed);
+            vm.SpeedData.SendList.push(data.SendSpeed);
+            vm.SpeedData.CurrSpeed = data;
+
+            randomData(vm.SpeedData);
         };
 
         curHub.client.initDeviceCall = function (data) {
@@ -550,9 +552,6 @@
                 autoClear: false,
                 isSkipEnd: false,
                 RecvData: {
-                    SendLength: 0,
-                    RecvLength: 0,
-                    NetworkRate: "0",
                     Instructions: {},
                     RouterList: [],
                     RouterCount: 0,
@@ -567,8 +566,11 @@
                 },
                 Messages: [],
                 pageIndex: 1,
-                SendLength: [],
-                RecvLength: [],
+                SpeedData: {
+                    RecvList: [],
+                    SendList: [],
+                    CurrSpeed: {}
+                },
                 Commands: {
                     NetworkState: { isCheck: false, value: 138 },
                     ParamApply: { isCheck: false, value: 128 },
@@ -620,7 +622,7 @@
                     curHub.server.outCoins("f482d424", "01");
                 },
                 clearListen: function () {
-                    curHub.server.clearMessageCommand();//清除所有消息指令
+                    //curHub.server.clearMessageCommand();//清除所有消息指令
                 },
                 getRouter: function () {
                     var _vm = this;
@@ -676,15 +678,16 @@
                     var $dropdown = $(event.currentTarget).parents("div");
                     $dropdown.dropdown('close');
                 },
-                appendMessage: function (items) {
+                appendMessage: function (item) {
                     var _this = this;
-                    if (_this.autoClear && _this.Messages.length > 50 && items.length > 0) {
+                    if (_this.autoClear && _this.Messages.length > 50) {
                         _this.Messages = [];
                     }
                     if (_this.isShow) {
-                        for (var i = 0; i < items.length; i++) {
-                            _this.Messages.push(items[i]);
-                        }
+                        //for (var i = 0; i < items.length; i++) {
+                        //    _this.Messages.push(items[i]);
+                        //}
+                        _this.Messages.push(item);
                     }
                 },
                 doSkipEnd: function () {
@@ -743,14 +746,15 @@
             }
         });
 
+
         var chart = null;
-        function randomData(data0, data1, up, down) {
+        function randomData(speedData) {
             chart = Highcharts.chart('lineChatsMian', {
                 chart: {
                     zoomType: 'x'
                 },
                 title: {
-                    text: '当前网络速率:上行 ' + up + 'B 下行 ' + down + 'B'
+                    text: '当前网络速率:上行 ' + speedData.CurrSpeed.SendSpeed + ' 下行 ' + speedData.CurrSpeed.RecvSpeed
                 },
                 credits: {
                     text: '',
@@ -772,7 +776,7 @@
                 },
                 plotOptions: {
                     area: {
-                        pointStart: 1940,
+                        pointStart: 1,
                         //fillOpacity: 0.3,
                         marker: {
                             enabled: false,
@@ -792,12 +796,12 @@
                     type: 'area',
                     name: '下行',
                     color: '#FF6347',
-                    data: data0
+                    data: speedData.RecvList
                 }, {
                     type: 'area',
                     name: '上行',
                     color: '#00FA9A',
-                    data: data1
+                    data: speedData.SendList
                 }]
             });
         }
