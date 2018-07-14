@@ -435,9 +435,17 @@ namespace XXCloudService.Api.XCCloud
                         string singleStoreId = string.Empty;
                         bool isSingle = XCCloudStoreBusiness.IsSingleStore(merchId, out singleStoreId);
 
+                        //先删除，后添加
+                        var sql = "delete from Data_CouponList where CouponID=" + id;
+                        if (Data_CouponListService.I.ExecuteSqlCommand(sql) < 0)
+                        {
+                            errMsg = "删除优惠券记录失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         string storedProcedure = "CreateCouponRecord";
                         List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
-                        SqlMetaData[] MetaDataArr = new SqlMetaData[] { new SqlMetaData("MemberID", SqlDbType.VarChar) };
+                        SqlMetaData[] MetaDataArr = new SqlMetaData[] { new SqlMetaData("MemberID", SqlDbType.VarChar, 32) };
                         if (memberIds != null && memberIds.Length > 0)
                         {
                             for (int i = 0; i < memberIds.Length; i++)
@@ -450,34 +458,9 @@ namespace XXCloudService.Api.XCCloud
                         else
                         {
                             var record = new SqlDataRecord(MetaDataArr);
-                            record.SetValue(0, 0);
+                            record.SetValue(0, "");
                             listSqlDataRecord.Add(record);
-                        }
-                        
-                        SqlParameter[] parameters = new SqlParameter[0];
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@CouponID", id);
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@SendAuthorID", userId);
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@SendTime", DateTime.Now);
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@PublishType", entryCouponFlag);
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@SendType", sendType);
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@MerchID", merchId);
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@StoreID", singleStoreId);
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@IsSingle", isSingle ? 1 : 0);                        
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@MemberIDsType", SqlDbType.Structured);
-                        parameters[parameters.Length - 1].Value = listSqlDataRecord;
-                        parameters[parameters.Length - 1].TypeName = "dbo.MemberIDsType";
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@Result", 0);
-                        parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+                        }                                                
 
                         //循环发行优惠券，每次最多发行999张  
                         int totalPublishCount = publishCount;
@@ -485,25 +468,34 @@ namespace XXCloudService.Api.XCCloud
                         {
                             publishCount = (totalPublishCount > 999) ? 999 : totalPublishCount;
 
-                            if (!parameters.Any(a => a.ParameterName == "@PublishCount"))
-                            {
-                                Array.Resize(ref parameters, parameters.Length + 1);
-                                parameters[parameters.Length - 1] = new SqlParameter("@PublishCount", publishCount);
-                            }
-                            else
-                            {
-                                parameters[parameters.Length - 2] = new SqlParameter("@PublishCount", publishCount);
-                            }
-
-                            if (!parameters.Any(a => a.ParameterName == "@CouponCodeSeedId"))
-                            {
-                                Array.Resize(ref parameters, parameters.Length + 1);
-                                parameters[parameters.Length - 1] = new SqlParameter("@CouponCodeSeedId", RedisCacheHelper.CreateCloudSerialNo(merchId.ToExtStoreID(), true));
-                            }
-                            else
-                            {
-                                parameters[parameters.Length - 1] = new SqlParameter("@CouponCodeSeedId", RedisCacheHelper.CreateCloudSerialNo(merchId.ToExtStoreID(), true));
-                            }  
+                            SqlParameter[] parameters = new SqlParameter[0];
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@CouponID", id);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@SendAuthorID", userId);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@SendTime", DateTime.Now);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@PublishType", entryCouponFlag);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@SendType", sendType);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@MerchID", merchId);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@StoreID", singleStoreId);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@IsSingle", isSingle ? 1 : 0);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@MemberIDsType", SqlDbType.Structured);
+                            parameters[parameters.Length - 1].Value = listSqlDataRecord;
+                            parameters[parameters.Length - 1].TypeName = "dbo.MemberIDsType";
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@Result", 0);
+                            parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@PublishCount", publishCount);
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@CouponCodeSeedId", RedisCacheHelper.CreateCloudSerialNo(merchId.ToExtStoreID(), true));                            
                                                             
                             XCCloudBLLExt.ExecuteStoredProcedure(storedProcedure, parameters);
                             if (parameters[parameters.Length - 3].Value.ToString() != "1")
