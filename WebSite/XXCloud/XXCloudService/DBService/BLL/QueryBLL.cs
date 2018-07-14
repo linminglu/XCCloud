@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
+using XCCloudService.DAL.CommonDAL;
 using XCCloudService.DBService.DAL;
 using XCCloudService.DBService.Model;
 
@@ -17,15 +19,28 @@ namespace XCCloudService.DBService.BLL
     {
         public static void GetInit(string pageName, string processName, int userId, ref List<InitModel> listInitModel, ref List<Dict_SystemModel> listDict_SystemModel)
         {
-            QueryDAL.GetInit(pageName, processName, userId, ref listInitModel, ref listDict_SystemModel);
+            QueryDAL.GetInit(pageName, processName, userId, ref listInitModel);
+
+            DataAccess ac = new DataAccess(DataAccessDB.XCCloudDB);            
             foreach(InitModel init in listInitModel)
             {
-                List<Dict_SystemModel> tmpList = listDict_SystemModel.Where<Dict_SystemModel>(p => p.PID == init.DictID).ToList<Dict_SystemModel>();
-                init.List = new List<string>();
-                foreach(Dict_SystemModel dict in tmpList)
+                if (init.DictID > 0)
                 {
-                    init.List.Add(dict.DictKey);
-                }
+                    string sql = string.Format(" select * from Dict_System where PID={0} and ISNULL(MerchID,'')=(select top 1 ISNULL(MerchID,'') from Base_UserInfo where ID={1})", init.DictID, userId);
+                    DataSet ds = ac.ExecuteQuery(sql);
+                    if (ds.Tables[0].Rows.Count == 0)
+                    {
+                        sql = string.Format(" select * from Dict_System where PID={0}", init.DictID);
+                        ds = ac.ExecuteQuery(sql);
+                    }
+
+                    init.List = new List<string>();
+                    listDict_SystemModel = Utils.GetModelList<Dict_SystemModel>(ds.Tables[0]);
+                    foreach (Dict_SystemModel dict in listDict_SystemModel)
+                    {
+                        init.List.Add(dict.DictKey);
+                    }
+                }                
             }
         }
 
@@ -98,10 +113,13 @@ namespace XCCloudService.DBService.BLL
                             var dict_SystemModel = listDict_SystemModel.Where(w => w.DictKey.Equals(values, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             values = (dict_SystemModel != null) ? dict_SystemModel.DictValue : string.Empty;
                         }
-                        
-                        sb.Append(string.Format(" and {1}{0} = @{0} ", field, alias));
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@" + field, values);
+
+                        if (!values.IsNull())
+                        {
+                            sb.Append(string.Format(" and {1}{0} = @{0} ", field, alias));
+                            Array.Resize(ref parameters, parameters.Length + 1);
+                            parameters[parameters.Length - 1] = new SqlParameter("@" + field, values);
+                        }                        
                     }                   
                     else
                     {                        
@@ -354,8 +372,10 @@ namespace XCCloudService.DBService.BLL
                             values = (dict_SystemModel != null) ? dict_SystemModel.DictValue : string.Empty;
                         }
 
-                        sb.Append(string.Format(" and {1}{0} = {2} ", field, alias, values));
-                        
+                        if (!values.IsNull())
+                        {
+                            sb.Append(string.Format(" and {1}{0} = {2} ", field, alias, values));
+                        }                                                
                     }
                     else
                     {

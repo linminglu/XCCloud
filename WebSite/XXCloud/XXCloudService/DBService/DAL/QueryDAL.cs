@@ -18,7 +18,7 @@ namespace XCCloudService.DBService.DAL
         /// <param name="type">模板名</param>
         /// <param name="userId">用户编号</param>
         /// <returns></returns>
-        public static void GetInit(string pageName, string processName, int userId, ref List<InitModel>  listInitModel, ref List<Dict_SystemModel> listDict_SystemModel)
+        public static void GetInit(string pageName, string processName, int userId, ref List<InitModel>  listInitModel)//, ref List<Dict_SystemModel> listDict_SystemModel)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(string.Format(" declare @PageName varchar(50) = '{0}' ", pageName));
@@ -36,11 +36,11 @@ namespace XCCloudService.DBService.DAL
             sb.Append(@" select a.UserID,a.PageName,a.ProcessName,b.* from Search_Template a inner join Search_Template_Detail b on a.ID = b.TempID  
                          where UserID = @UserID and PageName = @PageName and ProcessName = @ProcessName ");
             sb.Append(@" ) b on a.PageName=b.PageName and a.ProcessName=b.ProcessName and a.FieldName=b.FieldName");
-            sb.Append(@" select * from Dict_System ");
+            //sb.Append(@" select * from Dict_System ");
             DataAccess ac = new DataAccess(DataAccessDB.XCCloudDB);
             DataSet ds = ac.ExecuteQuery(sb.ToString());
             listInitModel = Utils.GetModelList<InitModel>(ds.Tables[0]);
-            listDict_SystemModel = Utils.GetModelList<Dict_SystemModel>(ds.Tables[1]);
+            //listDict_SystemModel = Utils.GetModelList<Dict_SystemModel>(ds.Tables[1]);
         }
 
         public static void GetInitModel(int id, string field, ref InitModel initModel, ref List<Dict_SystemModel> listDict_SystemModel)
