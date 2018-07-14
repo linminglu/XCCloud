@@ -63,10 +63,11 @@ img{border:none;}
 }
 .xc-title .layui-card{
     height: 150px;
-
+min-width: 305px;
 }
 .xc-title .layui-card .layui-card-body{
     padding: 25px;
+    /*overflow-x: hidden;*/
 }
 .xc-title .xc-title-img{
     box-sizing: border-box;

@@ -5,6 +5,7 @@
     <title>优惠套餐设定</title>
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="layui/css/layui_font.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <style>
     .iframeBox {
@@ -61,13 +62,31 @@
     }
 </style>
 <body>
-<div class="layui-row" style="padding: 15px;">
-    <blockquote class="layui-elem-quote" style="text-align: right">
-        <button type="button" class="layui-btn layui-btn-normal">查询模板</button>
-        <button type="button" class="layui-btn layui-btn-normal addNewPackage">新增套餐</button>
-    </blockquote>
-    <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
-        <table class="layui-hide" id="digitDestroyTb" lay-filter="digitDestroyTb"></table>
+<div class="layui-row settingPage">
+    <div class="row-box">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" style="">
+                    <div class="layui-form layui-form-pane" id="form2" style="">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
+        </div>
+
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <table class="layui-hide" id="digitDestroyTb" lay-filter="digitDestroyTb"></table>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-normal addNewPackage" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">停用</button>
+        </div>
     </div>
 </div>
 <!--新增弹窗-->
@@ -271,25 +290,33 @@
                 <div class="layui-colla-content" style="height: 280px;">
                     <div class="layui-col-md12">
                         <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">余额类别</label>
-                                <div class="layui-input-inline">
-                                    <select name="" id="BalanceType" lay-filter="BalanceType"></select>
-                                </div>
-                            </div>
+
                             <div class="layui-inline">
                                 <label class="layui-form-label">消耗价值</label>
-                                <div class="layui-input-inline" style="width: 120px">
+                                <div class="layui-input-inline">
                                     <input type="text" class="layui-input" id="UseCount">
+                                    <span class="layui-unit">个</span>
                                 </div>
-                                <div class="layui-form-mid">现金</div>
+
                                 <div class="layui-input-inline" style="width: 120px">
-                                    <input type="text" class="layui-input" id="CashValue">
+                                    <select name="BalanceType" id="BalanceType" lay-filter="BalanceType"></select>
                                 </div>
-                                <div class="layui-input-inline" style="width: 50px">
-                                    <button type="button" class="layui-btn" id="addFoodSaleBtn">+</button>
+
+                                <div class="layui-form-mid">+</div>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="CashValue">
+                                    <span class="layui-unit">现金</span>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <div class="layui-btn-group">
+                                        <button class="layui-btn layui-btn-sm">保存</button>
+                                        <button class="layui-btn layui-btn-sm">删除</button>
+                                    </div>
+                                    <!--<button type="button" class="layui-btn" id="addFoodSaleBtn">+</button>-->
+
                                 </div>
                             </div>
+
                         </div>
                         <table class="layui-hide" id="FoodSaleTable" lay-filter="FoodSaleTable"
                                style="width: 700px"></table>
@@ -592,8 +619,8 @@
         'url': '/XCCloud/Promotion?action=GetFoodInfoList',
         'elem': '#digitDestroyTb',
         'cols': [
-            // {field: 'FoodID', title: '套餐编号', align: 'center', sort: true}
-            // ,
+            {type:'checkbox'}
+            ,
             {field: 'FoodName', title: '套餐名称', align: 'center'} //width 支持：数字、百分比和不填写。
             , {field: 'ClientPrice', title: '散客价', align: 'center', total: true}
             , {field: 'MemberPrice', title: '会员价', align: 'center', total: true}
@@ -604,7 +631,7 @@
             , {field: 'AllowQuickFood', title: '是否快速售币套餐', align: 'center', templet: '#allowQuickFood', width: 145}
             , {field: 'StartTime', title: '启用时间', align: 'center'}
             , {field: 'EndTime', title: '停用时间', align: 'center'}
-            , {fixed: 'right', title: '操作', width: 160, align: 'center', toolbar: '#barDemo'}
+            // , {fixed: 'right', title: '操作', width: 160, align: 'center', toolbar: '#barDemo'}
         ]
         , total: true
     };

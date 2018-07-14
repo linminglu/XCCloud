@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>会员级别设定</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <style>
 
@@ -51,16 +52,34 @@
     /*.goodConvert .layui-input-inline{width: 140px;}*/
 </style>
 <body>
-<div class="layui-row" style="padding: 15px">
-    <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px;">
-        <button type="button" class="layui-btn layui-btn-normal" id="searchBtn"><i class="layui-icon">&#xe615;</i>搜索
-        </button>
-        <button type="button" class="layui-btn layui-btn-normal" id="look"><i class="layui-icon">&#xe615;</i>查询</button>
-        <button type="button" class="layui-btn layui-btn-normal" id="add"><i class="layui-icon">&#xe654;</i>新增</button>
+<div class="layui-row settingPage">
 
-    </blockquote>
-    <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
-        <table class="layui-hide" id="memberLevelTb" lay-filter="memberLevelTb"></table>
+    <div class="row-box">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" style="">
+                    <div class="layui-form layui-form-pane" id="form2" style="">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板"
+                        id="searchBtn">查询
+                </button>
+            </blockquote>
+        </div>
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <table class="layui-hide" id="memberLevelTb" lay-filter="memberLevelTb"></table>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="add"><i class="layui-icon">&#xe654;</i>新增
+            </button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+        </div>
     </div>
 </div>
 
@@ -83,7 +102,8 @@
                                 <div class="layui-inline goodIsAll">
                                     <label class="layui-form-label" style="padding: 8px 0!important;">会员级别状态</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" checked name="zzz" lay-skin="switch" lay-text="启用|禁用" id="State"
+                                        <input type="checkbox" checked name="zzz" lay-skin="switch" lay-text="启用|禁用"
+                                               id="State"
                                                lay-filter="State">
                                     </div>
                                 </div>
@@ -587,6 +607,7 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     let xc = xcActionSystem.prototype;
     let token = xc.getStorage('token');
@@ -600,9 +621,8 @@
         'url': '/XCCloud/Member?action=QueryMemberLevel',
         'elem': '#memberLevelTb',
         'cols': [
-            // {field: 'MemberLevelID', title: '级别编号', align: 'center', sort: true, width: 80}
-            // ,
-            {field: 'MemberLevelName', title: '级别名称', align: 'center'}
+            {type:'checkbox'}
+            , {field: 'MemberLevelName', title: '级别名称', align: 'center'}
             , {field: 'OpenFee', title: '开户费(元)', align: 'center'}
             , {field: 'Deposit', title: '押金(元)', align: 'center'}
             , {field: 'Validday', title: '有效天数', align: 'center', templet: '#changeLock', width: 140}
@@ -611,8 +631,7 @@
             , {field: 'ConsumeTotle', title: '升级累计金额', align: 'center'}
             , {field: 'BirthdayFreeStr', title: '生日送币方式', align: 'center'}
             , {field: 'FreeTypeStr', title: '送币方式', align: 'center'}
-            // , {field: 'LogName', title: '操作员', align: 'center'}
-            , {fixed: 'right', title: '操作', width: 140, align: 'center', toolbar: '#barDemo'}
+
         ]
     };
     xc.getInitData(parm);
@@ -644,7 +663,7 @@
     let AllowTransferIn = 0;
     let TransferInLevelID = '';
     //给下拉框设置option
-    let memberLevelList=[];
+    let memberLevelList = [];
     let getBalanceTypeDic = (token, layer, form) => {
         let _obj = {'hkType': '', 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
@@ -667,11 +686,11 @@
                     // $('#TransferInLevelID').html('<option>-请选择-</option>');
 
                     for (let i in arr) {
-                        $('#freeRates').append('<option value="' + arr[i].ID + '" title="'+arr.Unit+'">' + arr[i].TypeName + '</option>');
-                        $('#freeBalanceType').append('<option value="' + arr[i].ID + '" title="'+arr[i].Unit+'">' + arr[i].TypeName + '</option>');
-                        $('#sourceBalanceType').append('<option value="' + arr[i].ID + '" title="'+arr[i].Unit+'">' + arr[i].TypeName + '</option>');
-                        $('#targetBalanceIndex').append('<option value="' + arr[i].ID + '" title="'+arr[i].Unit+'">' + arr[i].TypeName + '</option>');
-                        $('#freeBalanceIndex').append('<option value="' + arr[i].ID + '" title="'+arr[i].Unit+'">' + arr[i].TypeName + '</option>');
+                        $('#freeRates').append('<option value="' + arr[i].ID + '" title="' + arr.Unit + '">' + arr[i].TypeName + '</option>');
+                        $('#freeBalanceType').append('<option value="' + arr[i].ID + '" title="' + arr[i].Unit + '">' + arr[i].TypeName + '</option>');
+                        $('#sourceBalanceType').append('<option value="' + arr[i].ID + '" title="' + arr[i].Unit + '">' + arr[i].TypeName + '</option>');
+                        $('#targetBalanceIndex').append('<option value="' + arr[i].ID + '" title="' + arr[i].Unit + '">' + arr[i].TypeName + '</option>');
+                        $('#freeBalanceIndex').append('<option value="' + arr[i].ID + '" title="' + arr[i].Unit + '">' + arr[i].TypeName + '</option>');
                         // $('#TransferOutLevelID').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                         // $('#TransferInLevelID').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                     }
@@ -682,29 +701,46 @@
             }
         });
     };
-    function setTransferLevel(arr,form,id,name) {
-        if(arr.length==0){
-            $('#'+id).html('<option disabled value="">-没有选项-</option>');
-        }else {
-            $('#'+id).html('<option>-请选择转移会员级别-</option>');
 
-            for(let i in arr){
-                if(arr[i].MemberLevelName==name){
+    function setTransferLevel(arr, form, id, name) {
+        if (arr.length == 0) {
+            $('#' + id).html('<option disabled value="">-没有选项-</option>');
+        } else {
+            $('#' + id).html('<option>-请选择转移会员级别-</option>');
 
-                }else {
-                    $('#'+id).append('<option value="'+arr[i].MemberLevelID+'">'+arr[i].MemberLevelName+'</option>')
+            for (let i in arr) {
+                if (arr[i].MemberLevelName == name) {
+
+                } else {
+                    $('#' + id).append('<option value="' + arr[i].MemberLevelID + '">' + arr[i].MemberLevelName + '</option>')
                 }
             }
         }
 
         form.render()
     }
-    layui.use(['form', 'layer', 'table', 'element', 'upload'], () => {
+
+    layui.use(['form', 'layer', 'table', 'element', 'upload', 'laydate'], () => {
         let layer = layui.layer,
             table = layui.table,
             form = layui.form,
             element = layui.element;
         let upload = layui.upload;
+        let laydate = layui.laydate;
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'memberLevelSearch',
+            'processname': 'memberLevelSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'xc': xc,
+            'parm': parm,
+            'laydate': laydate
+        })
+
         getBalanceTypeDic(token, layer, form);
         xc.setSelect('生日送币方式', 'birthdayFree');
         let _objmem = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
@@ -714,12 +750,12 @@
             url: '/XCCloud/Member?action=GetMemberLevelDic',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parseJsonMem},
-            anysc:false,
+            anysc: false,
             success: function (data) {
                 data = JSON.parse(data);
                 console.log(data);
                 if (data.result_code == 1) {
-                    memberLevelList=data.result_data;
+                    memberLevelList = data.result_data;
                 } else {
                     layer.msg(data.result_msg || data.return_msg);
                 }
@@ -729,7 +765,6 @@
         xc.getFoodInfoDic(token, layer, form, 'FoodID');
         getUpDownLevel(token, form, layer, 'upML');
         getUpDownLevel(token, form, layer, 'downML');
-
 
 
         $('#addGoods').click(function () {
@@ -917,13 +952,11 @@
 
         });
         //修改
-        table.on('tool(memberLevelTb)', (obj) => {
-            let data = obj.data; //获得当前行数据
-            let layEvent = obj.event;
-            $('#demo2').html("");
-            memberLevelID = data.MemberLevelID;
-            if (layEvent === 'edit') { //修改按钮
-                $('#resetBtn').trigger('click');
+        $('#editBtn').click(function () {
+            let checkStatus = table.checkStatus('memberLevelTb'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                memberLevelID = checkStatus.data[0].MemberLevelID;
                 let _obj = {
                     'memberLevelID': memberLevelID,
                     'userToken': token,
@@ -1057,17 +1090,17 @@
                             allowSaveCoin = arr.AllowSaveCoin;
                             allowGetCoin = arr.AllowGetCoin;
                             AllowTransferOut = arr.AllowTransferOut;
-                            if(AllowTransferOut==1){
-                                setTransferLevel(memberLevelList,form,'TransferOutLevelID',$('#MemberLevelName').val())
+                            if (AllowTransferOut == 1) {
+                                setTransferLevel(memberLevelList, form, 'TransferOutLevelID', $('#MemberLevelName').val())
                             }
                             TransferOutLevelID = arr.TransferOutLevelID;
-                            $('#TransferOutLevelID').find('option[value="'+arr.TransferOutLevelID+'"]').attr('selected',true)
+                            $('#TransferOutLevelID').find('option[value="' + arr.TransferOutLevelID + '"]').attr('selected', true)
                             AllowTransferIn = arr.AllowTransferIn;
-                            if(AllowTransferIn==1){
-                                setTransferLevel(memberLevelList,form,'TransferInLevelID',$('#MemberLevelName').val())
+                            if (AllowTransferIn == 1) {
+                                setTransferLevel(memberLevelList, form, 'TransferInLevelID', $('#MemberLevelName').val())
                             }
                             TransferInLevelID = arr.TransferInLevelID;
-                            $('#TransferInLevelID').find('option[value="'+arr.TransferInLevelID+'"]').attr('selected',true)
+                            $('#TransferInLevelID').find('option[value="' + arr.TransferInLevelID + '"]').attr('selected', true)
                             $('#demo2').append('<div style="display: inline-block;position: relative" class="imgBox">' +
                                 '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
                                 '<img src="' + arr.CoverURL + '" class="layui-upload-img_md" ' +
@@ -1195,9 +1228,20 @@
                         }
                     }
                 });
-            } else if (layEvent === 'del') {
+
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        });
+        $('#delBtn').click(function () {
+            let checkStatus = table.checkStatus('memberLevelTb'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len >0) {
+                let idArr=[];
+                for(let i in checkStatus.data){
+                    idArr.push(checkStatus.data[i].MemberLevelID)
+                }
                 layer.confirm('真的删除行么', function (index) {
-                    Id = data.ID;
                     let _obj = {
                         'memberLevelID': memberLevelID,
                         'userToken': token,
@@ -1222,6 +1266,8 @@
                         }
                     })
                 });
+            } else {
+                layer.msg('请至少勾选一条数据！')
             }
         });
 
@@ -1353,11 +1399,11 @@
         });
 
         form.on('switch(AllowTransferOut)', function (data) {
-            if(data.elem.checked){
-                setTransferLevel(memberLevelList,form,'TransferOutLevelID',$('#MemberLevelName').val())
-            }else {
-                setTransferLevel([],form,'TransferOutLevelID',$('#MemberLevelName').val());
-                TransferOutLevelID='';
+            if (data.elem.checked) {
+                setTransferLevel(memberLevelList, form, 'TransferOutLevelID', $('#MemberLevelName').val())
+            } else {
+                setTransferLevel([], form, 'TransferOutLevelID', $('#MemberLevelName').val());
+                TransferOutLevelID = '';
             }
             data.elem.checked == true ? AllowTransferOut = 1 : AllowTransferOut = 0;
         });
@@ -1365,11 +1411,11 @@
             TransferOutLevelID = data.value == '-请选择-' ? '' : data.value;
         });
         form.on('switch(AllowTransferIn)', function (data) {
-            if(data.elem.checked){
-                setTransferLevel(memberLevelList,form,'TransferInLevelID',$('#MemberLevelName').val())
-            }else {
-                setTransferLevel([],form,'TransferInLevelID',$('#MemberLevelName').val());
-                TransferInLevelID='';
+            if (data.elem.checked) {
+                setTransferLevel(memberLevelList, form, 'TransferInLevelID', $('#MemberLevelName').val())
+            } else {
+                setTransferLevel([], form, 'TransferInLevelID', $('#MemberLevelName').val());
+                TransferInLevelID = '';
             }
             data.elem.checked == true ? AllowTransferIn = 1 : AllowTransferIn = 0;
         });

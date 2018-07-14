@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Data_CouponList
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public Nullable<int> CouponIndex { get; set; }
         public string CouponCode { get; set; }
         public Nullable<int> CouponID { get; set; }
@@ -23,6 +23,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> PublishType { get; set; }
         public Nullable<int> SendType { get; set; }
         public string MemberID { get; set; }
+        public Nullable<int> JackpotID { get; set; }
         public Nullable<int> SendAuthorID { get; set; }
         public Nullable<System.DateTime> SendTime { get; set; }
         public Nullable<int> WorkStationID { get; set; }

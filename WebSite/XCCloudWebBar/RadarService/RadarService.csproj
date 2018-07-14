@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1B9BF09F-A46C-4DC9-81D9-E22223FCEE56}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RadarService</RootNamespace>
+    <AssemblyName>RadarService</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Redis">
+      <HintPath>..\packages\StackExchange.Redis.1.2.6\lib\net45\StackExchange.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="XCCloudSerialNo">
+      <HintPath>..\packages\XCCloudSerialNo.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Coding\ConvertData.cs" />
+    <Compile Include="Coding\CRC.cs" />
+    <Compile Include="CoinType.cs" />
+    <Compile Include="CommandType.cs" />
+    <Compile Include="Command\Ask\AskIC卡模式会员余额查询.cs" />
+    <Compile Include="Command\Ask\AskIC卡模式进出币数据.cs" />
+    <Compile Include="Command\Ask\Ask机头卡片报警指令.cs" />
+    <Compile Include="Command\Ask\Ask机头地址修改.cs" />
+    <Compile Include="Command\Ask\Ask机头锁定解锁指令.cs" />
+    <Compile Include="Command\Ask\Ask液晶卡头扩展信息下发指令.cs" />
+    <Compile Include="Command\Ask\Ask液晶卡头扩展信息请求应答指令.cs" />
+    <Compile Include="Command\Ask\Ask液晶卡头读卡指令.cs" />
+    <Compile Include="Command\Ask\Ask液晶卡头进出币指令.cs" />
+    <Compile Include="Command\Ask\Ask游戏机参数申请.cs" />
+    <Compile Include="Command\Ask\Ask自助设备参数申请.cs" />
+    <Compile Include="Command\Ask\Ask机头地址动态分配.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Command\Ask\Ask设置路由器地址.cs" />
+    <Compile Include="Command\Ask\Ask远程投币上分数据.cs" />
+    <Compile Include="Command\Ask\Ask远程被动退分解锁指令.cs" />
+    <Compile Include="Command\Recv\RecvIC卡模式会员余额查询.cs" />
+    <Compile Include="Command\Recv\RecvIC卡模式进出币数据.cs" />
+    <Compile Include="Command\Recv\Recv机头卡片报警指令.cs" />
+    <Compile Include="Command\Recv\Recv机头地址动态分配.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Command\Recv\Recv机头网络状态报告.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Command\Recv\Recv液晶卡头扩展信息请求指令.cs" />
+    <Compile Include="Command\Recv\Recv液晶卡头读卡指令.cs" />
+    <Compile Include="Command\Recv\Recv液晶卡头进出币指令.cs" />
+    <Compile Include="Command\Recv\Recv游戏机参数申请.cs" />
+    <Compile Include="Command\Recv\Recv远程被动退分解锁应答.cs" />
+    <Compile Include="DataMember.cs" />
+    <Compile Include="FrameData.cs" />
+    <Compile Include="HostServer.cs" />
+    <Compile Include="Info\CoinInfo.cs" />
+    <Compile Include="Info\DeviceInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Info\GameInfo.cs" />
+    <Compile Include="Info\ProjectTicketInfo.cs" />
+    <Compile Include="Info\PushRule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UDPServer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DSS.Client\DSS.Client.csproj">
+      <Project>{6942632e-553c-4ec1-b176-ca8175807786}</Project>
+      <Name>DSS.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DSS\DSS.csproj">
+      <Project>{24e3e699-527e-4dbf-a206-78741584524f}</Project>
+      <Name>DSS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RadarService.HKAPI\RadarService.HKAPI.csproj">
+      <Project>{b7c484d1-57ed-41b5-aea6-c691a12cfb13}</Project>
+      <Name>RadarService.HKAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RadarService.LogHelper\RadarService.LogHelper.csproj">
+      <Project>{d9342b5b-f4c5-4da5-9e8d-be0bafd1ec6e}</Project>
+      <Name>RadarService.LogHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RadarService.Notify\RadarService.Notify.csproj">
+      <Project>{68e92126-8f27-4b44-99f0-dfcd6dc25c86}</Project>
+      <Name>RadarService.Notify</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RadarService.PublicHelper\RadarService.PublicHelper.csproj">
+      <Project>{a572252c-2d34-4e15-b304-b48ca6e652b8}</Project>
+      <Name>RadarService.PublicHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -703,7 +703,7 @@ namespace XCCloudService.Api.XCGame
 
                     //过户记录
                     Flw_Transfer transfer = new Flw_Transfer();
-                    transfer.id = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    transfer.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                     transfer.MerchID = merchID;
                     transfer.StoreID = storeId;
                     transfer.OpType = 0;
@@ -742,7 +742,7 @@ namespace XCCloudService.Api.XCGame
                     fmd.OperationType = (int)MemberDataOperationType.过户转出;
                     fmd.OPTime = DateTime.Now;
                     fmd.SourceType = 0;
-                    fmd.SourceID = transfer.id;
+                    fmd.SourceID = transfer.ID;
                     fmd.BalanceIndex = item.BalanceIndex;
                     fmd.ChangeValue = 0 - changeValue;
                     fmd.Balance = fromBalance.Balance;
@@ -776,7 +776,7 @@ namespace XCCloudService.Api.XCGame
                     fmd.OperationType = (int)MemberDataOperationType.过户转入;
                     fmd.OPTime = DateTime.Now;
                     fmd.SourceType = 0;
-                    fmd.SourceID = transfer.id;
+                    fmd.SourceID = transfer.ID;
                     fmd.BalanceIndex = item.BalanceIndex;
                     fmd.ChangeValue = changeValue;
                     fmd.Balance = toBalance.Balance;

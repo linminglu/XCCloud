@@ -18,7 +18,6 @@ using XCCloudWebBar.BLL.CommonBLL;
 using XCCloudWebBar.BLL.IBLL.XCCloudRS232;
 using XCCloudWebBar.BLL.Container;
 using XCCloudWebBar.Business.XCGameMana;
-using XXCloudService.RadarServer;
 using System.Data;
 using XCCloudWebBar.Common;
 using XCCloudWebBar.Utility;
@@ -692,16 +691,16 @@ namespace XXCloudService.Api.XCCloudRS232
                         DeviceBusiness.UpdateDevice(device);
                         DeviceStatusBusiness.SetDeviceState(device.Token, DeviceStatusEnum.停用.ToDescription());
                         break;
-                    //锁定
-                    case "3":
-                        UDPServer.server.机头锁定解锁指令(router.Token, strHeadAddress, true);
-                        DeviceStatusBusiness.SetDeviceState(device.Token, DeviceStatusEnum.锁定.ToDescription());
-                        break;
-                    //解除锁定
-                    case "4":
-                        UDPServer.server.机头锁定解锁指令(router.Token, strHeadAddress, false);
-                        DeviceStatusBusiness.SetDeviceState(device.Token, DeviceStatusEnum.在线.ToDescription());
-                        break;
+                    ////锁定
+                    //case "3":
+                    //    UDPServer.server.机头锁定解锁指令(router.Token, strHeadAddress, true);
+                    //    DeviceStatusBusiness.SetDeviceState(device.Token, DeviceStatusEnum.锁定.ToDescription());
+                    //    break;
+                    ////解除锁定
+                    //case "4":
+                    //    UDPServer.server.机头锁定解锁指令(router.Token, strHeadAddress, false);
+                    //    DeviceStatusBusiness.SetDeviceState(device.Token, DeviceStatusEnum.在线.ToDescription());
+                    //    break;
                     //解除报警
                     case "5": break;
                     ////投币

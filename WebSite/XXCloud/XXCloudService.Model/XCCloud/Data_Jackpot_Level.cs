@@ -18,8 +18,8 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public Nullable<int> ActiveID { get; set; }
         public string LevelName { get; set; }
-        public Nullable<int> GoodID { get; set; }
-        public Nullable<int> GoodCount { get; set; }
+        public Nullable<int> CouponID { get; set; }
+        public Nullable<int> Count { get; set; }
         public Nullable<decimal> Probability { get; set; }
         public string Verifiction { get; set; }
     }

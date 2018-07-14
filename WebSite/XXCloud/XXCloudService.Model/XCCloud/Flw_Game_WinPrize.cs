@@ -17,7 +17,7 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public Nullable<int> GameIndex { get; set; }
         public Nullable<int> GoodID { get; set; }
-        public Nullable<int> MemberID { get; set; }
+        public string MemberID { get; set; }
         public Nullable<System.DateTime> WinTime { get; set; }
         public Nullable<int> HeadIndex { get; set; }
         public Nullable<decimal> GoodPrice { get; set; }

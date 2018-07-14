@@ -152,10 +152,6 @@
       <Project>{1e38ec5a-0a89-4d9e-9cdf-6f79c580b6a1}</Project>
       <Name>XCCloudWebBar.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XXCloudService.RadarServer\XCCloudWebBar.RadarServer.csproj">
-      <Project>{2d63076b-e662-4eb7-a9a8-cb50bc35f992}</Project>
-      <Name>XCCloudWebBar.RadarServer</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

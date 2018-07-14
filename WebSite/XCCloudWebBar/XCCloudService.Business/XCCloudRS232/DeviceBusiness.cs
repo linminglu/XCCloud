@@ -10,7 +10,6 @@ using XCCloudWebBar.Model.CustomModel.XCCloudRS232;
 using XCCloudWebBar.Model.XCCloudRS232;
 using XCCloudWebBar.Common.Extensions;
 using XCCloudWebBar.Common.Enum;
-using XXCloudService.RadarServer.Info;
 
 namespace XCCloudWebBar.Business.XCCloudRS232
 {

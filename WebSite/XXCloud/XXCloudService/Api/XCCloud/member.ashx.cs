@@ -10,13 +10,13 @@ using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
+using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.CustomModel.XCCloud.Member;
 using XCCloudService.Model.XCCloud;
 using System.IO;
 using Microsoft.SqlServer.Server;
 using XCCloudService.Common.Enum;
-using XCCloudService.Common.Extensions;
 using System.Transactions;
 using System.Data.Entity.Validation;
 using XXCloudService.Api.XCCloud.Common;
@@ -716,6 +716,7 @@ namespace XCCloudService.Api.XCCloud
                 object[] memberLevelFrees = dicParas.ContainsKey("memberLevelFrees") ? (object[])dicParas["memberLevelFrees"] : null;
                 object[] memberLevelBalanceCharge = dicParas.ContainsKey("memberLevelBalanceCharge") ? (object[])dicParas["memberLevelBalanceCharge"] : null;
                 object[] memberLevelBalance = dicParas.ContainsKey("memberLevelBalance") ? (object[])dicParas["memberLevelBalance"] : null;
+                object[] memberLevelBookRule = dicParas.ContainsKey("memberLevelBookRule") ? (object[])dicParas["memberLevelBookRule"] : null;
 
                 if (string.IsNullOrEmpty(memberLevelName))
                 {
@@ -975,6 +976,69 @@ namespace XCCloudService.Api.XCCloud
                                 errMsg = "保存会员余额兑换规则信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
+
+                            //签到赠送规则
+                            if (memberLevelBookRule != null && memberLevelBookRule.Count() >= 0)
+                            {
+                                //先删除，后添加
+                                var data_MemberLevel_BookRuleService = Data_MemberLevel_BookRuleService.I;
+                                foreach (var model in data_MemberLevel_BookRuleService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                                {
+                                    data_MemberLevel_BookRuleService.DeleteModel(model);
+                                }
+
+                                foreach (IDictionary<string, object> el in memberLevelBookRule)
+                                {
+                                    if (el != null)
+                                    {
+                                        var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                        var state = dicPara.Get("state").Toint();
+                                        var allowBar = dicPara.Get("allowBar").Toint();
+                                        var allowWexin = dicPara.Get("allowWexin").Toint();
+                                        var allowATM = dicPara.Get("allowATM").Toint();
+                                        var allowGame = dicPara.Get("allowGame").Toint();
+                                        var milepostDays = dicPara.Get("milepostDays").Toint();
+                                        var dayGetBalanceIndex = dicPara.Get("dayGetBalanceIndex").Toint();
+                                        var dayGetCount = dicPara.Get("dayGetCount").Toint();
+                                        var milepostGetType = dicPara.Get("milepostGetType").Toint();
+                                        var balanceIndex = dicPara.Get("balanceIndex").Toint();
+                                        var couponId = dicPara.Get("couponId").Toint();
+                                        var count = dicPara.Get("count").Toint();
+                                        var couponCode = string.Empty;
+                                        if (!couponId.IsNull())
+                                        {
+                                            couponCode = Data_CouponListService.I.GetModels(p => p.CouponID == couponId && p.State == (int)CouponState.Activated).Select(o => o.CouponCode).FirstOrDefault();
+                                        }
+
+                                        var data_MemberLevel_BookRule = new Data_MemberLevel_BookRule();
+                                        data_MemberLevel_BookRule.State = state;
+                                        data_MemberLevel_BookRule.AllowBar = allowBar;
+                                        data_MemberLevel_BookRule.AllowWexin = allowWexin;
+                                        data_MemberLevel_BookRule.AllowATM = allowATM;
+                                        data_MemberLevel_BookRule.AllowGame = allowGame;
+                                        data_MemberLevel_BookRule.MilepostDays = milepostDays;
+                                        data_MemberLevel_BookRule.DayGetBalanceIndex = dayGetBalanceIndex;
+                                        data_MemberLevel_BookRule.DayGetCount = dayGetCount;
+                                        data_MemberLevel_BookRule.MilepostGetType = milepostGetType;
+                                        data_MemberLevel_BookRule.BalanceIndex = balanceIndex;
+                                        data_MemberLevel_BookRule.CouponCode = couponCode;
+                                        data_MemberLevel_BookRule.Count = count;
+                                        data_MemberLevel_BookRuleService.AddModel(data_MemberLevel_BookRule);
+                                    }
+                                    else
+                                    {
+                                        errMsg = "提交数据包含空对象";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                }
+
+                                if (!data_MemberLevel_BookRuleService.SaveChanges())
+                                {
+                                    errMsg = "保存会员级别签到赠送规则信息失败";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
                         }                        
 
                         ts.Complete();
@@ -1174,6 +1238,66 @@ namespace XCCloudService.Api.XCCloud
                                NeedAuthor = a.NeedAuthor,
                                MaxSaveCount = a.MaxSaveCount,
                                MaxUplife = a.MaxUplife
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取签到赠送规则
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "MerchUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetMemberLevelBookRule(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(memberLevelID))
+                {
+                    errMsg = "会员级别ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                int iMemberLevelID = Convert.ToInt32(memberLevelID);
+                var linq = from a in Data_MemberLevel_BookRuleService.N.GetModels(p => p.MemberLevelID == iMemberLevelID)
+                           join b in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.DayGetBalanceIndex equals b.ID into b1
+                           from b in b1.DefaultIfEmpty()
+                           join c in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.BalanceIndex equals c.ID into c1
+                           from c in c1.DefaultIfEmpty()
+                           join d in
+                               (
+                                   from d in Data_CouponListService.N.GetModels()
+                                   join e in Data_CouponInfoService.N.GetModels() on d.CouponID equals e.ID
+                                   select new { d.CouponCode, e.ID, e.CouponName }
+                                   ) on a.CouponCode equals d.CouponCode into d1
+                           from d in d1.DefaultIfEmpty()
+                           select new
+                           {
+                               State = a.State,
+                               AllowBar = a.AllowBar,
+                               AllowWexin = a.AllowWexin,
+                               AllowATM = a.AllowATM,
+                               AllowGame = a.AllowGame,
+                               MilepostDays = a.MilepostDays,
+                               DayGetBalanceIndex = a.DayGetBalanceIndex,
+                               DayGetBalanceStr = b != null ? b.TypeName : string.Empty,
+                               DayGetCount = a.DayGetCount,
+                               MilepostGetType = a.MilepostGetType,
+                               BalanceIndex = a.BalanceIndex,
+                               BalanceIndexStr = c != null ? c.TypeName : string.Empty,
+                               CouponID = d != null ? d.ID : (int?)null,
+                               CouponName = d != null ? d.CouponName : string.Empty,
+                               Count = a.Count
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);

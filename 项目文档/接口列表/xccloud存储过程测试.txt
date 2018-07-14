@@ -782,35 +782,30 @@ exec @RS = AddGameWatch @StoreId,@HeadIndex,@UserId,@InCoin,@PrizeCount,@OutCoin
 
 
 ----------------------------------------------------------------------------------------------------
-declare @StoreId varchar(15)
-declare @CustomerType int = 0
-declare @MemberLevelId int = 1
-declare @MemberBalanceList [MemberBalanceListType]
-insert into @MemberBalanceList(BalanceIndex,BalanceName,Balance) values(98305,'储值金',100)
-insert into @MemberBalanceList(BalanceIndex,BalanceName,Balance) values(98306,'代币',100)
-insert into @MemberBalanceList(BalanceIndex,BalanceName,Balance) values(98307,'积分',100)
-insert into @MemberBalanceList(BalanceIndex,BalanceName,Balance) values(98308,'彩票',100)
-insert into @MemberBalanceList(BalanceIndex,BalanceName,Balance) values(98309,'test',100)
-insert into @MemberBalanceList(BalanceIndex,BalanceName,Balance) values(98315,'现金',100)
 
-declare @FoodDetailType [FoodDetailType]
-insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(3,1,98305,100)
-insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(1,1,0,1000)
-insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(6,1,98306,100)
-insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(4,1,98307,100)
-insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(7,1,98308,100)
-insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(5,1,98309,100)
-insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(8,1,98315,500)
-
+declare @MerchId varchar(15) = '100025'
+declare @StoreId varchar(15) = '100025420106001'
+declare @CustomerType int = 2
+declare @MemberLevelId int = 21
+declare @FoodSaleDetailList [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,1,98305,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1000)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(7,0,1,98308,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(5,0,1,98309,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(8,0,1,98315,500)
 declare @PayCount decimal(18,2) = 1000
-declare @RealPay decimal(18,2) = 1000
-declare @FreePay decimal(18,2) = 0
-declare @IsThirdPay bit = 0
+declare @OpenFee decimal(18,2) = 20
+declare @Deposit decimal(18,2) = 10
+declare @CardIndex varchar(15) = '10002542010600120180521000060000'
+declare @Result int = 0
 declare @ErrMsg varchar(200)
 decLare @RS int
-exec @RS = [CheckOrderPay] @StoreId,@CustomerType,@MemberLevelId,@MemberBalanceList,@FoodDetailType,@PayCount,@RealPay,@FreePay,@IsThirdPay output,@ErrMsg output
+exec @RS = [CheckOrderPay] @MerchId,@StoreId,@CustomerType,@MemberLevelId,@CardIndex,@FoodSaleDetailList,@PayCount,@OpenFee,@Deposit,@Result output,@ErrMsg output
 print '@RS:' + cast(@RS as varchar)
-print '@ErrMsg:' + @ErrMsg  
+print '@ErrMsg:' + @ErrMsg
+
 
 ----------------------------------------------------------------------------------------------------
 --散客购买

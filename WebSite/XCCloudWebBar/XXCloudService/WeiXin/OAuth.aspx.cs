@@ -21,7 +21,6 @@ using XCCloudWebBar.WeiXin.WeixinPub;
 using XCCloudWebBar.Model.WeiXin;
 using XCCloudWebBar.CacheService;
 using XCCloudWebBar.Business.XCCloud;
-using XCCloudWebBar.RadarService;
 
 namespace XCCloudWebBar.WeiXin
 {

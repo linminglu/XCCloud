@@ -13,7 +13,6 @@ using XCCloudWebBar.Model.CustomModel.XCGameManager;
 using XCCloudWebBar.Model.WeiXin.Message;
 using XCCloudWebBar.Model.XCGameManager;
 using XCCloudWebBar.Pay.PPosPay;
-using XCCloudWebBar.RadarService;
 using XCCloudWebBar.WeiXin.Message;
 using XXCloudService.Utility;
 

@@ -20,6 +20,7 @@ using System.IO;
 using XCCloudService.Business.XCCloud;
 using Microsoft.SqlServer.Server;
 using XCCloudService.BLL.CommonBLL;
+using XCCloudService.CacheService;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -101,12 +102,20 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                var linq = from a in Data_CouponInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var entryCouponFlag = dicParas.Get("entryCouponFlag").Toint();
+
+                var query = Data_CouponInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+
+                if (!entryCouponFlag.IsNull())
+                    query = query.Where(w => w.EntryCouponFlag == entryCouponFlag);
+
+                var linq = from a in query
+                           where a.EndDate > DateTime.Now //未过期
                            select new
                            {
                                ID = a.ID,
                                CouponName = a.CouponName,
-                               EndTime = a.EndTime
+                               EndDate = a.EndDate
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -324,7 +333,7 @@ namespace XXCloudService.Api.XCCloud
 
                 int id = dicParas.Get("id").Toint(0);
                 var entryCouponFlag = dicParas.Get("entryCouponFlag").Toint();
-                var publishCount = dicParas.Get("publishCount").Toint();
+                var publishCount = dicParas.Get("publishCount").Toint(0);
                 var sendType = dicParas.Get("sendType").Toint();
                 var couponConditions = dicParas.GetArray("couponConditions");
                 var memberIds = dicParas.GetArray("memberIds");                
@@ -421,9 +430,10 @@ namespace XXCloudService.Api.XCCloud
                         //添加未分配优惠券, 单门店直接调拨
                         string singleStoreId = string.Empty;
                         bool isSingle = XCCloudStoreBusiness.IsSingleStore(merchId, out singleStoreId);
+
                         string storedProcedure = "CreateCouponRecord";
                         List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
-                        SqlMetaData[] MetaDataArr = new SqlMetaData[] { new SqlMetaData("MemberID", SqlDbType.Int) };
+                        SqlMetaData[] MetaDataArr = new SqlMetaData[] { new SqlMetaData("MemberID", SqlDbType.VarChar) };
                         if (memberIds != null && memberIds.Length > 0)
                         {
                             for (int i = 0; i < memberIds.Length; i++)
@@ -439,7 +449,7 @@ namespace XXCloudService.Api.XCCloud
                             record.SetValue(0, 0);
                             listSqlDataRecord.Add(record);
                         }
-
+                        
                         SqlParameter[] parameters = new SqlParameter[0];
                         Array.Resize(ref parameters, parameters.Length + 1);
                         parameters[parameters.Length - 1] = new SqlParameter("@CouponID", id);
@@ -456,9 +466,7 @@ namespace XXCloudService.Api.XCCloud
                         Array.Resize(ref parameters, parameters.Length + 1);
                         parameters[parameters.Length - 1] = new SqlParameter("@StoreID", singleStoreId);
                         Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@IsSingle", isSingle ? 1 : 0);
-                        Array.Resize(ref parameters, parameters.Length + 1);
-                        parameters[parameters.Length - 1] = new SqlParameter("@PublishCount", publishCount);
+                        parameters[parameters.Length - 1] = new SqlParameter("@IsSingle", isSingle ? 1 : 0);                        
                         Array.Resize(ref parameters, parameters.Length + 1);
                         parameters[parameters.Length - 1] = new SqlParameter("@MemberIDsType", SqlDbType.Structured);
                         parameters[parameters.Length - 1].Value = listSqlDataRecord;
@@ -467,12 +475,41 @@ namespace XXCloudService.Api.XCCloud
                         parameters[parameters.Length - 1] = new SqlParameter("@Result", 0);
                         parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
 
-                        XCCloudBLLExt.ExecuteStoredProcedure(storedProcedure, parameters);
-                        if (parameters[parameters.Length - 1].Value.ToString() != "1")
+                        //循环发行优惠券，每次最多发行999张  
+                        int totalPublishCount = publishCount;
+                        while (totalPublishCount > 0)
                         {
-                            errMsg = "添加优惠券记录表失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            publishCount = (totalPublishCount > 999) ? 999 : totalPublishCount;
+
+                            if (!parameters.Any(a => a.ParameterName == "@PublishCount"))
+                            {
+                                Array.Resize(ref parameters, parameters.Length + 1);
+                                parameters[parameters.Length - 1] = new SqlParameter("@PublishCount", publishCount);
+                            }
+                            else
+                            {
+                                parameters[parameters.Length - 2] = new SqlParameter("@PublishCount", publishCount);
+                            }
+
+                            if (!parameters.Any(a => a.ParameterName == "@CouponCodeSeedId"))
+                            {
+                                Array.Resize(ref parameters, parameters.Length + 1);
+                                parameters[parameters.Length - 1] = new SqlParameter("@CouponCodeSeedId", RedisCacheHelper.CreateCloudSerialNo(merchId.ToExtStoreID(), true));
+                            }
+                            else
+                            {
+                                parameters[parameters.Length - 1] = new SqlParameter("@CouponCodeSeedId", RedisCacheHelper.CreateCloudSerialNo(merchId.ToExtStoreID(), true));
+                            }  
+                                                            
+                            XCCloudBLLExt.ExecuteStoredProcedure(storedProcedure, parameters);
+                            if (parameters[parameters.Length - 3].Value.ToString() != "1")
+                            {
+                                errMsg = "添加优惠券记录表失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            totalPublishCount -= publishCount;
+                        }                                                    
 
                         //保存适用门店信息
                         foreach (var model in Data_Coupon_StoreListService.I.GetModels(p => p.CouponID == id))

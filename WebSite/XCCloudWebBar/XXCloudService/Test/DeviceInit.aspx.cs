@@ -26,15 +26,15 @@ namespace XXCloudService.Test
 
             //DeviceRadarServer server = new DeviceRadarServer(merchId, storeId, dbip, dbPwd, port);
             //server.Init();
-            DeviceRadarServer.Init(merchId, storeId, dbip, dbPwd, port);
+            //DeviceRadarServer.Init(merchId, storeId, dbip, dbPwd, port);
         }
 
         protected void Button2_Click(object sender, EventArgs e)
         {
-            string routeToken = "4952B360B3A4475FB62E09FE3D320FBA".ToLower();
-            string mcuId = RedisCacheHelper.CreateDeviceMCUID(1);
-            bool ret = DeviceRadarServer.SendMCUFunction(mcuId, routeToken);
-            Response.Write(ret);
+            //string routeToken = "4952B360B3A4475FB62E09FE3D320FBA".ToLower();
+            //string mcuId = RedisCacheHelper.CreateDeviceMCUID(1);
+            //bool ret = DeviceRadarServer.SendMCUFunction(mcuId, routeToken);
+            //Response.Write(ret);
         }
     }
 }

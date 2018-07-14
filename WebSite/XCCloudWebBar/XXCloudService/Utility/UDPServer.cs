@@ -8,11 +8,9 @@ using XCCloudWebBar.Business.XCCloudRS232;
 using XCCloudWebBar.Common;
 using XCCloudWebBar.Common.Extensions;
 using XCCloudWebBar.Common.Enum;
-using XXCloudService.RadarServer;
 using XXCloudService.Utility.Info;
-using XXCloudService.RadarServer.Command.Recv;
 using XCCloudWebBar.Model.XCCloudRS232;
-using XXCloudService.RadarServer.Info;
+using RadarService;
 
 namespace XCCloudWebBar.Utility
 {
@@ -21,16 +19,16 @@ namespace XCCloudWebBar.Utility
         private static readonly Object thisMessageLock = new Object();
 
         delegate void DelegShowMsg(string msg);
-        static void server_OnShowMsg(string msg)
-        {
-            MessageStore(msg, true);
-        }
+        //static void server_OnShowMsg(string msg)
+        //{
+        //    MessageStore(msg, true);
+        //}
 
         private static int MessageCount = 0;
 
         public static void MessageStore(string msg, bool flag)
-        { 
-            lock(thisMessageLock)
+        {
+            lock (thisMessageLock)
             {
                 if (flag)
                 {
@@ -50,7 +48,9 @@ namespace XCCloudWebBar.Utility
 
         static Thread thRun;
 
-        public static UDPServerHelper server = new UDPServerHelper();
+        //public static UDPServerHelper server = new UDPServerHelper();
+
+        public static HostServer server;
 
         public static List<string> 当前消息列表 = new List<string>();
         public static string NetworkRate = "0.0";
@@ -59,9 +59,15 @@ namespace XCCloudWebBar.Utility
 
         public static void Init()
         {
-            server.Init(6066);
-            server.OnShowMsg += new UDPServerHelper.消息显示(server_OnShowMsg);
-            server.OnChangeState += new UDPServerHelper.状态更新(server_OnChangeState);
+            string merchID = System.Configuration.ConfigurationManager.AppSettings["MerchID"];
+            string storeID = System.Configuration.ConfigurationManager.AppSettings["StoreID"];
+            string dbConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["XCCloudDB"].ConnectionString;
+            server = new HostServer(merchID, storeID, dbConnectString, 6066, "192.168.1.73", 12888, "192.168.1.119", 5753);
+            server.StartServer();
+            server.OnRadarDataShow += server_OnRadarDataShow;
+            //server.Init(6066);
+            //server.OnShowMsg += new UDPServerHelper.消息显示(server_OnShowMsg);
+            //server.OnChangeState += new UDPServerHelper.状态更新(server_OnChangeState);
 
             InitRouterDevices();
 
@@ -71,46 +77,51 @@ namespace XCCloudWebBar.Utility
             thRun.Start();
         }
 
-        static void server_OnChangeState(Recv机头网络状态报告 cmd)
+        static void server_OnRadarDataShow(string ShowText)
         {
-            string routeToken = cmd.RecvData.routeAddress;
-            string headAddress = cmd.机头地址;
-            int? deviceId = null;
-
-            //获取控制器实体
-            Base_DeviceInfo router = DeviceBusiness.GetDeviceModel(routeToken);
-            Data_MerchDevice merchDevice = MerchDeviceBusiness.GetMerchModel(router.ID, headAddress);
-            if(merchDevice != null)
-            {
-                deviceId = merchDevice.DeviceID;
-            }
-
-            if(deviceId == null)
-            {
-                Data_MerchSegment merchSegment = MerchSegmentBusiness.GetMerchSegmentModel(router.ID, headAddress);
-                if (merchSegment == null)
-                {
-                    deviceId = merchDevice.DeviceID;
-                }
-            }
-
-            if(deviceId != null)
-            {
-                Base_DeviceInfo device = DeviceBusiness.GetDeviceModelById((int)deviceId);
-                if(device != null)
-                {
-                    List<HeadInfo.机头信息> headList = HeadInfo.GetAllHead();
-                    HeadInfo.机头信息 head = headList.FirstOrDefault(t => t.令牌 == device.Token);
-                    string strDeviceState = GetDeviceState(head);
-
-                    string state = DeviceStatusBusiness.GetDeviceState(device.Token);
-                    if (state != strDeviceState)
-                    {
-                        DeviceStatusBusiness.SetDeviceState(device.Token, strDeviceState);
-                    }
-                }
-            }
+            MessageStore(ShowText, true);
         }
+
+        //static void server_OnChangeState(Recv机头网络状态报告 cmd)
+        //{
+        //    string routeToken = cmd.RecvData.routeAddress;
+        //    string headAddress = cmd.机头地址;
+        //    int? deviceId = null;
+
+        //    //获取控制器实体
+        //    Base_DeviceInfo router = DeviceBusiness.GetDeviceModel(routeToken);
+        //    Data_MerchDevice merchDevice = MerchDeviceBusiness.GetMerchModel(router.ID, headAddress);
+        //    if (merchDevice != null)
+        //    {
+        //        deviceId = merchDevice.DeviceID;
+        //    }
+
+        //    if (deviceId == null)
+        //    {
+        //        Data_MerchSegment merchSegment = MerchSegmentBusiness.GetMerchSegmentModel(router.ID, headAddress);
+        //        if (merchSegment == null)
+        //        {
+        //            deviceId = merchDevice.DeviceID;
+        //        }
+        //    }
+
+        //    if (deviceId != null)
+        //    {
+        //        Base_DeviceInfo device = DeviceBusiness.GetDeviceModelById((int)deviceId);
+        //        if (device != null)
+        //        {
+        //            List<HeadInfo.机头信息> headList = HeadInfo.GetAllHead();
+        //            HeadInfo.机头信息 head = headList.FirstOrDefault(t => t.令牌 == device.Token);
+        //            string strDeviceState = GetDeviceState(head);
+
+        //            string state = DeviceStatusBusiness.GetDeviceState(device.Token);
+        //            if (state != strDeviceState)
+        //            {
+        //                DeviceStatusBusiness.SetDeviceState(device.Token, strDeviceState);
+        //            }
+        //        }
+        //    }
+        //}
 
         private static void Run()
         {
@@ -176,10 +187,10 @@ namespace XCCloudWebBar.Utility
                     RouterList.Add(router);
                 }
             }
-            
+
             GroupList = GameBusiness.GetGameList().ToList().Select(g => new GroupInfo
             {
-                RouterToken = g.DeviceID.IsNull() ? "" : RouterList.FirstOrDefault(r=>r.RouterId == g.DeviceID).RouterToken,
+                RouterToken = g.DeviceID.IsNull() ? "" : RouterList.FirstOrDefault(r => r.RouterId == g.DeviceID).RouterToken,
                 GroupId = g.GroupID,
                 GroupName = g.GroupName,
                 GroupType = ((GroupTypeEnum)g.GroupType).ToDescription()
@@ -225,25 +236,25 @@ namespace XCCloudWebBar.Utility
             }
         }
 
-        public static string GetDeviceState(HeadInfo.机头信息 head)
-        {
-            if (head.状态.在线状态)
-            {
-                if (head.状态.锁定机头)
-                {
-                    return DeviceStatusEnum.锁定.ToDescription();
-                }
-                if (head.状态.出币机或存币机正在数币)
-                {
-                    return DeviceStatusEnum.工作中.ToDescription();
-                }
-                if (head.状态.读币器故障)
-                {
-                    return DeviceStatusEnum.报警.ToDescription();
-                }
-                return DeviceStatusEnum.在线.ToDescription();
-            }
-            return DeviceStatusEnum.离线.ToDescription();
-        }
+        //public static string GetDeviceState(HeadInfo.机头信息 head)
+        //{
+        //    if (head.状态.在线状态)
+        //    {
+        //        if (head.状态.锁定机头)
+        //        {
+        //            return DeviceStatusEnum.锁定.ToDescription();
+        //        }
+        //        if (head.状态.出币机或存币机正在数币)
+        //        {
+        //            return DeviceStatusEnum.工作中.ToDescription();
+        //        }
+        //        if (head.状态.读币器故障)
+        //        {
+        //            return DeviceStatusEnum.报警.ToDescription();
+        //        }
+        //        return DeviceStatusEnum.在线.ToDescription();
+        //    }
+        //    return DeviceStatusEnum.离线.ToDescription();
+        //}
     }
 }

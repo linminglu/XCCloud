@@ -530,25 +530,27 @@ as
 
 GO
 
+CREATE TYPE [dbo].[MemberIDsType] AS TABLE(
+	[MemberID] [varchar](32) NULL
+)
+GO
+
 CREATE proc [dbo].[CreateCouponRecord](
 @CouponID int,@SendAuthorID int,@SendTime datetime,@PublishType int,
-@SendType int,@MerchID varchar(15),@StoreID varchar(15),@IsSingle int,@PublishCount int,
-@MemberIDsType [MemberIDsType] readonly,
-@Result int output)
-as	
-	--删除现有记录
-	delete from Data_CouponList where CouponID=@CouponID
-	
+@SendType int,@MerchID varchar(15),@StoreID varchar(15),@IsSingle int,
+@MemberIDsType [MemberIDsType] readonly,@Result int output,
+@PublishCount int,@CouponCodeSeedId varchar(29))
+as		
     --插入优惠券记录表
     declare @row int
-    declare @tempMemberIDs table (MemberID int NULL)	
-	insert @tempMemberIDs select MemberID from @MemberIDsType
+    declare @tempMemberIDs table (MemberID varchar(32) NULL)	
+	insert @tempMemberIDs select MemberID from @MemberIDsType where MemberID not in (select MemberID from Data_CouponList where CouponID=@CouponID)
     declare @count int = 1
+    declare @memberId varchar(32) 
     declare @state int   
-    declare @memberId int 
+    declare @CouponCode varchar(32) 
     declare @memberCount int
     select @memberCount=COUNT(MemberID) from @tempMemberIDs
-    select @memberId=MemberID from (select top 1 MemberID from @tempMemberIDs order by MemberID) m
     
     if(@PublishType=0)  --电子优惠券
 		set @state = 2      --已激活
@@ -562,15 +564,17 @@ as
     
     while(@count<=@PublishCount)
     begin
-		if(@memberId>0 and @count<=@memberCount)
+		if(EXISTS(SELECT MemberID FROM @tempMemberIDs) and @count<=@memberCount)
 		begin
 			SET ROWCOUNT 1
 			select @memberId=MemberID from @tempMemberIDs			
 			SET ROWCOUNT 0			
 			delete from @tempMemberIDs where MemberID=@memberId
 		end
-		insert into Data_CouponList(CouponCode,CouponID,CouponIndex,SendAuthorID,SendTime,PublishType,SendType,MerchID,StoreID,[State],MemberID,IsLock)
-		values (Lower(REPLACE(newid(),'-','')),@CouponID,@count,@SendAuthorID,@SendTime,@PublishType,@SendType,@MerchID,@StoreID,@state,@memberId,0)
+		
+		select @CouponCode = dbo.F_GetFlwId(@CouponCodeSeedId,@count)
+		insert into Data_CouponList(ID,CouponCode,CouponID,CouponIndex,SendAuthorID,SendTime,PublishType,SendType,MerchID,StoreID,[State],MemberID,IsLock)
+		values (@CouponCode,@CouponCode,@CouponID,@count,@SendAuthorID,@SendTime,@PublishType,@SendType,@MerchID,@StoreID,@state,@memberId,0)
 		select @row=@@ROWCOUNT
 		if(@row!=1)
 		begin

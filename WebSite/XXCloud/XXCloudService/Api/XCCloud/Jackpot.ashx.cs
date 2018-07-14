@@ -102,16 +102,16 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 IData_Jackpot_LevelService data_Jackpot_LevelService = BLLContainer.Resolve<IData_Jackpot_LevelService>(resolveNew: true);
-                IBase_GoodsInfoService base_GoodsInfoService = BLLContainer.Resolve<IBase_GoodsInfoService>(resolveNew: true);
+                IData_CouponInfoService data_CouponInfoService = BLLContainer.Resolve<IData_CouponInfoService>(resolveNew: true);
                 var JackpotLevels = from a in data_Jackpot_LevelService.GetModels(p => p.ActiveID == iId)
-                                    join b in base_GoodsInfoService.GetModels() on a.GoodID equals b.ID
+                                    join b in data_CouponInfoService.GetModels() on a.CouponID equals b.ID
                                     select new
                                     {
                                         LevelName = a.LevelName,
-                                        GoodCount = a.GoodCount,
+                                        Count = a.Count,
                                         Probability = a.Probability,
-                                        GoodID = a.GoodID,
-                                        GoodName = b.GoodName
+                                        CouponID = a.ID,
+                                        CouponName = b.CouponName
                                     };
 
                 var result = new
@@ -199,7 +199,7 @@ namespace XXCloudService.Api.XCCloud
                         data_JackpotInfo.EndTime = Convert.ToDateTime(endTime);
                         data_JackpotInfo.MerchID = merchId;
                         data_JackpotInfo.Threshold = Convert.ToInt32(threshold);
-                        if (data_JackpotInfo.ID <= 0)
+                        if (iId == 0)
                         {
                             //新增
                             if (!data_JackpotInfoService.Add(data_JackpotInfo))
@@ -210,6 +210,19 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
+                            if(data_JackpotInfo.ID == 0)
+                            {
+                                errMsg = "该抽奖规则信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            IData_Jackpot_MatrixService data_Jackpot_MatrixService = BLLContainer.Resolve<IData_Jackpot_MatrixService>();
+                            if (data_Jackpot_MatrixService.Any(a => a.ActiveID == iId))
+                            {
+                                errMsg = "该抽奖规则已使用不能修改";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             //修改
                             if (!data_JackpotInfoService.Update(data_JackpotInfo))
                             {
@@ -229,18 +242,19 @@ namespace XXCloudService.Api.XCCloud
                                 data_Jackpot_LevelService.DeleteModel(model);
                             }
 
+                            var levelNames = new List<string>();
                             foreach (IDictionary<string, object> el in jackpotLevels)
                             {
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    string goodId = dicPara.ContainsKey("goodId") ? dicPara["goodId"].ToString() : string.Empty;
+                                    string couponId = dicPara.ContainsKey("couponId") ? dicPara["couponId"].ToString() : string.Empty;
                                     string levelName = dicPara.ContainsKey("levelName") ? (dicPara["levelName"] + "") : string.Empty;
-                                    string goodCount = dicPara.ContainsKey("goodCount") ? (dicPara["goodCount"] + "") : string.Empty;
+                                    string count = dicPara.ContainsKey("count") ? (dicPara["count"] + "") : string.Empty;
                                     string probability = dicPara.ContainsKey("probability") ? (dicPara["probability"] + "") : string.Empty;
-                                    if (string.IsNullOrEmpty(goodId))
+                                    if (string.IsNullOrEmpty(couponId))
                                     {
-                                        errMsg = "商品ID不能为空";
+                                        errMsg = "奖品ID不能为空";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
                                     if (string.IsNullOrEmpty(levelName))
@@ -248,37 +262,36 @@ namespace XXCloudService.Api.XCCloud
                                         errMsg = "奖品等级不能为空";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-
-                                    if (string.IsNullOrEmpty(goodCount))
+                                    if (levelNames.Contains(levelName, StringComparer.OrdinalIgnoreCase))
+                                    {
+                                        errMsg = "奖品等级不能重复";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (string.IsNullOrEmpty(count))
                                     {
                                         errMsg = "奖品数量不能为空";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-
-                                    if (!Utils.isNumber(goodCount))
+                                    if (!Utils.isNumber(count))
                                     {
                                         errMsg = "奖品数量格式不正确";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-
-                                    if (Convert.ToInt32(goodCount) < 0)
+                                    if (Convert.ToInt32(count) < 0)
                                     {
                                         errMsg = "奖品数量不能为负数";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-
                                     if (string.IsNullOrEmpty(probability))
                                     {
                                         errMsg = "中奖概率不能为空";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-
                                     if (!Utils.IsDecimal(probability))
                                     {
                                         errMsg = "中奖概率格式不正确";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-
                                     if (Convert.ToDecimal(probability) < 0)
                                     {
                                         errMsg = "中奖概率不能为负数";
@@ -287,10 +300,11 @@ namespace XXCloudService.Api.XCCloud
                                     var data_Jackpot_LevelModel = new Data_Jackpot_Level();
                                     data_Jackpot_LevelModel.ActiveID = iId;
                                     data_Jackpot_LevelModel.LevelName = levelName;
-                                    data_Jackpot_LevelModel.GoodCount = Convert.ToInt32(goodCount);
+                                    data_Jackpot_LevelModel.Count = Convert.ToInt32(count);
                                     data_Jackpot_LevelModel.Probability = Convert.ToDecimal(probability);
-                                    data_Jackpot_LevelModel.GoodID = Convert.ToInt32(goodId);
-                                    data_Jackpot_LevelService.AddModel(data_Jackpot_LevelModel);                                    
+                                    data_Jackpot_LevelModel.CouponID = Convert.ToInt32(couponId);
+                                    data_Jackpot_LevelService.AddModel(data_Jackpot_LevelModel);
+                                    levelNames.Add(levelName);
                                 }
                                 else
                                 {
@@ -348,18 +362,18 @@ namespace XXCloudService.Api.XCCloud
                             IData_Jackpot_LevelService data_Jackpot_LevelService = BLLContainer.Resolve<IData_Jackpot_LevelService>();
                             IData_JackpotInfoService data_JackpotInfoService = BLLContainer.Resolve<IData_JackpotInfoService>();
                             IData_Jackpot_MatrixService data_Jackpot_MatrixService = BLLContainer.Resolve<IData_Jackpot_MatrixService>();
-                            if (data_Jackpot_MatrixService.Any(a => a.ActiveID == iId))
-                            {
-                                errMsg = "该抽奖规则已使用不能删除";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
                             if (!data_JackpotInfoService.Any(a => a.ID == iId))
                             {
                                 errMsg = "该抽奖规则信息不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
+                            if (data_Jackpot_MatrixService.Any(a => a.ActiveID == iId))
+                            {
+                                errMsg = "该抽奖规则已使用不能删除";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                            
                             var data_JackpotInfo = data_JackpotInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
                             data_JackpotInfoService.DeleteModel(data_JackpotInfo);
 
