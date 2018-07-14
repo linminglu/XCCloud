@@ -307,8 +307,8 @@
                                     <input type="text" class="layui-input" id="CashValue">
                                     <span class="layui-unit">现金</span>
                                 </div>
-                                <div class="layui-input-inline">
-                                    <div class="layui-btn-group">
+                                <div class="layui-input-inline" >
+                                    <div class="layui-btn-group" style="margin-top: 4px;">
                                         <button class="layui-btn layui-btn-sm">保存</button>
                                         <button class="layui-btn layui-btn-sm">删除</button>
                                     </div>
@@ -318,8 +318,11 @@
                             </div>
 
                         </div>
-                        <table class="layui-hide" id="FoodSaleTable" lay-filter="FoodSaleTable"
-                               style="width: 700px"></table>
+                        <!--<table class="layui-hide" id="FoodSaleTable" lay-filter="FoodSaleTable"-->
+                               <!--style="width: 700px"></table>-->
+                        <div class="layui-form-item">
+                            <button class="layui-btn layui-btn-primary" id="addMoreRule">-+-</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -982,7 +985,7 @@
         });
         //会员币种
         $('#vipCoinBtn').on('click', () => {
-            xc.getBalanceTypeDic('', token, layer, form, 'vipCoinType');
+            xc.getBalanceTypeDic('1', token, layer, form, 'vipCoinType');
             vipCoinType = '';
             vipCoinTypeStr = '';
             index = layer.open({

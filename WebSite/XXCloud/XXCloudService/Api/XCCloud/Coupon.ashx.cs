@@ -103,11 +103,15 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var entryCouponFlag = dicParas.Get("entryCouponFlag").Toint();
+                var couponType = dicParas.Get("couponType").Toint();
 
                 var query = Data_CouponInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
 
                 if (!entryCouponFlag.IsNull())
                     query = query.Where(w => w.EntryCouponFlag == entryCouponFlag);
+
+                if (!couponType.IsNull())
+                    query = query.Where(w => w.CouponType == couponType);
 
                 var linq = from a in query
                            where a.EndDate > DateTime.Now //未过期

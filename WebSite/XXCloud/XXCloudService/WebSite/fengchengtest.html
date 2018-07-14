@@ -376,6 +376,15 @@
         common(url, parasJson);
     }
 
+    function do_xccloud_getcoupondic() {
+        var parasObj = {
+            "entryCouponFlag": 0, "couponType": 2
+        };
+        var url = "/xccloud/Coupon?action=GetCouponDic";
+        var parasJson = JSON.stringify(parasObj);
+        common(url, parasJson);
+    }
+
     </script>
 
 </head>
@@ -421,6 +430,8 @@
         <div>游艺项目设定</div>
         <input type="button" value="do_xccloud_getprojectinfo" onclick="do_xccloud_getprojectinfo()" />
         <input type="button" value="do_xccloud_getbinddevicelist" onclick="do_xccloud_getbinddevicelist()" />
+        <div>优惠券规则</div>
+        <input type="button" value="do_xccloud_getcoupondic" onclick="do_xccloud_getcoupondic()" /> 
         <div>实物优惠券导出</div>
         <input type="button" value="do_xccloud_exportcoupon" onclick="do_xccloud_exportcoupon()" /> 
         <div>满减优惠券</div>
