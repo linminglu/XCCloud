@@ -110,7 +110,7 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
         {
             this.FoodId = foodId;
             this.BalanceType = balanceType;
-            this.TypeName = typeName;
+            this.BalanceTypeName = typeName;
             this.UseCount = useCount;
         }
 
@@ -121,7 +121,7 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
         public int BalanceType { set; get; }
 
         [DataMember(Name = "typeName", Order = 3)]
-        public string TypeName { set; get; }
+        public string BalanceTypeName { set; get; }
 
         [DataMember(Name = "useCount", Order = 4)]
         public decimal UseCount { set; get; }

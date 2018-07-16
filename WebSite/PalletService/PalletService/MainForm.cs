@@ -698,5 +698,46 @@ namespace PalletService
             string repeatCode1 = new System.Random().Next(000, 999).ToString();
             ICCardUtility.CreateICCard(repeatCode1, "778852013145", out errMsg, true);
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            //读取身份证信息
+            PeopleCardUtility utility = new PeopleCardUtility();
+            PeopleCardModel peopleCardModel = new PeopleCardModel();
+            string cardMsg = string.Empty;
+            if (utility.ReadIDCard(out peopleCardModel, out cardMsg))
+            {
+                var cardData = new
+                {
+                    cardNo = peopleCardModel.身份证号,
+                    name = peopleCardModel.姓名,
+                    gender = peopleCardModel.性别,
+                    nation = peopleCardModel.民族,
+                    birthDay = peopleCardModel.生日,
+                    address = peopleCardModel.住址,
+                    signingOrg = peopleCardModel.签发机关,
+                    makeDate = peopleCardModel.发证日期,
+                    expirationDate = peopleCardModel.有效期限,
+                    imageUrl = ""
+                };
+
+                var msgObj = new
+                {
+                    result_code = 1,
+                    answerMsgType = 0,
+                    answerMsg = "获取身份证信息成功",
+                    cardData = cardData
+                };
+            }
+            else
+            {
+                var msgObj = new
+                {
+                    result_code = 0,
+                    answerMsgType = 1,
+                    answerMsg = cardMsg,
+                };
+            }
+        }
     }
 }

@@ -175,13 +175,14 @@ namespace XXCloudService.Api.XCCloud
                 var adjOrder = dicParas.Get("adjOrder").Toint();
                 var readCat = dicParas.Get("readCat").Toint();
                 var projectBindDevices = dicParas.GetArray("projectBindDevices");
+                Data_ProjectInfo model = null;
                       
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        var model = Data_ProjectInfoService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_ProjectInfo();
+                        model = Data_ProjectInfoService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_ProjectInfo();
                         model.MerchID = merchId;
                         model.StoreID = storeId;
                         Utils.GetModel(dicParas, ref model);                        
@@ -298,6 +299,10 @@ namespace XXCloudService.Api.XCCloud
                         }                        
 
                         ts.Complete();
+
+                        //发送指令
+                        var radarToken = string.Empty;
+                        projectInsChange(new Guid("N").ToString(), storeId, "", model.GameIndex.ToString(), out radarToken, out errMsg);
                     }
                     catch (DbEntityValidationException e)
                     {

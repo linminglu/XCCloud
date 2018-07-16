@@ -19,6 +19,7 @@ using XCCloudService.Common.Extensions;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.SocketService.UDP.Factory;
 using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
@@ -468,6 +469,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
                 string newId = dicParas.ContainsKey("newId") ? Convert.ToString(dicParas["newId"]) : string.Empty;
@@ -658,6 +663,10 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "操作失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
+                //发送指令
+                var radarToken = string.Empty;
+                cardHeadReset(new Guid("N").ToString(), storeId, "", data_DeviceInfo.MCUID, out radarToken, out errMsg);
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

@@ -69,8 +69,8 @@
                         <div class="layui-form-item" >
                             <label class="layui-form-label" ><span class="glyphicon glyphicon-star" aria-hidden="true"></span>密码</label>
                             <div class="layui-input-inline" style="margin-right:0;width: 190px">
-                                <input type="password" lay-verify="required" placeholder="请输入密码" autocomplete="off" v-if="ifShowPassword" class="layui-input password" v-model="password">
-                                <input type="text" lay-verify="required" placeholder="请输入密码" autocomplete="off" v-else class="layui-input password" v-model="password">
+                                <input type="password" lay-verify="required" placeholder="请输入密码" autocomplete="off" v-if="ifShowPassword" class="layui-input password" @keyup.enter="login" v-model="password">
+                                <input type="text" lay-verify="required" placeholder="请输入密码" autocomplete="off" v-else class="layui-input password" v-model="password" @keyup.enter="login">
                                 <button type="button" class="layui-input password_login_show" @click="ifShow"><img src="images/browse.svg" alt=""></button>
                             </div>
 
@@ -117,6 +117,9 @@
             username:'',
             password:'',
             msg:"",
+            workStation:"",
+            dogId:"",
+
         },
         mounted: function () {
             this.WebSocketTest()
@@ -137,14 +140,12 @@
                             console.log("Send:"+data);
                             ws.send(data);
                         }
-                        setTimeout(function () {
-                            var msgType0 =JSON.stringify({"msgType":"0","sObj":{"userToken": "11"}});
-                            send(msgType0);
-                        }, 10);
-                        setTimeout(function () {
-                            var msgType1 =JSON.stringify({"msgType":"10"});
-                            send(msgType1);
-                        }, 20);
+                        // setTimeout(function () {
+                        //     var msgType0 =JSON.stringify({"msgType":"0","sObj":{"userToken": "11"}});
+                        //     send(msgType0);
+                        // }, 10);
+                        var msgType10 =JSON.stringify({"msgType":"10"});
+                        send(msgType10);
                         // setTimeout(function () {
                         //     var msgType2 =JSON.stringify({"msgType":"2"});
                         //     send(msgType2);
@@ -161,7 +162,9 @@
                                     break;
                                 case "1":                                              
                                     break;
-                                case "2":
+                                case "10":
+                                    that.dogId = receivedMsg.dataObj.dogId
+                                    that.workStation = receivedMsg.dataObj.machineName
                                     break;
                                 default:
                                     break;
@@ -201,7 +204,7 @@
 
                     // var obj={'loginName':"45",'password':"123456",'workStation':'tietou','dogId':'22222222'};
                     // var obj={'loginName':"zwf",'password':"123456",'workStation':'tietou1','dogId':'22222222'};
-                    // var obj={'loginName':that.username,'password':that.password,'workStation':'tietou','dogId':'22222222'};
+                    // var obj={'loginName':that.username,'password':that.password,'workStation':that.workStation,'dogId':that.dogId};
                     console.log(obj);
                     axios.post('/xccloud/UserInfo?action=barLogin', obj).then(function (res) {
                         console.log(res.data);

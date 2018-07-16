@@ -22,6 +22,7 @@ using XCCloudService.BLL.CommonBLL;
 using System.Data;
 using XCCloudService.Model.XCCloud;
 using System.Web.SessionState;
+using XCCloudService.SocketService.UDP.Factory;
 
 namespace XCCloudService.Base
 {
@@ -203,6 +204,39 @@ namespace XCCloudService.Base
                                   from b in b1.DefaultIfEmpty()
                                   select b != null ? b.ParameterValue : a.DictValue).FirstOrDefault();
             return value;               
+        }
+
+        protected void cloudSync(string merchId, string merchSecret, int action)
+        { }
+
+        protected bool cardHeadReset(string sn, string storeId, string storePassword, string mcuId, out string radarToken, out string errMsg)
+        {
+            radarToken = string.Empty;
+
+            try
+            {
+                return DataFactory.CardHeadReset(sn, storeId, storePassword, mcuId, out radarToken, out errMsg);
+            }
+            catch (Exception e)
+            {
+                errMsg = e.Message;
+                return false;
+            }
+        }
+
+        protected bool projectInsChange(string sn, string storeId, string storePassword, string gameIndex, out string radarToken, out string errMsg)
+        {
+            radarToken = string.Empty;
+
+            try
+            {
+                return DataFactory.ProjectInsChange(sn, storeId, storePassword, gameIndex, out radarToken, out errMsg);
+            }
+            catch(Exception e)
+            {
+                errMsg = e.Message;
+                return false;
+            }            
         }
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll")]

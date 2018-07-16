@@ -29,6 +29,14 @@
     .billingSty{text-align: center;font-weight:600;}
     .margin15{margin-right:1.5em;}
     .supStyle{display:inline-block;width:10px;height: 10px;border-radius:50%;background-color:red;margin-left:-5px;}
+    .MtcList{width: 100%;height: 20em;margin: 1.5em auto}
+    .MtcList ul .swiper-slide{text-align: center;cursor: pointer;margin: 0 1em;font-size: 1.3em;display: -webkit-box;display: -ms-flexbox;display: -webkit-flex;display: flex;-webkit-box-pack: center;-ms-flex-pack: center;-webkit-justify-content: center;flex-direction:column;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;-webkit-align-items: center;align-items: center;}
+    .MtcList ul li .img{width: 10em;height: 5em;}
+    .MtcList ul li .MtcListTxt{width: 100%;height: inherit;margin-top: 0.2em;margin-left: 0.6em;border: 1px solid #c3c7ce;}
+    .MtcList ul li .selected{width: 100%;height: inherit;margin-top: 0.2em;margin-left: 0.6em;border: 1px solid #96cdf9;}
+    .MtcList ul li .MtcListTxt h4{font-size: 1em;}
+    .MtcList ul li .MtcListTxt p{margin-top: 0.2em;font-size: 1em;font-weight: 400;}
+    .MtcList .swiper-wrapper{padding: 2em auto}
     </style>
 </head>
 <body>
@@ -97,11 +105,19 @@
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
 							<h4 class="col-lg-8 col-md-8 inputNtSty">当前快速售币：</h4><em class="inputNt inputNtSty col-lg-4 col-md-4">{{fastMoney}}元{{fastAmount}}币</em>
-							<div class="col-lg-12 col-md-12">
+                            <div class="input-group col-lg-12 col-md-12 tab-style">
+                                <span class="input-group-addon addonWidth">金额：</span>
+                                <input :autofocus="onFocus" class="form-control" v-model.number="inputMoney" @focus.once="inputFnc('that.inputMoney')" @keyup.enter="inputMoneySubmit" placeholder="输入购币金额" maxlength="13"/>
+                            </div>
+                            <div class="input-group col-lg-12 col-md-12 tab-style">
+                                <span class="input-group-addon addonWidth">数量：</span>
+                                <input class="form-control" v-model.number="inputAmount" @focus.once="inputFnc('that.inputAmount')" @keyup.enter="submit"  placeholder="购币数量" maxlength="13"/>
+							</div>
+                            <!-- <div class="col-lg-12 col-md-12">
 								<input :autofocus="onFocus" class="FastSellSty form-control" v-model.number="inputMoney" @focus.once="inputFnc('that.inputMoney')" @keyup.enter="inputMoneySubmit" placeholder="输入购币金额" maxlength="13"/>
 								<input class="FastSellSty form-control" v-model.number="inputAmount" @focus.once="inputFnc('that.inputAmount')" @keyup.enter="submit"  placeholder="购币数量" maxlength="13"/>
-							</div>
-                            <div class="input-group col-lg-12 col-md-12">
+							</div> -->
+                            <div class="input-group col-lg-12 col-md-12 tab-style">
                                 <span class="input-group-addon addonWidth">出币方式：</span>
                                 <div class="switchZdy" @click="switchFnc('7')">
                                     <div :class="[onSwitch7 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
@@ -124,7 +140,7 @@
 							<div class=" col-lg-3 col-md-3 pad_0"><a href="javascript:void(0);" class="num">0</a></div>
 							<div class=" col-lg-3 col-md-3 pad_0"><a href="javascript:void(0);" class="remove">删除</a></div>
 							<div class="col-lg-6 col-md-6 pad_0"><a href="javascript:void(0);" class="removeAll">清空</a></div>
-							<div class="col-lg-6 col-md-6 pad_0"><button type="button" class="btn btn-c1" :disabled="loading">确定</button></div>
+							<div class="col-lg-6 col-md-6 pad_0"><button type="button" class="btn btn-c1" :disabled="loading" @click="FastSellbtn">确定</button></div>
 						</div>
 					</div>
 				</div>
@@ -893,7 +909,7 @@
 						</select>
 						<input class="form-control"   placeholder="输入最小值">
 						<input class="form-control"   placeholder="输入最大值">
-						<button type="button" class="btn btn-primary" :disabled="loading">查询</button>
+						<button type="button" class="btn btn-primary" :disabled="loading" @screening('All')>查询</button>
 					</div>
 					<div class="saleContent">
 						<div class="treeBox" v-if="treeShow">
@@ -1097,20 +1113,6 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-											<!-- <table class="table table-bordered">
-												<thead style="background: #f5f5f5">
-												<tr>
-													<th colspan="1">余额种类</th>
-													<th colspan="3">余额</th>
-												</tr>
-												</thead>
-												<tbody>
-												<tr v-for="(item,index) in balanceData" :key="index">
-													<td>{{item.BalanceName}}</td>
-													<td @click="billingRecord(index)">{{item.Quantity}}</td>
-												</tr>
-												</tbody>
-											</table> -->
 										</div>
 										<div class="col-lg-8 col-md-8">
 											<div class="col-lg-9 col-md-9">
@@ -1202,14 +1204,15 @@
                         <h3 class="titleSty">选择充值套餐</h3>
                         <div class="MtcList swiper-container">
                             <ul class="swiper-wrapper">
-                                <li class="swiper-slide" v-for="(item,index) in memberFood"  @click="foodSelected(index)">
-                                    <img class="img" :src="item.imageUrl">
-                                    <div class="memberSelected" v-show="item.selected">
-                                        <img src="images/selected.png">
-                                    </div>
-                                    <div class="MtcListTxt">
-                                        <h4>{{item.foodName}}</h4>
-                                        <p>￥{{item.foodPrice}}</p>
+                                <li class="swiper-slide" v-for="(item,index) in membershipData" @click="foodSelected(index)">
+                                    <div class="MtcListTxt" v-bind:class="{'selected' : item.selected}">
+                                        <h3>{{item.foodName}}</h3>
+                                        <img class="img" :src="item.imageUrl">
+                                        <p>押金：￥{{item.deposit}}</p>
+                                        <p>售价：￥{{item.foodPrice}}</p>
+                                        <p>开卡：￥{{item.openFee}}</p>
+                                        <p>级别：{{item.memberLevelName}}</p>
+                                        <p v-if="item.selected">121213</p>
                                     </div>
                                 </li>
                             </ul>
@@ -1293,6 +1296,7 @@
             <button type="button" class="btn btn-default" :disabled="loading" @click="AllReadCard">{{dropChooseTxt2}}</button>
         </div>
 		<ul class="member col-lg-9 col-md-9" @click="membershipDetails">
+                
 			<li><span>会员卡号：4444444444444454545454</span></li>
 			<li><span>代币：</span></li>
 			<li><span>会员姓名：</span></li>
@@ -1349,14 +1353,13 @@
 			dataObj:[],
             userToken:'',
             storeId:'',
-            memberLevelId:0,
+            memberLevelId:"0",
 			saleData:[],
 			saleGood:[],
 			saleTicket:[],
             detailData :[],
             shopping :[],
             memberLevel :[],
-            memberFood :[],
             buyDetails :[],
             repairCoinData :[],
             repairCoin:{
@@ -1366,6 +1369,7 @@
                 allowDevice:true,
 				note:""
 			},
+            membershipData :[],
             memberForm:{
                 name:"",
                 sex:"0",
@@ -1376,7 +1380,6 @@
                 codeBtn:"获取验证码",
                 remark:"",
                 disabled: false,
-                membershipIndex:"",
                 foodSelectedIndex:""
             },
             balanceExchangeData:{
@@ -1433,6 +1436,7 @@
             switchDisabled8:true,
 			childCardList:[],
             msg:"",
+            idCardNo:'',
             onFocus:false,
             fastAmountFocus:false,
             operationShow:false,
@@ -1443,8 +1447,12 @@
     		foodTypeTicketList:[],
     		saleAll:[],
             popoverTitle:"",
-            fastMoney:"1",
-            fastAmount:"2",
+            fastMoney:"",
+            fastAmount:"",
+            fastSellData:{
+                foodId:"",
+                allowDevice:false,
+            },
             customerType:"2",
             inputCash:"",
             cashChange:"",
@@ -1454,7 +1462,7 @@
             inputCashFocus:false,
             payCount:0,
 			detailNote:"",
-            icCardId:"21110024",
+            icCardId:"",
             cardId:"",
             footerData:[],
             treeShow:false,
@@ -1705,13 +1713,19 @@
 					// 打开一个 websocket
 					ws.onopen = function() {
 						console.log("连接成功");
-						var msgType0 =JSON.stringify({"msgType":"0","sObj":{"userToken": that.userToken}});
 						function send(data)
 						{
 							console.log("Send:"+data);
 							ws.send(data);
 						}
-						send(msgType0);
+                        setTimeout(function () {
+                            var msgType0 =JSON.stringify({"msgType":"0","sObj":{"userToken": that.userToken}});
+                            send(msgType0);
+                        }, 10);
+                        // setTimeout(function () {
+                        //     var msgType10 =JSON.stringify({"msgType":"10"});
+                        //     send(msgType10);
+                        // }, 100);
 					};
 					ws.onmessage = function (evt)
 					{
@@ -1721,9 +1735,11 @@
 						
 						if(receivedMsg.result_code == 1){
 						    switch (receivedMsg.answerMsgType){
-								case 1:                                              
+								case "0":                                              
 								    break;
-								case "2":
+								case "3":
+                                    that.idCardNo = receivedMsg.cardData.cardNo;
+                                    that.getCardListByIDnumber(that.idCardNo)
 								    break;
                                 case "4":
                                     if(that.msgReadCard === "0"){
@@ -1758,6 +1774,7 @@
 						}else if(receivedMsg.result_code == 0) {
 							that.msg = receivedMsg.answerMsg;
                     		$('#myModal').modal('show');
+
 						}
 					};
 					ws.onclose = function()
@@ -1816,15 +1833,43 @@
 //			快速售币
             FastSell:function () {
                 var that = this;
-                $('#fastModal').modal('show');
-                this.onFocus = true;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,mobile:""};
-                axios.post('/xccloud/foods?action=getQuickFood', obj).then(function (res) {	//获取会员等级
+                // $('#fastModal').modal('show');
+                this.onFocus = false;
+                
+                var obj={userToken:that.userToken,type:"4", workStation:"lijunjie"};
+                console.log(obj);
+                axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        if(res.data.result_data[0].statusName == "正常待机"){
+                            that.deviceId = res.data.result_data[0].mcuId;
+                            that.fastSellData.allowDevice = true;
+                        }else{
+                            that.msg = res.data.result_data[0].statusName;
+                            that.fastSellData.allowDevice = false;
+                            that.onSwitch7 = true;
+                            $('#myModal').modal('show');
+                            that.deviceId = "";
+                            setTimeout(function () {
+                                $('#myModal').modal('hide');
+                            }, 1000);
+                        }
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+                that.icCardId = "10004143";
+                var getQuickFood={userToken:that.userToken,icCardId:that.icCardId,mobile:""};
+                axios.post('/xccloud/foods?action=getQuickFood', getQuickFood).then(function (res) {	//获取会员等级
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         $('#fastModal').modal('show');
                         that.onFocus = true;
+                        that.fastAmount = res.data.result_data.coins;
+                        that.fastSellData.foodId = res.data.result_data.foodId;
+                        that.fastMoney = res.data.result_data.foodSalePrice;
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -1835,7 +1880,47 @@
             inputMoneySubmit:function () {
 //          	document.getElementById('fastAmountFocus ').focus();
             },
-//			结账按钮
+//          快速售币确定
+            FastSellbtn:function(){
+                var that = this;
+                that.icCardId = ""
+						console.log(that.inputMoney%that.fastMoney!=0)
+						console.log(that.inputAmount%that.fastAmount!=0)
+                if(that.inputMoney == 0 || that.inputAmount == 0 || that.inputMoney%that.fastMoney!=0 ||that.inputAmount%that.fastAmount!=0){
+                    alert(1111)
+                }else{
+                    if(that.onSwitch7){
+                        var saleCoinType = "1"
+                    }else{
+                       var saleCoinType = "2"
+                    }
+                    if(that.icCardId == ""){
+                        var customerType = "0"
+                        var icCardId = "0"
+                    }else{
+                        var customerType = "2"
+                        var icCardId = that.icCardId
+                    }
+                    var foodCount =parseFloat(that.inputAmount/that.fastAmount);
+                    var buyDetails = [{foodId:that.fastSellData.foodId,category:'0',foodCount:foodCount,payType:"0",payNum:that.inputMoney}];
+                    buyDetails =JSON.stringify(buyDetails)
+                    var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:that.inputMoney,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:saleCoinType};
+                    console.log(obj)
+                    $('#fastModal').modal('hide');
+                    axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            that.shopping = [{typeName:"现金",payNum:that.inputMoney}];
+                            $('#checkoutModal').modal('show');
+                            that.inputCashFocus = true;
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
+            },
+//			购物车提交按钮
             closeAccounts:function () {
 				var that =this;
 				that.inputCash = "";
@@ -1859,28 +1944,40 @@
                     that.payCount = payCount;
                     var buyDetails =JSON.stringify(that.buyDetails);
                     if(that.updateOrder){
-                        var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,foodSaleDetailList:buyDetails,couponsList:[],flwOrderId:that.flwOrderId,mobile:"",icCardId:that.icCardId,distinctRuleId:"0",payCount:payCount,realPay:payCount,freePay:"0",workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        if(that.icCardId == ""){
+                            var customerType = "0"
+                            var icCardId = "0"
+                        }else{
+                            var customerType = "2"
+                            var icCardId = that.icCardId
+                        }
+                        var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
                         axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
                             if (res.data.result_code === '1') {
                                 $('#checkoutModal').modal('show');
                                 that.inputCashFocus = true;
-                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};
                             }
                         }).catch(function (err) {
                             console.log(err);
                         });
 					}else {
-                        var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,buyDetails:buyDetails,customerType:that.customerType,mobile:"",memberLevelId:that.memberLevelId,icCardId:that.icCardId,payCount:payCount,foodCount:foodCount,deposit:"0",openFee:"0",workStation:"lijunjie",authorId:"0",note:"",orderSource:"0",saleCoinType:"1",scheduleId:1,freePay:"0"};
+                        if(that.icCardId == ""){
+                            var customerType = "0"
+                            var icCardId = "0"
+                        }else{
+                            var customerType = "2"
+                            var icCardId = that.icCardId
+                        }
+                        var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
                         axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
                             if (res.data.result_code === '1') {
                                 $('#checkoutModal').modal('show');
                                 that.inputCashFocus = true;
-                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};
-                            }
+                            } 
                         }).catch(function (err) {
                             console.log(err);
                         });
@@ -1909,7 +2006,15 @@
                     that.payCount = payCount;
                     var buyDetails =JSON.stringify(that.buyDetails);
                     if(that.updateOrder){
-                        var addOrderJson={sysId: sysId,versionNo: versionNo,userToken:that.userToken,foodSaleDetailList:buyDetails,couponsList:[],flwOrderId:that.flwOrderId,mobile:"",icCardId:that.icCardId,distinctRuleId:"0",payCount:payCount,realPay:payCount,freePay:"0",workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        if(that.icCardId == ""){
+                            var customerType = "0"
+                            var icCardId = "0"
+                        }else{
+                            var customerType = "2"
+                            var icCardId = that.icCardId
+                        }
+                        var addOrderJson={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        
                         axios.post('/xccloud/order?action=addOrder', addOrderJson).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
@@ -1936,28 +2041,15 @@
                             console.log(err);
                         });
                     }else {
-                        var obj = {
-                            sysId: sysId,
-                            versionNo: versionNo,
-                            userToken: that.userToken,
-                            buyDetails: buyDetails,
-                            customerType: that.customerType,
-                            mobile: "",
-                            memberLevelId: that.memberLevelId,
-                            icCardId: that.icCardId,
-                            payCount: payCount,
-                            foodCount: foodCount,
-                            deposit: "0",
-                            openFee: "0",
-                            workStation: "lijunjie",
-                            authorId: "0",
-                            note: "",
-                            orderSource: "0",
-                            saleCoinType: "1",
-                            scheduleId: 1,
-                            freePay: "0"
-                        };
-                        axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
+                        if(that.icCardId == ""){
+                            var customerType = "0"
+                            var icCardId = "0"
+                        }else{
+                            var customerType = "2"
+                            var icCardId = that.icCardId
+                        }
+                        var addOrderJson={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        axios.post('/xccloud/order?action=addOrder', addOrderJson).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
                             if (res.data.result_code === '1') {
@@ -1984,17 +2076,7 @@
                             console.log(err);
                         });
                     }
-//                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,buyDetails:buyDetails,customerType:that.customerType,mobile:"",memberLevelId:that.memberLevelId,icCardId:that.icCardId,payCount:payCount,foodCount:foodCount,deposit:"0",openFee:"0",workStation:"lijunjie",authorId:"0",note:"",orderSource:"0",saleCoinType:"1",scheduleId:1,freePay:"0"};
-//                    console.log(obj);
-//                    axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
-//                        console.log(res.data);
-//                        that.msgPrompt(res.data);
-//                        if (res.data.result_code === '1') {
-//
-//                        }
-//                    }).catch(function (err) {
-//                        console.log(err);
-//                    });
+
                 }
             },
 //			获取挂单列表
@@ -2058,98 +2140,183 @@
             membership:function () {
                 var that = this;
                 if(!this.memberShow){
-                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
-                    axios.post('/XCCloud/Member?action=getMemberLevel', obj).then(function (res) {
+                    that.replacement()
+                    var obj={userToken:that.userToken};
+                    axios.post('/XCCloud/Foods?action=getMemberOpenCardInfo', obj).then(function (res) {
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
-                            var memberLevel_ = [];
-                            for(var i =0;i<res.data.result_data.length;i++){
-                                memberLevel_.push({
-                                    coverURL:res.data.result_data[i].coverURL,
-                                    deposit: res.data.result_data[i].deposit,
-                                    memberLevelId: res.data.result_data[i].memberLevelId,
-                                    memberLevelName: res.data.result_data[i].memberLevelName,
-                                    openFee: res.data.result_data[i].openFee,
-                                    selected: false
-                                });
-                            }
-                            that.memberLevel = memberLevel_;
                             that.operationShow = false;
                             that.saleShow = false;
                             that.memberShow = true;
+                            var membershipData = [];
+                            var foodList = res.data.result_data;
+                            for(var i =0;i<foodList.length;i++){
+                                for(var j =0;j<foodList[i].listOpenCardFoodInfoModel.length;j++){
+                                    membershipData.push({
+                                        memberLevelId:foodList[i].listOpenCardFoodInfoModel[j].memberLevelId,
+                                        foodId:foodList[i].listOpenCardFoodInfoModel[j].foodId,
+                                        foodName:foodList[i].listOpenCardFoodInfoModel[j].foodName,
+                                        foodPrice:foodList[i].listOpenCardFoodInfoModel[j].foodPrice,
+                                        foodType:foodList[i].listOpenCardFoodInfoModel[j].foodType,
+                                        imageUrl:foodList[i].listOpenCardFoodInfoModel[j].imageUrl,
+                                        memberLevelName:foodList[i].openCardMemberLevelModel.memberLevelName,
+                                        deposit:foodList[i].openCardMemberLevelModel.deposit,
+                                        openFee:foodList[i].openCardMemberLevelModel.openFee,
+                                        selected: false
+                                    });
+                                }
+                            }
+                            console.log(membershipData)
+                            that.membershipData = membershipData 
+                            setTimeout(function () {
+                               var swiper = new Swiper('.MtcList', {
+                                   slidesPerView: 4,
+                                   centeredSlides: false,
+                                   paginationClickable: true,
+                                   spaceBetween: 20
+                               });
+                           }, 100);
                         }
                     }).catch(function (err) {
                         console.log(err);
                     });
-                    that.replacement()
 				}
             },
+//			选中会员入会套餐
+            foodSelected:function (index) {
+                var that = this;
+                console.log(that.membershipData[index].selected)
+                if(that.membershipData[index].selected){
+                    that.membershipData[index].selected = false;
+                }else{
+                    for(var i = 0;i<that.membershipData.length;i++){
+                        that.membershipData[i].selected = false;
+                    }
+                    that.membershipData[index].selected = true;
+                    that.memberForm.foodSelectedIndex = index;
+                }
+            },
+//          开卡
+            registerMember:function () {
+                var that = this;
+                if(that.memberForm.foodSelectedIndex === "" || that.memberForm.mobile === ""){
+                    that.msg = "请先选择开卡套餐,手机号为必填项！";
+                    $('#myModal').modal('show');
+                }else {
+					var msgType11 =JSON.stringify({"msgType":"11", "sObj": {"userToken": that.userToken}});
+                	ws.send(msgType11);
+                    that.msgEleven = "0"
+                }
+
+            },
+			// 开卡函数
+			registerFnc:function(){
+				var that = this;
+				var registerData = that.membershipData[that.memberForm.foodSelectedIndex];
+                console.log(registerData);
+                if(that.icCardId == ""){
+                    var icCardId = "0"
+                }else{
+                    var icCardId = that.icCardId
+                }
+                var buyDetail = [{foodId:registerData.foodId,category:"0",foodCount:"1",payType:"0",payNum:registerData.foodPrice}];
+                var buyDetails =JSON.stringify(buyDetail);
+                // openFee = openFee.toFixed(2);
+                var obj = {
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    userToken: that.userToken,
+                    buyDetails: buyDetails,
+                    customerType: "1",
+                    mobile: "",
+                    memberLevelId: registerData.memberLevelId,
+                    icCardId: icCardId,
+                    payCount: 1*registerData.foodPrice+1*registerData.openFee+1*registerData.deposit,
+                    deposit: registerData.deposit,
+                    openFee: registerData.openFee,
+                    workStation: "lijunjie",
+                    authorId: "0",
+                    note: "",
+                    orderSource: "0",
+                    saleCoinType: "1",
+                    scheduleId: 1,
+                    freePay: "0"
+                };
+                console.log(obj);
+                that.shopping = [{typeName:"现金",payNum:obj.payCount}];
+                axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建开卡订单
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        var registerMEmber = [{
+                                mobile:that.memberForm.mobile,
+                                wechatOpenId:"",
+                                alipayOpenId:"",
+                                qq:"",
+                                imme:"",
+                                cardShape:"0",
+                                userName:that.memberForm.name,
+                                userPassword:"888888",
+                                gender:that.memberForm.sex,
+                                birthday:that.memberForm.birthday,
+                                idCard:that.memberForm.IdNumber,
+                                eMail:"",
+                                photo:"",
+                                icCardId:icCardId,
+                                note: that.memberForm.remark,
+                                mobileCode:that.memberForm.mobileCode
+                            }];
+                        var registerMemberJson =JSON.stringify(registerMEmber);
+                        that.registerCheckOutData ={flwOrderId:res.data.result_data.orderFlwId,registerMemberJson:registerMemberJson}
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+			},
+//          开卡结账
+            registerCheckBtn:function () {
+                var that = this;
+                console.log(that.registerCheckOutData);
+                var ojb = [{
+                    userToken:that.userToken,
+                    registerMember:that.registerCheckOutData.registerMemberJson,
+                    workStationId:"3",
+                    flwOrderId:that.registerCheckOutData.flwOrderId,
+                    mobile:"0",
+                    realPay:that.shopping[0].payNum,
+                    payType:"0"
+                }];
+                console.log(ojb);
+                axios.post('/xccloud/order?action=payOrder', ojb).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+						var registerJson={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,flwOrderId:that.registerCheckOutData.flwOrderId,registerMemberJson:that.registerCheckOutData.registerMemberJson};
+						console.log(registerJson);
+						axios.post('/xccloud/order?action=saveRegisterMember', registerJson).then(function (res) {
+							console.log(res.data);
+							that.msgPrompt(res.data);
+							if (res.data.result_code === '1') {
+								var msgType5 =JSON.stringify({"msgType":"5", "sObj": {"userToken": that.userToken},"dataObj": {icCardId:that.dataObj.icCardId,repeatCode:that.dataObj.repeatCode}});
+                				ws.send(msgType5);
+                            }
+                        }).catch(function (err) {
+                            console.log(err);
+                        })
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                })
+            },
+
 //			会员操作
             operationFnc:function () {
                 var that = this;
                 this.operationShow = true;
                 this.saleShow = false;
                 this.memberShow = false;
-                var columns1=[
-                    {field:' ',title:'门票名称'},
-                    {field:'name',title:'类别'},
-                    {field:'name1',title:'购买时间'},
-                    {field:'name2',title:'过期日期'},
-                    {field:'name3',title:'核销期'},
-                    {field:'name4',title:'购买数量'},
-                    {field:'name5',title:'剩余数量'},
-                    {field:'name6',title:'状态'},
-                    {field:'name7',title:'备注'}];
-                setTimeout(function () {
-                    createTable("#memberTable1",destroy,columns1);
-                }, 50);
-
-                var columns2=[
-                    {field:'no',title:'游玩时间'},
-                    {field:'name',title:'游乐项目'},
-                    {field:'name1',title:'项目类别'},
-                    {field:'name2',title:'消费数量'},
-                    {field:'name3',title:'消费类别'},
-                    {field:'name4',title:'备注'}];
-                setTimeout(function () {
-                    createTable("#memberTable2",destroy,columns2);
-                }, 50);
-                var columns3=[
-                    {field:'no',title:'兑换日期'},
-                    {field:'name',title:'订单号'},
-                    {field:'name1',title:'兑换名称'},
-                    {field:'name2',title:'兑换类别'},
-                    {field:'name3',title:'兑换数量'},
-                    {field:'name4',title:'原价'},
-                    {field:'name5',title:'折扣(%)'},
-                    {field:'name6',title:'消耗数量'},
-                    {field:'name7',title:'消耗类别'},
-                    {field:'name8',title:'操作门店'},
-                    {field:'name9',title:'营业日期'},
-                    {field:'name10',title:'班次'},
-                    {field:'name11',title:'操作终端'},
-                    {field:'name12',title:'操作员'},
-                    {field:'name13',title:'备注'}];
-                setTimeout(function () {
-                    createTable("#memberTable3",destroy,columns3);
-                }, 50);
-
-                var columns4=[
-                    {field:'no',title:'门票名称'},
-                    {field:'name',title:'类别'},
-                    {field:'name1',title:'购买时间'},
-                    {field:'name2',title:'过期日期'},
-                    {field:'name3',title:'兑换数量'},
-                    {field:'name4',title:'核销期'},
-                    {field:'name5',title:'购买数量'},
-                    {field:'name6',title:'消耗数量'},
-                    {field:'name7',title:'剩余数量'},
-                    {field:'name8',title:'状态'},
-                    {field:'name9',title:'备注'}];
-                setTimeout(function () {
-                    createTable("#memberTable4",destroy,columns4);
-                }, 50);
+                
             },
 //			选择读卡方式
             dropChoose:function(index){
@@ -2640,73 +2807,6 @@
 					}			
                 }
             },
-//			会员入会（会员等级获取对应会员套餐）
-            membershipFood:function (index) {
-                var that = this;
-
-				if(that.memberLevel[index].selected){
-				    that.memberFood =[];
-				    for(var i = 0;i<that.memberLevel.length;i++){
-                        that.memberLevel[i].selected = false;
-					}
-				}else{
-                    for(var i = 0;i<that.memberLevel.length;i++){
-                        that.memberLevel[i].selected = false;
-                    }
-                    that.memberForm.membershipIndex = index;
-                    that.memberLevel[index].selected = true;
-                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,memberLevelId:that.memberLevel[index].memberLevelId,storeId:that.storeId};
-                    console.log(obj);
-					axios.post('/XCCloud/Foods?action=getOpenCardFoodList', obj).then(function (res) {	//获取入会套餐
-                        console.log(res.data);
-                        that.msgPrompt(res.data);
-                        if (res.data.result_code === '1') {
-                            var memberFood_ = [];
-                            for(var i =0;i<res.data.result_data.length;i++){
-                                memberFood_.push({
-                                    allowInternet:res.data.result_data[i].allowInternet,
-                                    allowPrint: res.data.result_data[i].allowPrint,
-                                    foodId: res.data.result_data[i].foodId,
-                                    foodName: res.data.result_data[i].foodName,
-                                    foodPrice: res.data.result_data[i].foodPrice,
-                                    foodType: res.data.result_data[i].foodType,
-                                    foreAuthorize: res.data.result_data[i].foreAuthorize,
-                                    imageUrl: res.data.result_data[i].imageUrl,
-                                    selected: false
-                                });
-                            }
-                            that.memberFood = memberFood_;
-                            setTimeout(function () {
-                                var  Swiper1 = new Swiper('.MtcList', {
-                                    autoplay: false,//可选选项，自动滑动
-                                    slidesPerView: 5,
-                                    centeredSlides: false,
-                                    paginationClickable: true,
-                                    spaceBetween: 30
-                                });
-                            }, 200);
-                        }
-                    }).catch(function (err) {
-                        console.log(err);
-                    });
-				}
-            },
-//			选中会员入会套餐
-            foodSelected:function (index) {
-                var that = this;
-
-                if(that.memberFood[index].selected){
-                    for(var i = 0;i<that.memberFood.length;i++){
-                        that.memberFood[i].selected = false;
-                    }
-                }else{
-                    for(var i = 0;i<that.memberFood.length;i++){
-                        that.memberFood[i].selected = false;
-                    }
-                    that.memberFood[index].selected = true;
-                    that.memberForm.foodSelectedIndex = index;
-                }
-            },
 //			获取销售的函数
 			getMeal:function(customerType,foodType) {			//获取销售列表
 				var that = this;
@@ -2817,115 +2917,6 @@
                         $("#shopTable tbody").find("tr").eq(indexId).addClass('tableTag').siblings().removeClass('tableTag');
                     }
                 }
-            },
-//          开卡
-            registerMember:function () {
-                var that = this;
-                if(that.memberForm.membershipIndex === "" || that.memberForm.foodSelectedIndex === "" || that.memberForm.mobile === ""){
-                    that.msg = "请先选择开卡和套餐,手机号为必填项！";
-                    $('#myModal').modal('show');
-                }else {
-					var msgType11 =JSON.stringify({"msgType":"11", "sObj": {"userToken": that.userToken}});
-                	ws.send(msgType11);
-                    that.msgEleven = "0"
-                }
-
-            },
-			// 开卡函数
-			registerFnc:function(){
-				var that = this;
-				var registerData = that.memberFood[that.memberForm.foodSelectedIndex];
-                var buyDetail = [{foodId:registerData.foodId,category:"0",foodCount:"1",payType:"0",payNum:registerData.foodPrice}];
-                var buyDetails =JSON.stringify(buyDetail);
-                var openFee =  that.memberLevel[that.memberForm.membershipIndex].openFee;
-                openFee = openFee.toFixed(2);
-                console.log(1*registerData.foodPrice+(1*openFee));
-                var obj = {
-                    sysId: sysId,
-                    versionNo: versionNo,
-                    userToken: that.userToken,
-                    buyDetails: buyDetails,
-                    customerType: "1",
-                    mobile: "",
-                    memberLevelId: that.memberLevel[that.memberForm.membershipIndex].memberLevelId,
-                    icCardId: that.icCardId,
-                    payCount: 1*registerData.foodPrice+(1*openFee)+(1*that.memberLevel[that.memberForm.membershipIndex].deposit),
-                    foodCount: "1",
-                    deposit: that.memberLevel[that.memberForm.membershipIndex].deposit,
-                    openFee: openFee,
-                    workStation: "lijunjie",
-                    authorId: "0",
-                    note: "",
-                    orderSource: "0",
-                    saleCoinType: "1",
-                    scheduleId: 1,
-                    freePay: "0"
-                };
-                console.log(obj);
-                that.shopping = [{typeName:"现金",payNum:obj.payCount}];
-                axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建开卡订单
-                    console.log(res.data);
-                    that.msgPrompt(res.data);
-                    if (res.data.result_code === '1') {
-                        var registerMEmber = [{
-                                mobile:that.memberForm.mobile,
-                                wechatOpenId:"",
-                                alipayOpenId:"",
-                                qq:"",
-                                imme:"",
-                                cardShape:"0",
-                                userName:that.memberForm.name,
-                                userPassword:"888888",
-                                gender:that.memberForm.sex,
-                                birthday:that.memberForm.birthday,
-                                idCard:that.memberForm.IdNumber,
-                                eMail:"",
-                                photo:"",
-                                icCardId:that.icCardId,
-                                note:that.memberForm.remark,
-                                mobileCode:that.memberForm.mobileCode
-                            }];
-                        var registerMemberJson =JSON.stringify(registerMEmber);
-                        that.registerCheckOutData ={flwOrderId:res.data.result_data.orderFlwId,registerMemberJson:registerMemberJson}
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-                });
-			},
-//          开卡结账
-            registerCheckBtn:function () {
-                var that = this;
-                console.log(that.registerCheckOutData);
-                var ojb = [{
-                    userToken:that.userToken,
-                    registerMemberJson:that.registerCheckOutData.registerMemberJson,
-                    workStationId:"3",
-                    flwOrderId:that.registerCheckOutData.flwOrderId,
-                    mobile:"",
-                    realPay:that.shopping[0].payNum,
-                    payType:"0"
-                }];
-                console.log(ojb);
-                axios.post('/xccloud/order?action=payOrder', ojb).then(function (res) {
-                    console.log(res.data);
-                    that.msgPrompt(res.data);
-                    if (res.data.result_code === '1') {
-						var registerJson={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,flwOrderId:that.registerCheckOutData.flwOrderId,registerMemberJson:that.registerCheckOutData.registerMemberJson};
-						console.log(registerJson);
-						axios.post('/xccloud/order?action=saveRegisterMember', registerJson).then(function (res) {
-							console.log(res.data);
-							that.msgPrompt(res.data);
-							if (res.data.result_code === '1') {
-								var msgType5 =JSON.stringify({"msgType":"5", "sObj": {"userToken": that.userToken},"dataObj": {icCardId:that.dataObj.icCardId,repeatCode:that.dataObj.repeatCode}});
-                				ws.send(msgType5);
-                            }
-                        }).catch(function (err) {
-                            console.log(err);
-                        })
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-                })
             },
 //			产品详情
             details:function(index,category){
@@ -3143,7 +3134,10 @@
                         that.onSwitch6 = !that.onSwitch6;
                         break;
                     case '7':
-                        that.onSwitch7 = !that.onSwitch7;
+                        if(that.fastSellData.allowDevice){
+                            that.onSwitch7 = !that.onSwitch7;
+                        }
+                        
                         break;
                     case '8':
                         if(that.switchDisabled8){
@@ -3165,7 +3159,7 @@
 //			会员操作表格显示
             replacement:function () {
 				this.memberLevel = [];
-				this.memberFood = [];
+				this.membershipData = [];
 				this.memberForm = {	name:"",sex:"0",mobile :"",IdNumber:"",birthday:"",mobileCode:"",codeBtn:"获取验证码",remark:"",disabled: false,membershipIndex:"",foodSelectedIndex:""};
                 this.onSwitch0 = false;
                 this.onSwitch1 = false;
@@ -3833,9 +3827,19 @@
                 if(res.return_code == 0){
                     that.msg = res.return_msg;
                     $('#myModal').modal('show');
+                    if(that.msg == "用户令牌已失效, 请重新登录"){
+                        setTimeout(function () {
+                            window.location.href='login.html';
+                        }, 3000);
+                    }
                 }else if(res.result_code == 0){
                     that.msg = res.result_msg;
                     $('#myModal').modal('show');
+                    if(that.msg == "用户令牌已失效, 请重新登录"){
+                        setTimeout(function () {
+                            window.location.href='login.html';
+                        }, 3000);
+                    }
                 }
             }
         }

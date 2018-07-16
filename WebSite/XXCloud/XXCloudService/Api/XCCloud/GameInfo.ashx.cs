@@ -21,6 +21,7 @@ using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.XCCloud.Common;
+using XCCloudService.SocketService.UDP.Factory;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -626,6 +627,10 @@ namespace XXCloudService.Api.XCCloud
                         
                         ts.Complete();
 
+                        //发送指令
+                        var radarToken = "";
+                        projectInsChange(new Guid("N").ToString(), storeId, "", data_GameInfo.ID.ToString(), out radarToken, out errMsg);
+
                         return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName }, resultMsg);
                     }
                     catch (DbEntityValidationException e)
@@ -831,6 +836,10 @@ namespace XXCloudService.Api.XCCloud
                         iId = data_GameInfo.ID;                        
 
                         ts.Complete();
+
+                        //发送指令
+                        var radarToken = "";
+                        projectInsChange(new Guid("N").ToString(), storeId, "", data_GameInfo.ID.ToString(), out radarToken, out errMsg);
 
                         return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName }, resultMsg);
                     }

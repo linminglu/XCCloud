@@ -913,36 +913,38 @@ namespace XXCloudService.Api.XCCloud
 
             RegisterMember registerMember = Utils.DataContractJsonDeserializer<RegisterMember>(registerMemberJson);
             string storedProcedure = "payOrder";
-            SqlParameter[] sqlParameter = new SqlParameter[10];
+            SqlParameter[] sqlParameter = new SqlParameter[11];
             sqlParameter[0] = new SqlParameter("@RegisterMember", SqlDbType.Structured);
             sqlParameter[0].Value = FlwFoodOrderBusiness.GetRegisterMember(registerMember);
             sqlParameter[1] = new SqlParameter("@FlwSeedId", SqlDbType.VarChar, 29);
             sqlParameter[1].Value = flwSendId;
-            sqlParameter[2] = new SqlParameter("@StoreId", SqlDbType.VarChar, 32);
-            sqlParameter[2].Value = userTokenDataModel.StoreID;
-            sqlParameter[3] = new SqlParameter("@WorkStationId", SqlDbType.Int);
-            sqlParameter[3].Value = userTokenDataModel.WorkStationID;
-            sqlParameter[4] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar,32);
-            sqlParameter[4].Value = flwOrderId;
-            sqlParameter[5] = new SqlParameter("@Mobile", SqlDbType.VarChar, 11);
-            sqlParameter[5].Value = mobile;
-            sqlParameter[6] = new SqlParameter("@RealPay", SqlDbType.Decimal);
-            sqlParameter[6].Value = realPay;
-            sqlParameter[7] = new SqlParameter("@PayType", SqlDbType.Int);
-            sqlParameter[7].Value = payType;
-            sqlParameter[8] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
-            sqlParameter[8].Direction = ParameterDirection.Output;
-            sqlParameter[9] = new SqlParameter("@Return", SqlDbType.Int);
-            sqlParameter[9].Direction = ParameterDirection.ReturnValue;
+            sqlParameter[2] = new SqlParameter("@MerchId", SqlDbType.VarChar, 15);
+            sqlParameter[2].Value = userTokenDataModel.MerchID;
+            sqlParameter[3] = new SqlParameter("@StoreId", SqlDbType.VarChar, 15);
+            sqlParameter[3].Value = userTokenDataModel.StoreID;
+            sqlParameter[4] = new SqlParameter("@WorkStationId", SqlDbType.Int);
+            sqlParameter[4].Value = userTokenDataModel.WorkStationID;
+            sqlParameter[5] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar,32);
+            sqlParameter[5].Value = flwOrderId;
+            sqlParameter[6] = new SqlParameter("@Mobile", SqlDbType.VarChar, 11);
+            sqlParameter[6].Value = mobile;
+            sqlParameter[7] = new SqlParameter("@RealPay", SqlDbType.Decimal);
+            sqlParameter[7].Value = realPay;
+            sqlParameter[8] = new SqlParameter("@PayType", SqlDbType.Int);
+            sqlParameter[8].Value = payType;
+            sqlParameter[9] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+            sqlParameter[9].Direction = ParameterDirection.Output;
+            sqlParameter[10] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[10].Direction = ParameterDirection.ReturnValue;
 
             XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
-            if (sqlParameter[9].Value.ToString() == "1")
+            if (sqlParameter[10].Value.ToString() == "1")
             {
                 return new ResponseModel(Return_Code.T, "", Result_Code.T, "");
             }
             else
             {
-                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[8].Value.ToString());
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[9].Value.ToString());
             }
         }
 

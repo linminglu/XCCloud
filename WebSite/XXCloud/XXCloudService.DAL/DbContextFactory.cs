@@ -77,6 +77,6 @@ namespace XCCloudService.DAL
                 case "XCCloudService.Model.XCGameManagerLog": return "XCGameManagerLogEntities";
                 default:return "";
             }
-        }
+        }        
     }    
 }
