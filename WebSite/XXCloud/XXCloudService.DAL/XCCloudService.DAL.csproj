@@ -1262,6 +1262,10 @@
       <Project>{adce73d3-04ff-4d98-846f-c8026a3b6396}</Project>
       <Name>XCCloudService.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XCCloudService.SyncService.UDP\XCCloudService.SyncService.UDP.csproj">
+      <Project>{1de310da-2b49-4e03-a7d4-1866ae798a3b}</Project>
+      <Name>XCCloudService.SyncService.UDP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XXCloudService.Model\XCCloudService.Model.csproj">
       <Project>{1e38ec5a-0a89-4d9e-9cdf-6f79c580b6a1}</Project>
       <Name>XCCloudService.Model</Name>

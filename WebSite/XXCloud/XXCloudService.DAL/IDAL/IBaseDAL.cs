@@ -12,9 +12,9 @@ namespace XCCloudService.DAL.IDAL
         void AddModel(T t, bool identity = true);
         void UpdateModel(T t, bool identity = true);
         void DeleteModel(T t);
-        bool Add(T t, bool identity = true);
-        bool Update(T t, bool identity = true);
-        bool Delete(T t);
+        bool Add(T t, bool identity = true, string merchId = "", string merchSecret = "");
+        bool Update(T t, bool identity = true, string merchId = "", string merchSecret = "");
+        bool Delete(T t, string merchId = "", string merchSecret = "");
         bool SaveChanges();
         int GetCount(Expression<Func<T, bool>> whereLambda);
         bool Any(Expression<Func<T, bool>> whereLambda);

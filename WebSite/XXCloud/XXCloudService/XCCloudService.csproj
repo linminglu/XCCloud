@@ -1828,6 +1828,10 @@
       <Project>{1201063a-0f56-4cfd-abe7-be685df27477}</Project>
       <Name>XCCloudService.SocketService.TCP</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XCCloudService.SyncService.UDP\XCCloudService.SyncService.UDP.csproj">
+      <Project>{1de310da-2b49-4e03-a7d4-1866ae798a3b}</Project>
+      <Name>XCCloudService.SyncService.UDP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XCCloudService.UDP\XCCloudService.SocketService.UDP.csproj">
       <Project>{dbf6e89c-b2e9-4310-8f22-b18edd95668d}</Project>
       <Name>XCCloudService.SocketService.UDP</Name>

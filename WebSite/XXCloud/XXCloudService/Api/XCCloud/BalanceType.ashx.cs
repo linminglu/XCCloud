@@ -352,6 +352,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -401,7 +405,7 @@ namespace XXCloudService.Api.XCCloud
                         errMsg = ex.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                }
+                }                
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

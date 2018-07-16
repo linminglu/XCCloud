@@ -42,6 +42,7 @@ namespace XCCloudService.Utility
                 XCCloudManaUserInit();//redis
                 FilterMobileInit();
                 //XinchenPayInit(); 
+                SyncServerInit();
             }
             catch(Exception e)
             {
@@ -120,6 +121,20 @@ namespace XCCloudService.Utility
             catch (Exception ex)
             {
                 LogHelper.SaveLog(TxtLogType.SystemInit, "UDP Init Fail..." + Utils.GetException(ex));
+            }
+        }
+
+        public static void SyncServerInit()
+        {
+            try
+            {
+                int Port = int.Parse(System.Configuration.ConfigurationManager.AppSettings["SyncServicePort"].ToString());
+                XCCloudService.SyncService.UDP.Server.Init(Port);
+                LogHelper.SaveLog(TxtLogType.SystemInit, "SyncServer Init Sucess");
+            }
+            catch (Exception ex)
+            {
+                LogHelper.SaveLog(TxtLogType.SystemInit, "SyncServer Init Fail..." + Utils.GetException(ex));
             }
         }
 

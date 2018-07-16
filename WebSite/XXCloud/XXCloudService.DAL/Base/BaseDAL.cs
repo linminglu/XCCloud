@@ -19,7 +19,7 @@ namespace XCCloudService.DAL.Base
     {
 
         protected string dbContextName;
-        private DbContext dbContext;        
+        private DbContext dbContext;
 
         private void MakeVerifiction(bool identity, ref T t, T oldT = null)
         {
@@ -132,28 +132,59 @@ namespace XCCloudService.DAL.Base
             return exists;
         }
 
+        /// <summary>
+        /// 数据同步服务
+        /// </summary>
+        /// <param name="merchId"></param>
+        /// <param name="merchSecret"></param>
+        /// <param name="action">0 新增 1 修改 2 删除</param>
+        protected void cloudSync(string merchId, string merchSecret, string tableName, string idValue, int action)
+        {
+            try
+            {
+                XCCloudService.SyncService.UDP.Server.CloudDataSync(merchId, merchSecret, tableName, idValue, action);
+            }
+            catch (Exception e)
+            {
+                LogHelper.SaveLog("SyncServer数据同步失败:" + e.Message);
+            }
+        }
+
         public void AddModel(T t, bool identity = true)
         {
             MakeVerifiction(identity, ref t);
-
             dbContext.Set<T>().Add(t);
         }
         
-        public bool Add(T t, bool identity = true)
+        public bool Add(T t, bool identity = true, string merchId = "", string merchSecret = "")
         {
             MakeVerifiction(identity, ref t);
-
             dbContext.Set<T>().Add(t);
-            return dbContext.SaveChanges() > 0;
+            bool result = dbContext.SaveChanges() > 0;
+
+            //数据更新同步
+            if (result && merchId != "")
+            {
+                cloudSync(merchId, merchSecret, t.GetType().Name, t.ContainProperty("ID") ? Convert.ToString(t.GetPropertyValue("ID")) : "", 0);
+            }
+
+            return result;
         }
 
-        public bool Update(T t, bool identity = true)
+        public bool Update(T t, bool identity = true, string merchId = "", string merchSecret = "")
         {
             MakeVerifiction(identity, ref t, (T)GetEntityInDatabase(t));
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;
             bool result = dbContext.SaveChanges() > 0;
+
+            //数据更新同步
+            if (result && merchId != "")
+            {
+                cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 1);
+            }
+
             return result;
         }
 
@@ -166,12 +197,20 @@ namespace XCCloudService.DAL.Base
         }
 
 
-        public bool Delete(T t)
+        public bool Delete(T t, string merchId = "", string merchSecret = "")
         {
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Deleted;
-            return dbContext.SaveChanges() > 0;
+            bool result = dbContext.SaveChanges() > 0;
+
+            //数据更新同步
+            if (result && merchId != "")
+            {
+                cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 2);
+            }
+
+            return result;
         }
 
         public void DeleteModel(T t)

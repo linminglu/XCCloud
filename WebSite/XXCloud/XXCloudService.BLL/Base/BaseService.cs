@@ -33,17 +33,17 @@ namespace XCCloudService.BLL.Base
         {
             Dal.DeleteModel(t);
         }
-        public bool Add(T t, bool identity = true)
+        public bool Add(T t, bool identity = true, string merchId = "", string merchSecret = "")
         {
-            return Dal.Add(t, identity);
+            return Dal.Add(t, identity, merchId, merchSecret);
         }
-        public bool Update(T t, bool identity = true)
+        public bool Update(T t, bool identity = true, string merchId = "", string merchSecret = "")
         {
-            return Dal.Update(t, identity);
+            return Dal.Update(t, identity, merchId, merchSecret);
         }
-        public bool Delete(T t)
+        public bool Delete(T t, string merchId = "", string merchSecret = "")
         {
-            return Dal.Delete(t);
+            return Dal.Delete(t, merchId, merchSecret);
         }
         public bool SaveChanges()
         {

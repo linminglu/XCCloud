@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService", "XXCloudService\XCCloudService.csproj", "{FEBC527E-778E-4217-8CD0-A84FD101CBCB}"
 EndProject
@@ -33,11 +33,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.Business", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.RadarService", "XCCloudService.RadarService\XCCloudService.RadarService.csproj", "{F8E854BB-4788-41FD-BC19-F7527A839A6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.SyncService.UDP", "XCCloudService.SyncService.UDP\XCCloudService.SyncService.UDP.csproj", "{1DE310DA-2B49-4E03-A7D4-1866AE798A3B}"
+EndProject
 Global
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -136,11 +134,21 @@ Global
 		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DE310DA-2B49-4E03-A7D4-1866AE798A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DE310DA-2B49-4E03-A7D4-1866AE798A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DE310DA-2B49-4E03-A7D4-1866AE798A3B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1DE310DA-2B49-4E03-A7D4-1866AE798A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DE310DA-2B49-4E03-A7D4-1866AE798A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DE310DA-2B49-4E03-A7D4-1866AE798A3B}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8987684-994E-4FDB-8500-F8D795692239}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,8 +23,6 @@ namespace DSS.Table
         public DateTime CardBirthDay { get; set; }
         public string FaceReadID { get; set; }
         public int CardLimit { get; set; }
-        public int AllowIn { get; set; }
-        public int AllowOut { get; set; }
         public string MemberID { get; set; }
         public int MemberLevelID { get; set; }
         public DateTime CreateTime { get; set; }
@@ -33,7 +31,7 @@ namespace DSS.Table
         public DateTime UpdateTime { get; set; }
         public int Deposit { get; set; }
         public int RepeatCode { get; set; }
-        public int UID { get; set; }
+        public string UID { get; set; }
         public int IsLock { get; set; }
         public int CardStatus { get; set; }
         public string OrderID { get; set; }

@@ -206,9 +206,6 @@ namespace XCCloudService.Base
             return value;               
         }
 
-        protected void cloudSync(string merchId, string merchSecret, int action)
-        { }
-
         protected bool cardHeadReset(string sn, string storeId, string storePassword, string mcuId, out string radarToken, out string errMsg)
         {
             radarToken = string.Empty;
