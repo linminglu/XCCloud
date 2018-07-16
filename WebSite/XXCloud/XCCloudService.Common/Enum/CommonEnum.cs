@@ -85,6 +85,33 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 单品类别
+    /// </summary>
+    public enum SingleType
+    {
+        [Description("套餐")]
+        Food = 0,
+
+        [Description("门票")]
+        ProjectTicket = 1,
+
+        [Description("单品")]
+        Good = 2,
+
+        [Description("会员卡续期")]
+        CardRenew = 3,
+
+        [Description("会员卡补卡")]
+        CardChange = 4,
+
+        [Description("会员卡换卡")]
+        CardChange2 = 5,
+
+        [Description("兑换券使用")]
+        CouponList = 6,
+    }
+
+    /// <summary>
     /// 充值方式
     /// </summary>
     public enum RechargeMode
@@ -1477,7 +1504,37 @@ namespace XCCloudService.Common.Enum
     public enum WorkflowEventType
     {
         GoodRequest = 0     //产品调拨对应表格 Data_GoodRequest
-    }    
+    }
+
+    /// <summary>
+    /// 支付渠道
+    /// </summary>
+    public enum PayChannel
+    {
+        [Description("现金")]
+        Cash = 0,
+        [Description("微信")]
+        Weixin = 1,
+        [Description("支付宝")]
+        Ali = 2,
+        [Description("银联")]
+        Union = 3,
+        [Description("储值金")]
+        Money = 4,
+    }
+
+    /// <summary>
+    /// 支付类别
+    /// </summary>
+    public enum PayType
+    {
+        [Description("支付")]
+        Pay = 0,
+        [Description("满减规则")]
+        Discount = 1,
+        [Description("优惠券")]
+        Coupon = 2,
+    }
 
     /// <summary>
     /// 支付方式

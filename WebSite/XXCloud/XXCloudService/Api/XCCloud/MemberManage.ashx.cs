@@ -166,16 +166,16 @@ namespace XXCloudService.Api.XCCloud
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryMemberEntryInfo(Dictionary<string, object> dicParas)
         {
             try
             {
-                //XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                //string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-                //string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                string merchId = dicParas.Get("merchId");
-                string storeId = dicParas.Get("storeId");
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                //string merchId = dicParas.Get("merchId");
+                //string storeId = dicParas.Get("storeId");
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -238,6 +238,95 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "查询数据失败");
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 会员入会查询-入会套餐
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryMemberFoodInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Nonempty("卡ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id");
+
+                var data_Member_CardService = Data_Member_CardService.I;
+                if (!data_Member_CardService.Any(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "该卡信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var flw_OrderService = Flw_OrderService.I;
+                var flw_Order_DetailService = Flw_Order_DetailService.N;
+                var flw_Food_SaleService = Flw_Food_SaleService.N;
+                var orderId = data_Member_CardService.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).Select(o => o.OrderID).FirstOrDefault();
+                if (!flw_OrderService.Any(a => a.ID.Equals(orderId, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "该卡入会订单不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                var orderModel = flw_OrderService.GetModels(p => p.ID.Equals(orderId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+                //购买商品列表
+                var data_FoodInfoService = Data_FoodInfoService.N;
+                var data_ProjectTicketService = Data_ProjectTicketService.N;
+                var base_GoodInfo = Base_GoodsInfoService.N;
+                var buyGoodInfos = (from a in flw_Food_SaleService.GetModels(p => p.SingleType == (int)SingleType.Food)
+                                   join b in data_FoodInfoService.GetModels() on a.FoodID equals b.ID.ToString()
+                                   select new { GoodName = b.FoodName, GoodType = "套餐", a = a }).Union(
+                                       from a in flw_Food_SaleService.GetModels(p => p.SingleType == (int)SingleType.ProjectTicket)
+                                       join b in data_ProjectTicketService.GetModels() on a.FoodID equals b.ID.ToString()
+                                       select new { GoodName = b.TicketName, GoodType = "门票", a = a }
+                                       ).Union(from a in flw_Food_SaleService.GetModels(p => p.SingleType == (int)SingleType.Good)
+                                               join b in base_GoodInfo.GetModels() on a.FoodID equals b.ID.ToString()
+                                               select new { GoodName = b.GoodName, GoodType = "单品", a = a }).Select(o => new
+                                               {
+                                                   GoodName = o.GoodName,
+                                                   GoodType = o.GoodType,
+                                                   SaleCount = o.a.SaleCount,
+                                                   TotalMoney = o.a.TotalMoney,
+                                                   Price = (o.a.SaleCount ?? 0) == 0 ? 0.00M : Math.Round((o.a.TotalMoney ?? 0) / o.a.SaleCount.Value, 2, MidpointRounding.AwayFromZero),
+                                                   TaxFee = o.a.TaxFee,
+                                                   TaxTotal = o.a.TaxTotal
+                                               });
+
+                //支付信息
+                var payInfo = new 
+                {
+                    PayChannel = ((PayType?)orderModel.PayType).ToDescription(),
+                    PayType = PayType.Pay.ToDescription(),
+                    RealPay = orderModel.RealPay,
+                    FreePay = orderModel.FreePay
+                };
+
+                var memberFoodInfo = new
+                {
+                    OrderID = orderId,
+                    SellTime = orderModel.CreateTime,
+                    Points = (from a in flw_Order_DetailService.GetModels(p => p.OrderFlwID.Equals(orderId, StringComparison.OrdinalIgnoreCase))
+                              join b in flw_Food_SaleService.GetModels() on a.FoodFlwID equals b.ID
+                              select b.Point).Sum(),
+                    BuyGoodInfos = buyGoodInfos,
+                    PayInfos = new List<Object> { payInfo }
+                };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, memberFoodInfo);
             }
             catch (Exception e)
             {
