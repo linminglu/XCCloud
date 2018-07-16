@@ -141,17 +141,7 @@ namespace XXCloudService.Api.XCCloud
 
                         var dict_SystemModel = dict_SystemService.GetModels(p => p.ID == id).FirstOrDefault() ?? new Dict_System();
                         if (id == 0)
-                        {
-                            //新增
-                            dict_SystemModel.PID = pId;
-                            dict_SystemModel.Enabled = enabled;
-                            dict_SystemModel.DictKey = dictKey;
-                            dict_SystemModel.DictValue = dictValue;
-                            dict_SystemModel.Comment = comment;
-                            dict_SystemModel.MerchID = merchId;
-                            dict_SystemModel.OrderID = 1;                            
-                            dict_SystemService.AddModel(dict_SystemModel);
-
+                        {                            
                             //后续序号加1
                             var list = dict_SystemService.GetModels(p => p.PID == pId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).OrderBy(or => or.OrderID).ToList();
                             for (var i = 1; i <= list.Count; i++)
@@ -161,6 +151,28 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             if (!dict_SystemService.SaveChanges())
+                            {
+                                errMsg = "添加套餐类别失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            //新增
+                            dict_SystemModel.PID = pId;
+                            dict_SystemModel.Enabled = enabled;
+                            dict_SystemModel.DictKey = dictKey;
+                            dict_SystemModel.DictValue = dictValue;
+                            dict_SystemModel.Comment = comment;
+                            dict_SystemModel.MerchID = merchId;
+                            dict_SystemModel.OrderID = 1;
+                            if (!dict_SystemService.Add(dict_SystemModel))
+                            {
+                                errMsg = "添加套餐类别失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            //将ID设置为DictValue
+                            dict_SystemModel.DictValue = dict_SystemModel.ID.ToString();
+                            if (!dict_SystemService.Update(dict_SystemModel))
                             {
                                 errMsg = "添加套餐类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -176,7 +188,8 @@ namespace XXCloudService.Api.XCCloud
 
                             //修改
                             dict_SystemModel.DictKey = dictKey;
-                            dict_SystemModel.DictValue = dictValue;
+                            //dict_SystemModel.DictValue = dictValue;
+                            dict_SystemModel.DictValue = dict_SystemModel.ID.ToString();
                             dict_SystemModel.Enabled = enabled;
                             dict_SystemModel.Comment = comment;
                             if (!dict_SystemService.Update(dict_SystemModel))

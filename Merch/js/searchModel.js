@@ -340,6 +340,11 @@ var seachModel = function (options) {
             if(conditions[i].field+'cond'==data.elem.id){
                 conditions[i].condition=data.value
             }
+            if(conditions[i].field+'sh'==data.elem.id){
+                if(data.value!=''){
+                    conditions[i].values=data.elem[data.elem.selectedIndex].text;
+                }
+            }
         }
         for(let i in templateDetails){
             if(templateDetails[i].fieldName+'cond'==data.elem.id){

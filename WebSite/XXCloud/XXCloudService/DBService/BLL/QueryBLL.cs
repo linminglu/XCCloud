@@ -55,7 +55,6 @@ namespace XCCloudService.DBService.BLL
 
             var sb = new StringBuilder();
             var initModel = new InitModel();  
-            var listDict_SystemModel = new List<Dict_SystemModel>();
             var alias = !string.IsNullOrEmpty(prefix) ? (prefix.Substring(prefix.Length - 1, 1) == "." ? prefix : (prefix + ".")) : string.Empty;
             foreach (IDictionary<string, object> el in conditions)
             {
@@ -88,29 +87,17 @@ namespace XCCloudService.DBService.BLL
                     int dictId = (dicPara.ContainsKey("dictId") && Utils.isNumber(dicPara["dictId"])) ? Convert.ToInt32(dicPara["dictId"]) : -1;
                     if (id > 0)
                     {
-                        QueryDAL.GetInitModel(id, field, ref initModel, ref listDict_SystemModel);
+                        QueryDAL.GetInitModel(id, field, ref initModel);
                         dataType = initModel.DataType;
-                    }
-                    else
-                    {
-                        listDict_SystemModel = Dict_SystemService.I.GetModels(p => p.PID == dictId && p.Enabled == 1).Select(o =>
-                            new Dict_SystemModel
-                            {
-                                ID = o.ID,
-                                PID = o.PID ?? 0,
-                                Commnet = o.Comment,
-                                DictKey = o.DictKey,
-                                DictValue = o.DictValue,
-                                Enabled = o.Enabled ?? 0
-                            }).ToList();
-                    }
+                        dictId = initModel.DictID;
+                    }                    
 
                     if (dataType.Equals("literals") || dataType.Equals("bit"))
                     {
                         var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
                         if (dataType.Equals("literals"))
                         {
-                            var dict_SystemModel = listDict_SystemModel.Where(w => w.DictKey.Equals(values, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            var dict_SystemModel = Dict_SystemService.I.GetModels(p => p.PID == dictId && p.Enabled == 1 && p.DictKey.Equals(values, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             values = (dict_SystemModel != null) ? dict_SystemModel.DictValue : string.Empty;
                         }
 
@@ -168,127 +155,7 @@ namespace XCCloudService.DBService.BLL
                                 parameters[parameters.Length - 1] = new SqlParameter("@" + field, values);
                             }                            
                         }
-                    }
-                    
-                    //if (initModel.DataType.Equals("string"))
-                    //{
-                    //    var str = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
-                    //    sb.Append(string.Format(" and {1}{0} like '%' + @{0} + '%' ", field, alias));
-                    //    Array.Resize(ref parameters, parameters.Length + 1);
-                    //    parameters[parameters.Length - 1] = new SqlParameter("@" + field, str);
-                    //}
-                    //else if (initModel.DataType.Equals("number") || initModel.DataType.Equals("bit"))
-                    //{
-                    //    var number = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
-                    //    sb.Append(string.Format(" and {1}{0} = @{0} ", field, alias));
-                    //    Array.Resize(ref parameters, parameters.Length + 1);
-                    //    parameters[parameters.Length - 1] = new SqlParameter("@" + field, number);
-                    //}
-                    //else if (initModel.DataType.Equals("numbers"))
-                    //{
-                    //    var numbers = dicPara.ContainsKey("values") ? (object[])dicPara["values"] : null;
-                    //    if (numbers != null && numbers.Length > 0)
-                    //    {
-                    //        if (numbers.Length >= 1)
-                    //        {
-                    //            var n0 = numbers[0];
-                    //            if (!string.IsNullOrEmpty(n0 + ""))
-                    //            {
-                    //                sb.Append(string.Format(" and {1}{0} >= @{0}lower ", field, alias));
-                    //                Array.Resize(ref parameters, parameters.Length + 1);
-                    //                parameters[parameters.Length - 1] = new SqlParameter("@" + field + "lower", n0);
-                    //            }
-                    //        }
-
-                    //        if (numbers.Length >= 2)
-                    //        {
-                    //            var n1 = numbers[1];
-                    //            if (!string.IsNullOrEmpty(n1 + ""))
-                    //            {
-                    //                sb.Append(string.Format(" and {1}{0} <= @{0}upper ", field, alias));
-                    //                Array.Resize(ref parameters, parameters.Length + 1);
-                    //                parameters[parameters.Length - 1] = new SqlParameter("@" + field + "upper", n1);
-                    //            }
-                    //        }                            
-                    //    }
-                    //}
-                    //else if (initModel.DataType.Equals("literals"))
-                    //{
-                    //    var literals = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
-                    //    var dict_SystemModel = listDict_SystemModel.Where(w => w.DictKey.Equals(literals, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                    //    literals = (dict_SystemModel != null) ? dict_SystemModel.DictValue : string.Empty;
-                    //    sb.Append(string.Format(" and {1}{0} = @{0} ", field, alias));
-                    //    Array.Resize(ref parameters, parameters.Length + 1);
-                    //    parameters[parameters.Length - 1] = new SqlParameter("@" + field, literals);
-                    //}
-                    //else if (initModel.DataType.Equals("date") || initModel.DataType.Equals("datetime"))
-                    //{
-                    //    var date = dicPara.ContainsKey("values") ? dicPara["values"] : null;
-                    //    try
-                    //    {
-                    //        DateTime dtDate = Convert.ToDateTime(date);
-                    //        if (initModel.DataType.Equals("date"))
-                    //        {
-                    //            //同一天
-                    //            sb.Append(string.Format(" and convert(varchar,{1}{0},102) = convert(varchar,@{0},102) ", field, alias));
-                    //        }
-                    //        else
-                    //        {
-                    //            //同一分钟
-                    //            sb.Append(string.Format(" and convert(varchar,{1}{0},100) = convert(varchar,@{0},100) ", field, alias));
-                    //        }
-                    //        Array.Resize(ref parameters, parameters.Length + 1);
-                    //        parameters[parameters.Length - 1] = new SqlParameter("@" + field, dtDate);
-                    //    }
-                    //    catch (Exception ex)
-                    //    {
-                    //        errMsg = ex.Message;
-                    //        return false;
-                    //    }
-                    //}
-                    //else if (initModel.DataType.Equals("dates") || initModel.DataType.Equals("datetimes"))
-                    //{
-                    //    var dates = dicPara.ContainsKey("values") ? (object[])dicPara["values"] : null;
-                    //    if (dates != null && dates.Length > 0)
-                    //    {
-                    //        try
-                    //        {
-                    //            if (dates.Length >= 1)
-                    //            {
-                    //                var d0 = dates[0];
-                    //                if (!string.IsNullOrEmpty(d0 + ""))
-                    //                {
-                    //                    DateTime dtDate = Convert.ToDateTime(d0);
-                    //                    sb.Append(string.Format(" and {1}{0} >= @{0}start ", field, alias));
-                    //                    Array.Resize(ref parameters, parameters.Length + 1);
-                    //                    parameters[parameters.Length - 1] = new SqlParameter("@" + field + "start", dtDate);
-                    //                }
-                    //            }
-
-                    //            if (dates.Length >= 2)
-                    //            {
-                    //                var d1 = dates[1];
-                    //                if (!string.IsNullOrEmpty(d1 + ""))
-                    //                {
-                    //                    DateTime dtDate = Convert.ToDateTime(d1);
-                    //                    sb.Append(string.Format(" and {1}{0} <= @{0}end ", field, alias));
-                    //                    Array.Resize(ref parameters, parameters.Length + 1);
-                    //                    parameters[parameters.Length - 1] = new SqlParameter("@" + field + "end", dtDate);
-                    //                }
-                    //            }                                
-                    //        }
-                    //        catch (Exception ex)
-                    //        {
-                    //            errMsg = ex.Message;
-                    //            return false;
-                    //        }
-                    //    }
-                    //}                    
-                    //else
-                    //{
-                    //    errMsg = "查询条件类型不支持";
-                    //    return false;
-                    //}                    
+                    }                                      
                 }
                 else
                 {
@@ -313,7 +180,6 @@ namespace XCCloudService.DBService.BLL
 
             var sb = new StringBuilder();
             var initModel = new InitModel();
-            var listDict_SystemModel = new List<Dict_SystemModel>();
             var alias = !string.IsNullOrEmpty(prefix) ? (prefix.Substring(prefix.Length - 1, 1) == "." ? prefix : (prefix + ".")) : string.Empty;
             foreach (IDictionary<string, object> el in conditions)
             {
@@ -346,29 +212,17 @@ namespace XCCloudService.DBService.BLL
                     int dictId = (dicPara.ContainsKey("dictId") && Utils.isNumber(dicPara["dictId"])) ? Convert.ToInt32(dicPara["dictId"]) : -1;
                     if (id > 0)
                     {
-                        QueryDAL.GetInitModel(id, field, ref initModel, ref listDict_SystemModel);
+                        QueryDAL.GetInitModel(id, field, ref initModel);
                         dataType = initModel.DataType;
-                    }
-                    else
-                    {
-                        listDict_SystemModel = Dict_SystemService.I.GetModels(p => p.PID == dictId && p.Enabled == 1).Select(o =>
-                            new Dict_SystemModel
-                            {
-                                ID = o.ID,
-                                PID = o.PID ?? 0,
-                                Commnet = o.Comment,
-                                DictKey = o.DictKey,
-                                DictValue = o.DictValue,
-                                Enabled = o.Enabled ?? 0
-                            }).ToList();
-                    }
+                        dictId = initModel.DictID;
+                    }                    
 
                     if (dataType.Equals("literals") || dataType.Equals("bit"))
                     {
                         var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
                         if (dataType.Equals("literals"))
                         {
-                            var dict_SystemModel = listDict_SystemModel.Where(w => w.DictKey.Equals(values, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            var dict_SystemModel = Dict_SystemService.I.GetModels(p => p.PID == dictId && p.Enabled == 1 && p.DictKey.Equals(values, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             values = (dict_SystemModel != null) ? dict_SystemModel.DictValue : string.Empty;
                         }
 

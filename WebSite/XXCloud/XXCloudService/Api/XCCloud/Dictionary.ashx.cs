@@ -201,28 +201,21 @@ namespace XXCloudService.Api.XCCloud
 
                 IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>();
 
+                if (dict_SystemService.Any(p => (p.PID ?? 0) == 0 && p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && (p.MerchID ?? "").Equals((merchId ?? ""), StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "存在重名的主节点";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
                 if (!string.IsNullOrWhiteSpace(merchId))
                 {
-                    if (dict_SystemService.Any(p => (!p.PID.HasValue || p.PID.Value == 0) && p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        errMsg = "存在重名的主节点";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (dict_SystemService.Any(p => p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && (p.MerchID == null || p.MerchID.Trim() == string.Empty)))
+                    
+                    if (dict_SystemService.Any(p => p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && (p.MerchID ?? "") == ""))
                     {
                         errMsg = "不能与公有节点重名";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                }
-                else
-                {
-                    if (dict_SystemService.Any(p => (!p.PID.HasValue || p.PID.Value == 0) && p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && (p.MerchID == null || p.MerchID.Trim() == string.Empty)))
-                    {
-                        errMsg = "存在重名的主节点";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
+                }                
 
                 Dict_System dict_System = new Dict_System();
                 dict_System.PID = pId;
@@ -232,10 +225,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.Enabled = Convert.ToInt32(enabled);
                 dict_System.OrderID = orderId.Toint();
                 dict_System.DictLevel = 0;
-                if (dicParas.ContainsKey("merchId"))
-                {
-                    dict_System.MerchID = dicParas["merchId"].ToString();
-                }
+                dict_System.MerchID = merchId;
 
                 if (!dict_SystemService.Add(dict_System))
                 {
@@ -243,6 +233,17 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                //默认把DictValue设置为ID
+                if(dictValue.IsNull())
+                {                    
+                    dict_System.DictValue = dict_System.ID.ToString();
+                    if (!dict_SystemService.Update(dict_System))
+                    {
+                        errMsg = "添加主节点失败";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
@@ -299,7 +300,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (dict_SystemService.Any(p => p.PID.Value.Equals(iId) && p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase)))
+                if (dict_SystemService.Any(p => p.PID.Value.Equals(iId) && (p.MerchID ?? "").Equals((merchId ?? ""), StringComparison.OrdinalIgnoreCase) && p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "同一级别下存在重名的节点";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -307,7 +308,7 @@ namespace XXCloudService.Api.XCCloud
 
                 if (!string.IsNullOrWhiteSpace(merchId))
                 {
-                    if (dict_SystemService.Any(p => p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && (p.MerchID == null || p.MerchID.Trim() == string.Empty)))
+                    if (dict_SystemService.Any(p => p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && (p.MerchID ?? "") == ""))
                     {
                         errMsg = "不能与公有节点重名";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -323,21 +324,29 @@ namespace XXCloudService.Api.XCCloud
 
                 Dict_System dict_System = new Dict_System();
                 dict_System.PID = iId;
+                dict_System.MerchID = merchId;
                 dict_System.DictKey = dictKey;
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
                 dict_System.OrderID = orderId.Toint();
                 dict_System.DictLevel = (pModel.DictLevel ?? 0) + 1;
-                if (dicParas.ContainsKey("merchId"))
-                {
-                    dict_System.MerchID = dicParas["merchId"].ToString();
-                }
 
                 if (!dict_SystemService.Add(dict_System))
                 {
                     errMsg = "添加子节点失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //默认把DictValue设置为ID
+                if (dictValue.IsNull())
+                {
+                    dict_System.DictValue = dict_System.ID.ToString();
+                    if (!dict_SystemService.Update(dict_System))
+                    {
+                        errMsg = "添加主节点失败";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
@@ -397,14 +406,14 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 Dict_System dict_System = dict_SystemService.GetModels(p => p.ID == iId).FirstOrDefault<Dict_System>();
-                if (dict_System.PID == null || !dict_SystemService.Any(p => p.ID == dict_System.PID))
-                {
-                    errMsg = "主节点不可修改";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                //if (dict_System.PID == null || !dict_SystemService.Any(p => p.ID == dict_System.PID))
+                //{
+                //    errMsg = "主节点不可修改";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
 
                 int pId = Convert.ToInt32(dict_System.PID.Value);
-                if (dict_SystemService.Any(p => p.ID != iId && p.PID.Value == pId && p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase)))
+                if (dict_SystemService.Any(p => p.ID != iId && (p.MerchID ?? "").Equals((merchId ?? ""), StringComparison.OrdinalIgnoreCase) && p.PID.Value == pId && p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "同一级别下存在重名的节点";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -420,18 +429,18 @@ namespace XXCloudService.Api.XCCloud
                 //}
 
                 var pModel = dict_SystemService.GetModels(p => p.ID == pId).FirstOrDefault();
-                if (pModel.DictLevel > 3)
+                if (pModel != null && pModel.DictLevel > 3)
                 {
                     errMsg = "节点层数不能超过3层";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                }             
 
                 dict_System.DictKey = dictKey;
-                dict_System.DictValue = dictValue;
+                dict_System.DictValue = dictValue.IsNull() ? iId.ToString() : dictValue; //默认把ID设置为DictValue
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
                 dict_System.OrderID = orderId.Toint();
-                dict_System.DictLevel = (pModel.DictLevel ?? 0) + 1;
+                dict_System.DictLevel = pModel != null ? (pModel.DictLevel ?? 0) + 1 : 1;
 
                 if (dicParas.ContainsKey("merchId"))
                 {
@@ -440,7 +449,7 @@ namespace XXCloudService.Api.XCCloud
 
                 if (!dict_SystemService.Update(dict_System))
                 {
-                    errMsg = "修改子节点失败";
+                    errMsg = "修改节点失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 

@@ -43,19 +43,19 @@ namespace XCCloudService.DBService.DAL
             //listDict_SystemModel = Utils.GetModelList<Dict_SystemModel>(ds.Tables[1]);
         }
 
-        public static void GetInitModel(int id, string field, ref InitModel initModel, ref List<Dict_SystemModel> listDict_SystemModel)
+        public static void GetInitModel(int id, string field, ref InitModel initModel)//, ref List<Dict_SystemModel> listDict_SystemModel)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(string.Format(" declare @TempID int = {0} ", id));
             sb.Append(string.Format(" declare @FieldName varchar(50) = '{0}' ", field));
             sb.Append(string.Format(" declare @DictID int = -1 "));
             sb.Append(@" select top 1 * from Search_Template_Detail where TempID = @TempID and FieldName = @FieldName ");
-            sb.Append(@" select @DictID=DictID from Search_Template_Detail where TempID = @TempID and FieldName = @FieldName ");
-            sb.Append(@" select * from Dict_System where PID=@DictID ");
+            //sb.Append(@" select @DictID=DictID from Search_Template_Detail where TempID = @TempID and FieldName = @FieldName ");
+            //sb.Append(@" select * from Dict_System where PID=@DictID ");
             DataAccess ac = new DataAccess(DataAccessDB.XCCloudDB);
             DataSet ds = ac.ExecuteQuery(sb.ToString());
             initModel = Utils.GetModelList<InitModel>(ds.Tables[0]).FirstOrDefault();
-            listDict_SystemModel = Utils.GetModelList<Dict_SystemModel>(ds.Tables[1]);
+            //listDict_SystemModel = Utils.GetModelList<Dict_SystemModel>(ds.Tables[1]);
         }
     }
 }
