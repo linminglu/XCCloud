@@ -33,6 +33,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     {
         public string MerchID { get; set; }
 
+        public string MerchSecret { get; set; }
+
         public string StoreID { get; set; }
 
         public Nullable<int> WorkStationID { get; set; }

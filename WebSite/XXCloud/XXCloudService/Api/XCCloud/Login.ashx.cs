@@ -54,19 +54,27 @@ namespace XXCloudService.Api.XCCloud
                 logType = (int)RoleType.StoreUser;
                 storeId = base_UserInfoModel.StoreID;
                 merchId = base_UserInfoModel.MerchID;
-                var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId };
+                IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
+                if (!base_MerchantInfoService.Any(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "您所访问的商户不存在";
+                    return false;
+                }
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                 if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "您所访问的门店不存在";
                     return false;
-                }                
+                }
+                var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (base_StoreInfoModel.AuthorExpireDate < DateTime.Now)
                 {
                     errMsg = "您所访问的门店已到期";
                     return false;
                 }
+
+                var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret };                
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.Tag = base_StoreInfoModel.StoreTag;
                 userLogResponseModel.MerchID = merchId;
@@ -90,7 +98,7 @@ namespace XXCloudService.Api.XCCloud
                     return false;
                 }
                 var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                var dataModel = new TokenDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                var dataModel = new TokenDataModel { MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.Tag = base_MerchantInfoModel.MerchTag;
                 userLogResponseModel.MerchID = merchId;
@@ -184,17 +192,24 @@ namespace XXCloudService.Api.XCCloud
                     }
                     var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     tag = base_MerchantInfoModel.MerchTag;
-                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                     userTokenKeyModel.DataModel = TokenDataModel;
                 }
                 else if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
+                    IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
+                    if (!base_MerchantInfoService.Any(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        errMsg = "您所访问的商户不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                     if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                     {
                         errMsg = "您所访问的门店不存在";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
+                    var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     if (base_StoreInfoModel.AuthorExpireDate < DateTime.Now)
                     {
@@ -202,7 +217,7 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                     tag = base_StoreInfoModel.StoreTag;
-                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), StoreID = storeId, MerchID = merchId };
+                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret };
                     userTokenKeyModel.DataModel = TokenDataModel;
                 }
 

@@ -334,6 +334,109 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 会员换卡补卡信息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryMemberChangeInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                
+                string sql = @"SELECT a.* from (
+                                SELECT
+                                    a.ID, a.NewCardID, b.UserName, a.OldCardID, (case a.OperateType when 0 then '换卡' when 1 then '补卡' else '' end) AS OperateType,
+                                    a.CreateTime, a.OpFee, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_MemberCard_Change a
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Base_UseInfo u ON a.UserID=u.ID
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                            ";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_ChangeList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);               
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 会员续卡信息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryMemberRenewInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (
+                                SELECT
+                                    a.ID, a.CardID, b.UserName, a.CreateTime, a.RenewFee, e.TypeName AS BalanceIndexStr, e.PayCount,
+                                    a.FoodSaleID, a.OldEndDate, a.NewEndDate, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_MemberCard_Renew a
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Base_UseInfo u ON a.UserID=u.ID
+                                LEFT JOIN (
+                                    SELECT a.ID, b.PayCount, c.TypeName from Flw_Food_Sale a 
+                                    INNER JOIN Flw_Food_Sale_Pay b ON a.ID=b.FlwFoodID
+                                    LEFT JOIN Dict_BalanceType c ON b.BalanceIndex=c.ID
+                                ) e ON a.FoodSaleID=e.ID
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                            ";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_RenewList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
         #endregion
     }
 }
