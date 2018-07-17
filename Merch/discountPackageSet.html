@@ -981,20 +981,29 @@
             console.log(html)
         });
         $('.changeBox').on('click', '.changeItem .delChangeBtn', function () {
-            let arr = [{
-                'BalanceType': $(this).parents('.changeItem').find('select[name="BalanceType"]').val(),
-                'UseCount': $(this).parents('.changeItem').find('input[name="UseCount"]').val(),
-                'CashValue': $(this).parents('.changeItem').find('input[name="CashValue"]').val()
-            }];
-            let index;
-            for (let i in FoodSale) {
-                if (FoodSale[i] == arr) {
-                    index = i
-                    break;
+            console.log($('.changeBox').find('.changeItem').length)
+            if($('.changeBox').find('.changeItem').length>1){
+                let arr = [{
+                    'BalanceType': $(this).parents('.changeItem').find('select[name="BalanceType"]').val(),
+                    'UseCount': $(this).parents('.changeItem').find('input[name="UseCount"]').val(),
+                    'CashValue': $(this).parents('.changeItem').find('input[name="CashValue"]').val()
+                }];
+                let index;
+                for (let i in FoodSale) {
+                    if (FoodSale[i] == arr) {
+                        index = i
+                        break;
+                    }
                 }
+                FoodSale.splice(index);
+                $(this).parents('.changeItem').remove();
+            }else {
+                FoodSale=[];
+                 $(this).parents('.changeItem').find('select[name="BalanceType"]').val('');
+                  $(this).parents('.changeItem').find('input[name="UseCount"]').val('');
+                   $(this).parents('.changeItem').find('input[name="CashValue"]').val('');
             }
-            FoodSale.splice(index);
-            $(this).parents('.changeItem').remove();
+
         })
         $('.changeBox').on('click', '.changeItem .saveChangeBtn', function () {
             if ($(this).parents('.changeItem').find('input[name="UseCount"]').val() != '' &&
@@ -1472,9 +1481,9 @@
                 'KoubeiID': $('#KoubeiID').val(),
                 'clientPrice': $('#ClientPrice').val(),
                 'memberPrice': $('#MemberPrice').val(),
-                'foodSales': FoodSale.length > 0 ? FoodSale : null,
-                'foodDetials': FoodDetial.length > 0 ? FoodDetial : null,
-                'foodLevels': FoodLevel.length > 0 ? FoodLevel : null,
+                'foodSales': FoodSale.length > 0 ? FoodSale : [],
+                'foodDetials': FoodDetial.length > 0 ? FoodDetial : [],
+                'foodLevels': FoodLevel.length > 0 ? FoodLevel : [],
                 'forbidStart': $('#NoStartTime').val(),
                 'forbidEnd': $('#NoEndTime').val(),
                 'tax': $('#tax').val(),

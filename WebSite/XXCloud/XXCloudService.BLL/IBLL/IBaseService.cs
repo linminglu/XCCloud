@@ -9,9 +9,9 @@ namespace XCCloudService.BLL.IBLL
 {
     public partial interface IBaseService<T> where T : class ,new()
     {
-        void AddModel(T t);
-        void UpdateModel(T t);
-        void DeleteModel(T t);
+        void AddModel(T t, bool syncData = false, string merchId = "", string merchSecret = "");
+        void UpdateModel(T t, bool syncData = false, string merchId = "", string merchSecret = "");
+        void DeleteModel(T t, bool syncData = false, string merchId = "", string merchSecret = "");
         bool Add(T t, bool syncData = false, string merchId = "", string merchSecret = "");
         bool Update(T t, bool syncData = false, string merchId = "", string merchSecret = "");
         bool Delete(T t, bool syncData = false, string merchId = "", string merchSecret = "");       

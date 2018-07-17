@@ -150,13 +150,7 @@ namespace XCCloudService.DAL.Base
                 LogHelper.SaveLog("SyncServer数据同步失败:" + e.Message);
             }
         }
-
-        public void AddModel(T t)
-        {
-            MakeVerifiction(ref t);
-            dbContext.Set<T>().Add(t);
-        }
-
+        
         public bool Add(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
             MakeVerifiction(ref t);
@@ -208,21 +202,61 @@ namespace XCCloudService.DAL.Base
             return result;
         }
 
-        public void UpdateModel(T t)
+        public void AddModel(T t, bool syncData = false, string merchId = "", string merchSecret = "")
+        {
+            MakeVerifiction(ref t);
+            dbContext.Set<T>().Add(t);
+
+            //数据更新同步
+            if (syncData)
+            {
+                bool result = dbContext.SaveChanges() > 0;
+                if (result)
+                {
+                    if (merchId != "")
+                        cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 0);
+                }                
+            }
+        }
+
+
+        public void UpdateModel(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
             MakeVerifiction(ref t, (T)GetEntityInDatabase(t));
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;
+
+            //数据更新同步
+            if (syncData)
+            {
+                bool result = dbContext.SaveChanges() > 0;
+                if (result)
+                {
+                    if (merchId != "")
+                        cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 1);
+                }
+            }
         }
 
 
 
-        public void DeleteModel(T t)
+        public void DeleteModel(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Deleted;
+
+            //数据更新同步
+            if (syncData)
+            {
+                bool result = dbContext.SaveChanges() > 0;
+                if (result)
+                {
+                    if (merchId != "")
+                        cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 2);
+                }
+            }
         }
 
 
@@ -262,9 +296,8 @@ namespace XCCloudService.DAL.Base
         }
 
         public bool SaveChanges()
-        {
-            var result = dbContext.SaveChanges() >= 0;            
-            return result;
+        {          
+            return dbContext.SaveChanges() >= 0; 
         }
 
         public int ExecuteSqlCommand(string sql,params object[] parameters)
