@@ -141,13 +141,14 @@ namespace DSS
                         var v = pi.GetValue(o, null);
                         if (v != null)
                         {
+                            string typeName = GetObjectTypeRootName(pi);
                             if (v.ToString() != "" && pi.Name.ToLower() != "verifiction")
                             {
-                                if (pi.PropertyType.Name == "Decimal")
+                                if (typeName == "decimal")
                                 {
                                     list.Add(pi.Name, CovertDecimalValue(v.ToString()));
                                 }
-                                else if (pi.PropertyType.Name.ToLower() == "datetime")
+                                else if (typeName == "datetime")
                                     list.Add(pi.Name, Convert.ToDateTime(v).ToString("yyyy-MM-dd HH:mm:ss.fff"));
                                 else
                                     list.Add(pi.Name, v.ToString());
@@ -236,7 +237,8 @@ namespace DSS
                     {
                         if (row[pi.Name] != DBNull.Value)
                         {
-                            switch (pi.PropertyType.Name.ToLower())
+                            string typename = GetObjectTypeRootName(pi);
+                            switch (typename)
                             {
                                 case "string":
                                     pi.SetValue(o, row[pi.Name].ToString(), null);
@@ -286,7 +288,8 @@ namespace DSS
                         {
                             if (row[pi.Name] != DBNull.Value)
                             {
-                                switch (pi.PropertyType.Name.ToLower())
+                                string typeName = GetObjectTypeRootName(pi);
+                                switch (typeName)
                                 {
                                     case "string":
                                         pi.SetValue(o, row[pi.Name].ToString(), null);
@@ -321,6 +324,15 @@ namespace DSS
                 WriteLog(ex);
                 throw;
             }
+        }
+        string GetObjectTypeRootName(PropertyInfo pi)
+        {
+            string typename = "";
+            if (pi.PropertyType.IsGenericType && pi.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                typename = pi.PropertyType.GetGenericArguments()[0].Name.ToLower(); //如果数据类型可为空时，获取起根数据类型
+            else
+                typename = pi.PropertyType.Name.ToLower();//正常情况获取
+            return typename;
         }
         void WriteLog(Exception ex)
         {

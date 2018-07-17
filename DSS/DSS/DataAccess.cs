@@ -114,13 +114,23 @@ namespace DSS
             Type t = o.GetType();
             foreach (PropertyInfo pi in t.GetProperties())
             {
-                if (pi.PropertyType.Name.ToLower() == "datetime")
+                string typeName = GetObjectTypeRootName(pi);
+                if (typeName == "datetime")
                 {
                     var v = pi.GetValue(o, null);
                     if (v != null)
                         pi.SetValue(o, ((DateTime)v).AddHours(8), null);
                 }
             }
+        }
+        string GetObjectTypeRootName(PropertyInfo pi)
+        {
+            string typename = "";
+            if (pi.PropertyType.IsGenericType && pi.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                typename = pi.PropertyType.GetGenericArguments()[0].Name.ToLower(); //如果数据类型可为空时，获取起根数据类型
+            else
+                typename = pi.PropertyType.Name.ToLower();//正常情况获取
+            return typename;
         }
         /// <summary>
         /// 同步新增的数据
