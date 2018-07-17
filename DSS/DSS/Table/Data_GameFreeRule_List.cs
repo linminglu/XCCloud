@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DSS.Table
 {
-    public class Data_GameFreeRule_List
-    {
-        public int ID { get; set; }
-        public int RuleID { get; set; }
-        public int GameIndexID { get; set; }
-    }
+public class Data_GameFreeRule_List
+{
+public int ID { get; set; }
+public int? RuleID { get; set; }
+public int? GameIndexID { get; set; }
+}
 }

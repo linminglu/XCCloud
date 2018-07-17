@@ -527,7 +527,7 @@ namespace DSS.Server
                 foreach (DSS.Table.Sync_DataList o in dataList)
                 {
                     string secret = GetAppSecretFromDict(o.StoreID);
-                    CloudDataSync(o.MerchID, secret, o.TableName, o.IDValue, o.SyncType, false, o.SN);
+                    CloudDataSync(o.MerchID, secret, o.TableName, o.IDValue, (int)o.SyncType, false, o.SN);
                     Console.WriteLine("离线同步：storeID=" + storeID + "    table=" + o.TableName + "  id=" + o.IDValue + "   sn=" + o.SN);
                 }
             }
@@ -565,7 +565,7 @@ namespace DSS.Server
             //Assembly asmb = Assembly.LoadFrom("DSS.dll");
             Assembly asmb = Assembly.LoadFrom(AppDomain.CurrentDomain.RelativeSearchPath + "\\DSS.dll");
             Type t = asmb.GetType("DSS.Table." + tableName);
-            object o = System.Activator.CreateInstance(t);            
+            object o = System.Activator.CreateInstance(t);
 
             model.CovertToDataModel(sql, ref o);
             JavaScriptSerializer jss = new JavaScriptSerializer();

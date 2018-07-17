@@ -14,10 +14,10 @@ public string StoreID { get; set; }
 public string SN { get; set; }
 public string TableName { get; set; }
 public string IDValue { get; set; }
-public int SyncType { get; set; }
-public DateTime CreateTime { get; set; }
-public DateTime SyncTime { get; set; }
-public int SyncFlag { get; set; }
+public int? SyncType { get; set; }
+public DateTime? CreateTime { get; set; }
+public DateTime? SyncTime { get; set; }
+public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

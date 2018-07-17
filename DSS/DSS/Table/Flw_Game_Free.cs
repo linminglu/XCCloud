@@ -12,10 +12,10 @@ public int ID { get; set; }
 public string StoreID { get; set; }
 public string GameID { get; set; }
 public string HeadID { get; set; }
-public int CardID { get; set; }
-public int FreeCoin { get; set; }
-public DateTime RealTime { get; set; }
-public int RuleID { get; set; }
-public int Balance { get; set; }
+public int? CardID { get; set; }
+public int? FreeCoin { get; set; }
+public DateTime? RealTime { get; set; }
+public int? RuleID { get; set; }
+public int? Balance { get; set; }
 }
 }

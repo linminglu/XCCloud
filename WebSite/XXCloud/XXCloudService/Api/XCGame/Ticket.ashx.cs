@@ -676,9 +676,8 @@ namespace XXCloudService.Api.XCGame
             }
             catch(Exception e)
             {
-                throw e;
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]

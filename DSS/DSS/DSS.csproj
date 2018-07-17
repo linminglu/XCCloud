@@ -147,7 +147,9 @@
     <Compile Include="Table\Data_MemberLevelFree.cs" />
     <Compile Include="Table\Data_MemberLevel_Balance.cs" />
     <Compile Include="Table\Data_MemberLevel_BalanceCharge.cs" />
+    <Compile Include="Table\Data_MemberLevel_BookRule.cs" />
     <Compile Include="Table\Data_MemberLevel_Food.cs" />
+    <Compile Include="Table\Data_MemberLevel_GamePoint.cs" />
     <Compile Include="Table\Data_Member_Card.cs" />
     <Compile Include="Table\Data_Member_Card_Store.cs" />
     <Compile Include="Table\Data_MerchAlipay_Shop.cs" />
@@ -195,6 +197,7 @@
     <Compile Include="Table\Flw_GameData_WinPrize.cs" />
     <Compile Include="Table\Flw_Game_Free.cs" />
     <Compile Include="Table\Flw_Game_Watch.cs" />
+    <Compile Include="Table\Flw_Game_WinPrize.cs" />
     <Compile Include="Table\Flw_Giveback.cs" />
     <Compile Include="Table\Flw_Good_Buyback.cs" />
     <Compile Include="Table\Flw_GroupVerity.cs" />

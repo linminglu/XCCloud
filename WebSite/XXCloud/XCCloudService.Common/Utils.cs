@@ -1860,7 +1860,7 @@ namespace XCCloudService.Common
                     }
                     else if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(DateTime))
                     {
-                        value = Utils.ConvertFromDatetime(value.Todatetime(), "yyyy-MM-dd HH:mm:ss.fff");
+                        value = Utils.ConvertFromDatetime((DateTime?)value, "yyyy-MM-dd HH:mm:ss.fff");
                     }
 
                     fields.Add(pi.Name, value.ToString());

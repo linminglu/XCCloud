@@ -142,7 +142,7 @@ namespace DSS
             //计算MD5校验，判断数据是否合法
             if (!model.CheckVerifiction(o, secret, identity)) return false;
             //添加数据
-            model.Add(o);
+            model.Add(o, identity);
             return true;
         }
         public bool SyncUpdateData(string tableName, string idValue, string jsonText, string secret)
@@ -158,7 +158,7 @@ namespace DSS
             //计算MD5校验，判断数据是否合法
             if (!model.CheckVerifiction(o, secret, identity)) return false;
             //修改数据
-            model.Update(o, "where id='" + idValue + "'");
+            model.Update(o, "where id='" + idValue + "'", identity);
             return true;
         }
         public bool SyncDeleteData(string tableName, string idValue)

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DSS.Table
 {
-    public class Data_RuleOverlying_Group
-    {
-        public int ID { get; set; }
-        public string MerchID { get; set; }
-    }
+public class Data_RuleOverlying_Group
+{
+public int ID { get; set; }
+public string MerchID { get; set; }
+}
 }

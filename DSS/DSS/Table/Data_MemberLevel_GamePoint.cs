@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace DSS.Table
 {
-public class Data_GameAPP_MemberRule
+public class Data_MemberLevel_GamePoint
 {
 public int ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
-public int? GameID { get; set; }
 public int? MemberLevelID { get; set; }
-public int? PushBalanceIndex1 { get; set; }
-public decimal? PushCoin1 { get; set; }
-public int? PushBalanceIndex2 { get; set; }
-public decimal? PushCoin2 { get; set; }
-public int? PlayCount { get; set; }
+public int? State { get; set; }
+public int? GameIndex { get; set; }
+public int? Key1BalanceIndex { get; set; }
+public decimal? Key1Count { get; set; }
+public int? Key2BalanceIndex { get; set; }
+public decimal? Key2Count { get; set; }
 public string Verifiction { get; set; }
 }
 }

@@ -262,7 +262,8 @@ namespace XCCloudService.DAL.Base
 
         public bool SaveChanges()
         {
-            return dbContext.SaveChanges() >= 0;
+            var result = dbContext.SaveChanges() >= 0;            
+            return result;
         }
 
         public int ExecuteSqlCommand(string sql,params object[] parameters)

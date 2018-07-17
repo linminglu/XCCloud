@@ -43,7 +43,7 @@ namespace DSS
                 DataAccess ac = new DataAccess();
                 fields = fields.Substring(0, fields.Length - 1);
                 values = values.Substring(0, values.Length - 1);
-                sql = "insert into " + t.Name + " (" + fields + ") values (" + values + ")";
+                sql += "insert into " + t.Name + " (" + fields + ") values (" + values + ") \r\n";
                 ac.Execute(sql);
                 return true;
             }

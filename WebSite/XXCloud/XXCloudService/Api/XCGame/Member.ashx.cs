@@ -463,357 +463,369 @@ namespace XCCloudService.Api.XCGame
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object transICCardCoins(Dictionary<string, object> dicParas)
         {
-            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
 
-            string cardIdOut = dicParas.ContainsKey("cardIdOut") ? dicParas["cardIdOut"].ToString() : string.Empty;
-            string cardIdOutPassword = dicParas.ContainsKey("cardIdOutPassword") ? dicParas["cardIdOutPassword"].ToString() : string.Empty;
-            string cardIdIn = dicParas.ContainsKey("cardIdIn") ? dicParas["cardIdIn"].ToString() : string.Empty;
-            var balanceInfos = dicParas.ContainsKey("balanceInfos") ? dicParas.GetArray("balanceInfos") : null;
-            string mobileName = dicParas.ContainsKey("mobileName") ? dicParas["mobileName"].ToString() : string.Empty;
+                string cardIdOut = dicParas.ContainsKey("cardIdOut") ? dicParas["cardIdOut"].ToString() : string.Empty;
+                string cardIdOutPassword = dicParas.ContainsKey("cardIdOutPassword") ? dicParas["cardIdOutPassword"].ToString() : string.Empty;
+                string cardIdIn = dicParas.ContainsKey("cardIdIn") ? dicParas["cardIdIn"].ToString() : string.Empty;
+                var balanceInfos = dicParas.ContainsKey("balanceInfos") ? dicParas.GetArray("balanceInfos") : null;
+                string mobileName = dicParas.ContainsKey("mobileName") ? dicParas["mobileName"].ToString() : string.Empty;
 
-            StoreBusiness store = new StoreBusiness();
-            string errMsg = string.Empty;
-            StoreCacheModel storeModel = null;
-            StoreBusiness storeBusiness = new StoreBusiness();
-            if (!storeBusiness.IsEffectiveStore(userTokenModel.StoreId, ref storeModel, out errMsg))
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-            }
-
-            //if (storeModel.StoreDBDeployType == 0)
-            //{ 
-            if (string.IsNullOrEmpty(cardIdOut))
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡号为空");
-            }
-            if (string.IsNullOrEmpty(cardIdIn))
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入卡号为空");
-            }
-            if (!balanceInfos.Validarray("转卡余额数组", out errMsg))
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-            }
-
-            string storeId = userTokenModel.StoreId;
-            string merchID = storeId.Substring(0, 6);
-            string workStation = userTokenModel.Mobile;
-            int userId = userTokenModel.UserId;
-
-            //判断会员卡是否存在或是否存在多张相同卡号的会员卡
-            if (!XCCloudService.Business.XCCloud.MemberBusiness.ExistsCardByICCardId(cardIdOut, merchID, storeId, out errMsg))
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-            }
-            //转出会员卡
-            Data_Member_Card fromCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == cardIdOut).FirstOrDefault();
-            //判断是否为附属卡
-            if (fromCard.CardType == 1)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不支持附属卡过户转出");
-            }
-            if (!fromCard.CardPassword.Equals(cardIdOutPassword))
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出密码错误");
-            }
-
-            Base_MemberInfo fromMember = Base_MemberInfoService.I.GetModels(t => t.ID == fromCard.MemberID).FirstOrDefault();
-            if (fromMember == null)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡会员信息无效");
-            }
-
-            //【转出】会员级别实体
-            Data_MemberLevel fromLevel = Data_MemberLevelService.I.GetModels(t => t.ID == fromCard.MemberLevelID).FirstOrDefault();
-            if (fromLevel == null)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出会员卡级别无效");
-            }
-
-            //判断转入会员卡是否存在或是否存在多张相同卡号的会员卡
-            if (!XCCloudService.Business.XCCloud.MemberBusiness.ExistsCardByICCardId(cardIdIn, merchID, storeId, out errMsg))
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-            }
-            //当前会员卡
-            Data_Member_Card toCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == cardIdIn).FirstOrDefault();
-            //判断是否为附属卡
-            if (toCard.CardType == 1)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不支持附属卡过户转入");
-            }
-
-            Base_MemberInfo toMember = Base_MemberInfoService.I.GetModels(t => t.ID == toCard.MemberID).FirstOrDefault();
-            if (toMember == null)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入卡会员信息无效");
-            }
-
-            //【转入】会员级别实体
-            Data_MemberLevel toLevel = Data_MemberLevelService.I.GetModels(t => t.ID == toCard.MemberLevelID).FirstOrDefault();
-            if (toLevel == null)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入会员卡级别无效");
-            }
-
-            // ========================== 会员等级转出转入判断 =================================//
-            //判断是否启用转出
-            if (fromLevel.AllowTransferOut == 0)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡尚未开通过户权限");
-            }
-            //判断是否启用转入
-            if (toLevel.AllowTransferIn == 0)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "目标卡尚未开通过户权限");
-            }
-            if (fromLevel.ID != toLevel.ID)
-            {
-                //判断转出级别是否与目标级别匹配
-                if (fromLevel.TransferOutLevelID != toLevel.ID)
+                StoreBusiness store = new StoreBusiness();
+                string errMsg = string.Empty;
+                StoreCacheModel storeModel = null;
+                StoreBusiness storeBusiness = new StoreBusiness();
+                if (!storeBusiness.IsEffectiveStore(userTokenModel.StoreId, ref storeModel, out errMsg))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出级别与目标卡级别不匹配");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-                //判断转入级别是否与来源匹配
-                if (toLevel.TransferInLevelID != fromLevel.ID)
+                //if (storeModel.StoreDBDeployType == 0)
+                //{ 
+                if (string.IsNullOrEmpty(cardIdOut))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入级别与即将过户的会员卡级别不匹配");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡号为空");
                 }
-            }
-
-            //当前班次
-            Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
-            if (schedule == null)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行过户操作");
-            }
-
-            using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
-            {
-                foreach (IDictionary<string, object> el in balanceInfos)
+                if (string.IsNullOrEmpty(cardIdIn))
                 {
-                    if (el != null)
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入卡号为空");
+                }
+                if (!balanceInfos.Validarray("转卡余额数组", out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                string storeId = userTokenModel.StoreId;
+                string merchID = storeId.Substring(0, 6);
+                string workStation = userTokenModel.Mobile;
+                int userId = userTokenModel.UserId;
+
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!XCCloudService.Business.XCCloud.MemberBusiness.ExistsCardByICCardId(cardIdOut, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+                //转出会员卡
+                Data_Member_Card fromCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == cardIdOut).FirstOrDefault();
+                //判断是否为附属卡
+                if (fromCard.CardType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不支持附属卡转账");
+                }
+                if (!fromCard.CardPassword.Equals(cardIdOutPassword))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出密码错误");
+                }
+
+                Base_MemberInfo fromMember = Base_MemberInfoService.I.GetModels(t => t.ID == fromCard.MemberID).FirstOrDefault();
+                if (fromMember == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡会员信息无效");
+                }
+
+                //【转出】会员级别实体
+                Data_MemberLevel fromLevel = Data_MemberLevelService.I.GetModels(t => t.ID == fromCard.MemberLevelID).FirstOrDefault();
+                if (fromLevel == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出会员卡级别无效");
+                }
+
+                //判断转入会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!XCCloudService.Business.XCCloud.MemberBusiness.ExistsCardByICCardId(cardIdIn, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+                //当前会员卡
+                Data_Member_Card toCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == cardIdIn).FirstOrDefault();
+                //判断是否为附属卡
+                if (toCard.CardType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不支持附属卡转账");
+                }
+
+                Base_MemberInfo toMember = Base_MemberInfoService.I.GetModels(t => t.ID == toCard.MemberID).FirstOrDefault();
+                if (toMember == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入卡会员信息无效");
+                }
+
+                //【转入】会员级别实体
+                Data_MemberLevel toLevel = Data_MemberLevelService.I.GetModels(t => t.ID == toCard.MemberLevelID).FirstOrDefault();
+                if (toLevel == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入会员卡级别无效");
+                }
+
+                // ========================== 会员等级转出转入判断 =================================//
+                //判断是否启用转出
+                if (fromLevel.AllowTransferOut == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡尚未开通转账权限");
+                }
+                //判断是否启用转入
+                if (toLevel.AllowTransferIn == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "目标卡尚未开通转账权限");
+                }
+                if (fromLevel.ID != toLevel.ID)
+                {
+                    //判断转出级别是否与目标级别匹配
+                    if (fromLevel.TransferOutLevelID != toLevel.ID)
                     {
-                        var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                        if (!dicPara.Get("balanceIndex").Validintnozero("余额类别索引", out errMsg))
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                        if (!dicPara.Get("balance").Validdecimalnozero("余额", out errMsg))
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-
-                        var balanceIndex = dicPara.Get("balanceIndex").Toint();
-                        var balance = dicPara.Get("balance").Todecimal();
-
-                        //【正价】转出卡在当前门店的余额ID集合
-                        var fromBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
-                                               join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
-                                               where a.BalanceIndex == balanceIndex
-                                               select new
-                                               {
-                                                   ID = a.ID,
-                                                   Balance = a.Balance
-                                               };
-
-                        var fromBalance = fromBalanceQuery.FirstOrDefault();
-
-                        //【正价】转入卡在当前门店的余额ID集合
-                        var toBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
-                                             join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
-                                             where a.BalanceIndex == balanceIndex
-                                             select new
-                                             {
-                                                 ID = a.ID,
-                                                 Balance = a.Balance
-                                             };
-
-                        var toBalance = toBalanceQuery.FirstOrDefault();
-
-                        //转出卡余额
-                        if (fromBalance == null)
-                        {
-                            continue;
-                        }
-
-                        if ((fromBalance.Balance ?? 0) < balance)
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡余额不足");
-                        }
-
-                        //转入卡余额
-                        if (toBalance == null)
-                        {
-                            continue;
-                        }
-
-                        //正价余额转出
-                        var fromBalanceId = fromBalance.ID;
-                        var fromBalanceModel = Data_Card_BalanceService.I.GetModels(p => p.ID == fromBalanceId).FirstOrDefault();
-                        fromBalanceModel.Balance -= balance;
-                        if (!Data_Card_BalanceService.I.Update(fromBalanceModel))
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转出卡余额失败");
-                        }
-
-                        //正价余额转入
-                        var toBalanceId = toBalance.ID;
-                        var toBalanceModel = Data_Card_BalanceService.I.GetModels(p => p.ID == toBalanceId).FirstOrDefault();
-                        toBalanceModel.Balance = (toBalanceModel.Balance ?? 0) + balance;
-                        if (!Data_Card_BalanceService.I.Update(toBalanceModel))
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转入卡余额失败");
-                        }
-
-                        //转账记录
-                        Flw_Transfer transfer = new Flw_Transfer();
-                        transfer.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                        transfer.MerchID = merchID;
-                        transfer.StoreID = storeId;
-                        transfer.OpType = 0;
-                        transfer.CardIDOut = fromCard.ID;
-                        transfer.OutMemberID = fromCard.MemberID;
-                        transfer.CardIDIn = toCard.ID;
-                        transfer.InMemberID = toCard.MemberID;
-                        transfer.TransferBalanceIndex = balanceIndex;
-                        transfer.TransferCount = balance;
-                        transfer.BalanceOut = fromBalanceModel.Balance;
-                        transfer.BalanceIn = toBalanceModel.Balance;
-                        transfer.RealTime = DateTime.Now;
-                        transfer.UserID = userId;
-                        transfer.WorkStation = workStation;
-                        transfer.ScheduleID = schedule.ID;
-                        transfer.CheckDate = schedule.CheckDate;
-                        transfer.State = 1;
-                        transfer.Note = "会员转账";
-                        transfer.SyncFlag = 0;
-                        if (!Flw_TransferService.I.Add(transfer))
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员转账记录失败");
-                        }
-
-                        //【转出卡】余额变化流水
-                        Flw_MemberData fmd = new Flw_MemberData();
-                        fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                        fmd.MerchID = merchID;
-                        fmd.StoreID = storeId;
-                        fmd.MemberID = fromMember.ID;
-                        fmd.MemberName = fromMember.UserName;
-                        fmd.CardIndex = fromCard.ID;
-                        fmd.ICCardID = fromCard.ICCardID;
-                        //fmd.MemberLevelName = levelModel.MemberLevelName;
-                        fmd.ChannelType = (int)MemberDataChannelType.移动终端;
-                        fmd.OperationType = (int)MemberDataOperationType.余额互转出;
-                        fmd.OPTime = DateTime.Now;
-                        fmd.SourceType = 0;
-                        fmd.SourceID = transfer.ID;
-                        fmd.BalanceIndex = balanceIndex;
-                        fmd.ChangeValue = -balance;
-                        fmd.Balance = fromBalance.Balance;                        
-                        fmd.BalanceTotal = fmd.Balance;
-                        fmd.Note = "过户转出";
-                        fmd.UserID = userId;
-                        fmd.DeviceID = 0;
-                        fmd.ScheduleID = schedule.ID;
-                        fmd.AuthorID = 0;
-                        fmd.WorkStation = workStation;
-                        fmd.CheckDate = schedule.CheckDate;
-                        fmd.SyncFlag = 0;
-                        if (!Flw_MemberDataService.I.Add(fmd))
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
-                        }
-
-                        //【转入卡】余额变化流水
-                        fmd = new Flw_MemberData();
-                        fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                        fmd.MerchID = merchID;
-                        fmd.StoreID = storeId;
-                        fmd.MemberID = toMember.ID;
-                        fmd.MemberName = toMember.UserName;
-                        fmd.CardIndex = toCard.ID;
-                        fmd.ICCardID = toCard.ICCardID;
-                        //fmd.MemberLevelName = levelModel.MemberLevelName;
-                        fmd.ChannelType = (int)MemberDataChannelType.吧台;
-                        fmd.OperationType = (int)MemberDataOperationType.过户转入;
-                        fmd.OPTime = DateTime.Now;
-                        fmd.SourceType = 0;
-                        fmd.SourceID = transfer.ID;
-                        fmd.BalanceIndex = balanceIndex;
-                        fmd.ChangeValue = balance;
-                        fmd.Balance = toBalance.Balance;                       
-                        fmd.BalanceTotal = fmd.Balance;
-                        fmd.Note = "过户转入";
-                        fmd.UserID = userId;
-                        fmd.DeviceID = 0;
-                        fmd.ScheduleID = schedule.ID;
-                        fmd.AuthorID = 0;
-                        fmd.WorkStation = workStation;
-                        fmd.CheckDate = schedule.CheckDate;
-                        fmd.SyncFlag = 0;
-                        if (!Flw_MemberDataService.I.Add(fmd))
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
-                        }
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出级别与目标卡级别不匹配");
                     }
-                    else
+
+                    //判断转入级别是否与来源匹配
+                    if (toLevel.TransferInLevelID != fromLevel.ID)
                     {
-                        errMsg = "提交数据包含空对象";
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入级别与来源级别不匹配");
                     }
                 }
 
-                ts.Complete();
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行转账操作");
+                }
+
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    foreach (IDictionary<string, object> el in balanceInfos)
+                    {
+                        if (el != null)
+                        {
+                            var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                            if (!dicPara.Get("balanceIndex").Validintnozero("余额类别索引", out errMsg))
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                            if (!dicPara.Get("balance").Validdecimal("余额", out errMsg))
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+
+                            var balanceIndex = dicPara.Get("balanceIndex").Toint();
+                            var balance = dicPara.Get("balance").Todecimal(0);
+
+                            if (balance == 0)
+                            {
+                                continue;
+                            }
+
+                            //【正价】转出卡在当前门店的余额ID集合
+                            var fromBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                                                   join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                                   where a.BalanceIndex == balanceIndex
+                                                   select new
+                                                   {
+                                                       ID = a.ID,
+                                                       Balance = a.Balance
+                                                   };
+
+                            var fromBalance = fromBalanceQuery.FirstOrDefault();
+
+                            //【正价】转入卡在当前门店的余额ID集合
+                            var toBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                                                 join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                                 where a.BalanceIndex == balanceIndex
+                                                 select new
+                                                 {
+                                                     ID = a.ID,
+                                                     Balance = a.Balance
+                                                 };
+
+                            var toBalance = toBalanceQuery.FirstOrDefault();
+
+                            //转出卡余额
+                            if (fromBalance == null)
+                            {
+                                continue;
+                            }
+
+                            if ((fromBalance.Balance ?? 0) < balance)
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出卡余额不足");
+                            }
+
+                            //转入卡余额
+                            if (toBalance == null)
+                            {
+                                continue;
+                            }
+
+                            //正价余额转出
+                            var fromBalanceId = fromBalance.ID;
+                            var fromBalanceModel = Data_Card_BalanceService.I.GetModels(p => p.ID == fromBalanceId).FirstOrDefault();
+                            fromBalanceModel.Balance -= balance;
+                            if (!Data_Card_BalanceService.I.Update(fromBalanceModel))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转出卡余额失败");
+                            }
+
+                            //正价余额转入
+                            var toBalanceId = toBalance.ID;
+                            var toBalanceModel = Data_Card_BalanceService.I.GetModels(p => p.ID == toBalanceId).FirstOrDefault();
+                            toBalanceModel.Balance = (toBalanceModel.Balance ?? 0) + balance;
+                            if (!Data_Card_BalanceService.I.Update(toBalanceModel))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转入卡余额失败");
+                            }
+
+                            //转账记录
+                            Flw_Transfer transfer = new Flw_Transfer();
+                            transfer.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            transfer.MerchID = merchID;
+                            transfer.StoreID = storeId;
+                            transfer.OpType = 0;
+                            transfer.CardIDOut = fromCard.ID;
+                            transfer.OutMemberID = fromCard.MemberID;
+                            transfer.CardIDIn = toCard.ID;
+                            transfer.InMemberID = toCard.MemberID;
+                            transfer.TransferBalanceIndex = balanceIndex;
+                            transfer.TransferCount = balance;
+                            transfer.BalanceOut = fromBalanceModel.Balance;
+                            transfer.BalanceIn = toBalanceModel.Balance;
+                            transfer.RealTime = DateTime.Now;
+                            transfer.UserID = userId;
+                            transfer.WorkStation = workStation;
+                            transfer.ScheduleID = schedule.ID;
+                            transfer.CheckDate = schedule.CheckDate;
+                            transfer.State = 1;
+                            transfer.Note = "会员转账";
+                            transfer.SyncFlag = 0;
+                            if (!Flw_TransferService.I.Add(transfer))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员转账记录失败");
+                            }
+
+                            //【转出卡】余额变化流水
+                            Flw_MemberData fmd = new Flw_MemberData();
+                            fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            fmd.MerchID = merchID;
+                            fmd.StoreID = storeId;
+                            fmd.MemberID = fromMember.ID;
+                            fmd.MemberName = fromMember.UserName;
+                            fmd.CardIndex = fromCard.ID;
+                            fmd.ICCardID = fromCard.ICCardID;
+                            //fmd.MemberLevelName = levelModel.MemberLevelName;
+                            fmd.ChannelType = (int)MemberDataChannelType.移动终端;
+                            fmd.OperationType = (int)MemberDataOperationType.余额互转出;
+                            fmd.OPTime = DateTime.Now;
+                            fmd.SourceType = 0;
+                            fmd.SourceID = transfer.ID;
+                            fmd.BalanceIndex = balanceIndex;
+                            fmd.ChangeValue = -balance;
+                            fmd.Balance = fromBalance.Balance;
+                            fmd.BalanceTotal = fmd.Balance;
+                            fmd.Note = "过户转出";
+                            fmd.UserID = userId;
+                            fmd.DeviceID = 0;
+                            fmd.ScheduleID = schedule.ID;
+                            fmd.AuthorID = 0;
+                            fmd.WorkStation = workStation;
+                            fmd.CheckDate = schedule.CheckDate;
+                            fmd.SyncFlag = 0;
+                            if (!Flw_MemberDataService.I.Add(fmd))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                            }
+
+                            //【转入卡】余额变化流水
+                            fmd = new Flw_MemberData();
+                            fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            fmd.MerchID = merchID;
+                            fmd.StoreID = storeId;
+                            fmd.MemberID = toMember.ID;
+                            fmd.MemberName = toMember.UserName;
+                            fmd.CardIndex = toCard.ID;
+                            fmd.ICCardID = toCard.ICCardID;
+                            //fmd.MemberLevelName = levelModel.MemberLevelName;
+                            fmd.ChannelType = (int)MemberDataChannelType.吧台;
+                            fmd.OperationType = (int)MemberDataOperationType.过户转入;
+                            fmd.OPTime = DateTime.Now;
+                            fmd.SourceType = 0;
+                            fmd.SourceID = transfer.ID;
+                            fmd.BalanceIndex = balanceIndex;
+                            fmd.ChangeValue = balance;
+                            fmd.Balance = toBalance.Balance;
+                            fmd.BalanceTotal = fmd.Balance;
+                            fmd.Note = "过户转入";
+                            fmd.UserID = userId;
+                            fmd.DeviceID = 0;
+                            fmd.ScheduleID = schedule.ID;
+                            fmd.AuthorID = 0;
+                            fmd.WorkStation = workStation;
+                            fmd.CheckDate = schedule.CheckDate;
+                            fmd.SyncFlag = 0;
+                            if (!Flw_MemberDataService.I.Add(fmd))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                            }
+                        }
+                        else
+                        {
+                            errMsg = "提交数据包含空对象";
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }
+                    }
+
+                    ts.Complete();
+                }
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                //}
+                //else if (storeModel.StoreDBDeployType == 1)
+                //{
+                //    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+                //    UDPSocketCommonQueryAnswerModel answerModel = null;
+                //    string radarToken = string.Empty;
+                //    if (DataFactory.SendMemberTransOperate(sn, storeModel.StoreID,storeModel.StorePassword, mobileName, userTokenModel.Mobile, cardIdIn, cardIdOut, int.Parse(coins),out radarToken,out errMsg))
+                //    {
+
+                //    }
+                //    else
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                //    }
+
+                //    answerModel = null;
+                //    int whileCount = 0;
+                //    while (answerModel == null && whileCount <= 25)
+                //    {
+                //        //获取应答缓存数据
+                //        whileCount++;
+                //        System.Threading.Thread.Sleep(1000);
+                //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+                //    }
+
+                //    if (answerModel != null)
+                //    {
+                //        MemberTransOperateResultNotifyRequestModel model = (MemberTransOperateResultNotifyRequestModel)(answerModel.Result);
+                //        //移除应答缓存数据
+                //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+
+                //        if (model.Result_Code == "1")
+                //        {
+                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                //        }
+                //        else
+                //        {
+                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                //    }
+                //}
+                //else
+                //{
+                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
+                //}
             }
-
-            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-            //}
-            //else if (storeModel.StoreDBDeployType == 1)
-            //{
-            //    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-            //    UDPSocketCommonQueryAnswerModel answerModel = null;
-            //    string radarToken = string.Empty;
-            //    if (DataFactory.SendMemberTransOperate(sn, storeModel.StoreID,storeModel.StorePassword, mobileName, userTokenModel.Mobile, cardIdIn, cardIdOut, int.Parse(coins),out radarToken,out errMsg))
-            //    {
-
-            //    }
-            //    else
-            //    {
-            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-            //    }
-
-            //    answerModel = null;
-            //    int whileCount = 0;
-            //    while (answerModel == null && whileCount <= 25)
-            //    {
-            //        //获取应答缓存数据
-            //        whileCount++;
-            //        System.Threading.Thread.Sleep(1000);
-            //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-            //    }
-
-            //    if (answerModel != null)
-            //    {
-            //        MemberTransOperateResultNotifyRequestModel model = (MemberTransOperateResultNotifyRequestModel)(answerModel.Result);
-            //        //移除应答缓存数据
-            //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
-
-            //        if (model.Result_Code == "1")
-            //        {
-            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-            //        }
-            //        else
-            //        {
-            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
-            //    }
-            //}
-            //else
-            //{
-            //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
-            //}
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
         }
 
         #endregion
