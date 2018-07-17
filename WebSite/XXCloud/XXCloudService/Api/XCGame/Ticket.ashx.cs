@@ -424,7 +424,7 @@ namespace XXCloudService.Api.XCGame
                     ticketUse.OutMinuteTotal = 0;
                     ticketUse.InDeviceType = (int)InOutDeviceType.WorkStation;
                     ticketUse.InDeviceID = deviceId;
-                    if (!flw_Project_TicketUseService.Add(ticketUse, false))
+                    if (!flw_Project_TicketUseService.Add(ticketUse))
                     {
                         errMsg = "验票失败";
                         return false;
@@ -432,7 +432,7 @@ namespace XXCloudService.Api.XCGame
 
                     id = ticketUse.ID;
                     ticketInfo.State = (int)TicketState.Used;
-                    if (!flw_Project_TicketInfoService.Update(ticketInfo, false))
+                    if (!flw_Project_TicketInfoService.Update(ticketInfo))
                     {
                         errMsg = "验票失败";
                         return false;
@@ -441,7 +441,7 @@ namespace XXCloudService.Api.XCGame
                     if (ticketEntry.TicketType == (int)TicketType.Count || ticketEntry.TicketType == (int)TicketType.Group)
                     {
                         projectTicketBind.RemainCount -= 1;
-                        if (!flw_ProjectTicket_BindService.Update(projectTicketBind, false))
+                        if (!flw_ProjectTicket_BindService.Update(projectTicketBind))
                         {
                             errMsg = "验票失败";
                             return false;
@@ -555,7 +555,7 @@ namespace XXCloudService.Api.XCGame
                                         lastTicketUse.OutTime = null;
                                         lastTicketUse.OutDeviceType = null;
                                         lastTicketUse.OutDeviceID = null;
-                                        if (!flw_Project_TicketUseService.Update(lastTicketUse, false))
+                                        if (!flw_Project_TicketUseService.Update(lastTicketUse))
                                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验票失败");
                                         ticketUseId = lastTicketUse.ID;
                                     }
@@ -578,7 +578,7 @@ namespace XXCloudService.Api.XCGame
                                 lastTicketUse.OutTime = DateTime.Now;
                                 lastTicketUse.OutDeviceType = (int)InOutDeviceType.WorkStation;
                                 lastTicketUse.OutDeviceID = deviceId;
-                                if(!flw_Project_TicketUseService.Update(lastTicketUse, false))
+                                if(!flw_Project_TicketUseService.Update(lastTicketUse))
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验票失败");
                                 ticketUseId = lastTicketUse.ID;
                             }
@@ -606,7 +606,7 @@ namespace XXCloudService.Api.XCGame
                         flw_Project_TicketDeviceLog.Total = 0;
                         flw_Project_TicketDeviceLog.UseType = null;
                         flw_Project_TicketDeviceLog.CashTotal = 0;
-                        if (!flw_Project_TicketDeviceLogService.Add(flw_Project_TicketDeviceLog, false))
+                        if (!flw_Project_TicketDeviceLogService.Add(flw_Project_TicketDeviceLog))
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加验票记录失败");
 
                         ts.Complete();
@@ -726,7 +726,7 @@ namespace XXCloudService.Api.XCGame
 
                 flw_Project_TicketInfoModel.State = (int)TicketState.Locked;
 
-                if (!flw_Project_TicketInfoService.Update(flw_Project_TicketInfoModel, false))
+                if (!flw_Project_TicketInfoService.Update(flw_Project_TicketInfoModel))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票锁定出错");
                 }
@@ -834,7 +834,7 @@ namespace XXCloudService.Api.XCGame
 
                 flw_Project_TicketInfoModel.State = flw_Project_TicketUseService.Any(a => a.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)) ? (int)TicketState.Used : (int)TicketState.UnUse;
 
-                if (!flw_Project_TicketInfoService.Update(flw_Project_TicketInfoModel, false))
+                if (!flw_Project_TicketInfoService.Update(flw_Project_TicketInfoModel))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票解锁出错");
                 }

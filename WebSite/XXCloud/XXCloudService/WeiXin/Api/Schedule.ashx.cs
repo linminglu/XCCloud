@@ -90,7 +90,7 @@ namespace XXCloudService.WeiXin.Api
                 var flw_Schedule_UserInfo = flw_Schedule_UserInfoService.GetModels(p=>p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 flw_Schedule_UserInfo.RealCash = realCash;
                 flw_Schedule_UserInfo.RealCredit = realCredit;
-                if(!flw_Schedule_UserInfoService.Update(flw_Schedule_UserInfo, false))
+                if(!flw_Schedule_UserInfoService.Update(flw_Schedule_UserInfo))
                 {
                     errMsg = "保存班次操作信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

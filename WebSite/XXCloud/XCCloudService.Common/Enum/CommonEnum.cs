@@ -340,10 +340,10 @@ namespace XCCloudService.Common.Enum
         生日赠送 = 7,
         [Description("输赢赠送")]
         输赢赠送 = 8,
-        [Description("余额兑换转入")]
-        余额兑换转入 = 9,
-        [Description("余额兑换转出")]
-        余额兑换转出 = 10,
+        [Description("余额互转入")]
+        余额互转入 = 9,
+        [Description("余额互转出")]
+        余额互转出 = 10,
         [Description("过户转入")]
         过户转入 = 11,
         [Description("过户转出")]

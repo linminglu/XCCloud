@@ -892,7 +892,7 @@ namespace XXCloudService.Api.XCCloudH5
                     foodSale.TaxFee = 0;
                     foodSale.TaxTotal = 0;
                     foodSale.SyncFlag = 0;
-                    if (!Flw_Food_SaleService.I.Add(foodSale, false))
+                    if (!Flw_Food_SaleService.I.Add(foodSale))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水失败");
                     }
@@ -904,7 +904,7 @@ namespace XXCloudService.Api.XCCloudH5
                     saleDetail.ContainCount = 1;
                     saleDetail.Status = 1;
                     saleDetail.SyncFlag = 0;
-                    if (!Flw_Food_SaleDetailService.I.Add(saleDetail, false))
+                    if (!Flw_Food_SaleDetailService.I.Add(saleDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水明细失败");
                     }
@@ -925,7 +925,7 @@ namespace XXCloudService.Api.XCCloudH5
                     order.CheckDate = schedule.CheckDate;
                     order.Note = string.Format("{0}--投币，{1}", game.GameName, coinNote);
 
-                    bool ret = Flw_OrderService.I.Add(order, false);
+                    bool ret = Flw_OrderService.I.Add(order);
                     if (!ret)
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建订单失败");
@@ -938,7 +938,7 @@ namespace XXCloudService.Api.XCCloudH5
                     orderDetail.OrderFlwID = order.ID;
                     orderDetail.FoodFlwID = foodSale.ID;
                     orderDetail.GoodsCount = 1;
-                    if (!Flw_Order_DetailService.I.Add(orderDetail, false))
+                    if (!Flw_Order_DetailService.I.Add(orderDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建订单明细失败");
                     }
@@ -1128,7 +1128,7 @@ namespace XXCloudService.Api.XCCloudH5
                     {
                         Data_Card_Balance dcb = Data_Card_BalanceService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex1 && t.CardIndex == cardId).FirstOrDefault();
                         dcb.Balance -= balance1;
-                        if (!Data_Card_BalanceService.I.Update(dcb, false))
+                        if (!Data_Card_BalanceService.I.Update(dcb))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                         }
@@ -1138,7 +1138,7 @@ namespace XXCloudService.Api.XCCloudH5
                     {
                         Data_Card_Balance_Free dcbf = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex1 && t.CardIndex == cardId).FirstOrDefault();
                         dcbf.Balance -= balanceFree1;
-                        if (!Data_Card_Balance_FreeService.I.Update(dcbf, false))
+                        if (!Data_Card_Balance_FreeService.I.Update(dcbf))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                         }
@@ -1148,7 +1148,7 @@ namespace XXCloudService.Api.XCCloudH5
                     {
                         Data_Card_Balance dcb = Data_Card_BalanceService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex2 && t.CardIndex == cardId).FirstOrDefault();
                         dcb.Balance -= balance2;
-                        if (!Data_Card_BalanceService.I.Update(dcb, false))
+                        if (!Data_Card_BalanceService.I.Update(dcb))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                         }
@@ -1158,7 +1158,7 @@ namespace XXCloudService.Api.XCCloudH5
                     {
                         Data_Card_Balance_Free dcbf = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex2 && t.CardIndex == cardId).FirstOrDefault();
                         dcbf.Balance -= balanceFree2;
-                        if (!Data_Card_Balance_FreeService.I.Update(dcbf, false))
+                        if (!Data_Card_Balance_FreeService.I.Update(dcbf))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                         }
@@ -1186,7 +1186,7 @@ namespace XXCloudService.Api.XCCloudH5
                     fdd.OrderID = "";
                     fdd.Note = coinNote;
                     fdd.CheckDate = schedule.CheckDate;
-                    if (!Flw_DeviceDataService.I.Add(fdd, false))
+                    if (!Flw_DeviceDataService.I.Add(fdd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建投币记录失败");
                     }
@@ -1220,7 +1220,7 @@ namespace XXCloudService.Api.XCCloudH5
                     fmd.WorkStation = "";
                     fmd.CheckDate = schedule.CheckDate;
                     fmd.SyncFlag = 0;
-                    if (!Flw_MemberDataService.I.Add(fmd, false))
+                    if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                     }
@@ -1248,7 +1248,7 @@ namespace XXCloudService.Api.XCCloudH5
                         fdd.OrderID = "";
                         fdd.Note = coinNote;
                         fdd.CheckDate = schedule.CheckDate;
-                        if (!Flw_DeviceDataService.I.Add(fdd, false))
+                        if (!Flw_DeviceDataService.I.Add(fdd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建投币记录失败");
                         }
@@ -1282,7 +1282,7 @@ namespace XXCloudService.Api.XCCloudH5
                         fmd.WorkStation = "";
                         fmd.CheckDate = schedule.CheckDate;
                         fmd.SyncFlag = 0;
-                        if (!Flw_MemberDataService.I.Add(fmd, false))
+                        if (!Flw_MemberDataService.I.Add(fmd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                         }
@@ -1386,7 +1386,7 @@ namespace XXCloudService.Api.XCCloudH5
                     foodSale.TaxFee = 0;
                     foodSale.TaxTotal = 0;
                     foodSale.SyncFlag = 0;
-                    if (!Flw_Food_SaleService.I.Add(foodSale, false))
+                    if (!Flw_Food_SaleService.I.Add(foodSale))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水失败");
                     }
@@ -1398,7 +1398,7 @@ namespace XXCloudService.Api.XCCloudH5
                     saleDetail.ContainCount = 1;
                     saleDetail.Status = 1;
                     saleDetail.SyncFlag = 0;
-                    if (!Flw_Food_SaleDetailService.I.Add(saleDetail, false))
+                    if (!Flw_Food_SaleDetailService.I.Add(saleDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水明细失败");
                     }
@@ -1419,7 +1419,7 @@ namespace XXCloudService.Api.XCCloudH5
                     order.CheckDate = schedule.CheckDate;
                     order.Note = food.FoodName + "购买";
 
-                    bool ret = Flw_OrderService.I.Add(order, false);
+                    bool ret = Flw_OrderService.I.Add(order);
                     if (!ret)
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建订单失败");
@@ -1432,7 +1432,7 @@ namespace XXCloudService.Api.XCCloudH5
                     orderDetail.OrderFlwID = order.ID;
                     orderDetail.FoodFlwID = foodSale.ID;
                     orderDetail.GoodsCount = 1;
-                    if (!Flw_Order_DetailService.I.Add(orderDetail, false))
+                    if (!Flw_Order_DetailService.I.Add(orderDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建订单明细失败");
                     }

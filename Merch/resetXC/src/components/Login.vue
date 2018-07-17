@@ -2,7 +2,7 @@
   <div class="login">
     <el-row :gutter="20">
       <el-col :span="6" :offset="12">
-        <el-form ref="form"  label-width="80px">
+        <el-form ref="form" label-width="80px">
           <el-form-item label="用户名">
             <el-input v-model="name"></el-input>
           </el-form-item>
@@ -24,18 +24,34 @@
     name: 'Login',
     data() {
       return {
-        name:'',
-        password:'',
+        name: '',
+        password: '',
       }
     },
-    methods:{
+    methods: {
+      // onSubmit() {
+      // if(this.name=='lyong'&&this.password=='123456'){
+      //   this.$router.replace('/Home')
+      // }
+      //   this.$axios.get('api/user', {
+      //     userName: this.name,
+      //     password: this.password
+      //   })
+      //     .then(function (response) {
+      //       console.log(response);
+      //     })
+      //     .catch(function (error) {
+      //       console.log(error);
+      //     });
+      // }
       onSubmit() {
-        // if(this.name=='lyong'&&this.password=='123456'){
-        //   this.$router.replace('/Home')
-        // }
         this.$axios.post('http://192.168.1.73:8080/XCCloud/Login?action=CheckUser', {
           userName: this.name,
           password: this.password
+        }, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         })
           .then(function (response) {
             console.log(response);

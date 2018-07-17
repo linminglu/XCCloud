@@ -100,7 +100,7 @@ namespace XCCloudService.Business.XCCloud
             if (balanceFree == null)
             {
                 balanceFree.Balance += currFreeDetail.qty;
-                if (!Data_Card_Balance_FreeService.I.Update(balanceFree, false))
+                if (!Data_Card_Balance_FreeService.I.Update(balanceFree))
                 {
                     return false;
                 }
@@ -115,7 +115,7 @@ namespace XCCloudService.Business.XCCloud
                 balanceFree.BalanceIndex = currFreeDetail.balanceIndex;
                 balanceFree.Balance = currFreeDetail.qty;
                 balanceFree.UpdateTime = DateTime.Now;
-                if (!Data_Card_Balance_FreeService.I.Add(balanceFree, false))
+                if (!Data_Card_Balance_FreeService.I.Add(balanceFree))
                 {
                     return false;
                 }
@@ -126,7 +126,7 @@ namespace XCCloudService.Business.XCCloud
                     sl.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                     sl.CardBalanceID = balanceFree.ID;
                     sl.StoreID = sid;
-                    if (!Data_Card_Balance_StoreListService.I.Add(sl, false))
+                    if (!Data_Card_Balance_StoreListService.I.Add(sl))
                     {
                         return false;
                     }

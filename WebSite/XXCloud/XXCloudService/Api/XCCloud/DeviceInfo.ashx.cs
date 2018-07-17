@@ -838,7 +838,7 @@ namespace XXCloudService.Api.XCCloud
                 flw_Game_Watch.MerchID = merchId;
                 flw_Game_Watch.StoreID = storeId;
                 flw_Game_Watch.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                if (!flw_Game_WatchService.Add(flw_Game_Watch, false))
+                if (!flw_Game_WatchService.Add(flw_Game_Watch))
                 {
                     errMsg = "保存码表抄账信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

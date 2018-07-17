@@ -10,6 +10,7 @@ import axios from 'axios'
 Vue.use(ElemerntUI)
 Vue.prototype.$axios=axios
 Vue.config.productionTip = false
+// Vue.prototype.HOST='/api'
 
 /* eslint-disable no-new */
 new Vue({
