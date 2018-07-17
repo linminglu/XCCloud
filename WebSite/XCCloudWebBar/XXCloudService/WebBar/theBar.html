@@ -12,6 +12,9 @@
 	<link rel="stylesheet" href="css/swiper.min.css">
 	<link href="css/bootstrap-table.css" rel="stylesheet">
     <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
+    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
     <style>
     .cardLevelList{margin-bottom:3em;}
     .navLeftS{width: 180px;height:4em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
@@ -21,7 +24,6 @@
     .operationBtn{text-align: right;margin: 2em;padding:0 1em;}
     .operationBtn button{display: inline-block;width: 10em;margin: 0 0.5em;}
     .operationBtn button:hover{display: inline-block;width: 10em;margin: 0 0.5em;}
-
     .tableCenter{background-color: #fefefe;}
     .tableCenter th{text-align: center;}
     .table>thead>tr>th {vertical-align: middle;}
@@ -37,6 +39,7 @@
     .MtcList ul li .MtcListTxt h4{font-size: 1em;}
     .MtcList ul li .MtcListTxt p{margin-top: 0.2em;font-size: 1em;font-weight: 400;}
     .MtcList .swiper-wrapper{padding: 2em auto}
+    .screeningsty{margin: 0.8em 1em;height: 2.5em;line-height: 1.4em;}
     </style>
 </head>
 <body>
@@ -45,11 +48,11 @@
 		<!--导航-->
 		<div class="navbar-collapse collapse">
 			<div class="navbar-header">
-				<a href="index.html"><img src="images/logo.png"></a>
+				<a href="theBar.html"><img src="images/logo.png"></a>
 			</div>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="javascript:void(0);"><!--<span class="glyphicon glyphicon-menu-down"></span>&nbsp;&nbsp;-->现金:￥10500</a></li>
-				<li class="active"><a href="index.html">{{userData.storeName}}</a></li>
+				<li><a href="javascript:void(0);"></a></li>
+				<li class="active"><a href="theBar.html">{{userData.storeName}}</a></li>
 				<li class="dropdown">
 					<a data-toggle="dropdown"  aria-expanded="false">
 						<!--未读消息 (0)-->
@@ -58,10 +61,7 @@
                         <!--<span class="badge">1</span>-->
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="index.html">1</a></li>
-						<li><a href="index.html">1</a></li>
-						<li><a href="index.html">1</a></li>
-						<li><a href="index.html">1</a></li>
+						<li><a href="theBar.html">1</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
@@ -71,11 +71,9 @@
 						<!--<span class="caret"></span>-->
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="dLabel">
-						<li><a href="index.html"><span class="glyphicon glyphicon-screenshot"></span>前台首页</a></li>
-						<li><a href="index.html"><span class="glyphicon glyphicon-user"></span>个人主页</a></li>
-						<li><a href="index.html"><span class="glyphicon glyphicon-cog"></span>个人设置</a></li>
-						<li><a href="index.html"><span class="glyphicon glyphicon-credit-card"></span>账户中心</a></li>
-						<li><a href="index.html"><span class="glyphicon glyphicon-heart"></span>我的收藏</a></li>
+						<li><a href="theBar.html"><span class="glyphicon glyphicon-cog"></span>个人设置</a></li>
+						<li><a href="theBar.html"><span class="glyphicon glyphicon-credit-card"></span>账户中心</a></li>
+						<li><a href="theBar.html"><span class="glyphicon glyphicon-heart"></span>我的收藏</a></li>
 					</ul>
 				</li>
 				<div class="bbs text-right">
@@ -642,9 +640,8 @@
 				</div>
 				<div class="modal-body row">
                     <div class="col-lg-12 col-md-12">
-                        <div class="input-group date form_date col-md-4 menu-style" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
+                        <!-- <div class="input-group date form_date col-md-4 menu-style" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
                             <span class="input-group-addon addonWidth">开始日期：</span>
-                            <!-- v-model="billing.stratTime" v-model="billing.endTime" -->
                             <input class="form-control" value="" type="text" id="billingStratTime" readonly>
                             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                         </div>
@@ -652,10 +649,22 @@
                             <span class="input-group-addon addonWidth">结束日期：</span>
                             <input class="form-control" value="" type="text" id="billingEndTime" readonly>
                             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div> -->
+                        <div class="input-group col-lg-4 col-md-6">
+                            <span class="input-group-addon addonWidth">日期：</span>
+                            <date-picker type="daterange" split-panels placeholder="Select date" format="yyyy-MM-dd" style="width: 200px" @on-change="timechoose" editable="true"></date-picker>
                         </div>
+
                         <div class="input-group col-md-3 menu-style"><button type="button" class="btn btn-warning" :disabled="loading" @click="billingRecord('-1')">查询</button></div>
                     </div>
 					<div class="col-lg-12 col-md-12">
+                        <i-table highlight-row :columns="billing.columns" :data="billing.listDataShow"></i-table>
+                        <div style="margin: 10px;overflow: hidden">
+                            <div style="float: right;">
+                                <Page :total="billing.dataCount" :page-size="billing.pageSize" show-total class="paging" @on-change="billingChangepage"></Page>
+                            </div>
+                        </div>
+                       
                         <table class="table table-bordered" id="table">
                             <thead>
                                 <tr>
@@ -895,7 +904,13 @@
 						<!--<div class="swiper-button-prev"></div>-->
 					</div>
 					<div class="screeningTitle" v-if="screeningTitle">
-						<select class="form-control">
+                        <i-select v-model="sallData.selectValue1" class="screeningsty">
+                            <i-option v-for="item in sallData.optionList1" :value="item.foodTypeId" :key="item.foodTypeId">{{ item.foodTypeName }}</i-option>
+                        </i-select>
+                        <i-select v-model="sallData.selectValue2" class="screeningsty">
+                            <i-option v-for="item in sallData.optionList2" :value="item.ProjectId" :key="item.ProjectId">{{ item.foodTypeName }}</i-option>
+                        </i-select>
+						<!-- <select class="form-control">
 							<option value="-1">全部</option>
 							<option v-for="(item,index) in saleTitle" :value="index">
 								{{item.foodTypeName}}
@@ -906,10 +921,10 @@
 							<option v-for="(item,index) in saleTitle" :value="index">
 								{{item.foodTypeName}}
 							</option>
-						</select>
-						<input class="form-control"   placeholder="输入最小值">
-						<input class="form-control"   placeholder="输入最大值">
-						<button type="button" class="btn btn-primary" :disabled="loading" @screening('All')>查询</button>
+						</select> -->
+						<input class="form-control screeningsty" v-model="sallData.inputValue1" placeholder="输入最小值">
+						<input class="form-control screeningsty" v-model="sallData.inputValue2" placeholder="输入最大值">
+						<button type="button" class="btn btn-primary" :disabled="loading" @click="screening('All')">查询</button>
 					</div>
 					<div class="saleContent">
 						<div class="treeBox" v-if="treeShow">
@@ -1316,7 +1331,7 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/swiper.min.js"></script>
 <!-- 引入 Vue-->
-<script src="js/vue.js"></script>
+<!-- <script src="js/vue.js"></script> -->
 <script src="js/axios.min.js"></script>
 <!-- 引入 bootstrap-table -->
 <script src="js/bootstrap-table.js"></script>
@@ -1350,6 +1365,14 @@
             screeningTitle: false,
             shopData:[],
             cardList:[],
+            sallData:{
+                selectValue1:"",
+                optionList1:[],
+                selectValue2:"",
+                optionList2:[],
+                inputValue1:[],
+                inputValue2:[],
+            },
 			dataObj:[],
             userToken:'',
             storeId:'',
@@ -1421,8 +1444,12 @@
             },
             billing:{
                 index:"",
-                stratTime:"",
-                endTime:"",
+                dataTime:"",
+                billingData:[],
+                pageSize:6,
+                dataCount:0,
+                columns:[{title: '变更时间',key: 'OPTime'},{title: '变更类别',key: 'OperationType'},{title: '变更前',key: 'AfterBalance'},{title: '变更值',key: 'ChangeValue'},{title: '变更后',key: 'BeforeBalance'},{title: '变更渠道',key: 'ChannelType'},{title: '变更终端',key: 'DeviceName'},{title: '营业日期',key: 'CheckDate'},{title: '备注',key: 'Note'}],
+                listDataShow:[]
             },
             onSwitch0:false,
             onSwitch1:false,
@@ -1887,7 +1914,11 @@
 						console.log(that.inputMoney%that.fastMoney!=0)
 						console.log(that.inputAmount%that.fastAmount!=0)
                 if(that.inputMoney == 0 || that.inputAmount == 0 || that.inputMoney%that.fastMoney!=0 ||that.inputAmount%that.fastAmount!=0){
-                    alert(1111)
+                    that.msg == "请输入对应的倍数！"
+                    $('#myModal').modal('show');
+                    setTimeout(function () {
+                        $('#myModal').modal('hide');
+                    }, 2000);
                 }else{
                     if(that.onSwitch7){
                         var saleCoinType = "1"
@@ -2364,8 +2395,12 @@
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        that.cardList = res.data.result_data;
-                        $('#cardList').modal('show');
+                        if(res.data.result_data.length == 0){
+                            that.$Message.warning('没有查询到会员卡');
+                        }else{
+                            that.cardList = res.data.result_data;
+                            $('#cardList').modal('show');
+                        }
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -2401,8 +2436,12 @@
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
-                            that.cardList = res.data.result_data;
-                            $('#cardList').modal('show');
+                            if(res.data.result_data.length == 0){
+                                that.$Message.warning('没有查询到会员卡');
+                            }else{
+                                that.cardList = res.data.result_data;
+                                $('#cardList').modal('show');
+                            }
                         }
                     }).catch(function (err) {
                         console.log(err);
@@ -2692,25 +2731,41 @@
                         that.billing.index = index;
                     }
                     that.loading = true;
-
-                    var sDate = $("#billingStratTime").val();
-                    var eDate = $("#billingEndTime").val();
-                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,balanceIndex:that.balanceData[that.billing.index].BalanceIndex,sDate:sDate,eDate:eDate};
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,balanceIndex:that.balanceData[that.billing.index].BalanceIndex,sDate:that.billing.dataTime[0],eDate:that.billing.dataTime[1]};
                     console.log(obj);
                     axios.post('/XCCloud/Member?action=getBalanceChangeList', obj).then(function (res) {	
                         console.log(res.data);
                         that.loading = false
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
-                            $('#billingRecord').modal('show');
-                            $("#table").bootstrapTable('destroy');
-                            var tableData = res.data.result_data.Items;
-                            createTable(tableData,"#table")
+                            that.billing.billingData=res.data.result_data;
+                            that.billing.dataCount = res.data.result_data.length;
+                            if(that.billing.dataCount < that.billing.pageSize){
+                                that.billing.listDataShow = that.billing.listData;
+                            }else{
+                                that.billing.listDataShow = that.billing.billingData.slice(0,that.billing.pageSize);
+                            }
                         }
                     }).catch(function (err) {
                         console.log(err);
                     });
                 }                              
+            },
+//          挖掘对应余额流水时间选择
+            timechoose:function(e){
+                console.log(e);
+                if(e[0] == ""){
+                    this.billing.dataTime = ["",""];
+                }else{
+                    this.billing.dataTime = e;
+                }
+            },
+//          余额流水分页按钮
+            billingChangepage:function(index){
+                var that = this;
+                var _start = ( index - 1 ) * that.billing.pageSize;
+                var _end = index * that.billing.pageSize;
+                that.billing.listDataShow = that.billing.billingData.slice(_start,_end);
             },
 //			销售列表
             salesAll:function () {
@@ -2727,20 +2782,11 @@
                             that.saleTitle = res.data.result_data.foodTypeMainList;
                             that.foodTypeGoodList = res.data.result_data.foodTypeGoodList;
                             that.foodTypeTicketList = res.data.result_data.foodTypeTicketList;
-//                            setTimeout(function () {
-//                                var swiper = new Swiper('.swiperSalesTitle', {
-//                                    /*pagination: '.swiper-pagination',*/
-//                                    nextButton: '.swiper-button-next',
-//                                    prevButton: '.swiper-button-prev',
-//                                    slidesPerView: 6,
-//                                    centeredSlides: false,
-//                                    paginationClickable: true,
-//                                    spaceBetween: 30
-//                                });
-//                            }, 200);
+                            console.log(that.sallData.optionList1)
+                            console.log(res.data.result_data.foodTypeMainList)
+                            that.sallData.optionList1 = res.data.result_data.foodTypeMainList;
                             that.$nextTick(function () {
                                 var foodTypeAll = "-2";
-//                                console.log(that.saleTitle.length);
                                 for(var i = -1;i<that.saleTitle.length-1;i++){
                                     foodTypeAll = foodTypeAll+","+i;
 								}

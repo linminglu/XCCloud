@@ -727,7 +727,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             //新增
                             data_FoodInfo.FoodState = (int)FoodState.Valid;
-                            if (!Data_FoodInfoService.I.Add(data_FoodInfo, true, true, merchId, merchSecret))
+                            if (!Data_FoodInfoService.I.Add(data_FoodInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "添加套餐信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -742,7 +742,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             //修改
-                            if (!Data_FoodInfoService.I.Update(data_FoodInfo, true, true, merchId, merchSecret))
+                            if (!Data_FoodInfoService.I.Update(data_FoodInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "修改套餐信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

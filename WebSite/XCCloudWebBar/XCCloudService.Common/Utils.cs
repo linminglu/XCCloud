@@ -1825,7 +1825,7 @@ namespace XCCloudWebBar.Common
         /// <param name="identity"></param>
         /// <param name="merchSecret"></param>
         /// <returns></returns>
-        public static string GetClearText(this object t, bool identity, string merchSecret)
+        public static string GetClearText(this object t, string[] pkList, string merchSecret)
         {
             SortedDictionary<string, string> fields = new SortedDictionary<string, string>();
             Type type = t.GetType();
@@ -1833,9 +1833,12 @@ namespace XCCloudWebBar.Common
             {
                 if (pi.Name.Equals("Verifiction", StringComparison.OrdinalIgnoreCase))
                     continue;
-                if (identity && pi.Name.Equals("ID", StringComparison.OrdinalIgnoreCase))
-                    continue;
-                if (identity && type.Name.Equals("Data_MemberLevel", StringComparison.OrdinalIgnoreCase) && pi.Name.Equals("MemberLevelID", StringComparison.OrdinalIgnoreCase))
+                //if (identity && pi.Name.Equals("ID", StringComparison.OrdinalIgnoreCase))
+                //    continue;
+                //if (identity && type.Name.Equals("Data_MemberLevel", StringComparison.OrdinalIgnoreCase) && pi.Name.Equals("MemberLevelID", StringComparison.OrdinalIgnoreCase))
+                //    continue;
+                //Int型主键默认为自增长
+                if (pi.PropertyType.FullName.Contains("Int32") && (pkList != null && pkList.Any(a => a.Equals(pi.Name, StringComparison.OrdinalIgnoreCase) && pkList.Length == 1)))
                     continue;
                 var value = t.GetPropertyValue(pi.Name);
                 if (!value.IsNull())
@@ -1848,7 +1851,7 @@ namespace XCCloudWebBar.Common
                     }
                     else if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(DateTime))
                     {
-                        value = Utils.ConvertFromDatetime(value.Todatetime(), "yyyy-MM-dd HH:mm:ss");
+                        value = Utils.ConvertFromDatetime(value.Todatetime(), "yyyy-MM-dd HH:mm:ss.fff");
                     }
 
                     fields.Add(pi.Name, value.ToString());

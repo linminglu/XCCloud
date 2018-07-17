@@ -726,6 +726,13 @@
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
+
+        function do_getBalanceType() {
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken };
+            var url = "/XCCloud/Foods?action=getBalanceType";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
         
     </script>
         
@@ -852,6 +859,8 @@
         <input id="Buttonorder_do_getOrdersDetail" type="button" value="do_getOrderDetailContain(获取订单详情)" onclick="do_getOrderDetailContain()" /> 
         &nbsp;&nbsp;&nbsp;&nbsp;
         <input id="Button_Food_3" type="button" value="do_getOrderSalePay(退餐)" onclick="do_getOrderSalePay()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="Button_Food_5" type="button" value="do_getBalanceType(获取余额类型)" onclick="do_getBalanceType()" />
     </div>
 
     <div title="discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">

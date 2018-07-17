@@ -21,7 +21,7 @@ namespace XCCloudWebBar.DAL.Base
         protected string dbContextName;
         private DbContext dbContext;        
 
-        private void MakeVerifiction(bool identity, ref T t, T oldT = null)
+        private void MakeVerifiction(ref T t, T oldT = null)
         {
             try
             {
@@ -43,12 +43,16 @@ namespace XCCloudWebBar.DAL.Base
                         }
                     }
 
+                    //获取表主键组
+                    //var table = dbContext.GetType().GetProperty(t.GetType().Name).GetValue(dbContext, null);
+                    var pkList = dbContext.GetPrimaryKey(t.GetType());
+
                     //先校验                    
                     var str = string.Empty;
                     var md5 = string.Empty;
                     if (oldT != null)
                     {
-                        str = oldT.GetClearText(identity, merchSecret);
+                        str = oldT.GetClearText(pkList, merchSecret);
                         md5 = Utils.MD5(str);                        
                         if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
                         {
@@ -60,7 +64,7 @@ namespace XCCloudWebBar.DAL.Base
                     }
 
                     //更新校验码                    
-                    str = t.GetClearText(identity, merchSecret);
+                    str = t.GetClearText(pkList, merchSecret);
                     md5 = Utils.MD5(str);
                     //LogHelper.SaveLog(str);
                     //LogHelper.SaveLog(md5);
@@ -128,24 +132,24 @@ namespace XCCloudWebBar.DAL.Base
             return exists;
         }
 
-        public void AddModel(T t, bool identity = true)
+        public void AddModel(T t)
         {
-            MakeVerifiction(identity, ref t);
+            MakeVerifiction(ref t);
 
             dbContext.Set<T>().Add(t);
         }
         
-        public bool Add(T t, bool identity = true)
+        public bool Add(T t)
         {
-            MakeVerifiction(identity, ref t);
+            MakeVerifiction(ref t);
 
             dbContext.Set<T>().Add(t);
             return dbContext.SaveChanges() > 0;
         }
 
-        public bool Update(T t, bool identity = true)
+        public bool Update(T t)
         {
-            MakeVerifiction(identity, ref t, (T)GetEntityInDatabase(t));
+            MakeVerifiction(ref t, (T)GetEntityInDatabase(t));
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;
@@ -153,9 +157,9 @@ namespace XCCloudWebBar.DAL.Base
             return result;
         }
 
-        public void UpdateModel(T t, bool identity = true)
+        public void UpdateModel(T t)
         {
-            MakeVerifiction(identity, ref t, (T)GetEntityInDatabase(t));
+            MakeVerifiction(ref t, (T)GetEntityInDatabase(t));
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;

@@ -21,25 +21,25 @@ namespace XCCloudService.BLL.Base
  
         public abstract void SetDal();
 
-        public void AddModel(T t, bool identity = true)
+        public void AddModel(T t)
         {
-            Dal.AddModel(t, identity);
+            Dal.AddModel(t);
         }
-        public void UpdateModel(T t, bool identity = true)
+        public void UpdateModel(T t)
         {
-            Dal.UpdateModel(t, identity);
+            Dal.UpdateModel(t);
         }
         public void DeleteModel(T t)
         {
             Dal.DeleteModel(t);
         }
-        public bool Add(T t, bool identity = true, bool syncData = false, string merchId = "", string merchSecret = "")
+        public bool Add(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
-            return Dal.Add(t, identity, syncData, merchId, merchSecret);
+            return Dal.Add(t, syncData, merchId, merchSecret);
         }
-        public bool Update(T t, bool identity = true, bool syncData = false, string merchId = "", string merchSecret = "")
+        public bool Update(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
-            return Dal.Update(t, identity, syncData, merchId, merchSecret);
+            return Dal.Update(t, syncData, merchId, merchSecret);
         }
         public bool Delete(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {

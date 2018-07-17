@@ -100,7 +100,7 @@ namespace XXCloudService.Api.XCCloudH5
                         card.RepeatCode = new Random(Guid.NewGuid().GetHashCode()).Next(1, 256);
                         card.IsLock = 0;
                         card.CardStatus = 1;
-                        bool ret = Data_Member_CardService.I.Add(card, false);
+                        bool ret = Data_Member_CardService.I.Add(card);
                         if (!ret)
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化会员卡失败");
@@ -124,7 +124,7 @@ namespace XXCloudService.Api.XCCloudH5
                             cardStore.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                             cardStore.CardID = card.ID;
                             cardStore.StoreID = item.storeId;
-                            if (!Data_Member_Card_StoreService.I.Add(cardStore, false))
+                            if (!Data_Member_Card_StoreService.I.Add(cardStore))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化会员卡失败");
                             }
@@ -144,7 +144,7 @@ namespace XXCloudService.Api.XCCloudH5
                             balance.BalanceIndex = item.ID;
                             balance.Balance = 0;
                             balance.UpdateTime = DateTime.Now;
-                            if (!Data_Card_BalanceService.I.Add(balance, false))
+                            if (!Data_Card_BalanceService.I.Add(balance))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化余额失败");
                             }
@@ -156,7 +156,7 @@ namespace XXCloudService.Api.XCCloudH5
                             balanceFree.BalanceIndex = item.ID;
                             balanceFree.Balance = 0;
                             balanceFree.UpdateTime = DateTime.Now;
-                            if (!Data_Card_Balance_FreeService.I.Add(balanceFree, false))
+                            if (!Data_Card_Balance_FreeService.I.Add(balanceFree))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化余额失败");
                             }
@@ -170,7 +170,7 @@ namespace XXCloudService.Api.XCCloudH5
                                 balanceStore.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                                 balanceStore.CardBalanceID = balance.ID;
                                 balanceStore.StoreID = bs.StoreId;
-                                if (!Data_Card_Balance_StoreListService.I.Add(balanceStore, false))
+                                if (!Data_Card_Balance_StoreListService.I.Add(balanceStore))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化余额失败");
                                 }
@@ -179,7 +179,7 @@ namespace XXCloudService.Api.XCCloudH5
                                 balanceFreeStore.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                                 balanceFreeStore.CardBalanceID = balanceFree.ID;
                                 balanceFreeStore.StoreID = bs.StoreId;
-                                if (!Data_Card_Balance_StoreListService.I.Add(balanceFreeStore, false))
+                                if (!Data_Card_Balance_StoreListService.I.Add(balanceFreeStore))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化余额失败");
                                 }
@@ -196,7 +196,7 @@ namespace XXCloudService.Api.XCCloudH5
                         right.AllowSaveCoin = 1;
                         right.AllowFreeCoin = 1;
                         right.AllowRenew = 1;
-                        if (!Data_Card_RightService.I.Add(right, false))
+                        if (!Data_Card_RightService.I.Add(right))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化会员卡权限失败");
                         }
@@ -207,7 +207,7 @@ namespace XXCloudService.Api.XCCloudH5
                             rightStore.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                             rightStore.CardRightID = right.ID;
                             rightStore.StoreID = item.storeId;
-                            if (!Data_Card_Right_StoreListService.I.Add(rightStore, false))
+                            if (!Data_Card_Right_StoreListService.I.Add(rightStore))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化会员卡权限失败");
                             }

@@ -26,13 +26,15 @@ namespace XCCloudWebBar.BLL.XCCloud
         /// <param name="t"></param>
         /// <param name="identity"></param>
         /// <returns></returns>
-        public static bool CheckVerifiction(this object t, bool identity)
+        public static bool CheckVerifiction(this object t)
         {
             try
             {
                 //检查该实体是否需要校验
                 if (t.ContainProperty("Verifiction"))
                 {
+                    var dbContext = DbContextFactory.CreateByModelNamespace("XCCloudService.Model.XCCloud");
+
                     //获取校验码
                     var verifiction = Convert.ToString(t.GetPropertyValue("Verifiction"));
 
@@ -43,15 +45,17 @@ namespace XCCloudWebBar.BLL.XCCloud
                         var merchId = Convert.ToString(t.GetPropertyValue("MerchID"));
                         if (!merchId.IsNull())
                         {
-                            var dbContext = DbContextFactory.CreateByModelNamespace("XCCloudWebBar.Model.XCCloud");
                             merchSecret = dbContext.Set<Base_MerchantInfo>().Where(w => w.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                                 .Select(o => o.MerchSecret).FirstOrDefault() ?? string.Empty;
                         }
                     }
+
+                    //获取表主键组
+                    var pkList = dbContext.GetPrimaryKey(t.GetType());
                     
                     var str = string.Empty;
                     var md5 = string.Empty;
-                    str = t.GetClearText(identity, merchSecret);
+                    str = t.GetClearText(pkList, merchSecret);
                     md5 = Utils.MD5(str);
                     if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
                     {

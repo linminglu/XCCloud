@@ -73,7 +73,10 @@ namespace DSS
                         {
                             if (v.ToString() != "" && pi.Name != "ID")
                             {
-                                sql += pi.Name + "='" + v.ToString() + "',";
+                                if (pi.PropertyType.FullName.Contains("DateTime"))
+                                    sql += pi.Name + "='" + Convert.ToDateTime(v).ToString("yyyy-MM-dd HH:mm:ss.fff") + "',";
+                                else
+                                    sql += pi.Name + "='" + v.ToString() + "',";
                             }
                         }
                         else
@@ -113,10 +116,14 @@ namespace DSS
         /// <returns></returns>
         string CovertDecimalValue(string data)
         {
-            string v = data.TrimEnd('0');
-            if (v.Substring(v.Length - 1, 1) == ".")
-                v = v.Substring(0, v.Length - 1);
-            return v;
+            if (data != "0")
+            {
+                string v = data.TrimEnd('0');
+                if (v.Substring(v.Length - 1, 1) == ".")
+                    v = v.Substring(0, v.Length - 1);
+                return v;
+            }
+            return data;
         }
         public bool CheckVerifiction(object o, string secret, bool Identity = false)
         {
@@ -140,6 +147,8 @@ namespace DSS
                                 {
                                     list.Add(pi.Name, CovertDecimalValue(v.ToString()));
                                 }
+                                else if (pi.PropertyType.Name.ToLower() == "datetime")
+                                    list.Add(pi.Name, Convert.ToDateTime(v).ToString("yyyy-MM-dd HH:mm:ss.fff"));
                                 else
                                     list.Add(pi.Name, v.ToString());
                             }

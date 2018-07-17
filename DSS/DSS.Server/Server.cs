@@ -349,7 +349,7 @@ namespace DSS.Server
                                         {
                                             //签名验证通过
                                             ClearCommandSend(response.StoreID, response.SN);
-                                            ClearDataSyncBUF(response.SN);
+                                            ClearDataSyncBUF(response.StoreID, response.SN);
                                         }
                                     }
                                     break;
@@ -522,13 +522,13 @@ namespace DSS.Server
         {
             DataModel model = new DataModel();
             List<object> dataList = new List<object>();
-            if (model.CovertToDataModel("select * from Sync_DataList where StoreID='" + storeID + "'", typeof(DSS.Table.Sync_DataList), out dataList))
+            if (model.CovertToDataModel("select * from Sync_DataList where StoreID='" + storeID + "'and SyncFlag=0", typeof(DSS.Table.Sync_DataList), out dataList))
             {
                 foreach (DSS.Table.Sync_DataList o in dataList)
                 {
                     string secret = GetAppSecretFromDict(o.StoreID);
-                    CloudDataSync(o.MerchID, secret, o.TableName, o.IDValue, o.SyncType, false);
-                    Console.WriteLine("离线同步：table=" + o.TableName + "  id=" + o.IDValue);
+                    CloudDataSync(o.MerchID, secret, o.TableName, o.IDValue, o.SyncType, false, o.SN);
+                    Console.WriteLine("离线同步：storeID=" + storeID + "    table=" + o.TableName + "  id=" + o.IDValue + "   sn=" + o.SN);
                 }
             }
         }
@@ -538,16 +538,16 @@ namespace DSS.Server
         /// <param name="storeID"></param>
         /// <param name="sn"></param>
         /// <param name="action"></param>
-        void ClearDataSyncBUF(string sn)
+        void ClearDataSyncBUF(string storeID, string sn)
         {
             DataModel model = new DataModel();
             object o = new DSS.Table.Sync_DataList();
-            if (model.CovertToDataModel("select * from Sync_DataList where SN='" + sn + "' and SyncFlag=0", ref o))
+            if (model.CovertToDataModel("select * from Sync_DataList where StoreID='" + storeID + "' and SN='" + sn + "' and SyncFlag=0", ref o))
             {
                 DSS.Table.Sync_DataList d = (DSS.Table.Sync_DataList)o;
                 d.SyncFlag = 1;
                 d.SyncTime = DateTime.Now;
-                model.Update(d, "where sn='" + sn + "'");
+                model.Update(d, "where sn='" + sn + "' and storeid='" + storeID + "'");
             }
         }
         /// <summary>
@@ -558,7 +558,7 @@ namespace DSS.Server
         /// <param name="tableName">操作表名</param>
         /// <param name="idValue">主键值</param>
         /// <param name="action">0 新增 1 修改 2 删除</param>
-        public void CloudDataSync(string merchID, string secret, string tableName, string idValue, int action, bool writeBuf = true)
+        public void CloudDataSync(string merchID, string secret, string tableName, string idValue, int action, bool writeBuf = true, string sn = "")
         {
             DataModel model = new DataModel();
             string sql = "select * from " + tableName + " where id='" + idValue + "'";
@@ -575,7 +575,10 @@ namespace DSS.Server
             item.IDValue = idValue;
             item.JsonData = jsonString;
             item.ReSendTimes = 0;
-            item.SN = Guid.NewGuid().ToString().Replace("-", "").ToLower();
+            if (sn == "")
+                item.SN = Guid.NewGuid().ToString().Replace("-", "").ToLower();
+            else
+                item.SN = sn;
             item.SyncType = action;
             item.TableName = tableName;
 
@@ -605,6 +608,7 @@ namespace DSS.Server
                     {
                         //心跳没有超时，表示门店同步服务在线允许发送
                         SetCommandSend(storeID, item);
+                        Console.WriteLine("向门店发送数据：" + storeID);
                     }
                 }
             }

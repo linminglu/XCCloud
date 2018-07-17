@@ -137,13 +137,14 @@ namespace DSS
             //JSON数据格式转换
             object o = jss.Deserialize(jsonText, t);
             GMTCheck(ref o);
+            bool identity = GetTableIdentity(o);
             DataModel model = new DataModel();
             //计算MD5校验，判断数据是否合法
-            if (!model.CheckVerifiction(o, secret)) return false;
+            if (!model.CheckVerifiction(o, secret, identity)) return false;
             //添加数据
             model.Add(o);
             return true;
-        }        
+        }
         public bool SyncUpdateData(string tableName, string idValue, string jsonText, string secret)
         {
             JavaScriptSerializer jss = new JavaScriptSerializer();
@@ -151,11 +152,13 @@ namespace DSS
             Type t = Type.GetType("DSS.Table." + tableName);
             //JSON数据格式转换
             object o = jss.Deserialize(jsonText, t);
+            GMTCheck(ref o);
+            bool identity = GetTableIdentity(o);
             DataModel model = new DataModel();
             //计算MD5校验，判断数据是否合法
-            if (!model.CheckVerifiction(o, secret)) return false;
+            if (!model.CheckVerifiction(o, secret, identity)) return false;
             //修改数据
-            model.Update(o, idValue);
+            model.Update(o, "where id='" + idValue + "'");
             return true;
         }
         public bool SyncDeleteData(string tableName, string idValue)
@@ -163,6 +166,19 @@ namespace DSS
             DataModel model = new DataModel();
             model.Delete(tableName, idValue);
             return true;
+        }
+
+        bool GetTableIdentity(object o)
+        {
+            Type t = o.GetType();
+            foreach (PropertyInfo pi in t.GetProperties())
+            {
+                if (pi.Name.ToLower() == "id")
+                {
+                    return pi.PropertyType.Name.ToLower().Contains("int");
+                }
+            }
+            return false;
         }
     }
 }

@@ -9,11 +9,11 @@ namespace XCCloudService.DAL.IDAL
 {
     public partial interface IBaseDAL<T> where T : class, new()
     {
-        void AddModel(T t, bool identity = true);
-        void UpdateModel(T t, bool identity = true);
+        void AddModel(T t);
+        void UpdateModel(T t);
         void DeleteModel(T t);
-        bool Add(T t, bool identity = true, bool syncData = false, string merchId = "", string merchSecret = "");
-        bool Update(T t, bool identity = true, bool syncData = false, string merchId = "", string merchSecret = "");
+        bool Add(T t, bool syncData = false, string merchId = "", string merchSecret = "");
+        bool Update(T t, bool syncData = false, string merchId = "", string merchSecret = "");
         bool Delete(T t, bool syncData = false, string merchId = "", string merchSecret = "");
         bool SaveChanges();
         int GetCount(Expression<Func<T, bool>> whereLambda);

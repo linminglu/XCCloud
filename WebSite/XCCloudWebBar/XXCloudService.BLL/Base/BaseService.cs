@@ -21,25 +21,25 @@ namespace XCCloudWebBar.BLL.Base
  
         public abstract void SetDal();
 
-        public void AddModel(T t, bool identity = true)
+        public void AddModel(T t)
         {
-            Dal.AddModel(t, identity);
+            Dal.AddModel(t);
         }
-        public void UpdateModel(T t, bool identity = true)
+        public void UpdateModel(T t)
         {
-            Dal.UpdateModel(t, identity);
+            Dal.UpdateModel(t);
         }
         public void DeleteModel(T t)
         {
             Dal.DeleteModel(t);
         }
-        public bool Add(T t, bool identity = true)
+        public bool Add(T t)
         {
-            return Dal.Add(t, identity);
+            return Dal.Add(t);
         }
-        public bool Update(T t, bool identity = true)
+        public bool Update(T t)
         {
-            return Dal.Update(t, identity);
+            return Dal.Update(t);
         }
         public bool Delete(T t)
         {

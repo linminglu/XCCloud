@@ -26,7 +26,7 @@ namespace XCCloudService.BLL.XCCloud
         /// <param name="t"></param>
         /// <param name="identity"></param>
         /// <returns></returns>
-        public static bool CheckVerifiction(this object t, bool identity)
+        public static bool CheckVerifiction(this object t)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace XCCloudService.BLL.XCCloud
                     
                     var str = string.Empty;
                     var md5 = string.Empty;
-                    str = t.GetClearText(identity, pkList, merchSecret);
+                    str = t.GetClearText(pkList, merchSecret);
                     md5 = Utils.MD5(str);
                     if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
                     {

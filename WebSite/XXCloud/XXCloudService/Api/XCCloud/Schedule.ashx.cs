@@ -95,7 +95,7 @@ namespace XXCloudService.Api.XCCloud
                         var currScheduleModel = flw_ScheduleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.CheckDate == currCheckDate && p.State == (int)ScheduleState.Starting).FirstOrDefault();
                         currScheduleModel.State = (int)ScheduleState.Submitted;
                         currScheduleModel.ShiftTime = DateTime.Now;
-                        flw_ScheduleService.UpdateModel(currScheduleModel, false);
+                        flw_ScheduleService.UpdateModel(currScheduleModel);
                         
                         //统计每个员工的订单现金、网络支付金额
                         var scheduleId = currScheduleModel.ID;
@@ -118,7 +118,7 @@ namespace XXCloudService.Api.XCCloud
                             var currScheduleUserInfoModel = flw_Schedule_UserInfoService.GetModels(p => p.ScheduleID.Equals(scheduleId, StringComparison.OrdinalIgnoreCase) && p.UserID == userId).FirstOrDefault();
                             currScheduleUserInfoModel.CashTotle = model.CashTotle;
                             currScheduleUserInfoModel.NetTotle = model.NetTotle;
-                            flw_Schedule_UserInfoService.UpdateModel(currScheduleUserInfoModel, false);
+                            flw_Schedule_UserInfoService.UpdateModel(currScheduleUserInfoModel);
 
                             //通知所有吧台用户
                             var openId = Base_UserInfoService.I.GetModels(p => p.ID == userId).Select(o => o.OpenID).FirstOrDefault();

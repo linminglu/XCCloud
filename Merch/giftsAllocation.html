@@ -58,16 +58,40 @@
 <body>
     <div class="layui-row settingPage">
         <div class="row-box">
-            <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
 
-                <blockquote class="layui-elem-quote" style="text-align:right; padding-right: 100px;">
-                    <button type="button" id="applyBtn" class="layui-btn layui-btn-normal">申请</button>
-                    <button type="button" id="searchBtn" class="layui-btn layui-btn-normal">查询</button>
+            <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                    <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                        <div class="layui-form-item" id="serchMode"></div>
+                    </div>
+
+                    <div class="layui-col-md2" id="form2Box" >
+                        <div class="layui-form layui-form-pane" id="form2">
+                            <div id="tantion" class="layui-form-item">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
                 </blockquote>
+            </div>
+            <div class="layui-col-lg12 layui-col-md12 layui-col-sm12">
                 <table class="layui-hide" lay-filter="giftAllocationTB" id="giftAllocationTB"></table>
+
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="Request">调拨申请</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="RequestVerify">申请审核</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="SendDeal">调拨出库</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="SendDealVerify">出库审核</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="RequestDeal">调拨入库</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="RequestDealVerify">入库审核</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="Cancel">撤销</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="Close">流程关闭</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="del">删除</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal layui-hide" id="details">详情</button>
+
+                <button type="button" id="applyBtn" class="layui-btn layui-btn-sm layui-btn-normal">申请</button>
             </div>
         </div>
-
     </div>
 <!--申请-->
     <div id="openModel" style="display:none; padding: 15px;">
@@ -427,7 +451,8 @@
         'elem':'#giftAllocationTB',
         'cols':[
              // {field:'ID', title:'调拨单ID', align: 'center', sort: true},
-            {field:'RequestCode',title: '调拨单号', align: 'center'}
+            {type:'checkbox'}
+            ,{field:'RequestCode',title: '调拨单号', align: 'center'}
             ,{field:'CreateTime',title: '申请时间', align: 'center'}
             ,{field:'CreateStore',title: '申请门店', align: 'center'}
             ,{field:'CreateUser', title: '申请人', align: 'center'}
@@ -441,7 +466,8 @@
             ,{field:'InDepotTime', title: '入库时间', align: 'center'}
             ,{field:'StateStr', title: '调拨状态', align: 'center'}
             ,{field:'Note', title: '调拨说明', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
+            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}
+            ]
     };
     xc.getInitData(parm);
     let logMsg=JSON.parse(xc.getStorage('logMsg'));

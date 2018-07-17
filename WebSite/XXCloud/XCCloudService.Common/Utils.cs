@@ -1834,7 +1834,7 @@ namespace XCCloudService.Common
         /// <param name="pkList">主键组</param>
         /// <param name="merchSecret"></param>
         /// <returns></returns>
-        public static string GetClearText(this object t, bool identity, string[] pkList, string merchSecret)
+        public static string GetClearText(this object t, string[] pkList, string merchSecret)
         {
             SortedDictionary<string, string> fields = new SortedDictionary<string, string>();
             Type type = t.GetType();
@@ -1846,7 +1846,8 @@ namespace XCCloudService.Common
                 //    continue;
                 //if (identity && type.Name.Equals("Data_MemberLevel", StringComparison.OrdinalIgnoreCase) && pi.Name.Equals("MemberLevelID", StringComparison.OrdinalIgnoreCase))
                 //    continue;
-                if (identity && (pkList != null && pkList.Any(a => a.Equals(pi.Name, StringComparison.OrdinalIgnoreCase))))
+                //Int型主键默认为自增长
+                if (pi.PropertyType.FullName.Contains("Int32") && (pkList != null && pkList.Any(a => a.Equals(pi.Name, StringComparison.OrdinalIgnoreCase))))
                     continue;
                 var value = t.GetPropertyValue(pi.Name);
                 if (!value.IsNull())

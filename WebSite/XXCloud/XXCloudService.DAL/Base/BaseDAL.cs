@@ -21,7 +21,7 @@ namespace XCCloudService.DAL.Base
         protected string dbContextName;
         private DbContext dbContext;
 
-        private void MakeVerifiction(bool identity, ref T t, T oldT = null)
+        private void MakeVerifiction(ref T t, T oldT = null)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace XCCloudService.DAL.Base
                     var md5 = string.Empty;
                     if (oldT != null)
                     {
-                        str = oldT.GetClearText(identity, pkList, merchSecret);
+                        str = oldT.GetClearText(pkList, merchSecret);
                         md5 = Utils.MD5(str);                        
                         if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
                         {
@@ -64,7 +64,7 @@ namespace XCCloudService.DAL.Base
                     }
 
                     //更新校验码                    
-                    str = t.GetClearText(identity, pkList, merchSecret);
+                    str = t.GetClearText(pkList, merchSecret);
                     md5 = Utils.MD5(str);
                     //LogHelper.SaveLog(str);
                     //LogHelper.SaveLog(md5);
@@ -150,15 +150,15 @@ namespace XCCloudService.DAL.Base
             }
         }
 
-        public void AddModel(T t, bool identity = true)
+        public void AddModel(T t)
         {
-            MakeVerifiction(identity, ref t);
+            MakeVerifiction(ref t);
             dbContext.Set<T>().Add(t);
         }
 
-        public bool Add(T t, bool identity = true, bool syncData = false, string merchId = "", string merchSecret = "")
+        public bool Add(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
-            MakeVerifiction(identity, ref t);
+            MakeVerifiction(ref t);
             dbContext.Set<T>().Add(t);
             bool result = dbContext.SaveChanges() > 0;
 
@@ -172,9 +172,9 @@ namespace XCCloudService.DAL.Base
             return result;
         }
 
-        public bool Update(T t, bool identity = true, bool syncData = false, string merchId = "", string merchSecret = "")
+        public bool Update(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
-            MakeVerifiction(identity, ref t, (T)GetEntityInDatabase(t));
+            MakeVerifiction(ref t, (T)GetEntityInDatabase(t));
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;
@@ -189,16 +189,7 @@ namespace XCCloudService.DAL.Base
 
             return result;
         }
-
-        public void UpdateModel(T t, bool identity = true)
-        {
-            MakeVerifiction(identity, ref t, (T)GetEntityInDatabase(t));
-            RemoveHoldingEntityInContext(t);
-            dbContext.Set<T>().Attach(t);
-            dbContext.Entry<T>(t).State = EntityState.Modified;
-        }
-
-
+        
         public bool Delete(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
             RemoveHoldingEntityInContext(t);
@@ -215,6 +206,16 @@ namespace XCCloudService.DAL.Base
 
             return result;
         }
+
+        public void UpdateModel(T t)
+        {
+            MakeVerifiction(ref t, (T)GetEntityInDatabase(t));
+            RemoveHoldingEntityInContext(t);
+            dbContext.Set<T>().Attach(t);
+            dbContext.Entry<T>(t).State = EntityState.Modified;
+        }
+
+
 
         public void DeleteModel(T t)
         {

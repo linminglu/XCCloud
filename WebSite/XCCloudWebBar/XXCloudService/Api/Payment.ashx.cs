@@ -762,7 +762,7 @@ namespace XXCloudService.Api
                 order.OrderStatus = 1; //待支付
                 order.Note = "手机扫码直接支付";
 
-                bool ret = Flw_OrderService.I.Add(order, false);
+                bool ret = Flw_OrderService.I.Add(order);
                 if(!ret)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "生成订单失败");

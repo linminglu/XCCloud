@@ -136,7 +136,7 @@ namespace XCCloudService.Base
                     newScheduleModel.State = !isEmptySchedule ? (int)ScheduleState.Stopped : (int)ScheduleState.Checked;
                 }
 
-                flw_ScheduleService.AddModel(newScheduleModel, false);
+                flw_ScheduleService.AddModel(newScheduleModel);
 
                 i++;
             }

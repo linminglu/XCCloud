@@ -105,7 +105,7 @@ namespace XCCloudWebBar.Business.XCCloud
                 if (balanceFree != null)
                 {
                     balanceFree.Balance += currFreeDetail.Quantity;
-                    if (!Data_Card_Balance_FreeService.I.Update(balanceFree, false))
+                    if (!Data_Card_Balance_FreeService.I.Update(balanceFree))
                     {
                         return false;
                     }
@@ -139,7 +139,7 @@ namespace XCCloudWebBar.Business.XCCloud
                     fmd.WorkStation = workStation;
                     fmd.CheckDate = schedule.CheckDate;
                     fmd.SyncFlag = 0;
-                    if (!Flw_MemberDataService.I.Add(fmd, false))
+                    if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return false;
                     }
@@ -150,7 +150,7 @@ namespace XCCloudWebBar.Business.XCCloud
                 if (balance != null)
                 {
                     balance.Balance += currFreeDetail.Quantity;
-                    if (!Data_Card_BalanceService.I.Update(balance, false))
+                    if (!Data_Card_BalanceService.I.Update(balance))
                     {
                         return false;
                     }
@@ -184,7 +184,7 @@ namespace XCCloudWebBar.Business.XCCloud
                     fmd.WorkStation = workStation;
                     fmd.CheckDate = schedule.CheckDate;
                     fmd.SyncFlag = 0;
-                    if (!Flw_MemberDataService.I.Add(fmd, false))
+                    if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return false;
                     }

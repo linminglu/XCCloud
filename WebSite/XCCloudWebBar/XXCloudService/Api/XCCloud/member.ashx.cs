@@ -1594,7 +1594,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     card.IsLock = lockState;
                     card.LastStore = storeId;
                     card.UpdateTime = DateTime.Now;
-                    if (!Data_Member_CardService.I.Update(card, false))
+                    if (!Data_Member_CardService.I.Update(card))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "解锁失败");
                     }
@@ -1672,7 +1672,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     card.MemberLevelID = level.ID;
                     card.LastStore = storeId;
                     card.UpdateTime = DateTime.Now;
-                    if (!Data_Member_CardService.I.Update(card, false))
+                    if (!Data_Member_CardService.I.Update(card))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡等级更新失败");
                     }
@@ -1693,7 +1693,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     levelChange.Workstation = workStation;
                     levelChange.CheckDate = schedule.CheckDate;
                     levelChange.Note = "手动变更会员卡等级";
-                    if (!Flw_MemberCard_LevelChangeService.I.Add(levelChange, false))
+                    if (!Flw_MemberCard_LevelChangeService.I.Add(levelChange))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员卡等级变更记录失败");
                     }
@@ -1756,7 +1756,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 card.IsLock = lockState;
                 card.LastStore = storeId;
                 card.UpdateTime = DateTime.Now;
-                if (!Data_Member_CardService.I.Update(card, false))
+                if (!Data_Member_CardService.I.Update(card))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "锁卡失败");
                 }
@@ -1838,7 +1838,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     mi.UserName = userName;
                     mi.Gender = gender.Toint(0);
                     mi.Note = note;
-                    if (!Base_MemberInfoService.I.Update(mi, false))
+                    if (!Base_MemberInfoService.I.Update(mi))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息更新失败");
                     }
@@ -1851,7 +1851,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     right.AllowSaveCoin = allowSaveCoin.Toint(0);
                     right.AllowFreeCoin = allowFreeCoin.Toint(0);
                     right.AllowRenew = allowRenew.Toint(0);
-                    if (!Data_Card_RightService.I.Update(right, false))
+                    if (!Data_Card_RightService.I.Update(right))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡权限更新失败");
                     }
@@ -2234,7 +2234,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ID == item.CardId).FirstOrDefault();
                             card.CardStatus = 0;
                             //修改卡状态为不可用
-                            if (!Data_Member_CardService.I.Update(card, false))
+                            if (!Data_Member_CardService.I.Update(card))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退卡失败");
                             }
@@ -2258,7 +2258,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 mce.Note = "附属卡退卡";
 
                                 strCardExitNote += string.Format("附属卡号：{0}，卡押金：{1}；" + Environment.NewLine, card.ICCardID, card.Deposit);
-                                if (!Flw_MemberCard_ExitService.I.Add(mce, false))
+                                if (!Flw_MemberCard_ExitService.I.Add(mce))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "附属卡退卡失败");
                                 }
@@ -2324,7 +2324,7 @@ namespace XCCloudWebBar.Api.XCCloud
 
                                 //源余额减少
                                 cardBalance.Balance = cardBalance.Balance - item.ExchangeQty;
-                                if (!Data_Card_BalanceService.I.Update(cardBalance, false))
+                                if (!Data_Card_BalanceService.I.Update(cardBalance))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
                                 }
@@ -2355,7 +2355,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 balanceChange.CheckDate = schedule.CheckDate;
                                 balanceChange.ExitID = backSerialNo;//***主卡退卡记录ID***
                                 balanceChange.Note = string.Format("{0}兑换{1}", exchange.TypeName, exchange.TargetTypeName);
-                                if (!Flw_MemberCard_BalanceChargeService.I.Add(balanceChange, false))
+                                if (!Flw_MemberCard_BalanceChargeService.I.Add(balanceChange))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}兑换{1}失败", exchange.TypeName, exchange.TargetTypeName));
                                 }
@@ -2401,7 +2401,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 fmd.WorkStation = workStation;
                                 fmd.CheckDate = schedule.CheckDate;
                                 fmd.SyncFlag = 0;
-                                if(!Flw_MemberDataService.I.Add(fmd, false))
+                                if(!Flw_MemberDataService.I.Add(fmd))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                                 }
@@ -2435,7 +2435,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 fmd2.WorkStation = workStation;
                                 fmd2.CheckDate = schedule.CheckDate;
                                 fmd2.SyncFlag = 0;
-                                if (!Flw_MemberDataService.I.Add(fmd2, false))
+                                if (!Flw_MemberDataService.I.Add(fmd2))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                                 }
@@ -2451,7 +2451,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         //剩余储值金余额
                         decimal remainMoney = targetBalance.Balance.Value - backTotal;
                         targetBalance.Balance = remainMoney;
-                        if (remainMoney < 0 || !Data_Card_BalanceService.I.Update(targetBalance, false))
+                        if (remainMoney < 0 || !Data_Card_BalanceService.I.Update(targetBalance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
                         }
@@ -2485,7 +2485,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd3.WorkStation = workStation;
                         fmd3.CheckDate = schedule.CheckDate;
                         fmd3.SyncFlag = 0;
-                        if (!Flw_MemberDataService.I.Add(fmd3, false))
+                        if (!Flw_MemberDataService.I.Add(fmd3))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                         }
@@ -2506,7 +2506,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         memberParentCardExit.ScheduldID = schedule.ID.ToString();
                         memberParentCardExit.CheckDate = schedule.CheckDate;
                         memberParentCardExit.Note = strCardExitNote;
-                        if (!Flw_MemberCard_ExitService.I.Add(memberParentCardExit, false))
+                        if (!Flw_MemberCard_ExitService.I.Add(memberParentCardExit))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "主卡退款失败");
                         }
@@ -2534,7 +2534,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 if (cardBalance.Balance > 0)
                                 {
                                     cardBalance.Balance = 0;
-                                    if (!Data_Card_BalanceService.I.Update(cardBalance, false))
+                                    if (!Data_Card_BalanceService.I.Update(cardBalance))
                                     {
                                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}清零失败", item.TypeName));
                                     }
@@ -2555,7 +2555,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 if (cardBalance.Balance > 0)
                                 {
                                     cardBalance.Balance = 0;
-                                    if (!Data_Card_BalanceService.I.Update(cardBalance, false))
+                                    if (!Data_Card_BalanceService.I.Update(cardBalance))
                                     {
                                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}清零失败", item.TypeName));
                                     }
@@ -2684,7 +2684,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     order.WorkStation = workStation;
                     order.OrderStatus = orderStatus;                 
                     order.Note = operate;
-                    if (!Flw_OrderService.I.Add(order, false))
+                    if (!Flw_OrderService.I.Add(order))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("创建{0}订单失败", operate));
                     }
@@ -2695,7 +2695,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     orderDetail.MerchID = merchID;
                     orderDetail.OrderFlwID = orderId;
                     orderDetail.GoodsCount = 1;
-                    if (!Flw_Order_DetailService.I.Add(orderDetail, false))
+                    if (!Flw_Order_DetailService.I.Add(orderDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("创建订单明细失败", operate));
                     }
@@ -2846,7 +2846,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     newCard.RepeatCode = iRepeatCode;
                     newCard.CardStatus = 1;
                     newCard.OrderID = oldCard.OrderID;
-                    if (!Data_Member_CardService.I.Add(newCard, false))
+                    if (!Data_Member_CardService.I.Add(newCard))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建新卡失败");
                     }
@@ -2856,7 +2856,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     foreach (var item in cardStoreList)
                     {
                         item.CardID = newCard.ID;
-                        if (!Data_Member_Card_StoreService.I.Update(item, false))
+                        if (!Data_Member_Card_StoreService.I.Update(item))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "新会员卡与门店关联失败");
                         }
@@ -2872,7 +2872,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         foreach (var item in childs)
                         {
                             item.ParentCard = newCard.ID;
-                            if (!Data_Member_CardService.I.Update(item, false))
+                            if (!Data_Member_CardService.I.Update(item))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新附属卡信息失败");
                             }
@@ -2883,7 +2883,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         foreach (var item in balances)
                         {
                             item.CardIndex = newCard.ID;
-                            if(!Data_Card_BalanceService.I.Update(item, false))
+                            if(!Data_Card_BalanceService.I.Update(item))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                             }
@@ -2893,7 +2893,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         foreach (var item in balanceFrees)
                         {
                             item.CardIndex = newCard.ID;
-                            if (!Data_Card_Balance_FreeService.I.Update(item, false))
+                            if (!Data_Card_Balance_FreeService.I.Update(item))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                             }
@@ -2903,7 +2903,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         foreach (var item in cardRights)
                         {
                             item.CardID = newCard.ID;
-                            if (!Data_Card_RightService.I.Update(item, false))
+                            if (!Data_Card_RightService.I.Update(item))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡权限失败");
                             }
@@ -2912,7 +2912,7 @@ namespace XCCloudWebBar.Api.XCCloud
 
                     //旧卡状态改为不可用
                     oldCard.CardStatus = 0;
-                    bool ret = Data_Member_CardService.I.Update(oldCard, false);
+                    bool ret = Data_Member_CardService.I.Update(oldCard);
                     if (!ret)
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, operate + "失败");
@@ -2939,7 +2939,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     cardChange.ScheduldID = schedule.ID.ToString();
                     cardChange.CheckDate = schedule.CheckDate;
                     cardChange.Note = operate;
-                    if (!Flw_MemberCard_ChangeService.I.Add(cardChange, false))
+                    if (!Flw_MemberCard_ChangeService.I.Add(cardChange))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("写入{0}记录失败", operate));
                     }
@@ -2966,14 +2966,14 @@ namespace XCCloudWebBar.Api.XCCloud
                     sale.TotalMoney = OpFree;
                     sale.BuyFoodType = 0;
                     sale.Note = operate;
-                    if (!Flw_Food_SaleService.I.Add(sale, false))
+                    if (!Flw_Food_SaleService.I.Add(sale))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("创建{0}套餐销售记录失败", operate));
                     }
 
                     //更新订单详情
                     orderDetail.FoodFlwID = saleId;
-                    if (!Flw_Order_DetailService.I.Update(orderDetail, false))
+                    if (!Flw_Order_DetailService.I.Update(orderDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新订单明细失败");
                     }
@@ -3064,7 +3064,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     memberCard.RepeatCode = new Random(Guid.NewGuid().GetHashCode()).Next(1, 256);
                     //更新会员卡到期时间
                     memberCard.EndDate = memberCard.EndDate.HasValue ? memberCard.EndDate.Value.AddDays(memberLevel.Validday.Value) : DateTime.Now.AddDays(memberLevel.Validday.Value);
-                    bool ret = Data_Member_CardService.I.Update(memberCard, false);
+                    bool ret = Data_Member_CardService.I.Update(memberCard);
                     if (!ret)
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
@@ -3088,7 +3088,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     cardRenew.ScheduldID = schedule.ID.ToString();
                     cardRenew.CheckDate = schedule.CheckDate;
                     cardRenew.Note = "续卡";
-                    if (!Flw_MemberCard_RenewService.I.Add(cardRenew, false))
+                    if (!Flw_MemberCard_RenewService.I.Add(cardRenew))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
                     }
@@ -3108,14 +3108,14 @@ namespace XCCloudWebBar.Api.XCCloud
                     sale.TotalMoney = order.PayCount;
                     sale.BuyFoodType = 0;
                     sale.Note = "续卡";
-                    if (!Flw_Food_SaleService.I.Add(sale, false))
+                    if (!Flw_Food_SaleService.I.Add(sale))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
                     }
 
                     //更新订单详情
                     orderDetail.FoodFlwID = saleId;
-                    if (!Flw_Order_DetailService.I.Update(orderDetail, false))
+                    if (!Flw_Order_DetailService.I.Update(orderDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新订单明细失败");
                     }
@@ -3439,14 +3439,14 @@ namespace XCCloudWebBar.Api.XCCloud
                 {
                     //源余额减少
                     sourceBalance.Balance -= iExchangeQty;
-                    if (!Data_Card_BalanceService.I.Update(sourceBalance, false))
+                    if (!Data_Card_BalanceService.I.Update(sourceBalance))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，扣除余额不成功");
                     }
 
                     //目标余额增加
                     targetBalance.Balance += exchangeVal;
-                    if (!Data_Card_BalanceService.I.Update(targetBalance, false))
+                    if (!Data_Card_BalanceService.I.Update(targetBalance))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，增加余额不成功");
                     }
@@ -3468,7 +3468,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     change.Workstation = workStation;
                     change.CheckDate = schedule.CheckDate;
                     change.Note = note;
-                    if (!Flw_MemberCard_BalanceChargeService.I.Add(change, false))
+                    if (!Flw_MemberCard_BalanceChargeService.I.Add(change))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加余额兑换记录失败");
                     }
@@ -3503,7 +3503,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     fmd.WorkStation = workStation;
                     fmd.CheckDate = schedule.CheckDate;
                     fmd.SyncFlag = 0;
-                    if (!Flw_MemberDataService.I.Add(fmd, false))
+                    if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                     }
@@ -3537,7 +3537,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     fmd.WorkStation = workStation;
                     fmd.CheckDate = schedule.CheckDate;
                     fmd.SyncFlag = 0;
-                    if (!Flw_MemberDataService.I.Add(fmd, false))
+                    if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                     }
@@ -3720,7 +3720,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         {
                             //存入卡中 -- 补币的余额
                             balance.Balance += quantity;
-                            if (!Data_Card_BalanceService.I.Update(balance, false))
+                            if (!Data_Card_BalanceService.I.Update(balance))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                             }
@@ -3754,7 +3754,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             fmd.WorkStation = workStation;
                             fmd.CheckDate = schedule.CheckDate;
                             fmd.SyncFlag = 0;
-                            if (!Flw_MemberDataService.I.Add(fmd, false))
+                            if (!Flw_MemberDataService.I.Add(fmd))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                             }
@@ -3777,7 +3777,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mcf.WorkStation = workStation;
                         mcf.CheckDate = schedule.CheckDate;
                         mcf.Note = note;
-                        if (!Flw_MemberCard_FreeService.I.Add(mcf, false))
+                        if (!Flw_MemberCard_FreeService.I.Add(mcf))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补币失败");
                         }
@@ -4064,7 +4064,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
                         balance.Balance -= quantity;
-                        if (!Data_Card_BalanceService.I.Update(balance, false))
+                        if (!Data_Card_BalanceService.I.Update(balance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                         }
@@ -4090,7 +4090,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fdd.OrderID = "";
                         fdd.Note = note;
                         fdd.CheckDate = schedule.CheckDate;
-                        if (!Flw_DeviceDataService.I.Add(fdd, false))
+                        if (!Flw_DeviceDataService.I.Add(fdd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建提币记录失败");
                         }
@@ -4124,7 +4124,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.WorkStation = workStation;
                         fmd.CheckDate = schedule.CheckDate;
                         fmd.SyncFlag = 0;
-                        if (!Flw_MemberDataService.I.Add(fmd, false))
+                        if (!Flw_MemberDataService.I.Add(fmd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                         }
@@ -4151,7 +4151,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     quantity = fdd.Coin.Value;
                     balanceIndex = fdd.BalanceIndex.Value;
                     fdd.State = 1;
-                    if(!Flw_DeviceDataService.I.Update(fdd, false))
+                    if(!Flw_DeviceDataService.I.Update(fdd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "提币核销失败");
                     }
@@ -4381,7 +4381,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             {
                                 Flw_MemberLevelFree levelFree = Flw_MemberLevelFreeService.I.GetModels(t => t.ID == freeModel.FreeId).FirstOrDefault();
                                 levelFree.GetFreeTime = now;
-                                if (!Flw_MemberLevelFreeService.I.Update(levelFree, false))
+                                if (!Flw_MemberLevelFreeService.I.Update(levelFree))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新预赠币领取时间失败");
                                 }
@@ -4397,7 +4397,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             freeDetail.RealTime = now;
                             freeDetail.Remain = freeModel.RemainCount - 1;
                             freeDetail.GetCount = currFreeDetail.Quantity;
-                            if (!Flw_MemberLevelFree_DetailService.I.Add(freeDetail, false))
+                            if (!Flw_MemberLevelFree_DetailService.I.Add(freeDetail))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加预赠币领取记录失败");
                             }
@@ -4432,7 +4432,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 mcf.ScheduleID = schedule.ID;
                                 mcf.WorkStation = workStation;
                                 mcf.CheckDate = schedule.CheckDate;
-                                if (!Flw_MemberCard_FreeService.I.Add(mcf, false))
+                                if (!Flw_MemberCard_FreeService.I.Add(mcf))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加生日赠币记录失败");
                                 }
@@ -4468,7 +4468,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             mcf.ScheduleID = schedule.ID;
                             mcf.WorkStation = workStation;
                             mcf.CheckDate = schedule.CheckDate;
-                            if (!Flw_MemberCard_FreeService.I.Add(mcf, false))
+                            if (!Flw_MemberCard_FreeService.I.Add(mcf))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加输赢赠币记录失败");
                             }
@@ -5077,14 +5077,14 @@ namespace XCCloudWebBar.Api.XCCloud
                         Data_Card_Balance toBalance = Data_Card_BalanceService.I.GetModels(t => t.ID == tb.BalanceId).FirstOrDefault();
                         //正价余额转入
                         toBalance.Balance += fromBalance.Balance;
-                        if (!Data_Card_BalanceService.I.Update(toBalance, false))
+                        if (!Data_Card_BalanceService.I.Update(toBalance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转入卡余额失败");
                         }
                         changeValue = fromBalance.Balance.Todecimal(0);
                         //转出卡清零，正价余额转出
                         fromBalance.Balance = 0;
-                        if (!Data_Card_BalanceService.I.Update(fromBalance, false))
+                        if (!Data_Card_BalanceService.I.Update(fromBalance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转出卡余额失败");
                         }
@@ -5116,14 +5116,14 @@ namespace XCCloudWebBar.Api.XCCloud
 
                         //赠送余额转入
                         toBalanceFree.Balance += fromBalanceFree.Balance;
-                        if (!Data_Card_Balance_FreeService.I.Update(toBalanceFree, false))
+                        if (!Data_Card_Balance_FreeService.I.Update(toBalanceFree))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转入卡余额失败");
                         }
                         freeChangeValue = fromBalanceFree.Balance.Todecimal(0);
                         //转出卡清零
                         fromBalanceFree.Balance = 0;
-                        if (!Data_Card_Balance_FreeService.I.Update(fromBalanceFree, false))
+                        if (!Data_Card_Balance_FreeService.I.Update(fromBalanceFree))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转出卡余额失败");
                         }
@@ -5150,7 +5150,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         transfer.State = 1;
                         transfer.Note = "会员过户";
                         transfer.SyncFlag = 0;
-                        if(!Flw_TransferService.I.Add(transfer, false))
+                        if(!Flw_TransferService.I.Add(transfer))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员过户记录失败");
                         }
@@ -5184,7 +5184,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.WorkStation = workStation;
                         fmd.CheckDate = schedule.CheckDate;
                         fmd.SyncFlag = 0;
-                        if (!Flw_MemberDataService.I.Add(fmd, false))
+                        if (!Flw_MemberDataService.I.Add(fmd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                         }
@@ -5218,7 +5218,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.WorkStation = workStation;
                         fmd.CheckDate = schedule.CheckDate;
                         fmd.SyncFlag = 0;
-                        if (!Flw_MemberDataService.I.Add(fmd, false))
+                        if (!Flw_MemberDataService.I.Add(fmd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                         }
@@ -5307,7 +5307,7 @@ namespace XCCloudWebBar.Api.XCCloud
 
                         //正价余额清零
                         balance.Balance = 0;
-                        if (!Data_Card_BalanceService.I.Update(balance, false))
+                        if (!Data_Card_BalanceService.I.Update(balance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "清空会员卡正价余额失败");
                         }
@@ -5319,14 +5319,14 @@ namespace XCCloudWebBar.Api.XCCloud
 
                         //正价余额清零
                         freeBalance.Balance = 0;
-                        if (!Data_Card_Balance_FreeService.I.Update(freeBalance, false))
+                        if (!Data_Card_Balance_FreeService.I.Update(freeBalance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "清空会员卡赠送余额失败");
                         }
                     }
 
                     memberCard.CardStatus = 0;
-                    if (!Data_Member_CardService.I.Update(memberCard, false))
+                    if (!Data_Member_CardService.I.Update(memberCard))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新会员卡状态失败");
                     }

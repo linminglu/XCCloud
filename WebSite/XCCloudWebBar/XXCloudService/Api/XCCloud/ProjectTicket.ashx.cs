@@ -765,7 +765,7 @@ namespace XXCloudService.Api.XCCloud
                             item.OutDeviceType = 1;
                             item.OutDeviceID = station.ID;
                             item.Note = string.Format("手工清场，工作站:{0}，操作人:{1}，营业日期:{2}，班次:{3}", workStation, user.RealName, schedule.CheckDate, schedule.ScheduleName);
-                            if (!Flw_Project_TicketUseService.I.Update(item, false))
+                            if (!Flw_Project_TicketUseService.I.Update(item))
                             {
                                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, "执行手工清场失败");
                             }
@@ -783,7 +783,7 @@ namespace XXCloudService.Api.XCCloud
                             tdLog.UseType = 1;
                             tdLog.CashTotal = 0;
                             tdLog.SyncFlag = 0;
-                            if (!Flw_Project_TicketDeviceLogService.I.Add(tdLog, false))
+                            if (!Flw_Project_TicketDeviceLogService.I.Add(tdLog))
                             {
                                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, "创建出闸记录失败");
                             }

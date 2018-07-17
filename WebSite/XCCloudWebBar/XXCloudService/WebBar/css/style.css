@@ -35,8 +35,8 @@ a:hover,a:active {text-decoration:none;cursor:pointer;}
 .heightKz{overflow-y:auto;overflow-x:hidden;}
 /*高度控制*/
 .boxShadow{background-color: #fff;}
-body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;  -khtml-user-select: none;  user-select: none;background-color: #f6f7fb;padding: 8px;}
-.navbar-header{height: 2.5em;}
+body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;  -khtml-user-select: none;  user-select: none;background-color: #f6f7fb!important;padding: 8px;}
+.navbar-header{height: 2.5em;margin-top:1em;}
 .navbar-header a img{height: 2.5em;}
 .navbar-nav a{margin-top:0.3em;font-size: 1em;color: #7d8184;}
 .nav a:hover {color: #666666;}
@@ -218,7 +218,7 @@ input.btnSendCode{line-height: 0;}
 .orderList-text h4{font-size: 1.2em;color: #349ffd;line-height: 2em;}
 .orderList-text div{font-size: 1em;color: #666666;line-height: 2em;border-bottom: 1px dashed #666666;margin-bottom: 0.5em;}
 .screeningTitle{display: flex;flex-direction: row;width: 70%;}
-.screeningTitle select,.screeningTitle input{margin: 0.8em 1em;height: 2.5em;line-height: 1.4em;}
+
 .screeningTitle button{margin: 0.8em 1em;height: 2.5em;min-width: 8em;line-height: 1.8em;width: 8em;}
 .input-group[class*=col-]{float: left;padding-left: 15px;padding-right: 15px;}
 

@@ -835,11 +835,11 @@ as
 	 a.CardType, a.Deposit, a.UpdateTime, a.EndDate, a.CardSex,
 	 b.Mobile, b.IDCard, a.CreateTime, d.StoreName, a.CardStatus '+    
     ' from Data_Member_Card a'+
-    ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID '+
+    ' inner join Data_Member_Card_Store s on a.ID=s.CardID '+
     ' inner join Base_MemberInfo b on a.MemberID=b.ID ' +
     ' inner join Data_MemberLevel c on a.MemberLevelID=c.ID '+
     ' left join Base_StoreInfo d on a.StoreID=d.ID ' +    
-    ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
+    ' where a.MerchID=''' + @MerchID + ''' AND s.StoreID=''' + @StoreID + ''''
     SET @sql = @sql + ') a'
     SET @sql = @sql + ' inner join ('
 
@@ -889,7 +889,7 @@ as
 	'select a.ICCardID, a.CardName, a.MemberLevelID, c.MemberLevelName, a.CreateTime, a.EndDate, a.JoinChannel, a.OrderID,
 	 b.Deposit, b.OpenFee, d.StoreName, o.CheckDate, sd.ScheduleName, o.WorkStation, u.LogName AS UserName, a.Note ' +    
     ' from Data_Member_Card a' +
-    ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID ' +
+    ' inner join Data_Member_Card_Store s on a.ID=s.CardID ' +
     ' inner join Flw_Order o on a.OrderID=o.ID ' +
     ' inner join Flw_Order_Detail od on o.ID=od.OrderFlwID ' +
     ' inner join Flw_Food_Sale b on od.FoodFlwID=b.ID ' +
@@ -897,7 +897,7 @@ as
     ' left join Base_StoreInfo d on a.StoreID=d.ID ' + 
     ' left join Base_UserInfo u on o.UserID=u.ID ' +  
     ' left join Flw_Schedule sd on o.ScheduleID=sd.ID ' +     
-    ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
+    ' where a.MerchID=''' + @MerchID + ''' AND s.StoreID=''' + @StoreID + ''''
     SET @sql = @sql + ') a where 1=1 ' + ISNULL(@SqlWhere,'')
 	
 	--print @sql
