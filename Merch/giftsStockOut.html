@@ -4,18 +4,39 @@
     <meta charset="UTF-8">
     <title>出库</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <style>
     .layui-table-header  tr th[data-field="0"] div div{display: none}
 </style>
 <body>
-<div class="layui-row" style="padding: 10px;">
-    <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px">
-        <button type="button" class="layui-btn layui-btn-normal" id="add"><i class="layui-icon">&#xe615;</i>出库</button>
-        <button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i>查询</button>
-    </blockquote>
-    <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
-        <table class="layui-hide" id="outDepotTable" lay-filter="outDepotTable"></table>
+<div class="layui-row settingPage">
+    <div class="row-box">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" >
+                    <div class="layui-form layui-form-pane" id="form2">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
+        </div>
+        <div class="layui-col-lg12 layui-col-md12 layui-col-sm12">
+            <table class="layui-hide" id="outDepotTable" lay-filter="outDepotTable"></table>
+
+            <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">修改</button>-->
+            <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>-->
+            <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" id="forbidBtn">禁止入库</button>-->
+            <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" id="allowBtn">禁止入库</button>-->
+            <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" id="add">出库</button>
+        </div>
     </div>
 </div>
 <!--入库弹出层-->
@@ -116,6 +137,7 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
 
     let xc=xcActionSystem.prototype;
@@ -149,6 +171,20 @@
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
+        let laydate=layui.laydate;
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'goodOutOrderSearch',
+            'processname': 'goodOutOrderSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'laydate':laydate,
+            'searchBtn': 'searchBtn',
+            'xc':xc,
+            'parm':parm
+        })
         form.on('select(DepotID)',function (data) {
             DepotID=data.value;
         });

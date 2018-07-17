@@ -298,11 +298,7 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }                        
 
-                        ts.Complete();
-
-                        //发送指令
-                        var radarToken = string.Empty;
-                        projectInsChange(new Guid("N").ToString(), storeId, "", model.GameIndex.ToString(), out radarToken, out errMsg);
+                        ts.Complete();                        
                     }
                     catch (DbEntityValidationException e)
                     {
@@ -314,6 +310,10 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
+
+                //发送指令
+                var radarToken = string.Empty;
+                projectInsChange(new Guid("N").ToString(), storeId, "", model.GameIndex.ToString(), out radarToken, out errMsg);
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultMsg);
             }

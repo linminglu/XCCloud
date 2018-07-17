@@ -562,9 +562,10 @@ namespace DSS.Server
         {
             DataModel model = new DataModel();
             string sql = "select * from " + tableName + " where id='" + idValue + "'";
-            Assembly asmb = Assembly.LoadFrom("DSS.dll");
+            //Assembly asmb = Assembly.LoadFrom("DSS.dll");
+            Assembly asmb = Assembly.LoadFrom(AppDomain.CurrentDomain.RelativeSearchPath + "\\DSS.dll");
             Type t = asmb.GetType("DSS.Table." + tableName);
-            object o = System.Activator.CreateInstance(t);
+            object o = System.Activator.CreateInstance(t);            
 
             model.CovertToDataModel(sql, ref o);
             JavaScriptSerializer jss = new JavaScriptSerializer();

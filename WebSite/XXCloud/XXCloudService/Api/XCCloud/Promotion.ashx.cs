@@ -645,6 +645,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 int foodId = dicParas.Get("foodId").Toint(0);
@@ -726,7 +727,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             //新增
                             data_FoodInfo.FoodState = (int)FoodState.Valid;
-                            if (!Data_FoodInfoService.I.Add(data_FoodInfo))
+                            if (!Data_FoodInfoService.I.Add(data_FoodInfo, true, true, merchId, merchSecret))
                             {
                                 errMsg = "添加套餐信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -741,7 +742,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             //修改
-                            if (!Data_FoodInfoService.I.Update(data_FoodInfo))
+                            if (!Data_FoodInfoService.I.Update(data_FoodInfo, true, true, merchId, merchSecret))
                             {
                                 errMsg = "修改套餐信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

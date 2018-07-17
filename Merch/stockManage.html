@@ -41,14 +41,29 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let depotList='';
-    layui.use(['form','table','layer'],function () {
+    layui.use(['form','table','layer','laydate'],function () {
         let form=layui.form;
         let table=layui.table;
         let layer=layui.layer;
+        let laydate=layui.laydate;
+        // seachModel({
+        //     'elem1': 'tantion',
+        //     'elem2': 'serchMode',
+        //     'pagename': 'goodsStockSearch',
+        //     'processname': 'goodsStockSearch',
+        //     'token': token,
+        //     'form': form,
+        //     'layer': layer,
+        //     'searchBtn': 'searchBtn',
+        //     'xc':xc,
+        //     'laydate':laydate,
+        //     'parm':parm
+        // })
         initTable(table,[]);
         xc.getDepotDic('','',token,layer,form,'depotList');
         //选择仓库后立即刷新

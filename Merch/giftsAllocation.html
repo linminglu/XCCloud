@@ -373,6 +373,7 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script type="text/html" id="barDemo">
     {{# let arr=d.PermittedTriggers }}
     {{# for(let i in arr){ }}
@@ -488,10 +489,24 @@
     //调拨退货
     let backInDepot='';let logisticsCompanyBack='';let arrBack=[];let arrBackSel=[];let backInDepotId='';
     layui.addcss('layui_font.css');
-    layui.use(['form','table','layer'],function () {
+    layui.use(['form','table','layer','laydate'],function () {
         let form=layui.form;
         let table=layui.table;
         let layer=layui.layer;
+        let laydate=layui.laydate;
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'goodRequestSearch',
+            'processname': 'goodRequestSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'laydate':laydate,
+            'searchBtn': 'searchBtn',
+            'xc':xc,
+            'parm':parm
+        })
         form.on('select(RequstType)',function (data) {
             RequstType=data.value;
             if(data.value==2){

@@ -33,7 +33,7 @@ namespace DSS
                             {
                                 fields += pi.Name + ",";
                                 if (pi.PropertyType.FullName.Contains("DateTime"))
-                                    values += "'" + Convert.ToDateTime(v).ToString("yyyy-MM-dd HH:mm:ss.fff") + "',";
+                                    values += "'" + (Convert.ToDateTime(v) == DateTime.MinValue ? "" : Convert.ToDateTime(v).ToString("yyyy-MM-dd HH:mm:ss.fff")) + "',";
                                 else
                                     values += "'" + v.ToString() + "',";
                             }

@@ -334,7 +334,7 @@ namespace PalletService.TCPService
             if (ICCardUtility.CheckNullCard(storePassword))
             {
                 //办理新卡
-                if (ICCardUtility.CreateICCard(memberOpenCardModel.RepeatCode, storePassword, out errMsg, true))
+                if (ICCardUtility.CreateICCard(storePassword, out errMsg, true))
                 {
                     var obj = new {
                         icCardId = newICCardId,

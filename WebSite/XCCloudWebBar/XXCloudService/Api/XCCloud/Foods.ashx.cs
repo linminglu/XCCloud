@@ -22,6 +22,40 @@ namespace XXCloudService.Api.XCCloud
     [Authorize(Roles = "StoreUser")]
     public class Foods : ApiBase
     {
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getBalanceType(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+            string sql = "GetBalanceType";
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+            parameters[0].Value = userTokenDataModel.MerchID;
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                List<object> listObj = new List<object>();
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    var obj = new { 
+                        id = ds.Tables[0].Rows[i]["Id"].ToString(),
+                        typeName = ds.Tables[0].Rows[i]["TypeName"].ToString()
+                    };
+                    listObj.Add(obj);
+                }
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+            }
+            else
+            {
+                string errMsg = parameters[10].Value.ToString();
+                return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, errMsg);
+            }
+        }
+
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object goodBuyBack(Dictionary<string, object> dicParas)

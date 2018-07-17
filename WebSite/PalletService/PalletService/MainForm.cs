@@ -696,7 +696,7 @@ namespace PalletService
             string errMsg = string.Empty;
             string repeatCode = string.Empty;
             string repeatCode1 = new System.Random().Next(000, 999).ToString();
-            ICCardUtility.CreateICCard(repeatCode1, "778852013145", out errMsg, true);
+            ICCardUtility.CreateICCard("778852013145", out errMsg, true);
         }
 
         private void button8_Click(object sender, EventArgs e)

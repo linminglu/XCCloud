@@ -624,12 +624,12 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
-                        
-                        ts.Complete();
 
                         //发送指令
                         var radarToken = "";
                         projectInsChange(new Guid("N").ToString(), storeId, "", data_GameInfo.ID.ToString(), out radarToken, out errMsg);
+                        
+                        ts.Complete();                        
 
                         return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName }, resultMsg);
                     }
@@ -642,7 +642,7 @@ namespace XXCloudService.Api.XCCloud
                         errMsg = ex.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                }
+                }                
             }            
             catch (Exception e)
             {
@@ -833,13 +833,13 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
 
-                        iId = data_GameInfo.ID;                        
-
-                        ts.Complete();
+                        iId = data_GameInfo.ID;
 
                         //发送指令
                         var radarToken = "";
-                        projectInsChange(new Guid("N").ToString(), storeId, "", data_GameInfo.ID.ToString(), out radarToken, out errMsg);
+                        projectInsChange(new Guid("N").ToString(), storeId, "", iId.ToString(), out radarToken, out errMsg);
+
+                        ts.Complete();                        
 
                         return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName }, resultMsg);
                     }
@@ -852,7 +852,7 @@ namespace XXCloudService.Api.XCCloud
                         errMsg = ex.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                }
+                }                
             }
             catch (Exception e)
             {

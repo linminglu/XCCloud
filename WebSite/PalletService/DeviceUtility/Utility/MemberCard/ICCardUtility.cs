@@ -583,8 +583,9 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 读卡器按会员IC卡号写一张新卡
         /// </summary>
-        public static bool CreateICCard(string sRepeatCode, string storePassword, out string errMsg, bool isBeep = true)
+        public static bool CreateICCard(string storePassword, out string errMsg, bool isBeep = true)
         {
+            string sRepeatCode = new System.Random().Next(000, 999).ToString();
             int icdev = 0;
             errMsg = string.Empty;
             try
