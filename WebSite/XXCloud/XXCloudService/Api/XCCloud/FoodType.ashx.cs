@@ -116,7 +116,8 @@ namespace XXCloudService.Api.XCCloud
 
                 var id = dicParas.Get("id").Toint(0);
                 var dictKey = dicParas.Get("dictKey");
-                var dictValue = dicParas.Get("dictValue");
+                //var dictValue = dicParas.Get("dictValue");
+                var icon = dicParas.Get("icon");
                 var comment = dicParas.Get("comment");
                 var enabled = dicParas.Get("enabled").Toint();
                
@@ -160,8 +161,9 @@ namespace XXCloudService.Api.XCCloud
                             //新增
                             dict_SystemModel.PID = pId;
                             dict_SystemModel.Enabled = enabled;
-                            dict_SystemModel.DictKey = dictKey;
-                            dict_SystemModel.DictValue = dictValue;
+                            dict_SystemModel.DictKey = dictKey;                          
+                            //dict_SystemModel.DictValue = dictValue;
+                            dict_SystemModel.Icon = icon;
                             dict_SystemModel.Comment = comment;
                             dict_SystemModel.MerchID = merchId;
                             dict_SystemModel.OrderID = 1;
@@ -191,6 +193,7 @@ namespace XXCloudService.Api.XCCloud
                             dict_SystemModel.DictKey = dictKey;
                             //dict_SystemModel.DictValue = dictValue;
                             dict_SystemModel.DictValue = dict_SystemModel.ID.ToString();
+                            dict_SystemModel.Icon = icon;
                             dict_SystemModel.Enabled = enabled;
                             dict_SystemModel.Comment = comment;
                             if (!dict_SystemService.Update(dict_SystemModel, true, merchId, merchSecret))

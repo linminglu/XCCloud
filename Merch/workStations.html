@@ -229,18 +229,34 @@
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
+                            console.log(data)
                             let arr=data.result_data;
                             table.render({
                                 elem: '#saleMsgTable'
                                 , data: arr
                                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                                ,height:'325'
+                                // ,height:'325'
                                 , cols: [[
                                     {type:'checkbox'}
-                                    , {field: 'SaleName', title: '售卖项目名称', align: 'center'}
-                                    , {field: 'SaleType', title: '售卖项目类型', align: 'center'}
-                                    , {field: 'Source', title: '来源', align: 'center'}
-                                    // ,{field:'StateStr', title: '状态', align: 'center'}
+                                    , {field: 'SaleName', title: '售卖项目名称', align: 'center',width:200}
+                                    , {field: 'SaleTypeStr', title: '售卖项目类型', align: 'center',width:200}
+
+                                    , {field: 'ForeAuthorize', title: '需要授权', align: 'center',width:200,templet:function (d) {
+                                            if(d.ForeAuthorize==1){
+                                                return '是'
+                                            }else {
+                                                return '否'
+                                            }
+                                        }}
+                                    , {field: 'Price', title: '价格', align: 'center',width:100}
+                                    , {field: 'AllowSale', title: '允许销售', align: 'center',width:200,templet:function (d) {
+                                            if(d.AllowSale==1){
+                                                return '是'
+                                            }else {
+                                                return '否'
+                                            }
+                                        }}
+
                                 ]]
                                 , page: {page: true, limits: [5,10, 15, 20, 30, 50]}
                                 , limit: 10
@@ -250,7 +266,7 @@
                                 title:'工作站：'+checkStatus.data[0].WorkStation+'销售记录',
                                 type:1,
                                 content:$('#openModel'),
-                                area:'700px'
+                                area:'1000px'
                             })
                         }else {
                             layer.msg(data.result_msg||data.return_msg);

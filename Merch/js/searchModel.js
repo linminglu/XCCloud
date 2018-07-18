@@ -161,7 +161,7 @@ var seachModel = function (options) {
                             }
 
                         }
-                        if(d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time') {
+                        if(d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time'|| d[i].type == 'datetime') {
                             if(d[i].condition==5){
                                 $('#'+d[i].field+'sh1').parent('div').removeClass('layui-hide')
                                 $('.'+d[i].field+'mid').removeClass('layui-hide')
@@ -371,7 +371,7 @@ var seachModel = function (options) {
 
                         if (d[i].type == 'string') {
                             conditions[j].values = $('#' + d[i].field + 'sh').val();
-                        } else if (d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time') {
+                        } else if (d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time'|| d[i].type == 'datetime') {
                             if ($('#' + d[i].field + 'cond').val() == 5) {
                                 conditions[j].values = [$('#' + d[i].field + 'sh1').val(), $('#' + d[i].field + 'sh2').val()];
                             }else {
@@ -382,12 +382,18 @@ var seachModel = function (options) {
                 }
             }
         }
-        parm.obj.conditions=conditions;
-        if(types==1){
-            xc.getInitData(parm);
+
+        if(parm==null){
+            options.callback
         }else {
-            xc.getActiveTable(parm);
+            parm.obj.conditions=conditions;
+            if(types==1){
+                xc.getInitData(parm);
+            }else {
+                xc.getActiveTable(parm);
+            }
         }
+
 
         _falg=false;
         $('#'+options.elem1).parent().slideUp(100);

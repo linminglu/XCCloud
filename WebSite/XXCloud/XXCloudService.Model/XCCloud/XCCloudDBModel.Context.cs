@@ -138,7 +138,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Dict_Area> Dict_Area { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
-        public virtual DbSet<Dict_System> Dict_System { get; set; }
         public virtual DbSet<Divide_ProjectInfo> Divide_ProjectInfo { get; set; }
         public virtual DbSet<Flw_CheckDate> Flw_CheckDate { get; set; }
         public virtual DbSet<Flw_CouponUse> Flw_CouponUse { get; set; }
@@ -205,5 +204,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
         public virtual DbSet<Flw_MemberInfo_Change> Flw_MemberInfo_Change { get; set; }
         public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
+        public virtual DbSet<Dict_System> Dict_System { get; set; }
     }
 }

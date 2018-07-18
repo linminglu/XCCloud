@@ -150,11 +150,17 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
                 var errMsg = string.Empty;
                 if (!dicParas.Get("id").Validintnozero("工作站ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var id = dicParas.Get("id").Toint();
+                var saleName = dicParas.Get("saleName");
+                var saleType = dicParas.Get("saleType").Toint();
 
                 if (!Data_WorkstationService.I.Any(p => p.ID == id))
                 {
@@ -162,31 +168,169 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var list = (from a in Data_WorkstationService.N.GetModels(p => p.ID == id)
-                            join b in Data_WorkStation_GoodListService.N.GetModels() on a.ID equals b.WorkStationID
-                            join c in Base_GoodsInfoService.N.GetModels() on b.GoodID equals c.ID
-                            join d in Dict_SystemService.N.GetModels() on c.GoodType equals d.ID into d1
-                            from d in d1.DefaultIfEmpty()
+                var list = (from a in Base_GoodsInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && ((p.StoreID ?? "") == "" || p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) && p.Status == 1)
+                            join b in Data_WorkStation_GoodListService.N.GetModels(p => p.WorkStationID == id) on a.ID equals b.GoodID into b1
+                            from b in b1.DefaultIfEmpty()
                             select new
                             {
-                                SaleName = c.GoodName,
-                                SaleType = d != null ? d.DictKey : string.Empty,
-                                Source = "单品"
+                                SaleID = a.ID,
+                                SaleName = a.GoodName,
+                                SaleType = 0,
+                                SaleTypeStr = "单品",
+                                ForeAuthorize = "",
+                                Price = a.Price,
+                                AllowSale = b != null ? 1 : 0
                             }).Union
-                           (from a in Data_WorkstationService.N.GetModels(p => p.ID == id)
-                            join b in Data_Food_WorkStationService.N.GetModels() on a.ID equals b.WorkStationID
-                            join c in Data_FoodInfoService.N.GetModels() on b.FoodID equals c.ID
-                            join d in Dict_SystemService.N.GetModels() on c.FoodType equals d.ID into d1
-                            from d in d1.DefaultIfEmpty()                            
+                           (from a in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == 1)
+                            join b in Data_Food_StoreListService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.FoodID
+                            join c in Data_Food_WorkStationService.N.GetModels(p => p.WorkStationID == id) on a.ID equals c.FoodID into c1
+                            from c in c1.DefaultIfEmpty()
                             select new
                             {
-                                SaleName = c.FoodName,
-                                SaleType = d != null ? d.DictKey : string.Empty,
-                                Source = "套餐"
+                                SaleID = a.ID,
+                                SaleName = a.FoodName,
+                                SaleType = 1,
+                                SaleTypeStr = "套餐",
+                                ForeAuthorize = a.ForeAuthorize == 1 ? "是" : a.ForeAuthorize == 0 ? "否" : string.Empty,
+                                Price = a.ClientPrice,
+                                AllowSale = c != null ? 1 : 0
                             }
-                           ).OrderBy(or => or.SaleName);
+                           );
+                if (!saleName.IsNull())
+                    list = list.Where(w => w.SaleName.Contains(saleName));
+                if (!saleType.IsNull())
+                    list = list.Where(w => w.SaleType == saleType);
+
+                list = list.OrderBy(or => or.SaleType);
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 绑定套餐或单品
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object BindFoodWorkStation(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("工作站ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.GetArray("saleInfos").Validarray("售卖信息列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id").Toint();
+                var saleInfos = dicParas.GetArray("saleInfos");
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (saleInfos != null && saleInfos.Count() > 0)
+                        {
+                            foreach (IDictionary<string, object> el in saleInfos)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("saleId").Validintnozero("售卖项目ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("saleType").Validint("售卖项目类别", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                    var saleId = dicPara.Get("saleId").Toint();
+                                    var saleType = dicPara.Get("saleType").Toint();
+                                    if (saleType == 0)
+                                    {
+                                        if (!Base_GoodsInfoService.I.Any(p => p.ID == saleId && p.Status == 1))
+                                        {
+                                            errMsg = "该单品不存在或已停用";
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        }
+
+                                        //先删除，后添加
+                                        foreach (var model in Data_WorkStation_GoodListService.I.GetModels(p => p.GoodID == saleId && p.WorkStationID == id))
+                                        {
+                                            Data_WorkStation_GoodListService.I.DeleteModel(model, true, merchId, merchSecret);
+                                        }
+
+                                        var data_WorkStation_GoodListModel = new Data_WorkStation_GoodList();
+                                        data_WorkStation_GoodListModel.GoodID = saleId;
+                                        data_WorkStation_GoodListModel.WorkStationID = id;
+                                        Data_WorkStation_GoodListService.I.AddModel(data_WorkStation_GoodListModel, true, merchId, merchSecret);
+
+                                        if (!Data_WorkStation_GoodListService.I.SaveChanges())
+                                        {
+                                            errMsg = "绑定单品失败";
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        }
+                                    }
+                                    else if (saleType == 1)
+                                    {
+                                        if (!Data_FoodInfoService.I.Any(p => p.ID == saleId && p.FoodState == 1))
+                                        {
+                                            errMsg = "该套餐不存在或已无效";
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        }
+
+                                        //先删除，后添加
+                                        foreach (var model in Data_Food_WorkStationService.I.GetModels(p => p.FoodID == saleId && p.WorkStationID == id))
+                                        {
+                                            Data_Food_WorkStationService.I.DeleteModel(model, true, merchId, merchSecret);
+                                        }
+
+                                        var data_Food_WorkStationModel = new Data_Food_WorkStation();
+                                        data_Food_WorkStationModel.FoodID = saleId;
+                                        data_Food_WorkStationModel.WorkStationID = id;
+                                        Data_Food_WorkStationService.I.AddModel(data_Food_WorkStationModel, true, merchId, merchSecret);
+
+                                        if (!Data_Food_WorkStationService.I.SaveChanges())
+                                        {
+                                            errMsg = "绑定套餐失败";
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        errMsg = "该售卖项目类别不正确";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }                                                                            
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
             {
