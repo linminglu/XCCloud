@@ -32,7 +32,7 @@ namespace XXCloudService.Api.XCCloud
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@MerchId", merchId);
 
-                string sql = @"select a.ID, a.DictKey, a.DictValue, a.Comment, a.OrderID, a.Enabled, (case a.Enabled when 1 then '允许' when 0 then '禁止' else '' end) as EnabledStr " +  
+                string sql = @"select a.ID, a.DictKey, a.DictValue, a.Icon, a.Comment, a.OrderID, a.Enabled, (case a.Enabled when 1 then '允许' when 0 then '禁止' else '' end) as EnabledStr " +  
                     " from Dict_System a INNER JOIN Dict_System b on a.PID=b.ID" +
                     " where a.MerchID=@MerchId AND b.PID=0 AND b.DictKey='套餐类别' order by a.OrderID";
 

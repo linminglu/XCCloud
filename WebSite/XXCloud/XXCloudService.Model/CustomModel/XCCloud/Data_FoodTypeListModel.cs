@@ -11,6 +11,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public int ID { get; set; }
         public string DictKey { get; set; }
         public string DictValue { get; set; }
+        public string Icon { get; set; }
         public string Comment { get; set; }
         public int? OrderID { get; set; }
         public int? Enabled { get; set; }

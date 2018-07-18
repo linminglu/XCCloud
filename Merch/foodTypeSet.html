@@ -59,14 +59,14 @@
                     </i>
                 </div>
             </div>
-            <div class="layui-inline">
-                <label  class="layui-form-label" style="height: 60px">选中时图标</label>
-                <div class="layui-input-inline" style="height: 58px;border: 1px solid #e6e6e6;padding: 0 auto">
-                    <i  class="addImg icon iconfont icon-icon_jia"  id="activeImg">
+            <!--<div class="layui-inline">-->
+                <!--<label  class="layui-form-label" style="height: 60px">选中时图标</label>-->
+                <!--<div class="layui-input-inline" style="height: 58px;border: 1px solid #e6e6e6;padding: 0 auto">-->
+                    <!--<i  class="addImg icon iconfont icon-icon_jia"  id="activeImg">-->
 
-                    </i>
-                </div>
-            </div>
+                    <!--</i>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
 
         <div class="layui-form-item">
@@ -411,13 +411,11 @@
             ,{field:'DictKey', title: '套餐类别名称', align: 'center'}
             ,{field:'Enabled', title: '状态', align: 'center',templet:'#enabled'}
             ,{field:'Comment', title: '说明', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:180, align:'center', toolbar: '#barDemo'}
+            ,{fixed: 'right', title: '操作', width:240, align:'center', toolbar: '#barDemo'}
         ]
     };
     xc.getInitData(parm);
     let id='';let enabled=1;
-    let imgArr=['box1.png','box.png','credit card-fill.png','credit card-fill1.png',
-    'manage.png','manage1.png','manage_fill1.png','manage_fill.png','message.png','message1.png'];
     let imgStatus='';let indexImg;
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
@@ -446,8 +444,7 @@
             'dictKey':$('input[name="dictKey"]').val(),
             'comment':$('input[name="comment"]').val(),
             'enabled':enabled,
-                'dictvalue':arr[3],
-                // '':$('#activeImg').attr('src'),
+                'icon':arr[3],
             'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parasJson = JSON.stringify(obj);
@@ -557,12 +554,32 @@
                         }
                     })
                 })
+            }else if(layevent==='edit'){
+
+                    let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/FoodType?action=GetFoodType',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                console.log(data)
+                            } else {
+                                layer.msg(data.result_msg||return_msg);
+                            }
+                        }
+                    })
+
             }
         })
     })
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="upLevel">升序</a>
     <a class="layui-btn layui-bg-orange layui-btn-xs" lay-event="downLevel">降序</a>
 </script>
