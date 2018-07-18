@@ -110,6 +110,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("ruleId").Validintnozero("目标规则ID", out errMsg))
@@ -135,8 +136,8 @@ namespace XXCloudService.Api.XCCloud
                                     var groupId = model.GroupID;
                                     var groupModel = Data_RuleOverlying_GroupService.I.GetModels(p => p.ID == groupId).FirstOrDefault();
                                     if (groupModel != null)
-                                        Data_RuleOverlying_GroupService.I.DeleteModel(groupModel);
-                                    Data_RuleOverlying_ListService.I.DeleteModel(model);
+                                        Data_RuleOverlying_GroupService.I.DeleteModel(groupModel, true, merchId, merchSecret);
+                                    Data_RuleOverlying_ListService.I.DeleteModel(model, true, merchId, merchSecret);
                                 }
 
                                 if (!Data_RuleOverlying_ListService.I.SaveChanges())
@@ -171,7 +172,7 @@ namespace XXCloudService.Api.XCCloud
                                             {
                                                 var groupModel = new Data_RuleOverlying_Group();
                                                 groupModel.MerchID = merchId;
-                                                if (!Data_RuleOverlying_GroupService.I.Add(groupModel))
+                                                if (!Data_RuleOverlying_GroupService.I.Add(groupModel, true, merchId, merchSecret))
                                                 {
                                                     errMsg = "添加分组失败";
                                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -182,13 +183,13 @@ namespace XXCloudService.Api.XCCloud
                                                 model.MerchID = merchId;
                                                 model.RuleID = ruleId;
                                                 model.RuleType = ruleType;
-                                                Data_RuleOverlying_ListService.I.AddModel(model);
+                                                Data_RuleOverlying_ListService.I.AddModel(model, true, merchId, merchSecret);
                                                 model = new Data_RuleOverlying_List();
                                                 model.GroupID = groupModel.ID;
                                                 model.MerchID = merchId;
                                                 model.RuleID = gRuleId;
                                                 model.RuleType = gRuleType;
-                                                Data_RuleOverlying_ListService.I.AddModel(model);
+                                                Data_RuleOverlying_ListService.I.AddModel(model, true, merchId, merchSecret);
                                                 if (!Data_RuleOverlying_ListService.I.SaveChanges())
                                                 {
                                                     errMsg = "添加优惠券叠加规则失败";

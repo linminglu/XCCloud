@@ -124,7 +124,7 @@ as
  begin
 	declare @MerchTag int = 0
 	select @MerchTag=MerchTag from Base_MerchantInfo where ID=@MerchID
-	select distinct a.ParentID, a.ID, a.FunctionName, (case when c.FunctionEN is null then (case when b.FunctionEN is null then null else b.FunctionEN end) else c.FunctionEN end) as FunctionEN
+	select distinct a.ParentID, a.ID AS FunctionID, a.FunctionName, (case when c.FunctionEN is null then (case when b.FunctionEN is null then null else b.FunctionEN end) else c.FunctionEN end) as FunctionEN
 	from Dict_FunctionMenu a 
 	left join (select b.ID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
 				inner join Base_MerchantInfo b on a.ID=b.CreateUserID

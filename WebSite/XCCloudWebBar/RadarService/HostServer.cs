@@ -97,6 +97,9 @@ namespace RadarService
             }
         }
 
+        public List<CommandType> CommandTypeList = new List<CommandType>();
+        public string ListenRouteAddress { get; set; }
+
         UDPServer udp = new UDPServer();
         Queue<RouteData> RecvList = new Queue<RouteData>();
         Thread recvProcT1 = null;
@@ -840,20 +843,24 @@ namespace RadarService
                         {
                             Command.Recv.Recv机头网络状态报告 function = new Command.Recv.Recv机头网络状态报告(f);
                             udp.SendData(function.SendData, route.RemotePoint);
-                            StringBuilder sb = new StringBuilder();
-                            sb.Append("=============================================\r\n");
-                            sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  收到数据\r\n", processTime);
-                            sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);
-                            sb.AppendFormat("指令类别：{0}\r\n", f.commandType);
-                            RadarDataShow(sb.ToString());
-                            function.SendDate = DateTime.Now;
-                            sb = new StringBuilder();
-                            sb.Append("=============================================\r\n");
-                            sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  发送数据\r\n", function.SendDate);
-                            sb.Append(Coding.ConvertData.BytesToString(function.SendData) + Environment.NewLine);
-                            sb.AppendFormat("指令类别：{0}\r\n", function.RecvData.commandType);
-                            sb.AppendFormat("路由器地址：{0}\r\n", function.RecvData.routeAddress);
-                            RadarDataShow(sb.ToString());
+
+                            //if (f.routeAddress == ListenRouteAddress && CommandTypeList.Exists((CommandType type) => type == CommandType.机头网络状态报告 || type == CommandType.机头网络状态报告应答))
+                            //{
+                                StringBuilder sb = new StringBuilder();
+                                sb.Append("=============================================\r\n");
+                                sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  收到数据\r\n", processTime);
+                                sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);
+                                sb.AppendFormat("指令类别：{0}\r\n", f.commandType);
+                                RadarDataShow(sb.ToString());
+                                function.SendDate = DateTime.Now;
+                                sb = new StringBuilder();
+                                sb.Append("=============================================\r\n");
+                                sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  发送数据\r\n", function.SendDate);
+                                sb.Append(Coding.ConvertData.BytesToString(function.SendData) + Environment.NewLine);
+                                sb.AppendFormat("指令类别：{0}\r\n", function.RecvData.commandType);
+                                sb.AppendFormat("路由器地址：{0}\r\n", function.RecvData.routeAddress);
+                                RadarDataShow(sb.ToString());
+                            //}
                         }
                         break;
                     case CommandType.设置机头长地址应答:
@@ -1261,6 +1268,7 @@ namespace RadarService
             if (route != null)
             {
                 Command.Ask.Ask设置路由器地址 ask = new Command.Ask.Ask设置路由器地址(segment, Converstring2Endpoint(route.RemotePoint));
+                return true;
             }
             else
             {

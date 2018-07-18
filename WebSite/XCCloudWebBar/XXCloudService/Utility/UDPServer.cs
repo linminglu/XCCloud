@@ -4,48 +4,32 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Web;
-using XCCloudWebBar.Business.XCCloudRS232;
 using XCCloudWebBar.Common;
 using XCCloudWebBar.Common.Extensions;
 using XCCloudWebBar.Common.Enum;
 using XXCloudService.Utility.Info;
-using XCCloudWebBar.Model.XCCloudRS232;
 using RadarService;
 using Microsoft.AspNet.SignalR;
 using XXCloudService;
+using XCCloudWebBar.Business.XCCloud;
+using Newtonsoft.Json;
+using RadarService.Info;
 
 namespace XCCloudWebBar.Utility
 {
     public class UDPServer
     {
-        private static readonly Object thisMessageLock = new Object();
-
-        delegate void DelegShowMsg(string msg);
-
-        //public static UDPServerHelper server = new UDPServerHelper();
-
         public static HostServer server;
 
-        public static List<string> 当前消息列表 = new List<string>();
-        public static string NetworkRate = "0.0";
-        public static int PerMinuteCount = 0;
-        static bool isReckon = false;
-
+        static string merchID = System.Configuration.ConfigurationManager.AppSettings["MerchID"];
+        static string storeID = System.Configuration.ConfigurationManager.AppSettings["StoreID"];
         public static void Init()
-        {
-            string merchID = System.Configuration.ConfigurationManager.AppSettings["MerchID"];
-            string storeID = System.Configuration.ConfigurationManager.AppSettings["StoreID"];
+        {            
             string dbConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["XCCloudDB"].ConnectionString;
             server = new HostServer(merchID, storeID, dbConnectString, 6066, "192.168.1.73", 12888, "192.168.1.73", 5753);
             server.StartServer();
             server.OnRadarDataShow += server_OnRadarDataShow;
             server.OnTransferSpeed += server_OnTransferSpeed;
-            ////server.Init(6066);
-            ////server.OnShowMsg += new UDPServerHelper.消息显示(server_OnShowMsg);
-            ////server.OnChangeState += new UDPServerHelper.状态更新(server_OnChangeState);
-
-            //InitRouterDevices();
-
         }
 
         static void server_OnTransferSpeed(int RecvSpeed, int SendSpeed)
@@ -60,9 +44,14 @@ namespace XCCloudWebBar.Utility
 
         static void server_OnRadarDataShow(string ShowText)
         {
-            XXCloudService.MyHub.InstMessage message = new MyHub.InstMessage() { MsgContent = ShowText.Replace("=", "").Replace("\r\n", "<br />").Trim("<br />".ToCharArray()) };
+            MessageModel message = new MessageModel() { MsgContent = ShowText.Replace("=", "").Replace("\r\n", "<br />").Trim("<br />".ToCharArray()) };
             IHubContext _myHubContext = GlobalHost.ConnectionManager.GetHubContext<MyHub>();
             _myHubContext.Clients.All.ShowMessage(message);
+        }
+
+        class MessageModel
+        {
+            public string MsgContent { get; set; }
         }
 
         class TransferSpeedModel
@@ -72,160 +61,112 @@ namespace XCCloudWebBar.Utility
             public string Step { get; set; }
         }
 
-        //static void server_OnChangeState(Recv机头网络状态报告 cmd)
-        //{
-        //    string routeToken = cmd.RecvData.routeAddress;
-        //    string headAddress = cmd.机头地址;
-        //    int? deviceId = null;
-
-        //    //获取控制器实体
-        //    Base_DeviceInfo router = DeviceBusiness.GetDeviceModel(routeToken);
-        //    Data_MerchDevice merchDevice = MerchDeviceBusiness.GetMerchModel(router.ID, headAddress);
-        //    if (merchDevice != null)
-        //    {
-        //        deviceId = merchDevice.DeviceID;
-        //    }
-
-        //    if (deviceId == null)
-        //    {
-        //        Data_MerchSegment merchSegment = MerchSegmentBusiness.GetMerchSegmentModel(router.ID, headAddress);
-        //        if (merchSegment == null)
-        //        {
-        //            deviceId = merchDevice.DeviceID;
-        //        }
-        //    }
-
-        //    if (deviceId != null)
-        //    {
-        //        Base_DeviceInfo device = DeviceBusiness.GetDeviceModelById((int)deviceId);
-        //        if (device != null)
-        //        {
-        //            List<HeadInfo.机头信息> headList = HeadInfo.GetAllHead();
-        //            HeadInfo.机头信息 head = headList.FirstOrDefault(t => t.令牌 == device.Token);
-        //            string strDeviceState = GetDeviceState(head);
-
-        //            string state = DeviceStatusBusiness.GetDeviceState(device.Token);
-        //            if (state != strDeviceState)
-        //            {
-        //                DeviceStatusBusiness.SetDeviceState(device.Token, strDeviceState);
-        //            }
-        //        }
-        //    }
-        //}
-
-        /// <summary>
-        /// 控制器列表
-        /// </summary>
-        public static List<RouterInfo> RouterList = new List<RouterInfo>();
-        /// <summary>
-        /// 分组列表
-        /// </summary>
-        public static List<GroupInfo> GroupList = new List<GroupInfo>();
-        /// <summary>
-        /// 外设列表
-        /// </summary>
-        public static List<DeviceModel> CoinDeviceList = new List<DeviceModel>();
-        /// <summary>
-        /// 终端列表
-        /// </summary>
-        public static List<DeviceModel> TerminalList = new List<DeviceModel>();
-
-        public static void InitRouterDevices()
+        #region 获取路由器列表
+        public static List<RouterInfo> GetRouteList()
         {
-            RouterList.Clear();
-            GroupList.Clear();
-            CoinDeviceList.Clear();
-            TerminalList.Clear();
-
-            DataTable table = DeviceBusiness.GetRouterDetail();
-            if (table.Rows.Count > 0)
+            List<RouterInfo> RouteList = DeviceBusiness.GetDeviceList(merchID, storeID).Where(t => t.type == 8).Select(t => new RouterInfo
             {
-                foreach (DataRow row in table.Rows)
-                {
-                    RouterInfo router = new RouterInfo();
-                    router.RouterId = Convert.ToInt32(row["ID"].ToString());
-                    router.RouterToken = row["DeviceToken"].ToString();
-                    router.DeviceInfo.Token = row["DeviceToken"].ToString();
-                    router.DeviceInfo.DeviceName = row["DeviceName"].ToString();
-                    router.DeviceInfo.DeviceType = Convert.ToInt32(row["DeviceType"]);
-                    router.DeviceInfo.SN = row["SN"].ToString();
-                    router.DeviceInfo.Status = 1;
-
-                    router.MerchInfo.MerchName = row["MerchName"].ToString();
-                    router.MerchInfo.Mobile = row["Mobile"].ToString();
-                    router.MerchInfo.State = Convert.ToInt32(row["State"]);
-
-                    RouterList.Add(router);
-                }
-            }
-
-            GroupList = GameBusiness.GetGameList().ToList().Select(g => new GroupInfo
-            {
-                RouterToken = g.DeviceID.IsNull() ? "" : RouterList.FirstOrDefault(r => r.RouterId == g.DeviceID).RouterToken,
-                GroupId = g.GroupID,
-                GroupName = g.GroupName,
-                GroupType = ((GroupTypeEnum)g.GroupType).ToDescription()
+                RouteId = t.ID,
+                RouteName = t.DeviceName,
+                RouteToken = t.Token,
+                Segment = t.segment
             }).ToList();
 
-            DataTable coinDeviceTable = DeviceBusiness.GetCoinDeviceList();
-            if (coinDeviceTable.Rows.Count > 0)
+            foreach (var route in RouteList)
             {
-                foreach (DataRow row in coinDeviceTable.Rows)
+                var radar = server.GetRadarStatusByToken(route.RouteToken.ToLower());
+                route.RemotePoint = GetEndPoint(radar.RemotePoint);
+                route.UpdateTime = radar.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                route.Online = radar.Online;
+                DateTime now = DateTime.Now;
+                if (radar.UpdateTime.AddSeconds(10) < now)
                 {
-                    DeviceModel device = new DeviceModel();
-                    device.RouterToken = row["RouterToken"].ToString();
-                    device.DeviceId = Convert.ToInt32(row["DeviceId"].ToString());
-                    device.DeviceToken = row["DeviceToken"].ToString();
-                    device.DeviceName = row["DeviceName"].ToString();
-                    device.DeviceType = ((GroupTypeEnum)Convert.ToInt32(row["DeviceType"].ToString())).ToDescription();
-                    device.State = row["State"].ToString();
-                    device.SN = row["SN"].ToString();
-                    device.HeadAddress = row["HeadAddress"].ToString();
-
-                    CoinDeviceList.Add(device);
+                    route.Online = false;
                 }
             }
-
-            DataTable TerminalTable = DeviceBusiness.GetTerminalDeviceList();
-            if (TerminalTable.Rows.Count > 0)
-            {
-                foreach (DataRow row in TerminalTable.Rows)
-                {
-                    DeviceModel device = new DeviceModel();
-                    device.RouterToken = row["RouterToken"].ToString();
-                    device.DeviceId = Convert.ToInt32(row["DeviceId"].ToString());
-                    device.DeviceToken = row["DeviceToken"].ToString();
-                    device.DeviceName = row["DeviceName"].ToString();
-                    device.DeviceType = ((GroupTypeEnum)Convert.ToInt32(row["DeviceType"].ToString())).ToDescription();
-                    device.State = row["State"].ToString();
-                    device.SN = row["SN"].ToString();
-                    device.HeadAddress = row["HeadAddress"].ToString();
-                    device.GroupId = Convert.ToInt32(row["GroupID"].ToString());
-
-                    TerminalList.Add(device);
-                }
-            }
+            RouteList = RouteList.OrderByDescending(t => t.Online).ToList();
+            return RouteList;
         }
 
-        //public static string GetDeviceState(HeadInfo.机头信息 head)
-        //{
-        //    if (head.状态.在线状态)
-        //    {
-        //        if (head.状态.锁定机头)
-        //        {
-        //            return DeviceStatusEnum.锁定.ToDescription();
-        //        }
-        //        if (head.状态.出币机或存币机正在数币)
-        //        {
-        //            return DeviceStatusEnum.工作中.ToDescription();
-        //        }
-        //        if (head.状态.读币器故障)
-        //        {
-        //            return DeviceStatusEnum.报警.ToDescription();
-        //        }
-        //        return DeviceStatusEnum.在线.ToDescription();
-        //    }
-        //    return DeviceStatusEnum.离线.ToDescription();
-        //}
+        static string GetEndPoint(string remotePoint)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(remotePoint))
+                {
+                    RemotePointModel endPoint = JsonConvert.DeserializeObject<RemotePointModel>(remotePoint);
+                    string strPoint = endPoint.Address + ":" + endPoint.Port;
+                    return strPoint;
+                }
+            }
+            catch
+            {
+            }
+            return "";
+        }
+
+        class RemotePointModel
+        {
+            public string Address { get; set; }
+            public int Port { get; set; }
+        } 
+        #endregion
+
+        #region 获取路由器绑定的设备列表
+        public static List<DeviceModel> GetDeviceList(int routeId)
+        {
+            var queryDevices = DeviceBusiness.GetDeviceList(merchID, storeID).Where(t => t.BindDeviceID == routeId && t.type != 8).Select(t => new
+            {
+                DeviceId = t.ID,
+                DeviceName = t.DeviceName,
+                DeviceType = t.type,
+                SiteName = t.SiteName,
+                MCUID = t.MCUID,
+                Address = t.Address
+            }).ToList();
+
+            List<DeviceModel> DeviceList = new List<DeviceModel>();
+            foreach (var item in queryDevices)
+            {
+                DeviceModel model = new DeviceModel();
+                var device = DeviceInfo.GetBufMCUIDDeviceInfo(item.MCUID);
+                model.RouterId = routeId;
+                model.DeviceId = item.DeviceId;
+                model.DeviceName = item.DeviceName;
+                model.SiteName = item.SiteName;
+                model.DeviceType = device.类型.ToString();
+                model.MCUID = item.MCUID;
+                model.Address = device.机头短地址;
+                //model.State = device.状态.在线状态 ? "在线" : "离线";
+                model.State = GetDeviceState(device.状态);
+
+                DeviceList.Add(model);
+            }
+
+            DeviceList = DeviceList.OrderBy(t => t.Address).ToList();
+            return DeviceList;
+        }
+
+        public static string GetDeviceState(DeviceInfo.状态值 status)
+        {
+            if (status.在线状态)
+            {
+                if (status.非法币或卡报警)
+                {
+                    return DeviceStatusEnum.报警.ToDescription();
+                }
+                if (status.锁定机头)
+                {
+                    return DeviceStatusEnum.锁定.ToDescription();
+                }
+                if (status.读币器故障)
+                {
+                    return "读币器故障";
+                }
+                return DeviceStatusEnum.在线.ToDescription();
+            }
+            return DeviceStatusEnum.离线.ToDescription();
+        }
+        #endregion        
     }
 }

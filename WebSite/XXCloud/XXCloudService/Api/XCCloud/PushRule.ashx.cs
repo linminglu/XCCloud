@@ -136,9 +136,10 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
-                if(!dicParas.GetArray("gameList").Validarray("游戏机列表", out errMsg))
+                if (!dicParas.GetArray("gameList").Validarray("游戏机列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.GetArray("memberLevelList").Validarray("会员级别列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -160,7 +161,7 @@ namespace XXCloudService.Api.XCCloud
                         model.EndDate = model.EndDate.Todate();
                         if (id == 0)
                         {
-                            if (!Data_PushRuleService.I.Add(model))
+                            if (!Data_PushRuleService.I.Add(model, true, merchId, merchSecret))
                             {
                                 errMsg = "保存投币优惠规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -174,7 +175,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            if (!Data_PushRuleService.I.Update(model))
+                            if (!Data_PushRuleService.I.Update(model, true, merchId, merchSecret))
                             {
                                 errMsg = "保存投币优惠规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -189,7 +190,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var gameModel in Data_PushRule_GameListService.I.GetModels(p => p.PushRuleID == id))
                             {
-                                Data_PushRule_GameListService.I.DeleteModel(gameModel);
+                                Data_PushRule_GameListService.I.DeleteModel(gameModel, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in gameList)
@@ -205,7 +206,7 @@ namespace XXCloudService.Api.XCCloud
                                     gameModel.GameID = dicPar.Get("gameId").Toint();
                                     gameModel.MerchID = merchId;
                                     gameModel.StoreID = storeId;
-                                    Data_PushRule_GameListService.I.AddModel(gameModel);
+                                    Data_PushRule_GameListService.I.AddModel(gameModel, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -227,7 +228,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var memberLevelModel in Data_PushRule_MemberLevelListService.I.GetModels(p => p.PushRuleID == id))
                             {
-                                Data_PushRule_MemberLevelListService.I.DeleteModel(memberLevelModel);
+                                Data_PushRule_MemberLevelListService.I.DeleteModel(memberLevelModel, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in memberLevelList)
@@ -243,7 +244,7 @@ namespace XXCloudService.Api.XCCloud
                                     memberLevelModel.MemberLevelID = dicPar.Get("memberLevelId").Toint();
                                     memberLevelModel.MerchID = merchId;
                                     memberLevelModel.StoreID = storeId;
-                                    Data_PushRule_MemberLevelListService.I.AddModel(memberLevelModel);
+                                    Data_PushRule_MemberLevelListService.I.AddModel(memberLevelModel, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -284,6 +285,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -308,16 +313,16 @@ namespace XXCloudService.Api.XCCloud
 
                             foreach (var gameModel in Data_PushRule_GameListService.I.GetModels(p => p.PushRuleID == (int)id))
                             {
-                                Data_PushRule_GameListService.I.DeleteModel(gameModel);
+                                Data_PushRule_GameListService.I.DeleteModel(gameModel, true, merchId, merchSecret);
                             }
 
                             foreach (var memberLevelModel in Data_PushRule_MemberLevelListService.I.GetModels(p => p.PushRuleID == (int)id))
                             {
-                                Data_PushRule_MemberLevelListService.I.DeleteModel(memberLevelModel);
+                                Data_PushRule_MemberLevelListService.I.DeleteModel(memberLevelModel, true, merchId, merchSecret);
                             }
 
                             var model = Data_PushRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
-                            Data_PushRuleService.I.DeleteModel(model);
+                            Data_PushRuleService.I.DeleteModel(model, true, merchId, merchSecret);
 
                             if (!Data_PushRuleService.I.SaveChanges())
                             {

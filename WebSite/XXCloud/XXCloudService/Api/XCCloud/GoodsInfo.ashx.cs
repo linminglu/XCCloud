@@ -236,6 +236,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("goodType").Validint("商品类别", out errMsg))
@@ -265,7 +266,7 @@ namespace XXCloudService.Api.XCCloud
                             base_GoodsInfo.AllowStorage = userTokenKeyModel.LogType == (int)RoleType.MerchUser ? 1 : 0;
                             base_GoodsInfo.MerchID = merchId;
                             base_GoodsInfo.StoreID = storeId;
-                            if (!Base_GoodsInfoService.I.Add(base_GoodsInfo))
+                            if (!Base_GoodsInfoService.I.Add(base_GoodsInfo, true, merchId, merchSecret))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "添加商品信息失败");
                         }
                         else
@@ -276,7 +277,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "禁止跨门店修改商品信息");
                             if (base_GoodsInfo.MerchID != merchId)
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "禁止修改非此商户下的商品信息");
-                            if (!Base_GoodsInfoService.I.Update(base_GoodsInfo))
+                            if (!Base_GoodsInfoService.I.Update(base_GoodsInfo, true, merchId, merchSecret))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "修改商品信息失败");
                         }
 
@@ -328,7 +329,7 @@ namespace XXCloudService.Api.XCCloud
                                     base_Goodinfo_Price.OperateTypei = 0;
                                     base_Goodinfo_Price.Count = count0;
                                     base_Goodinfo_Price.GoodID = id;
-                                    Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price);
+                                    Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price, true, merchId, merchSecret);
                                     priceList.Add(base_Goodinfo_Price);
 
                                     base_Goodinfo_Price = new Base_Goodinfo_Price();                                    
@@ -336,7 +337,7 @@ namespace XXCloudService.Api.XCCloud
                                     base_Goodinfo_Price.OperateTypei = 1;
                                     base_Goodinfo_Price.Count = count1;
                                     base_Goodinfo_Price.GoodID = id;
-                                    Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price);
+                                    Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price, true, merchId, merchSecret);
                                     priceList.Add(base_Goodinfo_Price);
                                 }
                                 else
@@ -387,6 +388,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("id").Validint("商品ID", out errMsg))
@@ -402,7 +404,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
                 base_GoodsInfo.AllowStorage = allowStorage;
-                if (!Base_GoodsInfoService.I.Update(base_GoodsInfo))
+                if (!Base_GoodsInfoService.I.Update(base_GoodsInfo, true, merchId, merchSecret))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "修改商品信息失败");
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
@@ -416,6 +418,7 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
+
         /// <summary>
         /// 删除商品信息
         /// </summary>
@@ -429,6 +432,7 @@ namespace XXCloudService.Api.XCCloud
                 var userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 var errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
@@ -458,7 +462,7 @@ namespace XXCloudService.Api.XCCloud
 
                             base_GoodsInfo.Status = 0;
 
-                            if (!Base_GoodsInfoService.I.Update(base_GoodsInfo))
+                            if (!Base_GoodsInfoService.I.Update(base_GoodsInfo, true, merchId, merchSecret))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "商品信息删除失败");
                         }
 

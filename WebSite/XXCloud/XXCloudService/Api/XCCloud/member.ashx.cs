@@ -707,6 +707,7 @@ namespace XCCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? (dicParas["memberLevelID"] + "") : string.Empty;
@@ -753,7 +754,7 @@ namespace XCCloudService.Api.XCCloud
                             //新增
                             data_MemberLevel.MerchID = merchId;
                             data_MemberLevel.State = 1;
-                            if (!data_MemberLevelService.Add(data_MemberLevel))
+                            if (!data_MemberLevelService.Add(data_MemberLevel, true, merchId, merchSecret))
                             {
                                 errMsg = "添加会员级别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -762,7 +763,7 @@ namespace XCCloudService.Api.XCCloud
                         else
                         {
                             //修改
-                            if (!data_MemberLevelService.Update(data_MemberLevel))
+                            if (!data_MemberLevelService.Update(data_MemberLevel, true, merchId, merchSecret))
                             {
                                 errMsg = "修改会员级别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -778,7 +779,7 @@ namespace XCCloudService.Api.XCCloud
                             IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodService.I;
                             foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
-                                data_MemberLevel_FoodService.DeleteModel(model);
+                                data_MemberLevel_FoodService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in memberLevelFoods)
@@ -796,7 +797,7 @@ namespace XCCloudService.Api.XCCloud
                                     var data_MemberLevel_Food = new Data_MemberLevel_Food();
                                     data_MemberLevel_Food.MemberLevelID = iMemberLevelID;
                                     data_MemberLevel_Food.FoodID = Convert.ToInt32(foodId);
-                                    data_MemberLevel_FoodService.AddModel(data_MemberLevel_Food);
+                                    data_MemberLevel_FoodService.AddModel(data_MemberLevel_Food, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -818,7 +819,7 @@ namespace XCCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var model in Data_MemberLevel_BalanceService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
-                                Data_MemberLevel_BalanceService.I.DeleteModel(model);
+                                Data_MemberLevel_BalanceService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             var memberLevelBalanceList = new List<Data_MemberLevel_Balance>();
@@ -842,7 +843,7 @@ namespace XCCloudService.Api.XCCloud
                                     data_MemberLevel_Balance.MaxSaveCount = maxSaveCount;
                                     data_MemberLevel_Balance.MaxUplife = maxUplife;
                                     memberLevelBalanceList.Add(data_MemberLevel_Balance);
-                                    Data_MemberLevel_BalanceService.I.AddModel(data_MemberLevel_Balance);
+                                    Data_MemberLevel_BalanceService.I.AddModel(data_MemberLevel_Balance, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -872,7 +873,7 @@ namespace XCCloudService.Api.XCCloud
                             IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeService.I;
                             foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
-                                data_MemberLevelFreeService.DeleteModel(model);
+                                data_MemberLevelFreeService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in memberLevelFrees)
@@ -897,7 +898,7 @@ namespace XCCloudService.Api.XCCloud
                                     data_MemberLevelFree.OnceFreeCount = ObjectExt.Toint(onceFreeCount);
                                     data_MemberLevelFree.ExpireDays = ObjectExt.Toint(expireDays);
                                     data_MemberLevelFree.CanGetCount = (data_MemberLevelFree.OnceFreeCount ?? 0) > 0 ? ((data_MemberLevelFree.FreeCount ?? 0) / data_MemberLevelFree.OnceFreeCount) : 0;
-                                    data_MemberLevelFreeService.AddModel(data_MemberLevelFree);
+                                    data_MemberLevelFreeService.AddModel(data_MemberLevelFree, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -919,7 +920,7 @@ namespace XCCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var model in Data_MemberLevel_BalanceChargeService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
-                                Data_MemberLevel_BalanceChargeService.I.DeleteModel(model);
+                                Data_MemberLevel_BalanceChargeService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             var chargeRuleList = new List<Data_MemberLevel_BalanceCharge>();
@@ -955,7 +956,7 @@ namespace XCCloudService.Api.XCCloud
                                     data_MemberLevel_BalanceCharge.TargetBalanceIndex = targetBalanceIndex;
                                     data_MemberLevel_BalanceCharge.TargetCount = targetCount;
                                     chargeRuleList.Add(data_MemberLevel_BalanceCharge);
-                                    Data_MemberLevel_BalanceChargeService.I.AddModel(data_MemberLevel_BalanceCharge);                                    
+                                    Data_MemberLevel_BalanceChargeService.I.AddModel(data_MemberLevel_BalanceCharge, true, merchId, merchSecret);                                    
                                 }
                                 else
                                 {
@@ -984,7 +985,7 @@ namespace XCCloudService.Api.XCCloud
                                 var data_MemberLevel_BookRuleService = Data_MemberLevel_BookRuleService.I;
                                 foreach (var model in data_MemberLevel_BookRuleService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                                 {
-                                    data_MemberLevel_BookRuleService.DeleteModel(model);
+                                    data_MemberLevel_BookRuleService.DeleteModel(model, true, merchId, merchSecret);
                                 }
 
                                 foreach (IDictionary<string, object> el in memberLevelBookRule)
@@ -1023,7 +1024,7 @@ namespace XCCloudService.Api.XCCloud
                                         data_MemberLevel_BookRule.BalanceIndex = balanceIndex;
                                         data_MemberLevel_BookRule.CouponCode = couponCode;
                                         data_MemberLevel_BookRule.Count = count;
-                                        data_MemberLevel_BookRuleService.AddModel(data_MemberLevel_BookRule);
+                                        data_MemberLevel_BookRuleService.AddModel(data_MemberLevel_BookRule, true, merchId, merchSecret);
                                     }
                                     else
                                     {
@@ -1339,6 +1340,10 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var memberLevelIDArr = dicParas.GetArray("memberLevelID");
 
@@ -1366,7 +1371,7 @@ namespace XCCloudService.Api.XCCloud
 
                             var data_MemberLevel = data_MemberLevelService.GetModels(p => p.ID == iMemberLevelID).FirstOrDefault();
                             //data_MemberLevel.State = 0;
-                            if (!data_MemberLevelService.Delete(data_MemberLevel))
+                            if (!data_MemberLevelService.Delete(data_MemberLevel, true, merchId, merchSecret))
                             {
                                 errMsg = "删除会员级别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1375,7 +1380,7 @@ namespace XCCloudService.Api.XCCloud
                             IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodService.I;
                             foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
-                                data_MemberLevel_FoodService.DeleteModel(model);
+                                data_MemberLevel_FoodService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             if (!data_MemberLevel_FoodService.SaveChanges())
@@ -1387,7 +1392,7 @@ namespace XCCloudService.Api.XCCloud
                             IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeService.I;
                             foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
-                                data_MemberLevelFreeService.DeleteModel(model);
+                                data_MemberLevelFreeService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             if (!data_MemberLevelFreeService.SaveChanges())
@@ -1398,7 +1403,7 @@ namespace XCCloudService.Api.XCCloud
 
                             foreach (var model in Data_MemberLevel_BalanceService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
-                                Data_MemberLevel_BalanceService.I.DeleteModel(model);
+                                Data_MemberLevel_BalanceService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             if (!Data_MemberLevel_BalanceService.I.SaveChanges())
@@ -1409,7 +1414,7 @@ namespace XCCloudService.Api.XCCloud
 
                             foreach (var model in Data_MemberLevel_BalanceChargeService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
-                                Data_MemberLevel_BalanceChargeService.I.DeleteModel(model);
+                                Data_MemberLevel_BalanceChargeService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             if (!Data_MemberLevel_BalanceChargeService.I.SaveChanges())

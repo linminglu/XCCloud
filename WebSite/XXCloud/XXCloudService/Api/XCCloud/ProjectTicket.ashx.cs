@@ -179,6 +179,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("businessType").Validint("业务类型", out errMsg))
@@ -301,7 +302,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             model.MerchID = merchId;
                             model.StoreID = storeId;
-                            if (!Data_ProjectTicketService.I.Add(model))
+                            if (!Data_ProjectTicketService.I.Add(model, true, merchId, merchSecret))
                             {
                                 errMsg = "保存门票失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -315,7 +316,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            if (!Data_ProjectTicketService.I.Update(model))
+                            if (!Data_ProjectTicketService.I.Update(model, true, merchId, merchSecret))
                             {
                                 errMsg = "保存门票失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -330,7 +331,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var bindModel in Data_ProjectTicket_BindService.I.GetModels(p => p.ProjectTicketID == id))
                             {
-                                Data_ProjectTicket_BindService.I.DeleteModel(bindModel);
+                                Data_ProjectTicket_BindService.I.DeleteModel(bindModel, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in projectTicketBinds)
@@ -375,7 +376,7 @@ namespace XXCloudService.Api.XCCloud
                                     bindModel.UseCount = dicPar.Get("useCount").Toint() ?? 1;
                                     bindModel.AllowShareCount = dicPar.Get("allowShareCount").Toint();
                                     bindModel.WeightValue = dicPar.Get("weightValue").Toint();
-                                    Data_ProjectTicket_BindService.I.AddModel(bindModel);
+                                    Data_ProjectTicket_BindService.I.AddModel(bindModel, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -417,6 +418,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -440,11 +445,11 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             var model = Data_ProjectTicketService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
-                            Data_ProjectTicketService.I.DeleteModel(model);
+                            Data_ProjectTicketService.I.DeleteModel(model, true, merchId, merchSecret);
 
                             foreach (var bindModel in Data_ProjectTicket_BindService.I.GetModels(p => p.ProjectTicketID == (int)id))
                             {
-                                Data_ProjectTicket_BindService.I.DeleteModel(bindModel);
+                                Data_ProjectTicket_BindService.I.DeleteModel(bindModel, true, merchId, merchSecret);
                             }
 
                             if (!Data_ProjectTicketService.I.SaveChanges())

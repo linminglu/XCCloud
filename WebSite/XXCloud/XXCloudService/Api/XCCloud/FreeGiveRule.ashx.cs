@@ -22,7 +22,6 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class FreeGiveRule : ApiBase
     {
-
         /// <summary>
         /// 查询免费赠送规则
         /// </summary>
@@ -34,7 +33,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;                
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -137,6 +136,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
 
@@ -153,7 +153,7 @@ namespace XXCloudService.Api.XCCloud
                         model.MerchID = merchId;
                         if (id == 0)
                         {
-                            if (!Data_FreeGiveRuleService.I.Add(model))
+                            if (!Data_FreeGiveRuleService.I.Add(model, true, merchId, merchSecret))
                             {
                                 errMsg = "添加免费赠送规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);  
@@ -167,7 +167,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);  
                             }
 
-                            if (!Data_FreeGiveRuleService.I.Update(model))
+                            if (!Data_FreeGiveRuleService.I.Update(model, true, merchId, merchSecret))
                             {
                                 errMsg = "更新免费赠送规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -179,7 +179,7 @@ namespace XXCloudService.Api.XCCloud
                         //先删除，添加适用级别
                         foreach (var memberLevel in Data_FreeGiveRule_MemberlevelService.I.GetModels(p => p.RuleID == id))
                         {
-                            Data_FreeGiveRule_MemberlevelService.I.DeleteModel(memberLevel);
+                            Data_FreeGiveRule_MemberlevelService.I.DeleteModel(memberLevel, true, merchId, merchSecret);
                         }
 
                         if (!memberLevelIds.IsNull())
@@ -191,7 +191,7 @@ namespace XXCloudService.Api.XCCloud
                                 var memberLevel = new Data_FreeGiveRule_Memberlevel();
                                 memberLevel.MerchID = merchId;
                                 memberLevel.RuleID = id;
-                                Data_FreeGiveRule_MemberlevelService.I.AddModel(memberLevel);
+                                Data_FreeGiveRule_MemberlevelService.I.AddModel(memberLevel, true, merchId, merchSecret);
                             }
                         }
 
@@ -227,6 +227,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -251,7 +255,7 @@ namespace XXCloudService.Api.XCCloud
 
                             var model = Data_FreeGiveRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
                             model.State = 0;
-                            if (!Data_FreeGiveRuleService.I.Update(model))
+                            if (!Data_FreeGiveRuleService.I.Update(model, true, merchId, merchSecret))
                             {
                                 errMsg = "删除免费赠送规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -286,6 +290,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if(!dicParas.Get("id").Validintnozero("规则ID", out errMsg))
@@ -327,7 +332,7 @@ namespace XXCloudService.Api.XCCloud
                             freeGiveRule.RuleLevel = max;
                         }
 
-                        Data_FreeGiveRuleService.I.UpdateModel(freeGiveRule);
+                        Data_FreeGiveRuleService.I.UpdateModel(freeGiveRule, true, merchId, merchSecret);
 
                         var newLevel = freeGiveRule.RuleLevel;
                         if (oldLevel != newLevel || oldLevel == null)
@@ -340,7 +345,7 @@ namespace XXCloudService.Api.XCCloud
                                 foreach (var model in linq)
                                 {
                                     model.RuleLevel = model.RuleLevel + 1;
-                                    Data_FreeGiveRuleService.I.UpdateModel(model);
+                                    Data_FreeGiveRuleService.I.UpdateModel(model, true, merchId, merchSecret);
                                 }
                             }
                             else
@@ -351,7 +356,7 @@ namespace XXCloudService.Api.XCCloud
                                 if (nextModel != null)
                                 {
                                     nextModel.RuleLevel = nextModel.RuleLevel - updateState;
-                                    Data_FreeGiveRuleService.I.UpdateModel(nextModel);
+                                    Data_FreeGiveRuleService.I.UpdateModel(nextModel, true, merchId, merchSecret);
                                 }
                             }
                         }

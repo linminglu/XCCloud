@@ -209,6 +209,10 @@ namespace XXCloudService.WeiXin.Api
                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
             }
 
+
+            var merchId = Base_UserInfoService.I.GetModels(p => p.ID == userId).Select(o => o.MerchID).FirstOrDefault();
+            var merchSecret = Base_MerchantInfoService.I.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => o.MerchSecret).FirstOrDefault();
+
             //开启EF事务
             using (TransactionScope ts = new TransactionScope())
             {
@@ -227,7 +231,7 @@ namespace XXCloudService.WeiXin.Api
                         }
 
                         IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        var base_UserInfo = userInfoService.GetModels(p => p.ID.Equals(userId)).FirstOrDefault<Base_UserInfo>();
+                        var base_UserInfo = userInfoService.GetModels(p => p.ID == userId).FirstOrDefault<Base_UserInfo>();
                         base_UserInfo.UserGroupID = ugid;
                         base_UserInfo.Auditor = authorId;
                         base_UserInfo.AuditorTime = DateTime.Now;
@@ -245,14 +249,14 @@ namespace XXCloudService.WeiXin.Api
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (!userInfoService.Update(base_UserInfo))
+                        if (!userInfoService.Update(base_UserInfo, true, merchId, merchSecret))
                         {
                             errMsg = "修改用户信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
                         //添加或修改授权功能表
-                        var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGrant).Namespace);
+                        var base_UserGrantService = Base_UserGrantService.I;
                         var userGrant = (object[])dicParas["userGrant"];
                         foreach (IDictionary<string, object> iUgr in userGrant)
                         {
@@ -260,24 +264,24 @@ namespace XXCloudService.WeiXin.Api
                             {
                                 var ugr = new Dictionary<string, object>(iUgr, StringComparer.OrdinalIgnoreCase);
                                 int ugrid = Convert.ToInt32(ugr["id"]);
-                                if (!dbContext.Set<Base_UserGrant>().Any(w => w.GrantID.Value.Equals(ugrid) && w.UserID.Value.Equals(userId)))
+                                if (!base_UserGrantService.Any(w => w.GrantID == ugrid && w.UserID == userId))
                                 {
                                     var base_UserGrant = new Base_UserGrant();
                                     base_UserGrant.GrantID = ugrid;
                                     base_UserGrant.UserID = userId;
                                     base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                    dbContext.Entry(base_UserGrant).State = EntityState.Added;
+                                    base_UserGrantService.AddModel(base_UserGrant, true, merchId, merchSecret);
                                 }
                                 else
                                 {
-                                    var base_UserGrant = dbContext.Set<Base_UserGrant>().Where(p => p.GrantID == ugrid && p.UserID == userId).FirstOrDefault();
+                                    var base_UserGrant = base_UserGrantService.GetModels(p => p.GrantID == ugrid && p.UserID == userId).FirstOrDefault();
                                     base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                    dbContext.Entry(base_UserGrant).State = EntityState.Modified;                                    
+                                    base_UserGrantService.UpdateModel(base_UserGrant, true, merchId, merchSecret);                                    
                                 }
                             }
                         }
 
-                        if (dbContext.SaveChanges() < 0)
+                        if (!base_UserGrantService.SaveChanges())
                         {
                             errMsg = "保存授权功能失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -285,13 +289,13 @@ namespace XXCloudService.WeiXin.Api
 
                         //修改工单
                         IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
-                        var xC_WorkInfo = xC_WorkInfoService.GetModels(p => p.ID.ToString().Equals(workId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XC_WorkInfo>();
+                        var xC_WorkInfo = xC_WorkInfoService.GetModels(p => p.ID.ToString() == workId).FirstOrDefault<XC_WorkInfo>();
                         xC_WorkInfo.AuditorID = authorId;
                         xC_WorkInfo.AuditTime = DateTime.Now;
                         xC_WorkInfo.WorkState = (int)WorkState.Pass;
                         xC_WorkInfo.AuditBody = "审核通过";
                         xC_WorkInfo.WorkType = (int)WorkType.UserCheck;
-                        if (!xC_WorkInfoService.Update(xC_WorkInfo))
+                        if (!xC_WorkInfoService.Update(xC_WorkInfo, true, merchId, merchSecret))
                         {
                             errMsg = "修改工单失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -303,7 +307,7 @@ namespace XXCloudService.WeiXin.Api
                         log_Operation.UserID = userId;
                         log_Operation.AuthorID = authorId;
                         log_Operation.Content = "审核通过";
-                        if (!log_OperationService.Add(log_Operation))
+                        if (!log_OperationService.Add(log_Operation, true, merchId, merchSecret))
                         {
                             errMsg = "添加日志失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -319,7 +323,7 @@ namespace XXCloudService.WeiXin.Api
                         xC_WorkInfo.WorkState = (int)WorkState.Reject;
                         xC_WorkInfo.AuditBody = "拒绝理由：" + reason;
                         xC_WorkInfo.WorkType = (int)WorkType.UserCheck;
-                        if (!xC_WorkInfoService.Update(xC_WorkInfo))
+                        if (!xC_WorkInfoService.Update(xC_WorkInfo, true, merchId, merchSecret))
                         {
                             errMsg = "修改工单失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -331,7 +335,7 @@ namespace XXCloudService.WeiXin.Api
                         log_Operation.UserID = userId;
                         log_Operation.AuthorID = authorId;
                         log_Operation.Content = "拒绝理由：" + reason;
-                        if (!log_OperationService.Add(log_Operation))
+                        if (!log_OperationService.Add(log_Operation, true, merchId, merchSecret))
                         {
                             errMsg = "添加日志失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

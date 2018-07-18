@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XCCloudWebBar.BLL.CommonBLL;
+using XCCloudWebBar.BLL.XCCloud;
+using XCCloudWebBar.Model.XCCloud;
 
 namespace XCCloudWebBar.Business.XCCloud
 {
@@ -58,6 +60,11 @@ namespace XCCloudWebBar.Business.XCCloud
                 statusName = string.Empty;
                 return false;
             }
+        }
+
+        public static IQueryable<Base_DeviceInfo> GetDeviceList(string merchId, string storeId)
+        {
+            return Base_DeviceInfoService.I.GetModels(t => t.MerchID == merchId && t.StoreID == storeId && t.DeviceStatus != 0);
         }
     }
 }

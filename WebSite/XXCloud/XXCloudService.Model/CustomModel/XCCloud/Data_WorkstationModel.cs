@@ -10,6 +10,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     public class Data_WorkstationList
     {
         public int ID { get; set; }
+        public string WorkStation { get; set; }
         public int? DepotID { get; set; }
         public string DepotName { get; set; }
         private int State { get; set; }        

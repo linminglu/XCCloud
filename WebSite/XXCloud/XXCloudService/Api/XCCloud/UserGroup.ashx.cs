@@ -18,6 +18,7 @@ using XCCloudService.Common.Enum;
 using XCCloudService.DAL;
 using System.Data.Entity;
 using XXCloudService.Api.XCCloud.Common;
+using XCCloudService.BLL.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -26,7 +27,10 @@ namespace XXCloudService.Api.XCCloud
     /// UserGroup 的摘要说明
     /// </summary>
     public class UserGroup : ApiBase
-    {        
+    {
+        private string merchId;
+        private string merchSecret;
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetUserGroupList(Dictionary<string, object> dicParas)
         {
@@ -126,14 +130,16 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string logId = string.Empty;
-
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
 
+                string errMsg = string.Empty;
+                string logId = string.Empty;
+                
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
                     logId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                    merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                    merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
                 }
 
                 string groupName = dicParas.ContainsKey("groupName") ? dicParas["groupName"].ToString() : string.Empty;
@@ -172,7 +178,7 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (!base_UserGroupService.Add(base_UserGroup))
+                        if (!base_UserGroupService.Add(base_UserGroup, (!merchId.IsNull()), merchId, merchSecret))
                         {
                             errMsg = "更新数据库失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -180,7 +186,7 @@ namespace XXCloudService.Api.XCCloud
 
                         if (userGroupGrants != null && userGroupGrants.Count() > 0)
                         {
-                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGroup_Grant).Namespace);
+                            var base_UserGroup_GrantService = Base_UserGroup_GrantService.I;
                             foreach (IDictionary<string, object> el in userGroupGrants)
                             {
                                 if (el != null)
@@ -189,7 +195,7 @@ namespace XXCloudService.Api.XCCloud
                                     string functionId = dicPara.ContainsKey("functionId") ? dicPara["functionId"].ToString() : string.Empty;
                                     string isAllow = dicPara.ContainsKey("isAllow") ? dicPara["isAllow"].ToString() : string.Empty;
                                     var base_UserGroup_Grant = new Base_UserGroup_Grant { FunctionID = Convert.ToInt32(functionId), GroupID = base_UserGroup.ID, IsAllow = !string.IsNullOrEmpty(isAllow) ? Convert.ToInt32(isAllow) : default(int?) };
-                                    dbContext.Entry(base_UserGroup_Grant).State = EntityState.Added;                                    
+                                    base_UserGroup_GrantService.AddModel(base_UserGroup_Grant, (!merchId.IsNull()), merchId, merchSecret);                                  
                                 }
                                 else
                                 {
@@ -198,7 +204,7 @@ namespace XXCloudService.Api.XCCloud
                                 }
                             }
 
-                            if (dbContext.SaveChanges() < 0)
+                            if (!base_UserGroup_GrantService.SaveChanges())
                             {
                                 errMsg = "更新数据库失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -226,14 +232,15 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string logId = string.Empty;
-
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
 
+                string errMsg = string.Empty;
+                string logId = string.Empty;
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
                     logId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                    merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                    merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
                 }
 
                 string groupId = dicParas.ContainsKey("groupId") ? dicParas["groupId"].ToString() : string.Empty;
@@ -287,7 +294,7 @@ namespace XXCloudService.Api.XCCloud
 
                         base_UserGroup.GroupName = groupName;
                         base_UserGroup.Note = note;
-                        if (!base_UserGroupService.Update(base_UserGroup))
+                        if (!base_UserGroupService.Update(base_UserGroup, (!merchId.IsNull()), merchId, merchSecret))
                         {
                             errMsg = "更新数据库失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -295,11 +302,11 @@ namespace XXCloudService.Api.XCCloud
 
                         if (userGroupGrants != null && userGroupGrants.Count() >= 0)
                         {
-                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGroup_Grant).Namespace);
-                            var base_UserGroup_Grants = dbContext.Set<Base_UserGroup_Grant>().Where(p => p.GroupID.ToString().Equals(groupId, StringComparison.OrdinalIgnoreCase)).ToList();
+                            var base_UserGroup_GrantService = Base_UserGroup_GrantService.I;
+                            var base_UserGroup_Grants = base_UserGroup_GrantService.GetModels(p => p.GroupID.ToString() == groupId).ToList();
                             foreach (var base_UserGroup_Grant in base_UserGroup_Grants)
                             {
-                                dbContext.Entry(base_UserGroup_Grant).State = EntityState.Deleted;
+                                base_UserGroup_GrantService.DeleteModel(base_UserGroup_Grant, (!merchId.IsNull()), merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in userGroupGrants)
@@ -313,7 +320,7 @@ namespace XXCloudService.Api.XCCloud
                                     base_UserGroup_Grant.FunctionID = Convert.ToInt32(functionId);
                                     base_UserGroup_Grant.GroupID = Convert.ToInt32(groupId);
                                     base_UserGroup_Grant.IsAllow = Convert.ToInt32(isAllow);
-                                    dbContext.Entry(base_UserGroup_Grant).State = EntityState.Added;                                                                   
+                                    base_UserGroup_GrantService.AddModel(base_UserGroup_Grant, (!merchId.IsNull()), merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -322,7 +329,7 @@ namespace XXCloudService.Api.XCCloud
                                 }
                             }
 
-                            if (dbContext.SaveChanges() < 0)
+                            if (!base_UserGroup_GrantService.SaveChanges())
                             {
                                 errMsg = "更新数据库失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -350,7 +357,16 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+
                 string errMsg = string.Empty;
+
+                if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
+                {                    
+                    merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                    merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+                }
+
                 var groupIdArr = dicParas.GetArray("groupId");
 
                 if (!groupIdArr.Validarray("工作组ID列表", out errMsg))
@@ -374,20 +390,20 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            if (!base_UserGroupService.Delete(base_UserGroup))
+                            if (!base_UserGroupService.Delete(base_UserGroup, (!merchId.IsNull()), merchId, merchSecret))
                             {
                                 errMsg = "更新数据库失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGroup_Grant).Namespace);
-                            var base_UserGroup_Grants = dbContext.Set<Base_UserGroup_Grant>().Where(p => p.GroupID == (int)groupId).ToList();
+                            var base_UserGroup_GrantService = Base_UserGroup_GrantService.I;
+                            var base_UserGroup_Grants = base_UserGroup_GrantService.GetModels(p => p.GroupID == (int)groupId).ToList();
                             foreach (var base_UserGroup_Grant in base_UserGroup_Grants)
                             {
-                                dbContext.Entry(base_UserGroup_Grant).State = EntityState.Deleted;
+                                base_UserGroup_GrantService.DeleteModel(base_UserGroup_Grant, (!merchId.IsNull()), merchId, merchSecret);
                             }
 
-                            if (dbContext.SaveChanges() < 0)
+                            if (!base_UserGroup_GrantService.SaveChanges())
                             {
                                 errMsg = "更新数据库失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

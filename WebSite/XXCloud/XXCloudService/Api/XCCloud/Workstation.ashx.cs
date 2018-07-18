@@ -87,6 +87,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT
                                     a.ID,
+                                    a.WorkStation,
                                     a.DepotID, 
                                     b.DepotName,
                                     a.State
@@ -201,6 +202,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("id").Validintnozero("工作站ID", out errMsg))
@@ -224,7 +226,7 @@ namespace XXCloudService.Api.XCCloud
 
                         var model = Data_WorkstationService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         model.State = state;
-                        if (!Data_WorkstationService.I.Update(model))
+                        if (!Data_WorkstationService.I.Update(model, true, merchId, merchSecret))
                         {
                             errMsg = "修改工作站失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -257,6 +259,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 if (!dicParas.GetArray("depotWorkstationList").Validarray("仓库工作站列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -296,7 +302,7 @@ namespace XXCloudService.Api.XCCloud
 
                                     var workStation = Data_WorkstationService.I.GetModels(p => p.ID == workStationId).FirstOrDefault();
                                     workStation.DepotID = depotId;
-                                    Data_WorkstationService.I.UpdateModel(workStation);
+                                    Data_WorkstationService.I.UpdateModel(workStation, true, merchId, merchSecret);
                                 }
                                 else
                                 {

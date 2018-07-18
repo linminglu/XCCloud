@@ -266,6 +266,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 string storeId = dicParas.Get("storeId");
                 string system = dicParas.Get("system");
@@ -303,7 +307,7 @@ namespace XXCloudService.Api.XCCloud
                     data_ParameterModel.ParameterName = pName;
                     data_ParameterModel.ParameterValue = pValue;
                     data_ParameterModel.Note = note;
-                    if (!Data_ParametersService.I.Add(data_ParameterModel))
+                    if (!Data_ParametersService.I.Add(data_ParameterModel, true, merchId, merchSecret))
                     {
                         errMsg = "设置参数失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -316,7 +320,7 @@ namespace XXCloudService.Api.XCCloud
                     data_ParameterModel.ParameterName = pName;
                     data_ParameterModel.ParameterValue = pValue;
                     data_ParameterModel.Note = note;
-                    if (!Data_ParametersService.I.Update(data_ParameterModel))
+                    if (!Data_ParametersService.I.Update(data_ParameterModel, true, merchId, merchSecret))
                     {
                         errMsg = "设置参数失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

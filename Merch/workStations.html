@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
+</head>
+<style>
+    .layui-table-view .layui-table[lay-size="sm"] .layui-select-title .layui-input {
+        height: 28px;
+        margin-top: -8px;
+    }
+
+    .layui-table-view .layui-table[lay-size="sm"] .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 28px;
+    }
+
+    .layui-table-view .layui-table[lay-size="sm"] .layui-form-select dl {
+        top: 28px;
+    }
+
+    .layui-table-view .layui-table .layui-select-title .layui-input {
+        height: 32px;
+        margin-top: -3px;
+    }
+
+    .layui-table-view .layui-table .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 32px;
+    }
+
+    .layui-table-view .layui-table .layui-form-select dl {
+        top: 32px;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-select-title .layui-input {
+        height: 38px;
+        margin-top: 0;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 38px;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-form-select dl {
+        top: 38px;
+    }
+
+    /*.tableWithoutHead .layui-table-header {*/
+    /*display: none;*/
+    /*}*/
+</style>
+<body>
+<div class="layui-row settingPage" >
+    <div class="row-box" style="">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" style="position: relative;height: 38px;border: 1px #999 solid">
+                    <div class="layui-form layui-form-pane" id="form2" style="position: absolute; display: none;top: 38px;border:1px #999 solid ;z-index: 9999999999999999999">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
+        </div>
+
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <table class="layui-hide" id="workStationTable" lay-filter="workStationTable"></table>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="allowLogin">计时项目</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="forbidLogin">设备绑定</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="saleMsg">售卖信息</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="bindMore">批量绑定</button>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="jquery-1.8.3-min.js"></script>
+<script type="text/javascript" src="layui/layui.js"></script>
+<script type="text/javascript" src="js/storeSystem.js"></script>
+<script type="text/javascript" src="js/searchModel.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+
+    layui.use(['form','table','laydate','layer'],function () {
+        const form=layui.form;
+        const layer=layui.layer;
+        const table=layui.table;
+        const laydate=layui.laydate;
+        let depotArr=[];
+        let obj={userToken:token,signkey:'1f626576304bf5d95b72ece2222e42c3'}
+        var  parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: '/XCCloud/DepotInfo?action=GetDepotDic',
+            contentType: "application/json; charset=utf-8",
+            async:false,
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data)
+                if(data.result_code==1){
+                    depotArr=data.result_data;
+                }else {
+                    layer.msg(data.result_msg||data.return_msg)
+                }
+            }
+        });
+        xcActionSystem.prototype.showAreaMsg(token,table,form,depotArr)
+        let projectAreaList
+        form.on('select(testSelect)', function (data) {
+            var elem = $(data.elem);
+            var trElem = elem.parents('tr');
+            var tableData = table.cache['workStationTable'];
+            // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
+            tableData[trElem.data('index')][elem.attr('name')] =data.value;
+            console.log(tableData[trElem.data('index')])
+            if(projectAreaList.length>0){
+                let flag=false;
+                let index;
+                for(i in projectAreaList){
+                    if(projectAreaList[i].workStationId==tableData[trElem.data('index')].ID){
+                        flag=true;
+                        index=i;
+                    }
+                }
+                if(flag){
+                    projectAreaList[index].depotId=data.value
+                }else {
+                    projectAreaList.push({'workStationId':tableData[trElem.data('index')].ID,'depotId':data.value})
+                }
+            }else {
+                projectAreaList.push({'workStationId':tableData[trElem.data('index')].ID,'depotId':data.value})
+            }
+            console.log(projectAreaList)
+        });
+        //
+        // seachModel({
+        //     'elem1': 'tantion',
+        //     'elem2': 'serchMode',
+        //     'pagename': 'workStationSearch',
+        //     'processname': 'workStationSearch',
+        //     'token': token,
+        //     'form': form,
+        //     'layer': layer,
+        //     'searchBtn': 'searchBtn',
+        //     'xc':xc,
+        //     'laydate':laydate,
+        //     'parm':parm
+        // })
+    })
+    xcActionSystem.prototype.showAreaMsg=function (token,table,form,depotArr) {
+        var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var  parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: '/XCCloud/Workstation?action=QueryWorkstation',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if(data.result_code==1){
+                    let arr=data.result_data;
+                    table.render({
+                        elem: '#workStationTable'
+                        , data: arr
+                        , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        ,height:'full-325'
+                        , cols: [[
+                            {type:'checkbox'}
+                            , {field: 'WorkStation', title: '工作站名', align: 'center'}
+                            , {field: 'DepotID', title: '绑定仓库', align: 'center',templet:function (d) {
+                                    let _select='<select name="DepotID" lay-filter="testSelect" lay-verify="required" data-value="' + d.DepotName + '" ><option value=""></option>'
+                                    for(i in depotArr){
+                                        if(d.DepotID==depotArr[i].ID){
+                                            _select+='<option value="'+depotArr[i].ID+'" selected>'+depotArr[i].DepotName+'</option>'
+                                        }else {
+                                            _select+='<option value="'+depotArr[i].ID+'">'+depotArr[i].DepotName+'</option>'
+                                        }
+                                    }
+                                    _select+='</select>'
+                                    return _select;
+
+                                }}
+                            , {field: 'LastLogName', title: '最后登录用户', align: 'center'}
+                            , {field: 'LastLogTime', title: '最后登录时间', align: 'center'}
+                            ,{field:'StateStr', title: '状态', align: 'center'}
+                        ]]
+                        , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                        , limit: 10
+                        ,done: function (res, curr, count) {
+                            var tableElem = this.elem.next('.layui-table-view');
+                            count || tableElem.find('.layui-table-header').css('overflow', 'auto');
+                            layui.each(tableElem.find('select'), function (index, item) {
+                                var elem = $(item);
+                                elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+                            });
+                            form.render();
+                        }
+                    });
+                }
+            }
+        });
+    };
+</script>
+</html>

@@ -24,7 +24,7 @@ namespace XXCloudService
         /// <summary>
         /// 推送指令
         /// </summary>
-        public void PushRoutersAndInst(string clientId, int level = 1, string token = "", string routerName = "", int groupId = 0, string groupName = "", int pageIndex = 1, string commands = "")
+        public void PushRoutersAndInst(string clientId, int level = 1, int routeId = 0)
         {
             Connect connect = _connections.FirstOrDefault(c => c.ClientId == clientId);
             if (connect == null)
@@ -37,7 +37,7 @@ namespace XXCloudService
                 _connections.Add(connect);
             }
 
-            PushRouterInstModel model = new PushRouterInstModel();
+            PushRouteInstModel model = new PushRouteInstModel();
             try
             {
                 InstructionsModel inst = new InstructionsModel();
@@ -52,43 +52,50 @@ namespace XXCloudService
                 inst.Returns = RadarService.HostServer.当前返还指令数;
                 model.Instructions = inst;
 
-                model.CurrVar = new CurrVar() { Level = level, CurrRouterToken = token, CurrRouterName = routerName, CurrGroupId = groupId, CurrGroupName = groupName };
+                //model.CurrVar = new CurrVar() { Level = level, CurrRouteId = routeId };
 
-                //GetDeviceInfo(model, level, token, groupId);
-
-                List<string> msgList = UDPServer.当前消息列表;
-                model.Messages = msgList.Select(t => new InstMessage { MsgContent = t }).ToList();
+                if (level == 1)
+                {
+                    model.RouteList = UDPServer.GetRouteList();
+                }
+                else
+                {
+                    model.DeviceList = UDPServer.GetDeviceList(routeId);
+                }
 
                 Clients.Client(connect.ConnectionId).PullInst(model);
-                //Clients.All.PullInst(model);
             }
             catch (Exception ex)
             {
                 model.status = 0;
                 model.msg = ex.Message;
-                //Clients.All.PullInst(model);
                 Clients.Client(connect.ConnectionId).PullInst(model);
             }
         }
         #endregion
 
         #region 远程事件
+
+        #region 锁定/解锁(OK)
         /// <summary>
         /// 锁定/解锁
         /// </summary>
-        /// <param name="routerToken"></param>
-        /// <param name="headAddress"></param>
+        /// <param name="mcuid"></param>
         /// <param name="isLock"></param>
-        public void LockDevice(string routerToken, string headAddress, bool isLock)
+        public void LockDevice(string mcuid, bool isLock)
         {
+            string errMsg = string.Empty;
             ResultModel model = new ResultModel();
-            //UDPServer.server.远程锁定与解锁指令(routerToken, headAddress, isLock);
-
-            string jsonData = JsonConvert.SerializeObject(model);
+            if (!UDPServer.server.远程锁定与解锁指令(mcuid, isLock, out errMsg))
+            {
+                model.status = 0;
+                model.msg = errMsg;
+            }
             Clients.All.HubCall(model);
+        } 
+        #endregion
 
-        }
-
+        #region 远程投币
         /// <summary>
         /// 远程投币
         /// </summary>
@@ -104,9 +111,10 @@ namespace XXCloudService
 
             string jsonData = JsonConvert.SerializeObject(model);
             Clients.All.HubCall(model);
+        } 
+        #endregion
 
-        }
-
+        #region 退币
         /// <summary>
         /// 退币
         /// </summary>
@@ -120,8 +128,10 @@ namespace XXCloudService
             string jsonData = JsonConvert.SerializeObject(model);
             Clients.All.HubCall(model);
 
-        }
+        } 
+        #endregion
 
+        #region 设置机头长地址
         /// <summary>
         /// 设置机头长地址
         /// </summary>
@@ -134,45 +144,40 @@ namespace XXCloudService
 
             string jsonData = JsonConvert.SerializeObject(model);
             Clients.All.HubCall(model);
+        } 
+        #endregion
 
-        }
-
+        #region 指定路由器复位(OK)
         /// <summary>
         /// 指定路由器复位
         /// </summary>
         /// <param name="routerToken"></param>
         /// <param name="mcuid"></param>
-        public void ResetRouter(string routerToken)
+        public void ResetRouter(string segment)
         {
+            string errMsg = string.Empty;
             ResultModel model = new ResultModel();
-            //UDPServer.server.指定路由器复位(routerToken);
-
-            string jsonData = JsonConvert.SerializeObject(model);
+            if (!UDPServer.server.路由器复位(segment, out errMsg))
+            {
+                model.status = 0;
+                model.msg = errMsg;
+            }
             Clients.All.InitDeviceCall(model);
+        } 
+        #endregion
 
+        public void SetMessageCommandType(int type, bool check)
+        {
+            RadarService.CommandType commandType = (RadarService.CommandType)type;
+            if (check)
+            {
+                UDPServer.server.CommandTypeList.Add(commandType);
+            }
+            else
+            {
+                UDPServer.server.CommandTypeList.Remove(commandType);
+            }
         }
-
-        //public void InitDevice()
-        //{
-        //    HeadInfo.InitDeviceInfo();
-        //    UDPServer.InitRouterDevices();
-        //    ResultModel model = new ResultModel();
-        //    string jsonData = JsonConvert.SerializeObject(model);
-        //    Clients.All.InitDeviceCall(model);
-        //}
-
-        //public void SetMessageCommandType(int type, bool check)
-        //{
-        //    RadarServer.CommandType commandType = (RadarServer.CommandType)type;
-        //    if (check)
-        //    {
-        //        UDPServer.server.CommandTypeList.Add(commandType);
-        //    }
-        //    else
-        //    {
-        //        UDPServer.server.CommandTypeList.Remove(commandType);
-        //    }
-        //}
 
         //public void ClearMessageCommand()
         //{
@@ -181,33 +186,33 @@ namespace XXCloudService
         //    UDPServer.server.ListenDeviceAddress = string.Empty;
         //}
 
-        //public void SetListenRouter(string routerToken, bool isListen)
-        //{
-        //    if (isListen)
-        //    {
-        //        UDPServer.server.ListenRouterToken = routerToken;
-        //    }
-        //    else
-        //    {
-        //        UDPServer.server.ListenRouterToken = string.Empty;
-        //    }
-        //}
+        public void SetListenRouter(string routerToken, bool isListen)
+        {
+            if (isListen)
+            {
+                UDPServer.server.ListenRouteAddress = routerToken;
+            }
+            else
+            {
+                UDPServer.server.ListenRouteAddress = string.Empty;
+            }
+        }
 
-        //public void SetListenDevice(string routerToken, string deiveceToken, bool isListen)
-        //{
-        //    if (isListen)
-        //    {
-        //        UDPServer.server.ListenRouterToken = routerToken;
-        //        UDPServer.server.ListenDeviceAddress = deiveceToken;
-        //    }
-        //    else
-        //    {
-        //        UDPServer.server.ListenDeviceAddress = string.Empty;
-        //    }
-        //}
+        public void SetListenDevice(string routerToken, string deiveceToken, bool isListen)
+        {
+            //if (isListen)
+            //{
+            //    UDPServer.server.ListenRouterToken = routerToken;
+            //    UDPServer.server.ListenDeviceAddress = deiveceToken;
+            //}
+            //else
+            //{
+            //    UDPServer.server.ListenDeviceAddress = string.Empty;
+            //}
+        }
         #endregion
 
-        #region ResultModel
+        #region 基础状态码
         public class ResultModel
         {
             public ResultModel(int _status = 200, string _msg = "")
@@ -221,133 +226,21 @@ namespace XXCloudService
         }
         #endregion
 
-        #region 获取设备列表
-        public void GetDeviceInfo(PushRouterInstModel model, int level, string routerToken = "", int groupId = 0, int pageSize = 10, int pageIndex = 1)
-        {
-            //switch (level)
-            //{
-            //    case 1:
-            //        Dictionary<string, UDPServerHelper.RouteInfo> dic = UDPServerHelper.RouteList;
-            //        model.RouterCount = dic.Count;
-            //        if (dic.Count > 0)
-            //        {
-            //            var routers = dic.Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex);
-            //            foreach (var item in routers)
-            //            {
-            //                RouterInfo router = UDPServer.RouterList.FirstOrDefault(r => r.RouterToken == item.Key);
-            //                if (router != null)
-            //                {
-            //                    router.RouterToken = item.Key;
-            //                    router.Online = item.Value.IsOnline ? "在线" : "离线";
-            //                    IPEndPoint remotePoint = (IPEndPoint)item.Value.RemotePoint;
-            //                    router.IP = remotePoint.Address.ToString();
-            //                    router.Port = remotePoint.Port;
-
-            //                    model.RouterList.Add(router);
-            //                }
-            //            }
-            //        }
-            //        break;
-            //    case 2:
-            //        model.RouterDevices = GetDeviceList(UDPServer.CoinDeviceList.Where(t => t.RouterToken == routerToken).ToList());
-            //        model.RouterGroups = UDPServer.GroupList.Where(g => g.RouterToken == routerToken).ToList();
-            //        break;
-            //    case 3:
-            //        model.RouterDevices = GetDeviceList(UDPServer.TerminalList.Where(t => t.GroupId == groupId).ToList());
-            //        break;
-            //}
-        }
-
-        //private List<DeviceModel> GetDeviceList(List<DeviceModel> currList)
-        //{
-        //    List<DeviceModel> list = new List<DeviceModel>();
-        //    List<HeadInfo.机头信息> headList = HeadInfo.GetAllHead();
-        //    foreach (var item in currList)
-        //    {
-        //        HeadInfo.机头信息 head = headList.FirstOrDefault(t => t.令牌 == item.DeviceToken);
-        //        DeviceModel info = new DeviceModel();
-        //        info.RouterToken = item.RouterToken;
-        //        info.DeviceId = item.DeviceId;
-        //        info.DeviceToken = item.DeviceToken;
-        //        info.DeviceName = item.DeviceName;
-        //        info.DeviceType = item.DeviceType;
-        //        info.State = UDPServer.GetDeviceState(head);
-        //        info.SN = item.SN;
-        //        info.HeadAddress = item.HeadAddress;
-        //        list.Add(info);
-        //    }
-        //    return list;
-        //}
-        #endregion
-
         #region 控制器及指令数据
-        public class PushRouterInstModel : ResultModel
+        public class PushRouteInstModel : ResultModel
         {
-            public PushRouterInstModel()
+            public PushRouteInstModel()
             {
                 this.Instructions = new InstructionsModel();
-                this.RouterList = new List<RouterInfo>();
+                this.RouteList = new List<RouterInfo>();
             }
-
-            /// <summary>
-            /// 发送长度
-            /// </summary>
-            public DataLength SendLength { get; set; }
-
-            /// <summary>
-            /// 接收长度
-            /// </summary>
-            public DataLength RecvLength { get; set; }
-
-            public List<DataLength> SendLengthList { get; set; }
-
-            public List<DataLength> RecvLengthList { get; set; }
-
-            /// <summary>
-            /// 每分钟指令数
-            /// </summary>
-            public int PerMinuteCount { get; set; }
-
-            public List<InstMessage> Messages { get; set; }
 
             public InstructionsModel Instructions { get; set; }
 
-            public CurrVar CurrVar { get; set; }
+            public List<RouterInfo> RouteList { get; set; }
 
-            public List<RouterInfo> RouterList { get; set; }
-
-            public int RouterCount { get; set; }
-
-            public List<DeviceModel> RouterDevices { get; set; }
-
-            public List<GroupInfo> RouterGroups { get; set; }
+            public List<DeviceModel> DeviceList { get; set; }
         }
-
-        public class CurrVar
-        {
-            public int Level { get; set; }
-
-            public string CurrRouterToken { get; set; }
-
-            public string CurrRouterName { get; set; }
-
-            public int CurrGroupId { get; set; }
-
-            public string CurrGroupName { get; set; }
-        }
-
-        public class DataLength
-        {
-            public long y { get; set; }
-
-            public string name { get; set; }
-        }
-
-        public class InstMessage
-        {
-            public string MsgContent { get; set; }
-        }
-        #endregion
 
         #region 指令
         public class InstructionsModel
@@ -398,11 +291,15 @@ namespace XXCloudService
         }
         #endregion
 
+        #endregion
+
+        #region 客户端连接对象
         public class Connect
         {
             public string ClientId { get; set; }
 
             public string ConnectionId { get; set; }
-        }
+        } 
+        #endregion
     }
 }

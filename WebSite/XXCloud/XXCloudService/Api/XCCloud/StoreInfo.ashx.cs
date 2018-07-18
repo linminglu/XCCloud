@@ -297,6 +297,7 @@ namespace XCCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                 IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
@@ -534,7 +535,7 @@ namespace XCCloudService.Api.XCCloud
                         xC_WorkInfo.AuditorID = authorId;
                         xC_WorkInfo.SenderTime = DateTime.Now;
                         xC_WorkInfo.WorkBody = "莘宸商户门店审核";
-                        if (!xC_WorkInfoService.Add(xC_WorkInfo))
+                        if (!xC_WorkInfoService.Add(xC_WorkInfo, true, merchId, merchSecret))
                         {
                             errMsg = "添加门店审核工单信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -547,7 +548,7 @@ namespace XCCloudService.Api.XCCloud
                         }
 
                         base_StoreInfo.ID = storeId;
-                        if (!base_StoreInfoService.Add(base_StoreInfo))
+                        if (!base_StoreInfoService.Add(base_StoreInfo, true, merchId, merchSecret))
                         {
                             errMsg = "保存门店信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -578,9 +579,11 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
+                string errMsg = string.Empty;                
                 string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
                 string storeState = dicParas.ContainsKey("storeState") ? dicParas["storeState"].ToString() : string.Empty;
                 string parentId = dicParas.ContainsKey("parentId") ? dicParas["parentId"].ToString() : string.Empty;
@@ -685,7 +688,7 @@ namespace XCCloudService.Api.XCCloud
                 base_StoreInfo.SelttleType = ObjectExt.Toint(selttleType);
                 base_StoreInfo.StoreState = ObjectExt.Toint(storeState, (int)StoreState.Invalid);
 
-                if (!base_StoreInfoService.Update(base_StoreInfo))
+                if (!base_StoreInfoService.Update(base_StoreInfo, true, merchId, merchSecret))
                 {
                     errMsg = "修改门店信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -770,8 +773,9 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+
+                string errMsg = string.Empty;                
                 string userId = userTokenKeyModel.LogId;
                 string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
                 string workState = dicParas.ContainsKey("workState") ? dicParas["workState"].ToString() : string.Empty;
@@ -1061,6 +1065,10 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var storeIdArr = dicParas.GetArray("storeId");
 
@@ -1086,7 +1094,7 @@ namespace XCCloudService.Api.XCCloud
                             }
 
                             base_StoreInfoModel.StoreState = (int)StoreState.Cancel;
-                            if (!base_StoreInfoService.Update(base_StoreInfoModel))
+                            if (!base_StoreInfoService.Update(base_StoreInfoModel, true, merchId, merchSecret))
                             {
                                 errMsg = "删除门店信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1119,6 +1127,10 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
 
@@ -1137,7 +1149,7 @@ namespace XCCloudService.Api.XCCloud
                 }
 
                 base_StoreInfoModel.StoreState = (int)StoreState.Open;
-                if (!base_StoreInfoService.Update(base_StoreInfoModel))
+                if (!base_StoreInfoService.Update(base_StoreInfoModel, true, merchId, merchSecret))
                 {
                     errMsg = "校验门店信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

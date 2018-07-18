@@ -315,9 +315,9 @@ namespace XCCloudService.WeiXin.Message
                 keyword3 = new { value = data.PayCount, color = config.Keynote3Color },
                 keyword4 = new { value = data.FreePay, color = config.Keynote4Color },
                 keyword5 = new { value = data.RealPay, color = config.Keynote5Color },
-                remark = new { value = config.Remark, color = config.RemarkColor }
+                remark = new { value = "吧台：" + data.WorkStation + "\n" + config.Remark, color = config.RemarkColor }
             };
-            uriParams = string.Format("scheduleId={0}&userId={1}", data.ScheduleID, data.UserID);
+            uriParams = string.Format("scheduleId={0}&userId={1}&workStation={2}", data.ScheduleID, data.UserID, data.WorkStation);
             return msgData;
         }
     }

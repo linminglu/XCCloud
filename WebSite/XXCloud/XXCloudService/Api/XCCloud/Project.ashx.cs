@@ -158,6 +158,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 string resultMsg = string.Empty;
@@ -242,7 +243,7 @@ namespace XXCloudService.Api.XCCloud
                                 data_GameInfo.State = 1;
                                 data_GameInfo.MerchID = merchId;
                                 data_GameInfo.StoreID = storeId;
-                                if (!data_GameInfoService.Add(data_GameInfo))
+                                if (!data_GameInfoService.Add(data_GameInfo, true, merchId, merchSecret))
                                 {
                                     errMsg = "保存设备配置信息失败";
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -258,7 +259,7 @@ namespace XXCloudService.Api.XCCloud
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
 
-                                if (!data_GameInfoService.Update(data_GameInfo))
+                                if (!data_GameInfoService.Update(data_GameInfo, true, merchId, merchSecret))
                                 {
                                     errMsg = "保存设备配置信息失败";
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -269,7 +270,7 @@ namespace XXCloudService.Api.XCCloud
                         if (id == 0)
                         {
                             model.State = 1;
-                            if (!Data_ProjectInfoService.I.Add(model))
+                            if (!Data_ProjectInfoService.I.Add(model, true, merchId, merchSecret))
                             {
                                 errMsg = "保存游乐项目失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -291,7 +292,7 @@ namespace XXCloudService.Api.XCCloud
                             //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             //}
 
-                            if (!Data_ProjectInfoService.I.Update(model))
+                            if (!Data_ProjectInfoService.I.Update(model, true, merchId, merchSecret))
                             {
                                 errMsg = "保存游乐项目失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -331,6 +332,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("projectTimeId").Validintnozero("游乐项目ID", out errMsg))
@@ -370,7 +372,7 @@ namespace XXCloudService.Api.XCCloud
                         Utils.GetModel(dicParas, ref projectTimeInfoModel);
                         if (projectTimeInfoModel.ID == 0)
                         {
-                            if (!Data_Project_TimeInfoService.I.Add(projectTimeInfoModel))
+                            if (!Data_Project_TimeInfoService.I.Add(projectTimeInfoModel, true, merchId, merchSecret))
                             {
                                 errMsg = "保存游乐项目计时规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -378,7 +380,7 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (!Data_Project_TimeInfoService.I.Update(projectTimeInfoModel))
+                            if (!Data_Project_TimeInfoService.I.Update(projectTimeInfoModel, true, merchId, merchSecret))
                             {
                                 errMsg = "保存游乐项目计时规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -391,7 +393,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var bandPriceModel in Data_Project_BandPriceService.I.GetModels(p => p.ProjectID == projectTimeId))
                             {
-                                Data_Project_BandPriceService.I.DeleteModel(bandPriceModel);
+                                Data_Project_BandPriceService.I.DeleteModel(bandPriceModel, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in projectBandPrices)
@@ -415,7 +417,7 @@ namespace XXCloudService.Api.XCCloud
                                     bandPriceModel.ProjectID = projectTimeId;
                                     bandPriceModel.MerchID = merchId;
                                     bandPriceModel.StoreID = storeId;
-                                    Data_Project_BandPriceService.I.AddModel(bandPriceModel);
+                                    Data_Project_BandPriceService.I.AddModel(bandPriceModel, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -457,6 +459,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -481,7 +487,7 @@ namespace XXCloudService.Api.XCCloud
 
                             var model = Data_ProjectInfoService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
                             model.State = 0;
-                            Data_ProjectInfoService.I.UpdateModel(model);
+                            Data_ProjectInfoService.I.UpdateModel(model, true, merchId, merchSecret);
 
                             if (model.ChargeType == (int)ProjectInfoChargeType.Count)
                             {
@@ -495,13 +501,13 @@ namespace XXCloudService.Api.XCCloud
 
                                 var gameInfo = Data_GameInfoService.I.GetModels(p => p.ID == gameIndex).FirstOrDefault();
                                 gameInfo.State = 0;
-                                Data_GameInfoService.I.UpdateModel(gameInfo);
+                                Data_GameInfoService.I.UpdateModel(gameInfo, true, merchId, merchSecret);
                             }
 
                             //解除设备绑定信息
                             foreach (var bindModel in Data_Project_BindDeviceService.I.GetModels(p => p.ProjectID == (int)id))
                             {
-                                Data_Project_BindDeviceService.I.DeleteModel(bindModel);
+                                Data_Project_BindDeviceService.I.DeleteModel(bindModel, true, merchId, merchSecret);
 
                                 var deviceId = bindModel.DeviceID;
                                 if (!Base_DeviceInfoService.I.Any(a => a.ID == deviceId))
@@ -516,7 +522,7 @@ namespace XXCloudService.Api.XCCloud
                                 deviceInfo.SiteName = string.Empty;
                                 deviceInfo.segment = string.Empty;
                                 deviceInfo.Address = string.Empty;
-                                Base_DeviceInfoService.I.UpdateModel(deviceInfo);
+                                Base_DeviceInfoService.I.UpdateModel(deviceInfo, true, merchId, merchSecret);
                             }
 
                             if (!Base_DeviceInfoService.I.SaveChanges())
@@ -759,6 +765,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("projectId").Validintnozero("游乐项目ID", out errMsg))
@@ -855,15 +862,15 @@ namespace XXCloudService.Api.XCCloud
                         deviceInfo.GameIndexID = gameIndex;
                         deviceInfo.BindDeviceID = bindDeviceId;
                         deviceInfo.SiteName = ((ProjectBindDeviceWorkType?)workType).GetDescription();
-                        base_DeviceInfoService.UpdateModel(deviceInfo);
+                        base_DeviceInfoService.UpdateModel(deviceInfo, true, merchId, merchSecret);
 
                         //保存设备绑定信息
                         var model = data_Project_BindDeviceService.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_Project_BindDevice();
                         Utils.GetModel(dicParas, ref model);
                         model.MerchID = merchId;
                         if (id == 0)
-                        {                            
-                            data_Project_BindDeviceService.AddModel(model);
+                        {
+                            data_Project_BindDeviceService.AddModel(model, true, merchId, merchSecret);
                         }
                         else
                         {
@@ -873,7 +880,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            data_Project_BindDeviceService.UpdateModel(model);
+                            data_Project_BindDeviceService.UpdateModel(model, true, merchId, merchSecret);
                         }
 
                         if (!base_DeviceInfoService.SaveChanges())
@@ -914,21 +921,29 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                var idArr = dicParas.GetArray("id");
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
-                if (!idArr.Validarray("绑定ID列表", out errMsg))
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("绑定ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id").Toint();
+                //var idArr = dicParas.GetArray("id");
+
+                //if (!idArr.Validarray("绑定ID列表", out errMsg))
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        foreach (var id in idArr)
-                        {
-                            if (!id.Validintnozero("绑定ID", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //foreach (var id in idArr)
+                        //{
+                        //    if (!id.Validintnozero("绑定ID", out errMsg))
+                        //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                             if (!Data_Project_BindDeviceService.I.Any(a => a.ID == (int)id))
                             {
@@ -937,7 +952,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             var model = Data_Project_BindDeviceService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
-                            Data_Project_BindDeviceService.I.DeleteModel(model);
+                            Data_Project_BindDeviceService.I.DeleteModel(model, true, merchId, merchSecret);
 
                             //解除设备绑定信息
                             var deviceId = model.DeviceID;
@@ -953,7 +968,7 @@ namespace XXCloudService.Api.XCCloud
                             deviceInfo.SiteName = string.Empty;
                             deviceInfo.segment = string.Empty;
                             deviceInfo.Address = string.Empty;
-                            Base_DeviceInfoService.I.UpdateModel(deviceInfo);
+                            Base_DeviceInfoService.I.UpdateModel(deviceInfo, true, merchId, merchSecret);
 
                             if (!Base_DeviceInfoService.I.SaveChanges())
                             {
@@ -966,7 +981,7 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "删除绑定设备失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }                        
+                        //}                        
 
                         ts.Complete();
                     }

@@ -367,7 +367,7 @@
 									<span class="input-group-addon addonWidth">证件号码：</span>
 									<input   class="form-control" v-model="outCoinData.IDCardNo"/>
 									<div class="input-group-btn">
-										<button type="button" class="btn btn-default readCard" :disabled="loading">读取</button>
+										<button type="button" class="btn btn-default readCard" :disabled="loading" @click="readIDCard('0')">读取</button>
 									</div>
 								</div>
 								<div class="input-group col-lg-6 col-md-6 tab-style">
@@ -405,16 +405,18 @@
 							<span class="input-group-addon addonWidth">备注：</span>
 							<textarea  class="form-control" v-model="outCoinData.note"></textarea>
 						</div>
-						<div class="input-group col-lg-7 col-md-7 tab-style">
-							<span class="input-group-addon addonWidth">读卡：</span>
-                            <input  class="form-control" v-model="outCoinData.icCardId"/>
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default readCard" :disabled="loading" @click="outCoinReadCard">读取</button>
+						<div class="col-lg-7 col-md-7 tab-style">
+							<div class="input-group" v-if="outCoinData.ifReadCard">
+                                <span class="input-group-addon addonWidth">读卡：</span>
+                                <input  class="form-control" v-model="outCoinData.icCardId"/>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default readCard" :disabled="loading" @click="outCoinReadCard">读卡</button>
+                                </div>
                             </div>
 						</div>
 						<div class="col-lg-2 col-md-2 tab-style"></div>
 						<div class="col-lg-3 col-md-3 tab-style">
-							<button type="button" class="btn width100 btn-info" :disabled="loading">提币</button>
+							<button type="button" class="btn width100 btn-info" :disabled="loading" @click="confirmOutCoin">提币</button>
 						</div>
 					</div>
 				</div>
@@ -805,8 +807,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal" :disabled="loading">取消</button>
-					<button type="button" class="btn btn-primary" style="width: 20%" @click="confirmBackCard" :disabled="loading">确认</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary" style="width: 20%" @click="confirmBackCard">确认</button>
 				</div>
 			</div>
 		</div>
@@ -1006,7 +1008,7 @@
 													<span class="input-group-addon addonWidth">证件号码：</span>
 													<input   class="form-control" v-model="memberInfo.IDCardNo"/>
 													<div class="input-group-btn">
-														<button type="button" class="btn btn-default readCard" :disabled="loading">读取</button>
+														<button type="button" class="btn btn-default readCard" :disabled="loading" @click="readIDCard('1')">读取</button>
 													</div>
 												</div>
 												<!--<div class="input-group col-lg-4 col-md-0">-->
@@ -1174,7 +1176,7 @@
 												<button @click="supplementCard('0')" type="button" class="btn btn-success" :disabled="loading">换卡</button>
 												<button @click="supplementCard('1')" type="button" class="btn btn-success" :disabled="loading">补卡</button>
 												<button type="button" class="btn btn-success" @click="cardManualLock" :disabled="loading">锁定</button>
-												<button type="button" class="btn btn-info" @click="cardLevelChange" :disabled="loading">等级变更</button>
+												<button type="button" class="btn btn-success" @click="cardLevelChange" :disabled="loading">等级变更</button>
 											</div>
 										</div>
 									</div>
@@ -1266,7 +1268,7 @@
                                 <span class="input-group-addon addonWidth">证件号码：</span>
                                 <input  class="form-control" v-model="memberForm.IdNumber" readonly/>
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default readCard" :disabled="loading">读取</button>
+                                    <button type="button" class="btn btn-default readCard" :disabled="loading" @click="readIDCard('2')">读取</button>
                                 </div>
                             </div>
                         </div>
@@ -1432,7 +1434,7 @@
 			memberInfo:{
 				Avatar:"images/salesPic1.png",
 				Birthday:"",
-				Gender:"",
+				Gender:"0",
 				IDCardNo:"",
 				Mobile:"",
 				UserName: "",
@@ -1543,6 +1545,7 @@
                 balanceTypeValue:'0',
                 balance:"",
                 operateType:"1",
+                ifReadCard:true,
                 note:"",
                 inputNumber:"",
                 password:"",
@@ -1582,7 +1585,8 @@
             dropChooseTxt2:"读卡",
             readCardInput:"",
            	msgEleven:"",			// 0 开卡，1补卡换卡，2...
-            msgReadCard:""			// 0提币读卡，2...
+            msgReadCard:"",			// 0提币读卡，1...
+            readIDCard:"",			// 读身份证类别0为只读，不获取卡信息
         },
         mounted: function () {
             this.Initialize();
@@ -1759,14 +1763,20 @@
 						console.log("接收成功");
 						var receivedMsg = JSON.parse(evt.data);
 						console.log(receivedMsg);
-						
+						that.loading = false;
 						if(receivedMsg.result_code == 1){
 						    switch (receivedMsg.answerMsgType){
 								case "0":                                              
 								    break;
 								case "3":
-                                    that.idCardNo = receivedMsg.cardData.cardNo;
-                                    that.getCardListByIDnumber(that.idCardNo)
+                                
+                                    if(that.readIDCard == "0"){
+                                        that.memberForm.IdNumber = receivedMsg.cardData.cardNo;
+                                    }else{
+                                        that.idCardNo = receivedMsg.cardData.cardNo;
+                                        that.getCardListByIDnumber(that.idCardNo) 
+                                    }
+                                    
 								    break;
                                 case "4":
                                     if(that.msgReadCard === "0"){
@@ -1974,6 +1984,7 @@
                     console.log(payCount);
                     that.payCount = payCount;
                     var buyDetails =JSON.stringify(that.buyDetails);
+                    that.loading = true;
                     if(that.updateOrder){
                         if(that.icCardId == ""){
                             var customerType = "0"
@@ -1986,6 +1997,7 @@
                         axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
+                            that.loading = false;
                             if (res.data.result_code === '1') {
                                 $('#checkoutModal').modal('show');
                                 that.inputCashFocus = true;
@@ -2005,6 +2017,7 @@
                         axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
+                            that.loading = false;
                             if (res.data.result_code === '1') {
                                 $('#checkoutModal').modal('show');
                                 that.inputCashFocus = true;
@@ -2036,6 +2049,7 @@
                     console.log(payCount);
                     that.payCount = payCount;
                     var buyDetails =JSON.stringify(that.buyDetails);
+                    that.loading = true;
                     if(that.updateOrder){
                         if(that.icCardId == ""){
                             var customerType = "0"
@@ -2056,6 +2070,7 @@
                                 axios.post('/xccloud/order?action=addOrderToCache', obj).then(function (res) {	//挂起订单
                                     console.log(res.data);
                                     that.msgPrompt(res.data);
+                                    that.loading = false;
                                     if (res.data.result_code === '1') {
                                         that.updateOrder = false;
                                         that.msg = "挂单成功！";
@@ -2083,6 +2098,7 @@
                         axios.post('/xccloud/order?action=addOrder', addOrderJson).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
+                            that.loading = false;
                             if (res.data.result_code === '1') {
                                 var orderFlwId = res.data.result_data.orderFlwId;
                                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:that.customerType};
@@ -2235,6 +2251,7 @@
                     that.msg = "请先选择开卡套餐,手机号为必填项！";
                     $('#myModal').modal('show');
                 }else {
+                    that.loading = true;
 					var msgType11 =JSON.stringify({"msgType":"11", "sObj": {"userToken": that.userToken}});
                 	ws.send(msgType11);
                     that.msgEleven = "0"
@@ -2371,6 +2388,7 @@
 //          footer读卡操作
             AllReadCard:function(){
                 var that = this;
+                that.loading = true;
 				switch (that.dropChooseTxt2){
 					case "读卡":
                         var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
@@ -2378,14 +2396,29 @@
                         ws.send(msgType4);
 					    break;
                     case "读取":
-                        var msgType3 =JSON.stringify({"msgType":"3", "sObj": {"userToken": that.userToken}});
-                        ws.send(msgType3);
+                        that.readIDCard("1")
                         break;
                     case "查询":
                         // if(){}
                         break;
 				}
 			},
+//          读取身份证获取卡信息
+            readIDCard:function(type){
+                if(type == "0"){
+                    that.outCoinData.outCoinCard == "1"
+                    that.readIDCard = ""
+                }else if(type == "2"){
+                    that.readIDCard = "0"
+                    that.outCoinData.outCoinCard == ""
+                }else{
+                    that.outCoinData.outCoinCard == ""
+                    that.readIDCard = ""
+                }
+                that.loading = true;
+                var msgType3 =JSON.stringify({"msgType":"3", "sObj": {"userToken": that.userToken}});
+                ws.send(msgType3);
+            },
  //			身份证号查询会员信息
             getCardListByIDnumber:function (idCardNo) {
 			    var that = this;
@@ -2409,6 +2442,7 @@
 //			按手机号查询会员信息
             getMember:function (type) {
 			    var that = this;
+                
                 switch (type){
                     case "0" :
                         var mobile = that.outCoinData.mobile;
@@ -2432,9 +2466,11 @@
                         $('#myModal').modal('hide');
                     }, 1500);
 				}else{
+                    that.loading = true;
                     axios.post('/XCCloud/Member?action=getCardListByPhone', obj).then(function (res) {
                         console.log(res.data);
                         that.msgPrompt(res.data);
+                        that.loading = false;
                         if (res.data.result_code === '1') {
                             if(res.data.result_data.length == 0){
                                 that.$Message.warning('没有查询到会员卡');
@@ -2523,9 +2559,11 @@
                 }else{
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId};
                     console.log(obj);
+                    that.loading = true;
                     axios.post('/XCCloud/Member?action=cardManualLock', obj).then(function (res) {	
                         console.log(res.data);
                         that.msgPrompt(res.data);
+                        that.loading = false;
                         if (res.data.result_code === '1') {
                             that.msg = "锁定成功！";
                             $('#myModal').modal('show');
@@ -2562,29 +2600,38 @@
 //          会员等级变更按钮
             cardLevelChange:function(){
                 var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
-                console.log(obj);
-                axios.post('/XCCloud/Member?action=GetMemberLevelDic', obj).then(function (res) {	
-                    console.log(res.data);
-                    that.msgPrompt(res.data);
-                    if (res.data.result_code === '1') {
-                        that.cardLevelList.levelData =res.data.result_data;
-                        $('#cardLevelChange').modal('show');
-                        
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-                });
+                if(that.icCardId == ""){
+                    this.$Message.warning('请先读卡！');
+                }else{
+                    that.loading = true;
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                    console.log(obj);
+                    axios.post('/XCCloud/Member?action=GetMemberLevelDic', obj).then(function (res) {	
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        that.loading = false;
+                        if (res.data.result_code === '1') {
+                            that.cardLevelList.levelData =res.data.result_data;
+                            $('#cardLevelChange').modal('show');
+                            
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
+                
                 
             },
 //          确认等级变更
             comfirmLevelChange:function(){
                 var that = this;
+                that.loading = true;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,levelId:that.cardLevelList.levelData[that.cardLevelList.levelId].MemberLevelID};
                 console.log(obj);
                 axios.post('/XCCloud/Member?action=cardLevelChange', obj).then(function (res) {	
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         $('#cardLevelChange').modal('hide');
                         that.cardLevelList.levelData = "0"
@@ -2618,11 +2665,12 @@
                     allowExitCoin:that.onSwitch5,
                     allowRenew:that.onSwitch6
                 };
-            
+                that.loading = true;
                 console.log(obj);
                 axios.post('/XCCloud/Member?action=memberCardModify', obj).then(function (res) {	
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         that.msg = "会员信息修改成功！";
                         that.getMenberCardInfo();
@@ -2640,9 +2688,11 @@
                 var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,cardIndexId:that.cardId,OperateType:operateType};
                 console.log(obj);
+                that.loading = true;
                 axios.post('/XCCloud/Member?action=createOperateCardOrder', obj).then(function (res) {	//获取入会套餐
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         $('#checkoutModal').modal('show');
                         that.inputCashFocus = true;
@@ -2864,6 +2914,7 @@
                 console.log(getFood);
                 axios.post('/XCCloud/Foods?action=getFoodList', getFood).then(function (res) {
                     console.log(res.data);
+                    that.loading = false;
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         that.saleAll = res.data.result_data;
@@ -3018,6 +3069,7 @@
 				var that = this;
 				that.treeShow = false;
 				var foodTypeAll = "-1";
+                that.loading = true;
                 switch(index){
                     case 'All':
                         index = 0;
@@ -3033,20 +3085,6 @@
                         foodTypeAll = "-1";
                         console.log(index);
                         index++;
-//                        that.$nextTick(function () {
-//                            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-//                            $('.tree li.parent_li > span').on('click', function (e) {
-//                                var children = $(this).parent('li.parent_li').find(' > ul > li');
-//                                if (children.is(":visible")) {
-//                                    children.hide('fast');
-//                                    $(this).attr('title', 'Expand this branch').find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
-//                                } else {
-//                                    children.show('fast');
-//                                    $(this).attr('title', 'Collapse this branch').find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
-//                                }
-//                                e.stopPropagation();
-//                            });
-//                        });
                         break;
                     case 1:
                         that.treeShow = true;
@@ -3225,9 +3263,11 @@
                 var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,ICCardId:that.icCardId};
                 console.log(obj);
+                that.loading = true;
                 axios.post('/XCCloud/Member?action=getBalanceExchangeList', obj).then(function (res) {	//获取会员等级
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         $('#balanceExchange').modal('show');
                             that.balanceExchangeData.selectList =res.data.result_data;
@@ -3316,9 +3356,11 @@
                 var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
                 console.log(obj);
+                that.loading = true;
                 axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         if(res.data.result_data[0].statusName == "正常待机"){
                             that.repairCoin.allowDevice = true;
@@ -3388,9 +3430,11 @@
                 var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
                 console.log(obj);
+                that.loading = true;
                 axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         if(res.data.result_data[0].statusName == "正常待机"){
                             $('#currencySModal').modal('show');
@@ -3418,6 +3462,7 @@
 //			提币读卡
             outCoinReadCard:function(){
                 var that = this;
+                that.loading = true;
                 var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
                 that.msgReadCard = "0";
                 ws.send(msgType4);
@@ -3472,6 +3517,11 @@
             operateTypeChoose:function (index) {
                 var that = this;
                 that.outCoinData.operateType = index;
+                if(index == "1"){
+                    that.outCoinData.ifReadCard = true;
+                }else{
+                    that.outCoinData.ifReadCard = false;
+                }
                 that.outCoinData.inputNumber = "";
                 that.outCoinData.password = "";
                 that.outCoinData.wxCode = "";
@@ -3556,7 +3606,7 @@
                             sysId: sysId,
 							versionNo: versionNo,
 							userToken:that.userToken,
-							iccardId:"20110013",
+							iccardId:that.outCoinData.icCardId,
                             operateType:that.outCoinData.operateType,
                             deviceId:deviceId,
                             balanceIndex:that.outCoinData.balanceType[that.outCoinData.balanceTypeValue].BalanceIndex,
@@ -3566,9 +3616,11 @@
                             note:that.outCoinData.note
                         };
                         console.log(obj);
+                        that.loading = true;
                         axios.post('/XCCloud/Member?action=confirmOutCoin', obj).then(function (res) {
                             console.log(res.data);
                             that.msgPrompt(res.data);
+                            that.loading = false;
                             if (res.data.result_code === '1') {
                                 that.msg = "提币处理中！";
                                 $('#myModal').modal('show');
@@ -3601,9 +3653,11 @@
                 }
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
                 console.log(obj);
+                that.loading = true;
                 axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         if(res.data.result_data[0].statusName == "正常待机"){
                             that.deviceId = res.data.result_data[0].mcuId;
@@ -3687,20 +3741,6 @@
                         FreeId:that.FreeCoinData.givingData[that.FreeCoinData.givingChecked[i]].FreeId
                     });
 				}
-                // for(var i = 0;i<that.FreeCoinData.canGet.length;i++){
-                //     if(that.FreeCoinData.repairType == "2"){
-                //         var freeCoinType = 2
-                //     }else if(that.FreeCoinData.repairType == "1" && that.FreeCoinData.canGet[i].IsDeviceOut == "0"){
-                //         var freeCoinType = 2
-                //     }else{
-                //         var freeCoinType = 1
-                //     }
-                //     freeCoinList.push({
-                //         balanceIndex:that.FreeCoinData.canGet[i].BalanceIndex,
-                //         qty:that.FreeCoinData.canGet[i].Quantity,
-                //         freeCoinType:freeCoinType
-                //     });
-				// }
                 console.log(that.FreeCoinData.repairType)
                 console.log(that.FreeCoinData.givingChecked)
                 // console.log(freeCoinList)
@@ -3709,9 +3749,11 @@
                 freeRuleList = JSON.stringify(freeRuleList);
                 var FreeCoinInfoList={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,deviceId:that.deviceId,freeRuleList:freeRuleList,freeCoinType:that.FreeCoinData.repairType};
                 console.log(FreeCoinInfoList);
+                that.loading = true;
                 axios.post('/XCCloud/Member?action=confirmFreeCoin', FreeCoinInfoList).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         that.msg = "送币成功！";
                         $('#SendSModal').modal('hide');
@@ -3729,9 +3771,11 @@
                 var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};
                 console.log(obj);
+                that.loading = true;
                 axios.post('/XCCloud/Member?action=GetMemberBalanceAndExchangeRate',obj).then(function (res) {	//	获取会员余额及兑换比例
                     console.log(res.data);
                     that.msgPrompt(res.data);
+                    that.loading = false;
                     if (res.data.result_code === '1') {
                         $('#backCardSModal').modal('show');
                         var exchangeRate_ = [];
@@ -3786,9 +3830,11 @@
                     var exchangeData = JSON.stringify(exchangeData_);
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,backType:backType,exchangeData:exchangeData};
                     console.log(obj);
+                    that.loading = true;
                     axios.post('/XCCloud/Member?action=BackCard', obj).then(function (res) {
                         console.log(res.data);
                         that.msgPrompt(res.data);
+                        that.loading = false;
                         if (res.data.result_code === '1') {
                 			$('#confirm').modal('show');
                             that.backType=backType;
@@ -3829,6 +3875,7 @@
                 var cardDeposits = JSON.stringify(that.confirmData.CardDeposits);
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,backType:that.backType,balanceExchanges:balanceExchanges,cardDeposits:cardDeposits};
                 console.log(obj);
+                
                 axios.post('/XCCloud/Member?action=ConfirmBackCard', obj).then(function (res) {	//	获取会员余额及兑换比例
                     console.log(res.data);
                     $('#confirm').modal('hide');

@@ -13,9 +13,10 @@ namespace XCCloudService.Model.WeiXin.Message
             
         }
 
-        public DoScheduleDataModel(string scheduleId, int userId, string scheduleName, DateTime openTime, DateTime shiftTime, decimal payCount, decimal realPay, decimal freePay)
+        public DoScheduleDataModel(string scheduleId, int userId, string workStation, string scheduleName, DateTime openTime, DateTime shiftTime, decimal payCount, decimal realPay, decimal freePay)
         {
             this.ScheduleID = scheduleId;
+            this.WorkStation = workStation;
             this.ScheduleName = scheduleName;
             this.UserID = userId;
             this.OpenTime = openTime;
@@ -28,6 +29,7 @@ namespace XCCloudService.Model.WeiXin.Message
         public string ScheduleID { set; get; }        
 
         public int UserID { set; get; }
+        public string WorkStation { set; get; }
         public string ScheduleName { set; get; }
         public DateTime OpenTime { set; get; }
         public DateTime ShiftTime { set; get; }

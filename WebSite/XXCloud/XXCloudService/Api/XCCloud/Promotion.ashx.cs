@@ -24,7 +24,10 @@ namespace XXCloudService.Api.XCCloud
     /// Promotion 的摘要说明
     /// </summary>
     public class Promotion : ApiBase
-    {        
+    {
+        private string merchId;
+        private string merchSecret;
+
         private bool isEveryDay(string weekDays)
         {
             return !string.IsNullOrEmpty(weekDays) && weekDays.Contains("1") && weekDays.Contains("2") && weekDays.Contains("3") && weekDays.Contains("4") && weekDays.Contains("5") && weekDays.Contains("6") && weekDays.Contains("7");
@@ -55,7 +58,7 @@ namespace XXCloudService.Api.XCCloud
                 //先删除，后添加
                 foreach (var model in Data_Food_SaleService.I.GetModels(p => p.FoodID == iFoodId))
                 {
-                    Data_Food_SaleService.I.DeleteModel(model);
+                    Data_Food_SaleService.I.DeleteModel(model, true, merchId, merchSecret);
                 }
 
                 foreach (IDictionary<string, object> el in foodSales)
@@ -81,7 +84,7 @@ namespace XXCloudService.Api.XCCloud
                         data_Food_SaleModel.BalanceType = balanceType;
                         data_Food_SaleModel.UseCount = useCount;
                         data_Food_SaleModel.CashValue = cashValue;
-                        Data_Food_SaleService.I.AddModel(data_Food_SaleModel);
+                        Data_Food_SaleService.I.AddModel(data_Food_SaleModel, true, merchId, merchSecret);
                     }
                     else
                     {
@@ -108,7 +111,7 @@ namespace XXCloudService.Api.XCCloud
                 //先删除，后添加
                 foreach (var model in Data_Food_LevelService.I.GetModels(p => p.FoodID == iFoodId))
                 {
-                    Data_Food_LevelService.I.DeleteModel(model);
+                    Data_Food_LevelService.I.DeleteModel(model, true, merchId, merchSecret);
                 }
 
                 foreach (IDictionary<string, object> el in foodLevels)
@@ -184,8 +187,8 @@ namespace XXCloudService.Api.XCCloud
                             data_Food_LevelModel.MemberFreqType = memberFreqType;
                             data_Food_LevelModel.MemberCount = memberCount;
                             data_Food_LevelModel.PriorityLevel = priorityLevel;                            
-                            data_Food_LevelModel.UpdateLevelID = updateLevelId;                            
-                            Data_Food_LevelService.I.AddModel(data_Food_LevelModel);
+                            data_Food_LevelModel.UpdateLevelID = updateLevelId;
+                            Data_Food_LevelService.I.AddModel(data_Food_LevelModel, true, merchId, merchSecret);
                         }                        
                     }
                     else
@@ -294,7 +297,7 @@ namespace XXCloudService.Api.XCCloud
                 //先删除，后添加
                 foreach (var model in Data_Food_DetialService.I.GetModels(p=>p.FoodID == iFoodId))
                 {
-                    Data_Food_DetialService.I.DeleteModel(model);
+                    Data_Food_DetialService.I.DeleteModel(model, true, merchId, merchSecret);
                 }
                 
                 foreach (IDictionary<string, object> el in foodDetials)
@@ -375,7 +378,7 @@ namespace XXCloudService.Api.XCCloud
                         data_Food_DetialModel.WeightValue = weightValue;
                         //data_Food_DetialModel.Days = days;
                         data_Food_DetialModel.OperateType = operateType;
-                        Data_Food_DetialService.I.AddModel(data_Food_DetialModel);
+                        Data_Food_DetialService.I.AddModel(data_Food_DetialModel, true, merchId, merchSecret);
                     }
                     else
                     {
@@ -644,8 +647,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+                merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 int foodId = dicParas.Get("foodId").Toint(0);
@@ -833,6 +836,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var foodIdArr = dicParas.GetArray("foodId");
 
@@ -857,7 +864,7 @@ namespace XXCloudService.Api.XCCloud
 
                             var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.ID == (int)foodId).FirstOrDefault();
                             data_FoodInfo.FoodState = (int)FoodState.Invalid;
-                            if (!Data_FoodInfoService.I.Update(data_FoodInfo))
+                            if (!Data_FoodInfoService.I.Update(data_FoodInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "删除套餐信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1008,6 +1015,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 int foodId = dicParas.Get("foodId").Toint(0);
                 var storeIds = dicParas.Get("storeIds");
@@ -1025,7 +1036,7 @@ namespace XXCloudService.Api.XCCloud
                     {
                         foreach (var model in Data_Food_StoreListService.I.GetModels(p => p.FoodID == foodId))
                         {
-                            Data_Food_StoreListService.I.DeleteModel(model);
+                            Data_Food_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                         }
 
                         if (!string.IsNullOrEmpty(storeIds))
@@ -1038,7 +1049,7 @@ namespace XXCloudService.Api.XCCloud
                                 var model = new Data_Food_StoreList();
                                 model.FoodID = foodId;
                                 model.StoreID = storeId;
-                                Data_Food_StoreListService.I.AddModel(model);
+                                Data_Food_StoreListService.I.AddModel(model, true, merchId, merchSecret);
                             }
                         }
 

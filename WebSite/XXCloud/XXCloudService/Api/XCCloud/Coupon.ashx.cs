@@ -176,6 +176,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                 string errMsg = string.Empty;
@@ -359,7 +360,7 @@ namespace XXCloudService.Api.XCCloud
                         if (id == 0)
                         {
                             //新增
-                            if (!Data_CouponInfoService.I.Add(data_CouponInfo))
+                            if (!Data_CouponInfoService.I.Add(data_CouponInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "添加优惠券信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -373,15 +374,15 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            //已派发或使用的优惠券规则不能修改                
-                            if (isSend(id) || isUsed(id))
+                            //已派发的优惠券规则不能修改                
+                            if (isSend(id))
                             {
-                                errMsg = "已派发或使用的优惠券规则不能修改";
+                                errMsg = "已派发的优惠券规则不能修改";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
                             //修改
-                            if (!Data_CouponInfoService.I.Update(data_CouponInfo))
+                            if (!Data_CouponInfoService.I.Update(data_CouponInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "修改优惠券信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -396,7 +397,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var model in Data_CouponConditionService.I.GetModels(p => p.CouponID == id))
                             {
-                                Data_CouponConditionService.I.DeleteModel(model);
+                                Data_CouponConditionService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in couponConditions)
@@ -415,7 +416,7 @@ namespace XXCloudService.Api.XCCloud
                                     var data_CouponCondition = new Data_CouponCondition();
                                     Utils.GetModel(dicPara, ref data_CouponCondition);
                                     data_CouponCondition.CouponID = id;
-                                    Data_CouponConditionService.I.AddModel(data_CouponCondition);
+                                    Data_CouponConditionService.I.AddModel(data_CouponCondition, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -510,7 +511,7 @@ namespace XXCloudService.Api.XCCloud
                         //保存适用门店信息
                         foreach (var model in Data_Coupon_StoreListService.I.GetModels(p => p.CouponID == id))
                         {
-                            Data_Coupon_StoreListService.I.DeleteModel(model);
+                            Data_Coupon_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                         }
 
                         if (!string.IsNullOrEmpty(storeIds))
@@ -523,7 +524,7 @@ namespace XXCloudService.Api.XCCloud
                                 var model = new Data_Coupon_StoreList();
                                 model.CouponID = id;
                                 model.StoreID = storeId;
-                                Data_Coupon_StoreListService.I.AddModel(model);
+                                Data_Coupon_StoreListService.I.AddModel(model, true, merchId, merchSecret);
                             }
                         }
 
@@ -555,6 +556,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -577,19 +582,19 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            if (isSend((int)id) || isUsed((int)id))
+                            if (isSend((int)id))
                             {
-                                errMsg = "已派发或使用的优惠券规则不能删除";
+                                errMsg = "已派发的优惠券规则不能删除";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
                             var data_CouponInfo = Data_CouponInfoService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
-                            Data_CouponInfoService.I.DeleteModel(data_CouponInfo);
+                            Data_CouponInfoService.I.DeleteModel(data_CouponInfo, true, merchId, merchSecret);
 
                             var data_Coupon_StoreList = Data_Coupon_StoreListService.I.GetModels(p => p.CouponID == (int)id);
                             foreach (var model in data_Coupon_StoreList)
                             {
-                                Data_Coupon_StoreListService.I.DeleteModel(model);
+                                Data_Coupon_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             if (!Data_CouponInfoService.I.SaveChanges())
@@ -640,6 +645,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 int couponId = dicParas.Get("couponId").Toint(0);
                 string storeIds = dicParas.ContainsKey("storeIds") ? (dicParas["storeIds"] + "") : string.Empty;
@@ -657,7 +666,7 @@ namespace XXCloudService.Api.XCCloud
                     {
                         foreach (var model in Data_Coupon_StoreListService.I.GetModels(p => p.CouponID == couponId))
                         {
-                            Data_Coupon_StoreListService.I.DeleteModel(model);
+                            Data_Coupon_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                         }
 
                         if (!string.IsNullOrEmpty(storeIds))
@@ -670,7 +679,7 @@ namespace XXCloudService.Api.XCCloud
                                 var model = new Data_Coupon_StoreList();
                                 model.CouponID = couponId;
                                 model.StoreID = storeId;
-                                Data_Coupon_StoreListService.I.AddModel(model);
+                                Data_Coupon_StoreListService.I.AddModel(model, true, merchId, merchSecret);
                             }
                         }
                         
@@ -1440,6 +1449,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 int couponId = dicParas.Get("couponId").Toint(0);
@@ -1486,7 +1496,7 @@ namespace XXCloudService.Api.XCCloud
                             data_CouponInfo.CouponLevel = max;
                         }
 
-                        Data_CouponInfoService.I.UpdateModel(data_CouponInfo);
+                        Data_CouponInfoService.I.UpdateModel(data_CouponInfo, true, merchId, merchSecret);
 
                         var newLevel = data_CouponInfo.CouponLevel;
                         if (oldLevel != newLevel || oldLevel == null)
@@ -1499,7 +1509,7 @@ namespace XXCloudService.Api.XCCloud
                                 foreach (var model in linq)
                                 {
                                     model.CouponLevel = model.CouponLevel + 1;
-                                    Data_CouponInfoService.I.UpdateModel(model);
+                                    Data_CouponInfoService.I.UpdateModel(model, true, merchId, merchSecret);
                                 }
                             }
                             else
@@ -1510,7 +1520,7 @@ namespace XXCloudService.Api.XCCloud
                                 if (nextModel != null)
                                 {
                                     nextModel.CouponLevel = nextModel.CouponLevel - updateState;
-                                    Data_CouponInfoService.I.UpdateModel(nextModel);
+                                    Data_CouponInfoService.I.UpdateModel(nextModel, true, merchId, merchSecret);
                                 }
                             }
                         }

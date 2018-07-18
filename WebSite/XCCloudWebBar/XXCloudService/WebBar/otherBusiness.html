@@ -60,10 +60,12 @@
         .cardChoosesty li:nth-child(2) span{color: #00ffff;font-size:1.1em;}
         .readCard:hover{background-color: #b196fd;color: #fefefe;}
         .vertical-center-modal{display: flex;align-items: center;justify-content: center;margin-top:-20%;}
-
         .dropdown-grounp{display: flex;flex-direction: row;}
         .dropdownSty{min-width: 70px;margin-left: 1em;}
         .dropdownInput{top:10px;}
+        .form-control{padding: 4px 7px;height: 32px;}
+        .input-group-addon {padding: 4px 7px;}
+        .btn{padding: 4px 7px;}
     </style>
 </head>
 <body>
@@ -412,13 +414,18 @@
                 </div>
             </i-col>
             <i-col span="24" v-if="minuData.MenuShow5">
-                <div class="col-md-4 col-sm-4 menu-style">
+                <div class="col-md-3 col-sm-4 menu-style">
                     <div class="input-group">
                         <span class="input-group-addon">订单号：</span>
                         <input type="text" class="form-control" placeholder="订单号" v-model="orderInquiry.orderNo"/>
                     </div>
                 </div>
-                <date-picker type="daterange" split-panels placeholder="Select date" format="yyyy-MM-dd" style="width: 200px" @on-change="timechoose" editable="true"></date-picker>
+                <div class="col-md-3 col-sm-4 menu-style">
+                        <div class="input-group">
+                            <span class="input-group-addon">日期：</span>
+                            <date-picker type="daterange" split-panels placeholder="Select date" format="yyyy-MM-dd" @on-change="timechoose" editable="true"></date-picker>
+                        </div>
+                </div>
                 
                 <div class="col-md-1 col-sm-1 menu-style">
                     <button type="button" class="btn btn-primary" @click="getOrders">查询</button>
@@ -571,34 +578,40 @@
                                 <Page :total="buyBack.dataCount" :page-size="buyBack.pageSize" show-total class="paging" @on-change="buyBackChangepage"></Page>
                             </div>
                         </div>
-                        
                     </i-col>
                     <i-col span="9">
                         <div class="col-md-12 col-sm-12 menu-style">
                             <div class="input-group">
                                 <span class="input-group-addon">会员姓名：</span>
-                                <input type="text" class="form-control" placeholder="会员姓名"/>
+                                <input type="text" class="form-control" v-model="memberInfo.UserName" placeholder="会员姓名"/>
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-12 menu-style">
                             <div class="input-group">
                                 <span class="input-group-addon">会员级别：</span>
-                                <input type="text" class="form-control" placeholder="会员级别"/>
+                                <input type="text" class="form-control" v-model="memberInput.LevelName" placeholder="会员级别"/>
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-12 margin1">
                             <table class="table table-bordered">
-                                <thead style="background: #f5f5f5">
-                                <tr>
-                                    <th>余额种类</th>
-                                    <th>余额</th>
-                                </tr>
+                                <thead>
+                                    <tr class="tableCenter">
+                                        <th  colspan="1" rowspan="2" style="text-align: center;vertical-align: middle;">余额种类</th>
+                                        <th colspan="3" style="text-align: center;">余额</th>
+                                    </tr>
+                                    <tr class="tableCenter">
+                                        <th>正价</th>
+                                        <th>赠送</th>
+                                        <th>总计</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="items in refundData">
-                                    <td>{{items.balanceType}}</td>
-                                    <td>{{items.balance}}</td>
-                                </tr>
+                                    <tr v-for="(item,index) in balanceData" :key="index">
+                                        <td class="billingSty">{{item.BalanceName}}</td>
+                                        <td class="billingColor">{{item.Balance}}</td>
+                                        <td class="billingColor">{{item.BalanceFree}}</td>
+                                        <td class="billingColor">{{item.TotalBalance}}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -621,8 +634,8 @@
                             <input type="text" class="form-control" placeholder="兑换价值" v-model="buyBack.goodValue" readonly/>
                         </div>
                     </i-col>
-                    <i-col span="6"> &nbsp;
-                    </i-col>
+                    <!-- <i-col span="6"> &nbsp;
+                    </i-col> -->
                     <i-col span="2">
                         <button type="button" class="btn btn-primary" @click="goodBuyBack">兑换</button>
                     </i-col>
@@ -632,7 +645,7 @@
                     <div class="col-lg-4 col-md-4">
                             <div class="btn-group dropup col-lg-12 col-md-12">
                                 <button type="button" class="btn btn-default">转出卡卡号：</button>
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu cardChoosesty">
@@ -658,7 +671,6 @@
                                 <input  class="form-control" placeholder="请输入会员姓名" v-model="transferData.toICCardId"/>
                                 <button type="button" class="btn btn-default readCard" :disabled="loading" @click="toICCardIdReadCard">{{transferData.dropChooseTxt2}}</button>
                             </div> 
-                            
                             <div class="col-lg-8 col-md-8 tab-style">
                                 
                             </div>
@@ -788,7 +800,7 @@
         </row>
     </div>
 </div>
-
+<!-- Live the life you want;  -->
 <!-- <script src="js/jquery-2.1.3.min.js"></script> -->
 <!-- <script src="js/bootstrap.min.js"></script> -->
 <!-- 引入 Vue -->
@@ -1052,16 +1064,15 @@
                 dropChooseTxt2:"读卡",
                 disabled:false
             },
+            IDCardNo:"",
             memberInfo:{
 				Avatar:"images/salesPic1.png",
 				Birthday:"",
 				Gender:"",
-				IDCardNo:"",
 				Mobile:"",
 				UserName: "",
                 Note:""
             },
-            balanceData:[],
             memberInput:{
                 mobileCode:"",
                 disabled: false,
@@ -1071,6 +1082,7 @@
                 EndDate: "",
                 LevelName: ""
 			},
+            balanceData:[],
             childCardList:null,
             orderInquiry:{
                 orderNo:"",
@@ -1112,7 +1124,7 @@
             },
             cardList:[],
             radioValue:"",
-            icCardId:"0",
+            icCardId:"",
             msg:"",
             ajaxHistoryData:[],
                 // 初始化信息总条数
@@ -1157,20 +1169,23 @@
 						console.log("接收成功");
 						var receivedMsg = JSON.parse(evt.data);
 						console.log(receivedMsg);
-						
+						that.loading = false;
 						if(receivedMsg.result_code == 1){
 						    switch (receivedMsg.answerMsgType){
-								case 1:                                              
+								case "0":                                              
 								    break;
-								case "2":
-								    break;
+                                case "3":
+                                    that.IDCardNo = receivedMsg.cardData.cardNo;
+                                    that.getCardListByIDnumber(that.IDCardNo) 
+                                break;
                                 case "4":
                                     if(that.msgReadCard === "0"){
                                         that.outCoinData.icCardId = receivedMsg.dataObj.icCardId;
                                         that.getBalanceTypeByICCardId()
                                     }else if(that.msgReadCard === "1"){
                                         that.icCardId = receivedMsg.dataObj.icCardId;
-                                        that.getMenberCardInfo(that.icCardId,"2")
+                                        // that.getMenberCardInfo(that.icCardId,"2")
+                                        that.getMenberCardInfo("10004143","2")
                                     }else if(that.msgReadCard === "2"){
                                         that.transferData.fromICCardId = receivedMsg.dataObj.icCardId;
                                     }else if(that.msgReadCard === "3"){
@@ -1264,6 +1279,27 @@
                     });
 				}
             },
+//			身份证号查询会员信息
+            getCardListByIDnumber:function (idCardNo) {
+			    var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,idCardNo:idCardNo};
+                console.log(obj);
+			    axios.post('/XCCloud/Member?action=getCardListByIDnumber', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        if(res.data.result_data.length == 0){
+                            that.$Message.warning('没有查询到会员卡');
+                        }else{
+                            that.cardList = res.data.result_data;
+                            that.cardListModel = true;
+                        }
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },           
+
 //			选择读卡方式
             dropChoose:function(name){
                 console.log(name)
@@ -1321,6 +1357,7 @@
             },
             AllReadCard:function(){
                 var that = this;
+                that.loading = true;
 				switch (that.inquireCard.dropChooseTxt2){
 					case "读卡":
                         var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
@@ -1398,6 +1435,7 @@
 //          转出卡IC卡号事件
             fromICCardIdReadCard:function(){
                 var that = this;
+                that.loading = true;
                 if(that.transferData.dropChooseIndex == "0"){
                     var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
                     that.msgReadCard = "2";

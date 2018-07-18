@@ -171,7 +171,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
         public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
         public virtual DbSet<Flw_Schedule> Flw_Schedule { get; set; }
-        public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
         public virtual DbSet<Flw_Ticket_Exit> Flw_Ticket_Exit { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Log_Operation> Log_Operation { get; set; }
@@ -204,5 +203,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
+        public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
     }
 }

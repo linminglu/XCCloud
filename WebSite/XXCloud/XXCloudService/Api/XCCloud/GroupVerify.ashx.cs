@@ -78,6 +78,5 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
-
     }
 }

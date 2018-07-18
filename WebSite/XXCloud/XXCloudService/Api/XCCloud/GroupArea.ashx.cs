@@ -144,6 +144,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("areaName").Nonempty("区域名称", out errMsg))
@@ -171,7 +172,7 @@ namespace XXCloudService.Api.XCCloud
                         if (id == 0)
                         {
                             //新增
-                            if (!Data_GroupAreaService.I.Add(model))
+                            if (!Data_GroupAreaService.I.Add(model, true, merchId, merchSecret))
                             {
                                 errMsg = "添加区域设置失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -186,7 +187,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             //修改
-                            if (!Data_GroupAreaService.I.Update(model))
+                            if (!Data_GroupAreaService.I.Update(model, true, merchId, merchSecret))
                             {
                                 errMsg = "修改区域设置失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -215,6 +216,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -240,11 +245,11 @@ namespace XXCloudService.Api.XCCloud
                             foreach (var model in Data_ProjectInfoService.I.GetModels(p => p.AreaType == (int)id && p.State == 1))
                             {
                                 model.AreaType = (int?)null;
-                                Data_ProjectInfoService.I.UpdateModel(model);
+                                Data_ProjectInfoService.I.UpdateModel(model, true, merchId, merchSecret);
                             }
 
                             var areaModel = Data_GroupAreaService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
-                            Data_GroupAreaService.I.DeleteModel(areaModel);
+                            Data_GroupAreaService.I.DeleteModel(areaModel, true, merchId, merchSecret);
 
                             if (!Data_GroupAreaService.I.SaveChanges())
                             {
@@ -280,6 +285,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 if (!dicParas.GetArray("projectAreaList").Validarray("项目区域列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -319,7 +328,7 @@ namespace XXCloudService.Api.XCCloud
 
                                     var projectInfo = Data_ProjectInfoService.I.GetModels(p => p.ID == projectId).FirstOrDefault();
                                     projectInfo.AreaType = areaType;
-                                    Data_ProjectInfoService.I.UpdateModel(projectInfo);
+                                    Data_ProjectInfoService.I.UpdateModel(projectInfo, true, merchId, merchSecret);
                                 }
                                 else
                                 {

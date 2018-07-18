@@ -59,7 +59,9 @@
         }
 
         .note-infoChange {
-            background-color: #FFFAF0;
+            background-color: #FFF;
+            height: 400px;
+            overflow-y: auto;
         }
 
         .am-active {
@@ -69,6 +71,7 @@
         .pagingLi{display: inline-block;}
         .pagingLi button{border-radius: 5px;background-color: transparent;padding: 5px 10px;color: #555555;}
         .am-table-striped>tbody>tr.backgroundH>td{background: rgba(222, 230, 100,0.5);!important;}
+        body{font-size:1rem;}
     </style>
 </head>
 <body data-type="index">
@@ -98,7 +101,7 @@
                         </a>
                         <ul class="am-dropdown-content">
                             <li><a href="#" @click="doInitDevice"><span id="reInitDevice" class="am-icon-refresh"></span> 初始化设备</a></li>
-                            <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
+                            <!--<li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>-->
                             <li><a href="#"><span class="am-icon-power-off"></span> 退出</a></li>
                         </ul>
                     </li>
@@ -185,10 +188,10 @@
                     </div>
                 </div>
 
-                <div class="tpl-content-scope">
+<%--                <div class="tpl-content-scope">
                     <div class="note note-info">
                         <label for="doc-vld-name">控制器令牌：</label>
-                        <input type="text" placeholder="控制器令牌" value="f482d424" style="width:100px;" />
+                        <input type="text" placeholder="控制器令牌" value="f482d424" ref="input1" style="width:100px;" />
                         <label for="doc-vld-name">机头地址：</label>
                         <input type="text" placeholder="机头地址" value="01" style="width:100px;" />
                         <label for="doc-vld-name">投币数：</label>
@@ -198,7 +201,7 @@
                         <button type="button" @click="doInCoin" class="am-btn am-btn-primary">投币</button>
                         <button type="button" @click="doOutCoin" class="am-btn am-btn-secondary">退币</button>
                     </div>
-                </div>
+                </div>--%>
 
                 <div class="row">
                     <div class="am-u-md-12 am-u-sm-12 row-mb">
@@ -208,152 +211,138 @@
                     </div>
                 </div>
 
-                <div class="tpl-content-scope">
-                    <div class="note note-info note-infoChange">
-                        <template v-if="RecvData.CurrVar.Level === 1">
-                            <ol class="am-breadcrumb am-breadcrumbChange">
-                                <li><a href="#" class="am-active">控制器</a></li>
-                            </ol>
-                            <table class="am-table am-table-bordered am-table-radius am-table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>控制器名称</th>
-                                        <th>令牌</th>
-                                        <th>串号</th>
-                                        <th>所属商户</th>
-                                        <th>商户手机</th>
-                                        <th>IP</th>
-                                        <th>端口</th>
-                                        <th>状态</th>                                        
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="item in RecvData.RouterList" @click="selectRouter(item)">
-                                        <td><a href="javascript:;" @click="getChild(item.RouterToken, item.DeviceInfo.DeviceName)">
-                                                <span class="am-icon-plus-circle"></span>
-                                                {{ item.DeviceInfo.DeviceName }}
-                                            </a>
-                                        </td>
-                                        <td>{{ item.RouterToken }}</td>
-                                        <td>{{ item.DeviceInfo.SN }}</td>
-                                        <td>{{ item.MerchInfo.MerchName }}</td>
-                                        <td>{{ item.MerchInfo.Mobile }}</td>
-                                        <td>{{ item.IP }}</td>
-                                        <td>{{ item.Port }}</td>
-                                        <td>{{ item.Online }}</td>                                        
-                                        <td class="PopupK">
-                                            <div class="task-config task-configChange dropdown-wrapper">
-                                                <div class="am-dropdown tpl-task-list-dropdown tpl-task-list-dropdownChange dropdown-uler" data-am-dropdown>
-                                                    <a href="###" class="am-dropdown-toggle tpl-task-list-hover tpl-task-list-hoverChange"
-                                                       data-am-dropdown-toggle>
-                                                        <span>管理</span>
-                                                        <i class="am-icon-cog"></i> <span class="am-icon-caret-down"></span>
-                                                    </a>
-                                                    <ul class="am-dropdown-content tpl-task-list-dropdown-ul tpl-task-list-dropdown-ulChange">
-                                                        <li @click.stop="doReset(item)">
-                                                            <a href="javascript:;">
-                                                                <i id="route-reset" class="am-icon-undo"></i> 复位
-                                                            </a>
-                                                        </li>
-                                                        <li @click.stop="showError(item)">
-                                                            <a href="javascript:;">
-                                                                <i class="am-icon-warning"></i> 报警日志
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="row" v-if="RecvData.RouterCount > 10">
-                                <p class="am-u-md-3 am-u-sm-3 row-mb">显示10条数据</p>
-                                <ul class="am-u-md-9 am-u-sm-9 row-mb pagingList">
-                                    <li class="pagingLi"><button id="bcBtn" type="button" class="am-btn am-btn-secondary">前一页</button></li>
-                                    <li class="pagingLi"><button type="button" class="am-btn am-btn-secondary">默认</button></li>
-                                    <li class="pagingLi"><button type="button" class="am-btn am-btn-secondary">后一页</button></li>
-                                    <!--$("#bcBtn").attr("disabled","true");-->
-                                </ul>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <ol class="am-breadcrumb am-breadcrumbChange">
-                                <li><a href="#" @click="getRouter">控制器</a></li>
-                                <template v-if="RecvData.CurrVar.Level === 2">
-                                    <li><a href="#" class="am-active">{{RecvData.CurrVar.CurrRouterName}}-{{RecvData.CurrVar.CurrRouterToken}}</a></li>
-                                </template>
-                                <template v-else>
-                                    <li><a href="#" @click="getChild(RecvData.CurrVar.CurrRouterToken, RecvData.CurrVar.CurrRouterName)">{{RecvData.CurrVar.CurrRouterName}}-{{RecvData.CurrVar.CurrRouterToken}}</a></li>
-                                    <li><a href="#" class="am-active">{{RecvData.CurrVar.CurrGroupName}}</a></li>
-                                </template>
-                            </ol>
-                            <table id="deviceTable" class="am-table am-table-bordered am-table-radius am-table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>设备名称</th>
-                                        <th>令牌</th>
-                                        <th>类别</th>
-                                        <th>串号</th>
-                                        <th>短地址</th>
-                                        <th>状态</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="item in RecvData.RouterGroups">
-                                        <td colspan="7">
-                                            <a href="javascript:;" @click="getGroupDetail(item)">
-                                                <span class="am-icon-plus-circle"></span>
-                                                {{item.GroupName}}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr v-for="item in RecvData.RouterDevices" @click="selectDevice(item)">
-                                        <td>{{ item.DeviceName }}</td>
-                                        <td>{{ item.DeviceToken }}</td>
-                                        <td>{{ item.DeviceType }}</td>
-                                        <td>{{ item.SN }}</td>
-                                        <td>{{ item.HeadAddress }}</td>
-                                        <td>{{ item.State }}</td>
-                                        <td>
-                                            <div class="task-config task-configChange dropdown-wrapper">
-                                                <div class="am-dropdown tpl-task-list-dropdown tpl-task-list-dropdownChange dropdown-uler" data-am-dropdown>
-                                                    <a href="###" class="am-dropdown-toggle tpl-task-list-hover tpl-task-list-hoverChange"
-                                                       data-am-dropdown-toggle>
-                                                        <span>管理</span>
-                                                        <i class="am-icon-cog"></i> <span class="am-icon-caret-down"></span>
-                                                    </a>
-                                                    <ul class="am-dropdown-content tpl-task-list-dropdown-ul tpl-task-list-dropdown-ulChange">
-                                                        <li @click="doLock(item, true, $event)">
-                                                            <a href="javascript:;">
-                                                                <i class="am-icon-lock"></i> 锁定
-                                                            </a>
-                                                        </li>
-                                                        <li @click="doLock(item, false, $event)">
-                                                            <a href="javascript:;">
-                                                                <i class="am-icon-unlock-alt"></i> 解锁
-                                                            </a>
-                                                        </li>
-                                                        <li @click.stop="showError(item)">
-                                                            <a href="javascript:;">
-                                                                <i class="am-icon-warning"></i> 报警日志
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </template>
-                    </div>
-                </div>
-
                 <div class="row">
-                    <div class="am-u-md-12 am-u-sm-12 row-mb">
+                    <div class="am-u-md-6 am-u-sm-12 row-mb">
+
+                        <div class="tpl-portlet">
+                            <div class="tpl-portlet-title" style="overflow: inherit;">
+                                <div class="tpl-caption font-green ">
+                                    <span>
+                                        <ol class="am-breadcrumb am-breadcrumbChange" style="margin-bottom: 0;">
+                                            <template v-if="CurrVar.Level === 1">
+                                                <li><a href="#" class="am-active">控制器</a></li>
+                                            </template>
+                                            <template v-if="CurrVar.Level === 2">
+                                                <li><a href="#" @click="getRouter">控制器</a></li>
+                                                <li><a href="#" class="am-active">{{CurrVar.CurrRouteName}}</a></li>
+                                            </template>
+                                        </ol>
+                                    </span>
+                                </div>
+                            </div>
+                            <div id="wrapper1" class="wrapper" style="overflow-y:auto">
+                                <div id="scroller1" class="scroller1">
+                                    <template v-if="CurrVar.Level === 1">
+                                
+                                        <table class="am-table am-table-bordered am-table-radius am-table-striped" style="border-top-width: 0px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>控制器名称</th>
+                                                    <th>段号</th>
+                                                    <th>地址</th>
+                                                    <th>状态</th>    
+                                                    <th>更新时间</th>                            
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="item in RecvData.RouteList" @click="selectRouter(item)">
+                                                    <td><a href="javascript:;" @click="getChild(item.RouteId, item.RouteName)">
+                                                            <span class="am-icon-plus-circle"></span>
+                                                            {{ item.RouteName }}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ item.Segment }}</td>
+                                                    <td>{{ item.RemotePoint }}</td>
+                                                    <td v-if="item.Online === true">在线</td>
+                                                    <td v-else>离线</td>
+                                                    <td>{{ item.UpdateTime }}</td>                                  
+                                                    <td class="PopupK" style="width: 120px;">
+                                                        <div class="task-config task-configChange dropdown-wrapper" style="width: 80px;">
+                                                            <div class="am-dropdown tpl-task-list-dropdown tpl-task-list-dropdownChange dropdown-uler" data-am-dropdown>
+                                                                <a href="###" class="am-dropdown-toggle tpl-task-list-hover tpl-task-list-hoverChange"
+                                                                   data-am-dropdown-toggle>
+                                                                    <span>管理</span>
+                                                                    <i class="am-icon-cog"></i> <span class="am-icon-caret-down"></span>
+                                                                </a>
+                                                                <ul class="am-dropdown-content tpl-task-list-dropdown-ul tpl-task-list-dropdown-ulChange">
+                                                                    <li @click.stop="doReset(item)">
+                                                                        <a href="javascript:;">
+                                                                            <i id="route-reset" class="am-icon-undo"></i> 复位
+                                                                        </a>
+                                                                    </li>
+                                                                    <li @click.stop="showError(item)">
+                                                                        <a href="javascript:;">
+                                                                            <i class="am-icon-warning"></i> 报警日志
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </template>
+                                    <template v-else>
+                                        <table id="deviceTable" class="am-table am-table-bordered am-table-radius am-table-striped"  style="border-top-width: 0px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>类别</th>
+                                                    <th>设备名称</th>
+                                                    <th>P位</th>
+                                                    <th>序列号</th>
+                                                    <th>短地址</th>
+                                                    <th>状态</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="item in RecvData.DeviceList" @click="selectDevice(item)">
+                                                    <td>{{ item.DeviceType }}</td>
+                                                    <td>{{ item.DeviceName }}</td>
+                                                    <td>{{ item.SiteName }}</td>
+                                                    <td>{{ item.MCUID }}</td>
+                                                    <td>{{ item.Address }}</td>
+                                                    <td>{{ item.State }}</td>
+                                                    <td class="PopupK" style="width: 120px;">
+                                                        <div class="task-config task-configChange dropdown-wrapper" style="width: 80px;">
+                                                            <div class="am-dropdown tpl-task-list-dropdown tpl-task-list-dropdownChange dropdown-uler " data-am-dropdown>
+                                                                <a href="###" class="am-dropdown-toggle tpl-task-list-hover tpl-task-list-hoverChange"
+                                                                   data-am-dropdown-toggle>
+                                                                    <span>管理</span>
+                                                                    <i class="am-icon-cog"></i> <span class="am-icon-caret-down"></span>
+                                                                </a>
+                                                                <ul class="am-dropdown-content tpl-task-list-dropdown-ul tpl-task-list-dropdown-ulChange">
+                                                                    <li @click="doLock(item, true, $event)">
+                                                                        <a href="javascript:;">
+                                                                            <i class="am-icon-lock"></i> 锁定
+                                                                        </a>
+                                                                    </li>
+                                                                    <li @click="doLock(item, false, $event)">
+                                                                        <a href="javascript:;">
+                                                                            <i class="am-icon-unlock-alt"></i> 解锁
+                                                                        </a>
+                                                                    </li>
+                                                                    <li @click.stop="showError(item)">
+                                                                        <a href="javascript:;">
+                                                                            <i class="am-icon-warning"></i> 报警日志
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="am-u-md-6 am-u-sm-12 row-mb">
 
                         <div class="tpl-portlet">
                             <div class="tpl-portlet-title" style="overflow: inherit;">
@@ -380,7 +369,7 @@
                                     <div class="am-dropdown" data-am-dropdown>
                                         <button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle>更多设置<span class="am-icon-caret-down"></span></button>
                                         <ul class="am-dropdown-content am-dropdown-contentChange">
-                                            <template v-if="RecvData.CurrVar.Level === 1">
+                                            <template v-if="CurrVar.Level === 1">
                                                 <li>
                                                     <div class="am-checkbox-inline">
                                                         <label>
@@ -515,7 +504,10 @@
         };
 
         curHub.client.hubCall = function (data) {
-            console.log(data);
+            if(data.status !== 200)
+            {
+                layer.msg(data.msg);
+            }
         };
 
         //接收指令消息
@@ -525,7 +517,7 @@
 
         //接收速率
         curHub.client.networkSpeed = function (data) {
-            if (vm.SpeedData.RecvList.length >= 100) {
+            if (vm.SpeedData.RecvList.length >= 50) {
                 vm.SpeedData.RecvList.shift();
                 vm.SpeedData.SendList.shift();
             }
@@ -537,11 +529,12 @@
         };
 
         curHub.client.initDeviceCall = function (data) {
-            if (data.status === 200) {
-                window.setTimeout(function () {
-                    $("#route-reset").removeClass("am-icon-spin");
-                    $("#reInitDevice").removeClass("am-icon-spin");
-                }, 2000)
+            window.setTimeout(function () {
+                $("#route-reset").removeClass("am-icon-spin");
+                $("#reInitDevice").removeClass("am-icon-spin");
+            }, 2000)
+            if (data.status !== 200) {
+                layer.msg(data.msg);
             }
         }
 
@@ -553,19 +546,15 @@
                 isSkipEnd: false,
                 RecvData: {
                     Instructions: {},
-                    RouterList: [],
-                    RouterCount: 0,
-                    PerMinuteCount: 0,
-                    CurrVar: {
-                        CurrRouterToken: "",
-                        CurrRouterName: "",
-                        CurrGroupId: 0,
-                        CurrGroupName: "",
-                        Level: 1
-                    }
+                    RouteList: [],
+                    DeviceList: []
+                },
+                CurrVar: {
+                    CurrRouteId: 0,
+                    CurrRouteName: "",
+                    Level: 1
                 },
                 Messages: [],
-                pageIndex: 1,
                 SpeedData: {
                     RecvList: [],
                     SendList: [],
@@ -607,12 +596,14 @@
             methods: {
                 pushInst: function () {
                     var _vm = this;
-                    curHub.server.pushRoutersAndInst(clientId, _vm.RecvData.CurrVar.Level, _vm.RecvData.CurrVar.CurrRouterToken, _vm.RecvData.CurrVar.CurrRouterName, _vm.RecvData.CurrVar.CurrGroupId, _vm.RecvData.CurrVar.CurrGroupName, _vm.pageIndex, "");
+                    curHub.server.pushRoutersAndInst(clientId, _vm.CurrVar.Level, _vm.CurrVar.CurrRouteId);
                 },
                 doLock: function (item, isLock, event) {
                     var _vm = this;
-                    curHub.server.lockDevice(_vm.RecvData.CurrVar.CurrRouterToken, item.HeadAddress, isLock);
-                    var $dropdown = $(event.currentTarget).parents("div");
+                    curHub.server.lockDevice(item.MCUID, isLock);
+                    
+                    var $dropdown = $(event.currentTarget).closest("div");
+
                     $dropdown.dropdown('close');
                 },
                 doInCoin: function () {
@@ -627,41 +618,33 @@
                 getRouter: function () {
                     var _vm = this;
                     _vm.clearListen();
-                    _vm.RecvData.CurrVar.CurrRouterToken = _vm.RecvData.CurrVar.CurrRouterName = _vm.RecvData.CurrVar.CurrGroupName = "";
-                    _vm.RecvData.CurrVar.CurrGroupId = 0;
-                    _vm.RecvData.CurrVar.Level = 1;
+                    _vm.CurrVar.CurrRouteId = 0;
+                    _vm.CurrVar.CurrRouteName = "";
+                    _vm.CurrVar.Level = 1;
                     _vm.pushInst();
                 },
-                getChild: function (token, name) {
+                getChild: function (id, name) {
                     var _vm = this;
                     _vm.clearListen();
                     _vm.clearHighlightClass();
                     _vm.Commands.NetworkState.isCheck = false; //取消机头网络报告的勾选
-                    _vm.RecvData.CurrVar.CurrRouterToken = token;
-                    _vm.RecvData.CurrVar.CurrRouterName = name;
-                    _vm.RecvData.CurrVar.Level = 2;
-                    _vm.pushInst();
-                },
-                getGroupDetail: function (item) {
-                    var _vm = this;
-                    _vm.clearHighlightClass();
-                    _vm.RecvData.CurrVar.CurrGroupId = item.GroupId;
-                    _vm.RecvData.CurrVar.CurrGroupName = item.GroupName;
-                    _vm.RecvData.CurrVar.Level = 3;
+                    _vm.CurrVar.CurrRouteId = id;
+                    _vm.CurrVar.CurrRouteName = name;
+                    _vm.CurrVar.Level = 2;
                     _vm.pushInst();
                 },
                 doReset: function (item) {
                     $("#route-reset").addClass("am-icon-spin");
-                    curHub.server.resetRouter(item.RouterToken);
+                    curHub.server.resetRouter(item.Segment);
                 },
                 showError: function (item) {
                     var _vm = this;
                     var params = "";
-                    if (_vm.RecvData.CurrVar.Level == 1) {
+                    if (_vm.CurrVar.Level == 1) {
                         param = "?route=" + item.RouterToken;
                     }
                     else {
-                        param = "?route=" + _vm.RecvData.CurrVar.CurrRouterToken + "&sn=" + item.SN;
+                        param = "?route=" + _vm.CurrVar.CurrRouteId + "&sn=" + item.SN;
                     }
                     layer.open({
                         type: 2,
@@ -675,7 +658,7 @@
                         area: ['1300px', '600px'],
                         content: 'ServicePage/warnlog.html' + param
                     });
-                    var $dropdown = $(event.currentTarget).parents("div");
+                    var $dropdown = $(event.currentTarget).closest("div");
                     $dropdown.dropdown('close');
                 },
                 appendMessage: function (item) {
@@ -684,9 +667,6 @@
                         _this.Messages = [];
                     }
                     if (_this.isShow) {
-                        //for (var i = 0; i < items.length; i++) {
-                        //    _this.Messages.push(items[i]);
-                        //}
                         _this.Messages.push(item);
                     }
                 },
@@ -711,8 +691,7 @@
                         this.setRowClass(event.currentTarget, function (flag) {
                             isListen = flag;
                         });
-                        this.ListenRouter = item.RouterToken;
-                        curHub.server.setListenRouter(this.ListenRouter, isListen);
+                        curHub.server.setListenRouter(item.Segment, isListen);
                     }
                 },
                 selectDevice: function (item) {
@@ -721,8 +700,8 @@
                         this.setRowClass(event.currentTarget, function (flag) {
                             isListen = flag;
                         });
-                        this.ListenDevice = item.HeadAddress;
-                        curHub.server.setListenDevice(this.RecvData.CurrVar.CurrRouterToken, this.ListenDevice, isListen);
+                        this.ListenDevice = item.Address;
+                        curHub.server.setListenDevice(this.CurrVar.CurrRouteId, this.ListenDevice, isListen);
                     }
                 },
                 setRowClass: function (el, callback) {
@@ -754,7 +733,7 @@
                     zoomType: 'x'
                 },
                 title: {
-                    text: '当前网络速率:上行 ' + speedData.CurrSpeed.SendSpeed + ' 下行 ' + speedData.CurrSpeed.RecvSpeed
+                    text: '当前网络速率:上行 ' + speedData.CurrSpeed.RecvSpeed + ' 下行 ' + speedData.CurrSpeed.SendSpeed
                 },
                 credits: {
                     text: '',
@@ -796,12 +775,12 @@
                     type: 'area',
                     name: '下行',
                     color: '#FF6347',
-                    data: speedData.RecvList
+                    data: speedData.SendList
                 }, {
                     type: 'area',
                     name: '上行',
                     color: '#00FA9A',
-                    data: speedData.SendList
+                    data: speedData.RecvList
                 }]
             });
         }

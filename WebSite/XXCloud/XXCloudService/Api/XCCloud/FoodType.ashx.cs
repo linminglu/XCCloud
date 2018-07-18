@@ -106,6 +106,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("dictKey").Nonempty("类别名称", out errMsg))
@@ -147,7 +148,7 @@ namespace XXCloudService.Api.XCCloud
                             for (var i = 1; i <= list.Count; i++)
                             {
                                 list[i - 1].OrderID = i + 1;
-                                dict_SystemService.UpdateModel(list[i - 1]);
+                                dict_SystemService.UpdateModel(list[i - 1], true, merchId, merchSecret);
                             }
 
                             if (!dict_SystemService.SaveChanges())
@@ -164,7 +165,7 @@ namespace XXCloudService.Api.XCCloud
                             dict_SystemModel.Comment = comment;
                             dict_SystemModel.MerchID = merchId;
                             dict_SystemModel.OrderID = 1;
-                            if (!dict_SystemService.Add(dict_SystemModel))
+                            if (!dict_SystemService.Add(dict_SystemModel, true, merchId, merchSecret))
                             {
                                 errMsg = "添加套餐类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -172,7 +173,7 @@ namespace XXCloudService.Api.XCCloud
 
                             //将ID设置为DictValue
                             dict_SystemModel.DictValue = dict_SystemModel.ID.ToString();
-                            if (!dict_SystemService.Update(dict_SystemModel))
+                            if (!dict_SystemService.Update(dict_SystemModel, true, merchId, merchSecret))
                             {
                                 errMsg = "添加套餐类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -192,7 +193,7 @@ namespace XXCloudService.Api.XCCloud
                             dict_SystemModel.DictValue = dict_SystemModel.ID.ToString();
                             dict_SystemModel.Enabled = enabled;
                             dict_SystemModel.Comment = comment;
-                            if (!dict_SystemService.Update(dict_SystemModel))
+                            if (!dict_SystemService.Update(dict_SystemModel, true, merchId, merchSecret))
                             {
                                 errMsg = "修改套餐类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -221,6 +222,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -245,7 +250,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             var dict_System = dict_SystemService.GetModels(p => p.ID == (int)id).FirstOrDefault();
-                            if (!dict_SystemService.Delete(dict_System))
+                            if (!dict_SystemService.Delete(dict_System, true, merchId, merchSecret))
                             {
                                 errMsg = "删除套餐类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

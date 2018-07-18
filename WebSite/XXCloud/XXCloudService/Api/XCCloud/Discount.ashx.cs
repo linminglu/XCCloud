@@ -205,7 +205,6 @@ namespace XXCloudService.Api.XCCloud
 
         }
 
-
         [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryDiscountRule(Dictionary<string, object> dicParas)
@@ -315,6 +314,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("ruleName").Nonempty("规则名称", out errMsg))
@@ -395,7 +395,7 @@ namespace XXCloudService.Api.XCCloud
                         if (id == 0)
                         {
                             //新增
-                            if (!Data_DiscountRuleService.I.Add(data_DiscountRule))
+                            if (!Data_DiscountRuleService.I.Add(data_DiscountRule, true, merchId, merchSecret))
                             {
                                 errMsg = "添加满减优惠规则信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -410,7 +410,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             //修改
-                            if (!Data_DiscountRuleService.I.Update(data_DiscountRule))
+                            if (!Data_DiscountRuleService.I.Update(data_DiscountRule, true, merchId, merchSecret))
                             {
                                 errMsg = "修改满减优惠规则信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -425,7 +425,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var model in Data_Discount_DetailService.I.GetModels(p => p.DiscountRuleID == id))
                             {
-                                Data_Discount_DetailService.I.DeleteModel(model);
+                                Data_Discount_DetailService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in discountDetails)
@@ -445,7 +445,7 @@ namespace XXCloudService.Api.XCCloud
                                     var data_Discount_Detail = new Data_Discount_Detail();
                                     Utils.GetModel(dicPara, ref data_Discount_Detail);
                                     data_Discount_Detail.DiscountRuleID = id;
-                                    Data_Discount_DetailService.I.AddModel(data_Discount_Detail);
+                                    Data_Discount_DetailService.I.AddModel(data_Discount_Detail, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -467,7 +467,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var model in Data_Discount_MemberLevelService.I.GetModels(p => p.DiscountRuleID == id))
                             {
-                                Data_Discount_MemberLevelService.I.DeleteModel(model);
+                                Data_Discount_MemberLevelService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in discountMemberLevels)
@@ -482,7 +482,7 @@ namespace XXCloudService.Api.XCCloud
                                     Utils.GetModel(dicPara, ref data_Discount_MemberLevel);
                                     data_Discount_MemberLevel.MerchID = merchId;
                                     data_Discount_MemberLevel.DiscountRuleID = id;
-                                    Data_Discount_MemberLevelService.I.AddModel(data_Discount_MemberLevel);
+                                    Data_Discount_MemberLevelService.I.AddModel(data_Discount_MemberLevel, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -504,7 +504,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var model in Data_Discount_StoreListService.I.GetModels(p => p.DiscountRuleID == id))
                             {
-                                Data_Discount_StoreListService.I.DeleteModel(model);
+                                Data_Discount_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in discountStores)
@@ -518,7 +518,7 @@ namespace XXCloudService.Api.XCCloud
                                     var data_Discount_StoreList = new Data_Discount_StoreList();
                                     Utils.GetModel(dicPara, ref data_Discount_StoreList);
                                     data_Discount_StoreList.DiscountRuleID = id;
-                                    Data_Discount_StoreListService.I.AddModel(data_Discount_StoreList);
+                                    Data_Discount_StoreListService.I.AddModel(data_Discount_StoreList, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -557,6 +557,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -581,7 +585,7 @@ namespace XXCloudService.Api.XCCloud
 
                             var data_DiscountRule = Data_DiscountRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
                             data_DiscountRule.State = 0;
-                            if (!Data_DiscountRuleService.I.Update(data_DiscountRule))
+                            if (!Data_DiscountRuleService.I.Update(data_DiscountRule, true, merchId, merchSecret))
                             {
                                 errMsg = "删除满减优惠规则信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -631,6 +635,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 int discountRuleId = dicParas.Get("discountRuleId").Toint(0);
                 string storeIds = dicParas.ContainsKey("storeIds") ? (dicParas["storeIds"] + "") : string.Empty;
@@ -648,7 +656,7 @@ namespace XXCloudService.Api.XCCloud
                     {
                         foreach (var model in Data_Discount_StoreListService.I.GetModels(p => p.DiscountRuleID == discountRuleId))
                         {
-                            Data_Discount_StoreListService.I.DeleteModel(model);
+                            Data_Discount_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                         }
 
                         if (!string.IsNullOrEmpty(storeIds))
@@ -661,7 +669,7 @@ namespace XXCloudService.Api.XCCloud
                                 var model = new Data_Discount_StoreList();
                                 model.DiscountRuleID = discountRuleId;
                                 model.StoreID = storeId;
-                                Data_Discount_StoreListService.I.AddModel(model);
+                                Data_Discount_StoreListService.I.AddModel(model, true, merchId, merchSecret);
                             }
                         }
 
@@ -701,6 +709,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 int discountRuleId = dicParas.Get("discountRuleId").Toint(0);
@@ -747,7 +756,7 @@ namespace XXCloudService.Api.XCCloud
                             data_DiscountRule.RuleLevel = max;
                         }
 
-                        Data_DiscountRuleService.I.UpdateModel(data_DiscountRule);
+                        Data_DiscountRuleService.I.UpdateModel(data_DiscountRule, true, merchId, merchSecret);
 
                         var newLevel = data_DiscountRule.RuleLevel;
                         if (oldLevel != newLevel || oldLevel == null)
@@ -760,7 +769,7 @@ namespace XXCloudService.Api.XCCloud
                                 foreach (var model in linq)
                                 {
                                     model.RuleLevel = model.RuleLevel + 1;
-                                    Data_DiscountRuleService.I.UpdateModel(model);
+                                    Data_DiscountRuleService.I.UpdateModel(model, true, merchId, merchSecret);
                                 }
                             }
                             else
@@ -771,7 +780,7 @@ namespace XXCloudService.Api.XCCloud
                                 if (nextModel != null)
                                 {
                                     nextModel.RuleLevel = nextModel.RuleLevel - updateState;
-                                    Data_DiscountRuleService.I.UpdateModel(nextModel);
+                                    Data_DiscountRuleService.I.UpdateModel(nextModel, true, merchId, merchSecret);
                                 }
                             }
                         }

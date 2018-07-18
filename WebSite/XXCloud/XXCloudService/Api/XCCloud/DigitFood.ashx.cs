@@ -107,6 +107,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 int id = dicParas.Get("id").Toint(0);
@@ -148,7 +149,7 @@ namespace XXCloudService.Api.XCCloud
                 data_DigitCoinFood.MerchID = merchId;
                 if (id == 0)
                 {
-                    if (!Data_DigitCoinFoodService.I.Add(data_DigitCoinFood))
+                    if (!Data_DigitCoinFoodService.I.Add(data_DigitCoinFood, true, merchId, merchSecret))
                     {
                         errMsg = "添加数字币套餐失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -162,7 +163,7 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
 
-                    if (!Data_DigitCoinFoodService.I.Update(data_DigitCoinFood))
+                    if (!Data_DigitCoinFoodService.I.Update(data_DigitCoinFood, true, merchId, merchSecret))
                     {
                         errMsg = "更新数字币套餐失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -182,6 +183,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -205,7 +210,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             var data_DigitCoinFood = Data_DigitCoinFoodService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
-                            if (!Data_DigitCoinFoodService.I.Delete(data_DigitCoinFood))
+                            if (!Data_DigitCoinFoodService.I.Delete(data_DigitCoinFood, true, merchId, merchSecret))
                             {
                                 errMsg = "删除数字币套餐失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -214,7 +219,7 @@ namespace XXCloudService.Api.XCCloud
                             foreach (var model in Data_Food_DetialService.I.GetModels(p => p.FoodType == (int)FoodDetailType.Digit && p.Status == 1))
                             {
                                 model.Status = 0;
-                                Data_Food_DetialService.I.UpdateModel(model);
+                                Data_Food_DetialService.I.UpdateModel(model, true, merchId, merchSecret);
                             }
 
                             if (!Data_Food_DetialService.I.SaveChanges())

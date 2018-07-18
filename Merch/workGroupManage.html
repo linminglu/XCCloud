@@ -35,7 +35,7 @@
 			</blockquote>
 		</div>
 		<div class="layui-col-lg12 layui-col-md12 layui-col-sm12">
-			<table class="layui-hide" id="groupManageTable"  lay-filter="groupManage"></table>
+			<table class="layui-hide" id="groupManageTable"  lay-filter="groupManageTable"></table>
 
 			<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
 			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
@@ -228,11 +228,11 @@
         });
         //编辑按钮
         $('#editBtn').on('click', function () {
-            let checkStatus = table.checkStatus('groupManage'); //test即为基础参数id对应的值
+            let checkStatus = table.checkStatus('groupManageTable'); //test即为基础参数id对应的值
             let len = checkStatus.data.length;
             if (len == 1) {
 
-                groupId=checkStatus.data[0].ID;
+                groupId=checkStatus.data[0].groupId;
                 $('#demo1').html('');
                 $('#addGroupBtn-box').removeClass('layui-hide');
                 addGroupManage('修改工作组');
@@ -279,21 +279,7 @@
                 layer.msg('请且勾选一条数据！')
             }
         });
-        table.on('tool(groupManage)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-            var data = obj.data; //获得当前行数据
-            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var tr = obj.tr; //获得当前行 tr 的DOM对象
-             groupId=data.groupId;
-            var _obj=obj;
 
-                if (layEvent === 'del') { //删除
-                layer.confirm('真的删除行么', function (index) {
-
-                });
-            } else if (layEvent === 'edit') { //编辑
-
-            }
-        });
         $('#addGroupBtn') .click(function () {
             $(this).off('click');
             var groupName=$('#groupName').val(),note=$('#note').val();

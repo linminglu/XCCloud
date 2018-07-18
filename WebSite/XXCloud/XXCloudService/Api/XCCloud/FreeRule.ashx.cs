@@ -83,6 +83,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var gameIndexIds = dicParas.ContainsKey("gameIndexIds") ? ((object[])dicParas["gameIndexIds"]).ToList().Select<object, int>(x => Convert.ToInt32(x)) : null;
                 string memberLevelId = dicParas.ContainsKey("memberLevelId") ? (dicParas["memberLevelId"] + "") : string.Empty;
@@ -263,7 +267,7 @@ namespace XXCloudService.Api.XCCloud
                             data_GameFreeRule.ExitCoin = iExitCoin;
                             data_GameFreeRule.StartTime = st;
                             data_GameFreeRule.EndTime = et;
-                            data_GameFreeRuleService.AddModel(data_GameFreeRule);
+                            data_GameFreeRuleService.AddModel(data_GameFreeRule, true, merchId, merchSecret);
                             if (!data_GameFreeRuleService.SaveChanges())
                             {
                                 errMsg = "添加送局规则失败";
@@ -275,7 +279,7 @@ namespace XXCloudService.Api.XCCloud
                                 var data_GameFreeRule_List = new Data_GameFreeRule_List();
                                 data_GameFreeRule_List.GameIndexID = gameIndexId;
                                 data_GameFreeRule_List.RuleID = data_GameFreeRule.ID;
-                                data_GameFreeRule_ListService.AddModel(data_GameFreeRule_List);
+                                data_GameFreeRule_ListService.AddModel(data_GameFreeRule_List, true, merchId, merchSecret);
                             }
 
                             st = st.AddDays(1);
@@ -313,6 +317,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -346,12 +354,12 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             var data_GameFreeRule = data_GameFreeRuleService.GetModels(p => p.ID == iId).FirstOrDefault();
-                            data_GameFreeRuleService.DeleteModel(data_GameFreeRule);
+                            data_GameFreeRuleService.DeleteModel(data_GameFreeRule, true, merchId, merchSecret);
 
                             var data_GameFreeRule_List = data_GameFreeRule_ListService.GetModels(p => p.RuleID == iId);
                             foreach (var data_GameFreeRule_ListMode in data_GameFreeRule_List)
                             {
-                                data_GameFreeRule_ListService.DeleteModel(data_GameFreeRule_ListMode);
+                                data_GameFreeRule_ListService.DeleteModel(data_GameFreeRule_ListMode, true, merchId, merchSecret);
                             }
 
                             if (!data_GameFreeRuleService.SaveChanges())
@@ -382,6 +390,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
                 string state = dicParas.ContainsKey("state") ? (dicParas["state"] + "") : string.Empty;
@@ -409,7 +421,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var data_GameFreeRule = data_GameFreeRuleService.GetModels(p => p.ID == iId).FirstOrDefault();
                 data_GameFreeRule.State = iState;
-                if (!data_GameFreeRuleService.Update(data_GameFreeRule))
+                if (!data_GameFreeRuleService.Update(data_GameFreeRule, true, merchId, merchSecret))
                 {
                     errMsg = "更新送局规则信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

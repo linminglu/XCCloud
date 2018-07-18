@@ -728,11 +728,11 @@ namespace XXCloudService.Api.XCCloud
                 Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
                 if (schedule == null)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行过户操作");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空");
                 }
 
                 Data_Workstation station = Data_WorkstationService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.WorkStation == workStation).FirstOrDefault();
-                if (schedule == null)
+                if (station == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前工作站为空");
                 }
@@ -764,7 +764,7 @@ namespace XXCloudService.Api.XCCloud
                             item.OutTime = now;
                             item.OutDeviceType = 1;
                             item.OutDeviceID = station.ID;
-                            item.Note = string.Format("手工清场，工作站:{0}，操作人:{1}，营业日期:{2}，班次:{3}", workStation, user.RealName, schedule.CheckDate, schedule.ScheduleName);
+                            item.Note = string.Format("执行手工清场，工作站：{0}，操作人：{1}，营业日期：{2}，班次：{3}", workStation, user.RealName, schedule.CheckDate, schedule.ScheduleName);
                             if (!Flw_Project_TicketUseService.I.Update(item))
                             {
                                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, "执行手工清场失败");
@@ -790,6 +790,10 @@ namespace XXCloudService.Api.XCCloud
                         }
                         ts.Complete();
                     }
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票使用凭证不正确");
                 }
 
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");

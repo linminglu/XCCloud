@@ -15,7 +15,6 @@ namespace XXCloudService.WeiXin.Api
     /// </summary>
     public class Schedule : ApiBase
     {
-
         /// <summary>
         /// 获取班次操作信息
         /// </summary>
@@ -31,13 +30,16 @@ namespace XXCloudService.WeiXin.Api
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("userId").Validintnozero("员工ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("workStation").Nonempty("吧台", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var scheduleId = dicParas.Get("scheduleId");
-                var userId = dicParas.Get("userId").Toint(); 
+                var userId = dicParas.Get("userId").Toint();
+                var workStation = dicParas.Get("workStation");
 
                 var flw_Schedule_UserInfoService = Flw_Schedule_UserInfoService.I;
 
-                var flw_Schedule_UserInfo = flw_Schedule_UserInfoService.GetModels(p => p.ScheduleID.Equals(scheduleId, StringComparison.OrdinalIgnoreCase) && p.UserID == userId).Select(o => new 
+                var flw_Schedule_UserInfo = flw_Schedule_UserInfoService.GetModels(p => p.ScheduleID.Equals(scheduleId, StringComparison.OrdinalIgnoreCase) && p.UserID == userId && p.WorkStation.Equals(workStation, StringComparison.OrdinalIgnoreCase)).Select(o => new
                                             {
                                                 ID = o.ID, //班次操作ID
                                                 CheckDate = o.CheckDate, //营业日期
@@ -46,7 +48,8 @@ namespace XXCloudService.WeiXin.Api
                                                 ShiftTime = o.ShiftTime, //结束时间
                                                 WorkStation = o.WorkStation,  //工作站名
                                                 RealCash = o.RealCash, //实点现金
-                                                RealCredit = o.RealCredit //实点信用卡小票
+                                                RealCredit = o.RealCredit, //实点信用卡小票
+                                                Note = o.Note //备注
                                             });
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, flw_Schedule_UserInfo);
@@ -70,27 +73,31 @@ namespace XXCloudService.WeiXin.Api
                 string errMsg = string.Empty;
                 if (!dicParas.Get("id").Nonempty("班次操作ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("realCash").Validdecimal("实点现金", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("realCredit").Validdecimal("实点信用卡小票", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //if (!dicParas.Get("realCash").Validdecimal("实点现金", out errMsg))
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //if (!dicParas.Get("realCredit").Validdecimal("实点信用卡小票", out errMsg))
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var id = dicParas.Get("id"); 
                 var realCash = dicParas.Get("realCash").Todecimal(0);
                 var realCredit = dicParas.Get("realCredit").Todecimal(0);
+                var note = dicParas.Get("note");
 
                 var flw_Schedule_UserInfoService = Flw_Schedule_UserInfoService.I;
-
-                if(!flw_Schedule_UserInfoService.Any(p=>p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                if (!flw_Schedule_UserInfoService.Any(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "该班次操作信息不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var flw_Schedule_UserInfo = flw_Schedule_UserInfoService.GetModels(p=>p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var flw_Schedule_UserInfo = flw_Schedule_UserInfoService.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var userId = flw_Schedule_UserInfo.UserID;
+                var merchId = Base_UserInfoService.I.GetModels(p => p.ID == userId).Select(o => o.MerchID).FirstOrDefault();
+                var merchSecret = Base_MerchantInfoService.I.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => o.MerchSecret).FirstOrDefault();
                 flw_Schedule_UserInfo.RealCash = realCash;
                 flw_Schedule_UserInfo.RealCredit = realCredit;
-                if(!flw_Schedule_UserInfoService.Update(flw_Schedule_UserInfo))
+                flw_Schedule_UserInfo.Note = note;
+                if(!flw_Schedule_UserInfoService.Update(flw_Schedule_UserInfo, !(merchId.IsNull()), merchId, merchSecret))
                 {
                     errMsg = "保存班次操作信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

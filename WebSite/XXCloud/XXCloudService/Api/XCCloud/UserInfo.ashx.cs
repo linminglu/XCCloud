@@ -780,6 +780,10 @@ namespace XCCloudService.Api.XCCloud
             [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
             public object SaveStoreUserInfo(Dictionary<string, object> dicParas)
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 string userId = dicParas.ContainsKey("userId") ? (dicParas["userId"] + "") : string.Empty;
                 string realName = dicParas.ContainsKey("realName") ? (dicParas["realName"] + "") : string.Empty;
@@ -898,7 +902,7 @@ namespace XCCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (!userInfoService.Update(base_UserInfo))
+                        if (!userInfoService.Update(base_UserInfo, true, merchId, merchSecret))
                         {
                             errMsg = "修改用户信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -907,11 +911,11 @@ namespace XCCloudService.Api.XCCloud
                         if (dicParas.ContainsKey("userGrant") && dicParas["userGrant"] != null)
                         {
                             //添加或修改授权功能表
-                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGrant).Namespace);
-                            foreach (var base_UserGrant in dbContext.Set<Base_UserGrant>().Where(w => w.UserID == iUserId))
+                            var base_UserGrantService = Base_UserGrantService.I;
+                            foreach (var base_UserGrant in base_UserGrantService.GetModels(w => w.UserID == iUserId))
                             {
                                 base_UserGrant.GrantEN = 0;
-                                dbContext.Entry(base_UserGrant).State = EntityState.Modified;
+                                base_UserGrantService.UpdateModel(base_UserGrant, true, merchId, merchSecret);
                             }
 
                             var userGrant = (object[])dicParas["userGrant"];
@@ -921,19 +925,19 @@ namespace XCCloudService.Api.XCCloud
                                 {
                                     var ugr = new Dictionary<string, object>(iUgr, StringComparer.OrdinalIgnoreCase);
                                     int ugrid = Convert.ToInt32(ugr["id"]);
-                                    if (!dbContext.Set<Base_UserGrant>().Any(w => w.GrantID == ugrid && w.UserID == iUserId))
+                                    if (!base_UserGrantService.Any(w => w.GrantID == ugrid && w.UserID == iUserId))
                                     {
                                         var base_UserGrant = new Base_UserGrant();
                                         base_UserGrant.GrantID = ugrid;
                                         base_UserGrant.UserID = iUserId;
                                         base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                        dbContext.Entry(base_UserGrant).State = EntityState.Added;
+                                        base_UserGrantService.AddModel(base_UserGrant, true, merchId, merchSecret);
                                     }
                                     else
                                     {
-                                        var base_UserGrant = dbContext.Set<Base_UserGrant>().Where(p => p.GrantID == ugrid && p.UserID == iUserId).FirstOrDefault();
+                                        var base_UserGrant = base_UserGrantService.GetModels(p => p.GrantID == ugrid && p.UserID == iUserId).FirstOrDefault();
                                         base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                        dbContext.Entry(base_UserGrant).State = EntityState.Modified;
+                                        base_UserGrantService.UpdateModel(base_UserGrant, true, merchId, merchSecret);
                                     }                                    
                                 }
                                 else
@@ -943,7 +947,7 @@ namespace XCCloudService.Api.XCCloud
                                 }
                             }
 
-                            if (dbContext.SaveChanges() < 0)
+                            if (!base_UserGrantService.SaveChanges())
                             {
                                 errMsg = "保存授权功能失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -966,6 +970,10 @@ namespace XCCloudService.Api.XCCloud
             [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
             public object CheckStoreUser(Dictionary<string, object> dicParas)
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 string userId = dicParas.ContainsKey("userId") ? (dicParas["userId"] + "") : string.Empty;
                 string state = dicParas.ContainsKey("state") ? (dicParas["state"] + "") : string.Empty;
@@ -989,25 +997,25 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-            if (string.IsNullOrEmpty(switchmerch))
-            {
-                errMsg = "switchable参数不能为空";
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-            }
+                if (string.IsNullOrEmpty(switchmerch))
+                {
+                    errMsg = "switchable参数不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-            if (string.IsNullOrEmpty(switchstore))
-            {
-                errMsg = "switchstore参数不能为空";
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-            }
+                if (string.IsNullOrEmpty(switchstore))
+                {
+                    errMsg = "switchstore参数不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-            if (string.IsNullOrEmpty(switchworkstation))
-            {
-                errMsg = "switchworkstation参数不能为空";
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-            }
+                if (string.IsNullOrEmpty(switchworkstation))
+                {
+                    errMsg = "switchworkstation参数不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-            iUserId = Convert.ToInt32(userId);
+                iUserId = Convert.ToInt32(userId);
                 iState = Convert.ToInt32(state);
                 if (iState == (int)WorkState.Pass) //审核通过
                 {
@@ -1054,25 +1062,25 @@ namespace XCCloudService.Api.XCCloud
                             base_UserInfo.Status = (int)UserStatus.Pass;
                             base_UserInfo.IsAdmin = !string.IsNullOrEmpty(isAdmin) ? Convert.ToInt32(isAdmin) : (int?)null;
                             base_UserInfo.UserType = Convert.ToInt32(userType);
-                        base_UserInfo.SwitchMerch = Convert.ToInt32(switchmerch);
-                        base_UserInfo.SwitchStore = Convert.ToInt32(switchstore);
-                        base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
+                            base_UserInfo.SwitchMerch = Convert.ToInt32(switchmerch);
+                            base_UserInfo.SwitchStore = Convert.ToInt32(switchstore);
+                            base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
 
-                        string storeId = base_UserInfo.StoreID;
+                            string storeId = base_UserInfo.StoreID;
                             if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.ID != iUserId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                             {
                                 errMsg = "同一个门店只能有一个管理员";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            if (!userInfoService.Update(base_UserInfo))
+                            if (!userInfoService.Update(base_UserInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "修改用户信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
                             //添加或修改授权功能表
-                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGrant).Namespace);
+                            var base_UserGrantService = Base_UserGrantService.I;
                             var userGrant = (object[])dicParas["userGrant"];
                             foreach (IDictionary<string, object> iUgr in userGrant)
                             {
@@ -1080,19 +1088,19 @@ namespace XCCloudService.Api.XCCloud
                                 {
                                     var ugr = new Dictionary<string, object>(iUgr, StringComparer.OrdinalIgnoreCase);
                                     int ugrid = Convert.ToInt32(ugr["id"]);
-                                    if (!dbContext.Set<Base_UserGrant>().Any(w => w.GrantID == ugrid && w.UserID == iUserId))
+                                    if (!base_UserGrantService.Any(w => w.GrantID == ugrid && w.UserID == iUserId))
                                     {
                                         var base_UserGrant = new Base_UserGrant();
                                         base_UserGrant.GrantID = ugrid;
                                         base_UserGrant.UserID = iUserId;
                                         base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                        dbContext.Entry(base_UserGrant).State = EntityState.Added;
+                                        base_UserGrantService.AddModel(base_UserGrant, true, merchId, merchSecret);
                                     }
                                     else
                                     {
-                                        var base_UserGrant = dbContext.Set<Base_UserGrant>().Where(p => p.GrantID == ugrid && p.UserID == iUserId).FirstOrDefault();
+                                        var base_UserGrant = base_UserGrantService.GetModels(p => p.GrantID == ugrid && p.UserID == iUserId).FirstOrDefault();
                                         base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                        dbContext.Entry(base_UserGrant).State = EntityState.Modified;
+                                        base_UserGrantService.UpdateModel(base_UserGrant, true, merchId, merchSecret);
                                     }
                                 }
                                 else
@@ -1102,7 +1110,7 @@ namespace XCCloudService.Api.XCCloud
                                 }
                             }
 
-                            if (dbContext.SaveChanges() < 0)
+                            if (!base_UserGrantService.SaveChanges())
                             {
                                 errMsg = "保存授权功能失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1120,7 +1128,7 @@ namespace XCCloudService.Api.XCCloud
                             xC_WorkInfo.AuditTime = DateTime.Now;
                             xC_WorkInfo.WorkState = (int)WorkState.Pass;
                             xC_WorkInfo.AuditBody = "审核通过";
-                            if (!xC_WorkInfoService.Update(xC_WorkInfo))
+                            if (!xC_WorkInfoService.Update(xC_WorkInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "修改工单失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1132,7 +1140,7 @@ namespace XCCloudService.Api.XCCloud
                             log_Operation.UserID = iUserId;
                             log_Operation.AuthorID = xC_WorkInfo.AuditorID;
                             log_Operation.Content = "审核通过";
-                            if (!log_OperationService.Add(log_Operation))
+                            if (!log_OperationService.Add(log_Operation, true, merchId, merchSecret))
                             {
                                 errMsg = "添加日志失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1146,7 +1154,7 @@ namespace XCCloudService.Api.XCCloud
                             xC_WorkInfo.AuditTime = DateTime.Now;
                             xC_WorkInfo.WorkState = (int)WorkState.Reject;
                             xC_WorkInfo.AuditBody = "拒绝理由：" + reason;
-                            if (!xC_WorkInfoService.Update(xC_WorkInfo))
+                            if (!xC_WorkInfoService.Update(xC_WorkInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "修改工单失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1158,7 +1166,7 @@ namespace XCCloudService.Api.XCCloud
                             log_Operation.UserID = iUserId;
                             log_Operation.AuthorID = xC_WorkInfo.AuditorID;
                             log_Operation.Content = "拒绝理由：" + reason;
-                            if (!log_OperationService.Add(log_Operation))
+                            if (!log_OperationService.Add(log_Operation, true, merchId, merchSecret))
                             {
                                 errMsg = "添加日志失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

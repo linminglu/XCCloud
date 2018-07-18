@@ -50,18 +50,18 @@ namespace XCCloudService.DAL.Base
                     //先校验                    
                     var str = string.Empty;
                     var md5 = string.Empty;
-                    if (oldT != null)
-                    {
-                        str = oldT.GetClearText(pkList, merchSecret);
-                        md5 = Utils.MD5(str);                        
-                        if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
-                        {
-                            LogHelper.SaveLog(t.GetType().Name);
-                            LogHelper.SaveLog(str);
-                            LogHelper.SaveLog(md5);
-                            throw new Exception("数据校验失败");
-                        }
-                    }
+                    //if (oldT != null)
+                    //{
+                    //    str = oldT.GetClearText(pkList, merchSecret);
+                    //    md5 = Utils.MD5(str);
+                    //    if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
+                    //    {
+                    //        LogHelper.SaveLog(t.GetType().Name);
+                    //        LogHelper.SaveLog(str);
+                    //        LogHelper.SaveLog(md5);
+                    //        throw new Exception("数据校验失败");
+                    //    }
+                    //}
 
                     //更新校验码                    
                     str = t.GetClearText(pkList, merchSecret);

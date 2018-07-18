@@ -220,6 +220,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 //if (!dicParas.Get("typeId").Validint("类别编号", out errMsg))
@@ -280,7 +281,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             //新增
                             dict_BalanceType.State = 1;
-                            if (!Dict_BalanceTypeService.I.Add(dict_BalanceType))
+                            if (!Dict_BalanceTypeService.I.Add(dict_BalanceType, true, merchId, merchSecret))
                             {
                                 errMsg = "添加余额类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -295,7 +296,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             //修改
-                            if (!Dict_BalanceTypeService.I.Update(dict_BalanceType))
+                            if (!Dict_BalanceTypeService.I.Update(dict_BalanceType, true, merchId, merchSecret))
                             {
                                 errMsg = "修改余额类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -307,7 +308,7 @@ namespace XXCloudService.Api.XCCloud
                         //先删除，后添加
                         foreach (var model in Data_BalanceType_StoreListService.I.GetModels(p => p.BalanceIndex == id))
                         {
-                            Data_BalanceType_StoreListService.I.DeleteModel(model);
+                            Data_BalanceType_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                         }
 
                         if (!string.IsNullOrEmpty(storeIds))
@@ -320,7 +321,7 @@ namespace XXCloudService.Api.XCCloud
                                 var model = new Data_BalanceType_StoreList();
                                 model.BalanceIndex = id;
                                 model.StroeID = storeId;
-                                Data_BalanceType_StoreListService.I.AddModel(model);
+                                Data_BalanceType_StoreListService.I.AddModel(model, true, merchId, merchSecret);
                             }
                         }
 
@@ -380,7 +381,7 @@ namespace XXCloudService.Api.XCCloud
 
                             var dict_BalanceType = Dict_BalanceTypeService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
                             dict_BalanceType.State = 0;
-                            if (!Dict_BalanceTypeService.I.Update(dict_BalanceType))
+                            if (!Dict_BalanceTypeService.I.Update(dict_BalanceType, true, merchId, merchSecret))
                             {
                                 errMsg = "删除余额类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -388,7 +389,7 @@ namespace XXCloudService.Api.XCCloud
 
                             foreach (var model in Data_BalanceType_StoreListService.I.GetModels(p => p.BalanceIndex == (int)id))
                             {
-                                Data_BalanceType_StoreListService.I.DeleteModel(model);
+                                Data_BalanceType_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             if (!Data_BalanceType_StoreListService.I.SaveChanges())

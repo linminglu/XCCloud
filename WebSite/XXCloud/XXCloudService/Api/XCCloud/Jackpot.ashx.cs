@@ -140,6 +140,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
@@ -202,7 +203,7 @@ namespace XXCloudService.Api.XCCloud
                         if (iId == 0)
                         {
                             //新增
-                            if (!data_JackpotInfoService.Add(data_JackpotInfo))
+                            if (!data_JackpotInfoService.Add(data_JackpotInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "添加抽奖规则信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -224,7 +225,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             //修改
-                            if (!data_JackpotInfoService.Update(data_JackpotInfo))
+                            if (!data_JackpotInfoService.Update(data_JackpotInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "修改抽奖规则信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -239,7 +240,7 @@ namespace XXCloudService.Api.XCCloud
                             var data_Jackpot_Level = data_Jackpot_LevelService.GetModels(p => p.ActiveID == iId);
                             foreach (var model in data_Jackpot_Level)
                             {
-                                data_Jackpot_LevelService.DeleteModel(model);
+                                data_Jackpot_LevelService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             var levelNames = new List<string>();
@@ -303,7 +304,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_Jackpot_LevelModel.Count = Convert.ToInt32(count);
                                     data_Jackpot_LevelModel.Probability = Convert.ToDecimal(probability);
                                     data_Jackpot_LevelModel.CouponID = Convert.ToInt32(couponId);
-                                    data_Jackpot_LevelService.AddModel(data_Jackpot_LevelModel);
+                                    data_Jackpot_LevelService.AddModel(data_Jackpot_LevelModel, true, merchId, merchSecret);
                                     levelNames.Add(levelName);
                                 }
                                 else
@@ -342,6 +343,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -375,12 +380,12 @@ namespace XXCloudService.Api.XCCloud
                             }
                             
                             var data_JackpotInfo = data_JackpotInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                            data_JackpotInfoService.DeleteModel(data_JackpotInfo);
+                            data_JackpotInfoService.DeleteModel(data_JackpotInfo, true, merchId, merchSecret);
 
                             var data_Jackpot_Level = data_Jackpot_LevelService.GetModels(p => p.ActiveID == iId);
                             foreach (var model in data_Jackpot_Level)
                             {
-                                data_Jackpot_LevelService.DeleteModel(model);
+                                data_Jackpot_LevelService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             if (!data_JackpotInfoService.SaveChanges())

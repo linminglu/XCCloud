@@ -9,20 +9,38 @@
 	<link rel="stylesheet" href="css/manchartData.css">
 	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=rKXLFp7Q5LaRdax2dtrxkLzzQLrbGG4T"></script>
 	<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+	<link rel="stylesheet" href="css/myxc.css">
 	<title>商户信息列表</title>
 	<style> .layui-table-cell .layui-btn{height: 28px;line-height: 28px;}</style>
 </head>
 <body> 
-	<div class="" style="padding: 5px">
-		<div class="layui-row">
-			<div class="demoTable" style="text-align: right;">
-				<button class="layui-btn layui-btn_serch" data-type="reload" id="shBtn"><i class="layui-icon">&#xe615;</i>高级搜索</button>
-				<button class="layui-btn layui-btn-normal addbtn" onclick="getAddMerchInfo()"><i class="layui-icon">&#xe654;</i>新增</button>
+	<div class="layui-row settingPage">
+		<div class="row-box" style="">
+			<div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+				<blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+					<div class="layui-form layui-form-pane layui-col-md9" id="form1">
+						<div class="layui-form-item" id="serchMode"></div>
+					</div>
+
+					<div class="layui-col-md2" id="form2Box" style="position: relative;height: 38px;border: 1px #999 solid">
+						<div class="layui-form layui-form-pane" id="form2" style="position: absolute; display: none;top: 38px;border:1px #999 solid ;z-index: 9999999999999999999">
+							<div id="tantion" class="layui-form-item">
+							</div>
+						</div>
+					</div>
+
+					<button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+				</blockquote>
 			</div>
-			<div class="layui-col-md12">
-				<table class="layui-hide" id="merchantListTable"  lay-filter="merchList"></table>
-				<table class="layui-hide" id="merchantListTable1"  lay-filter="merchList"></table>
+
+			<div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+				<table class="layui-hide" id="merchList"  lay-filter="merchList"></table>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="storeList">门店明细</button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm addbtn" onclick="getAddMerchInfo()"><i class="layui-icon">&#xe654;</i>新增</button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
 			</div>
+
 		</div>
 	</div>
     <!--//查看明细-->
@@ -400,631 +418,545 @@
 			</div>
 		</form>
 	</div>
-	<!--//查询板块-->
-	<div id="searchModel" class="goodIsAll" style="display: none">
-		<form action="" class="layui-form" style="padding: 15px">
-			<div class="layui-form-item layui-form-pane">
-				<label class="layui-form-label">查询条件</label>
-				<div class="layui-input-block" id="searchListUp" style="border: 1px dashed #f0ad4e">
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="layui---xtree/layui-xtree.js"></script>
+<script src="layui---xtree/layui-xtree-look.js"></script>
+<script src="js/manchartSystem.js"></script>
+<script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
+<script>
+    let  times=0,_merchType="",_merchStatus="",allowCS=0,allowBC=1;
+    setStorage('allowBC','1'); setStorage('allowCS','0');
+    let token=getStorage('token'),logType=JSON.parse(getStorage('logMsg')).logType;
+    let xc=xcActionSystem.prototype;
+    layui.use(['table','form','jquery','layer','element','laydate'],function () {
+        var table=layui.table;
+        var layer=layui.layer;
+        var element = layui.element;
+        var form=layui.form;
+        var laydate=layui.laydate;
+        var parm={'url':'/XCCloud/Merch?action=GetMerchList',
+            'obj':{"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"},
+            'elem':'#merchList',
+            cols:[{type:'checkbox'}
+                ,{field:'MerchName', title: '负责人姓名', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                ,{field:'Mobil', title: '手机',width:140, align: 'center'}
+                ,{field:'MerchTypeStr', title: '商户类别', align: 'center'}
+                ,{field:'MerchAccount', title: '商户账号', align: 'center'} //单元格内容水平居中
+                ,{field:'AllowCreateSubStr', title: '创建子账号', align: 'center'} //单元格内容水平居中
+                ,{field:'AllowCreateCount', title: '账户数量', align: 'center', sort: true}
+                ,{field:'MerchStatusStr', title: '状态',  align: 'center'}
+                ,{field:'MerchID', title: '商户ID',  align: 'center'}
+                // ,{fixed: 'right', title: '操作', width:280, align:'center', toolbar: '#barDemo'}
+            ]};
+       xc.getInitData(parm);
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'merchSearch',
+            'processname': 'merchSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'xc':xc,
+            'laydate':laydate,
+            'parm':parm
+        })
+        //门店明细
+        $('#storeList').click(function () {
+            let checkStatus = table.checkStatus('merchList'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                // id=checkStatus.data[0].StoreID
+                var merchIds=checkStatus.data[0].MerchID
+                if(logType==1){
+                    var parm={'url':'/XCCloud/StoreInfo?action=GetStoreList',
+                        'obj':{"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3","merchId":merchIds},
+                        'elem':'#merchStoreListTable',
+                        'cols':[
+                            {type:'checkbox'}
+                            ,{field:'StoreID', title: '门店编号', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                            ,{field:'MerchID', title: '归属商户', sort: true}
+                            ,{field:'StoreName', title: '门头', align: 'center'}
+                            ,{field:'Password', title: '消费密码', align: 'center'} //单元格内容水平居中
+                            ,{field:'AuthorExpireDate', title: '授权到期日期',width:172 ,align: 'center',templet: '#changeTime'} //单元格内容水平居中
+                            ,{field:'AreaCode', title: '邮政编号', align: 'center'}
+                            ,{field:'Address', title: '地址',  align: 'center',width:200}
+                            ,{field:'Contacts', title: '负责人',  align: 'center'}
+                            ,{field:'Mobile', title: '手机号',  align: 'center'}
+                            ,{field:'SelttleTypeStr', title: '结算类型',  align: 'center'}
+                            ,{field:'StoreStateStr', title: '门店状态',  align: 'center'}
+                            ,{fixed: 'right', title: '操作', width:120, align:'center', toolbar: '#barDemoLook'}
+                        ]};
+                    getInitData(parm);
+                    layer.open({
+                        type: 1,
+                        title:'<button class="layui-btn">商户:'+merchIds+'门店列表<span class="layui-badge-dot layui-bg-orange"></span></button>',
+                        content: $('#lookStoreList'),
+                        shadeClose:true,
+                        area: ['1400px','500px']
+                    })
 
-				</div>
-			</div>
-			<div class="layui-form-item layui-form-pane">
-				<div class="" pane id="searchListDown"  style="border: 1px dashed #f0ad4e;margin-left: 110px" lay-filter="sld">
-				</div>
-			</div>
-			<div class="layui-form-item layui-form-pane" id="searchbox" style="margin-left: 110px">
-			</div>
-			<div class="layui-col-md-offset9" id="submitBtn">
-				<button type="reset" class="layui-btn layui-btn-normal" id="searchReset">重置</button>
-				<button type="button" class="layui-btn layui-btn-danger" id="searchCAncle" onclick="closePage()">取消</button>
-				<button type="button" class="layui-btn layui-btn-normal" id="searchBtn">查询</button>
-			</div>
-		</form>
-	</div>
-
-
-	<script src="js/jquery-1.8.3-min.js"></script>
-	<script src="layui/layui.js"></script>
-	<script src="layui---xtree/layui-xtree.js"></script>
-	<script src="layui---xtree/layui-xtree-look.js"></script>
-	<script src="js/manchartSystem.js"></script>
-	<script>
-        let  times=0,_merchType="",_merchStatus="",allowCS=0,allowBC=1;
-        setStorage('allowBC','1'); setStorage('allowCS','0');
-        let token=getStorage('token'),logType=JSON.parse(getStorage('logMsg')).logType;
-         layui.use(['table','form','jquery','layer','element'],function () {
-			var table=layui.table;
-			var layer=layui.layer;
-			var element = layui.element;
-			var form=layui.form;
-             var parm={'url':'/XCCloud/Merch?action=GetMerchList',
-                 'obj':{"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"},
-                 'elem':'#merchantListTable',
-                 cols:[{type:'numbers'}
-                     ,{field:'MerchName', title: '负责人姓名', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
-                     ,{field:'Mobil', title: '手机',width:140, align: 'center'}
-                     ,{field:'MerchTypeStr', title: '商户类别', align: 'center'}
-                     ,{field:'MerchAccount', title: '商户账号', align: 'center'} //单元格内容水平居中
-                     ,{field:'AllowCreateSubStr', title: '创建子账号', align: 'center'} //单元格内容水平居中
-                     ,{field:'AllowCreateCount', title: '账户数量', align: 'center', sort: true}
-                     ,{field:'MerchStatusStr', title: '状态',  align: 'center'}
-                     ,{field:'MerchID', title: '商户ID',  align: 'center'}
-                     ,{fixed: 'right', title: '操作', width:280, align:'center', toolbar: '#barDemo'}
-                 ]};
-             getInitData(parm);
-            table.on('tool(merchList)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-                var data = obj.data; //获得当前行数据
-				var merchIds=data.MerchID;
-                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-                if (layEvent === 'detail') { //查看
-					if(logType==1){
-					    console.log(data.MerchID);
-                        var parm={'url':'/XCCloud/StoreInfo?action=GetStoreList',
-                            'obj':{"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3","merchId":data.MerchID},
-                            'elem':'#merchStoreListTable',
-                            'cols':[
-                                {type:'checkbox'}
-                                ,{field:'StoreID', title: '门店编号', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
-                                ,{field:'MerchID', title: '归属商户', sort: true}
-                                ,{field:'StoreName', title: '门头', align: 'center'}
-                                ,{field:'Password', title: '消费密码', align: 'center'} //单元格内容水平居中
-                                ,{field:'AuthorExpireDate', title: '授权到期日期',width:172 ,align: 'center',templet: '#changeTime'} //单元格内容水平居中
-                                ,{field:'AreaCode', title: '邮政编号', align: 'center'}
-                                ,{field:'Address', title: '地址',  align: 'center',width:200}
-                                ,{field:'Contacts', title: '负责人',  align: 'center'}
-                                ,{field:'Mobile', title: '手机号',  align: 'center'}
-                                ,{field:'SelttleTypeStr', title: '结算类型',  align: 'center'}
-                                ,{field:'StoreStateStr', title: '门店状态',  align: 'center'}
-                                ,{fixed: 'right', title: '操作', width:120, align:'center', toolbar: '#barDemoLook'}
-                            ]};
-                        getInitData(parm);
-                            layer.open({
-                                type: 1,
-                                title:'<button class="layui-btn">商户:'+data.MerchID+'门店列表<span class="layui-badge-dot layui-bg-orange"></span></button>',
-                                content: $('#lookStoreList'),
-                                shadeClose:true,
-                                area: ['1400px','500px']
-                            })
-
-					}
-
-                } else if (layEvent === 'del') { //删除
-                    layer.confirm('真的删除行么', function (index) {
-                        //向服务端发送删除指令,删除数据库中此条数据
-						var merchId=data.MerchID;
-						var obj1={"merchId":merchId,"createUserId":"B4201030001","userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-                        var url = '/XCCloud/Merch?action=DelMerch';
-                        var parasJson = JSON.stringify(obj1);
-                        $.ajax({
-                            type: "post",
-                            url: url,
-                            contentType: "application/json; charset=utf-8",
-                            data: {parasJson: parasJson},
-                            success: function (data) {
-                                data = JSON.parse(data);
-                                    var index = layer.load(1, {shade: [0.1,'#fff']});
-                                    if(data.result_code==1){
-                                        setTimeout(function () {
-                                            layer.close(index);
-                                            layer.msg("成功删除！")
-                                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                        },1000);
-                                    }else {
-                                        setTimeout(function () {
-                                            layer.close(index);
-                                            layer.msg("操作失败！")
-                                        },1000);
-                                    }
-                            }
-                        })
-                    });
-                } else if (layEvent === 'edit') { //编辑
-                    modefyMerchInfo(merchIds);
                 }
-            });
-            table.on('tool(merchStoreList)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-                 var data = obj.data; //获得当前行数据
-                var storeId=data.StoreID;
-                 var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-                 if (layEvent === 'detail') { //查看
-                     var obj={"storeId":storeId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-                     var url = "/XCCloud/StoreInfo?action=GetStoreInfo";
-                     var parasJson = JSON.stringify(obj);
-                     var selttleTypes="";
-                     var listData=[];
-                     $.ajax({
-                         type: "post",url: url,contentType: "application/json; charset=utf-8",
-                         data: {parasJson: parasJson},
-                         success: function (data) {
-                             data=JSON.parse(data);
-                             console.log(data);
-                             var arr=data.result_data;
-                             if(data.result_code==1){
-                           var   index1=layer.open({
-                                     type: 1,
-                                     title:'门店信息详情',
-                                     content: $('#lookStoreDetils'),
-                                     shadeClose:true,
-                                     area: ['1400px','666px']
-                                 });
-                                 if(arr.ParentID=='undefined'){
-                                     $('#parentId').val('');
-                                 }else {
-                                     $('#parentId').val(arr.ParentID);
-                                 }
-                                 $('#storeName').val(arr.StoreName);
-                                 $('#lookPassword').val(arr.Password);
-                                 $('#authorExpireDate').val(timeStamp2String(arr.AuthorExpireDate));
-                                 $('#demo2').html("").append(' <img src="'+arr.ShopSignPhoto+'" style="display: block;width: 200px;height: 160px;margin: 0 auto">');
-                                 $('#Address').val(arr.Address);
-                                 $('#lng').val(arr.Lng);
-                                 $('#lat').val(arr.Lat);
-                                 $('#contracts').val(arr.Contacts);
-                                 $('#idCard').val(arr.IDCard);
-                                 $('#idExpireDate').val(timeStamp2String(arr.IDExpireDate));
-                                 $('#mobile').val(arr.Mobile);
-                                 $('#licenceId').val(arr.LicenceID);
-                                 $('#demo3').html("").append(' <img src="'+arr.LicencePhoto+'" style="display: block;width: 200px;height: 160px;margin: 0 auto">');
-                                 $('#licenceExpireDate').val(timeStamp2String(arr.LicenceExpireDate));
-                                 //银行类型
-                                 $('#bankType').val(arr.BankTypeStr);
-                                 $('#bankCode').val(arr.BankCode);
-                                 $('#bankAccount').val(arr.BankAccount);
-
-                                 //支付通道类型
-                                 $('#selttleType').val(arr.SelttleTypeStr);
-                                 selttleTypes=arr.SelttleType;
-                                 if(arr.SelttleType==1){
-                                     $('.payWayNeed').find('li').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
-                                     $('#selttleType').html("").append('<option selected value="1">官方通道</option>');
-                                     layui.use(['form'], function() {
-                                         var form = layui.form;
-                                         form.render('select');
-                                     });
-                                 }else if(arr.SelttleType==2){
-                                     $('.payWayNeed').find('li').eq(2).removeClass('layui-hide').siblings().addClass('layui-hide');
-                                     $('#selttleType').html("").append('<option selected value="2">新大陆</option>');
-                                     layui.use(['form'], function() {
-                                         var form = layui.form;
-                                         form.render('select');
-                                     });
-                                 }else if(arr.SelttleType==0){
-                                     $('.payWayNeed').find('li').eq(0).removeClass('layui-hide').siblings().addClass('layui-hide');
-                                     $('#selttleType').html("").append('<option selected value="0">个人支付通道</option>');
-                                     layui.use(['form'], function() {
-                                         var form = layui.form;
-                                         form.render('select');
-                                     });
-                                 }
-                                 setSign(arr.Lng,arr.Lat,arr.Address,arr.Mobile,'allMap');
-								 $('.backHistory').on('click',function () {
-									 layer.close(index1);
-                                 });
-                                 $('.backHome').on('click',function () {
-                                     layer.closeAll();
-                                 });
-                             }
-                         }
-                     });
-
-                 }
-             });
-             form.on('select(merchType)', function(data){
-                 _merchType=data.value;
-                 if(_merchType==1){
-                     $('#allowCreateSub').attr({'checked':false,'disabled':'disabled'});
-                     layui.use('form',function () {
-                         var form=layui.form;
-                         form.render();
-                     })
-                     $('#allowCreateCount').val('1').attr('disabled','disabled');
-                 }else {
-                     $('#allowCreateCount').val('').removeAttr('disabled');
-                     $('#allowCreateSub').removeAttr('disabled');
-                     layui.use('form',function () {
-                         var form=layui.form;
-                         form.render();
-                     })
-
-                 }
-             });
-             form.on('select(merchStatus)', function(data){
-                 _merchStatus=data.value;
-             });
-             form.on('switch(allowCS)',function (data) {
-                 console.log(data.elem.checked);
-                 if(data.elem.checked==true){
-                     setStorage('allowCS','1');
-                 }else if(data.elem.checked==false){   setStorage('allowCS','0'); }
-
-             });
-             form.on('switch(allowBC)',function (data) {
-                 console.log(data.elem.checked);
-                 if(data.elem.checked==true){
-                     setStorage('allowBC','1');
-                 }else if(data.elem.checked==false){
-                     setStorage('allowBC','0');
-                 }
-
-             });
-             $('#shBtn').on('click',function () {
-                 arr=[];arrList=[];
-                 $('#searchListUp').html("");
-                 $('#searchbox').html("");
-                 var token=getStorage('token');
-                 var url='/Query?action=init',
-                     obj={"sysId": "0", "versionNo": "0.0.0.1",
-                         'pagename':'merchSearch','processname':'merchSearch',"token": token, "signkey": "1f626576304bf5d95b72ece2222e42c3"};
-                 var  parasJson = JSON.stringify(obj);
-                 $.ajax({
-                     type: "post",
-                     url: url,
-                     contentType: "application/json; charset=utf-8",
-                     data:parasJson,
-                     success: function (data) {
-                         data=JSON.parse(data);
-                         if(data.result_code=='1'){
-                             arr=data.result_data;
-                             for(var i=0;i<arr.length;i++){
-                                 arrList.push(arr[i])
-                             }
-                             layer.open({
-                                 type: 1,
-                                 title:'高级查询',
-                                 area:['1000px','400px'],
-                                 content:$('#searchModel'),
-                                 shadeClose:true
-                             });
-                             addCheckbox('searchListDown',arr);
-                             renderDiv(arr);
-                             form.render();
-                         }
-                         layui.use(['layer','form','laydate'],function () {
-                             var layer=layui.layer;
-                             var laydate=layui.laydate;
-                             laydate.render({
-                                 elem: '#datetime',type: 'datetime'
-                             });
-                             laydate.render({
-                                 elem: '#datetimes',type: 'datetime',range: true
-                             });
-                             laydate.render({
-                                 elem: '#date',type: 'date'
-                             });
-                             laydate.render({
-                                 elem: '#dates',type: 'date',range: true
-                             });
-                         });
-                         form.on('checkbox(aaaaa)', function(data5){
-                             if(data5.elem.checked==true){
-                                 for(var i=0;i<arr.length;i++){
-                                     if(arr[i].title==data5.value){
-                                         $('#searchbox').find('div[name="'+arr[i].title+'"]').removeClass('layui-hide');
-                                         $('#searchListUp').append('<a href="#" class="layui-btn layui-btn-normal layui-btn-sm" style="margin: 5px 1px" name="'+arr[i].field+'" >' +
-                                             '<span name="'+arr[i].width+'">'+arr[i].title+'</span>' +
-                                             '<i class="layui-icon layBtn" name="'+arr[i].type+'"data-id="'+arr[i].id+'"' +
-                                             'style="color: #F00;margin-left: 15px">&#xe640;</i></a >');
-                                         arr.splice(i,1);
-                                         addCheckbox('searchListDown',arr);
-                                     }
-                                 }
-                             }
-
-                         });
-
-                         $('#searchListUp').on('click','a i',function (e) {
-                             e.stopPropagation();
-                             var text=$(this).parent().children('span').text();
-                             $('#searchListDown').append(' <input type="checkbox" name="like" value="'+text+'" title="'+text+'" lay-filter="aaaaa">');
-                             arr.push({'field':$(this).parent().attr('name'),'id':$(this).attr('data-id'),'iscloune':1,
-                                 'issearch':1,'title':text,'type':$(this).attr('name'),'width':$(this).parent().children('span').attr('name')});
-                             form.render();
-                             $('#searchbox').find('div[name="'+text+'"]').addClass('layui-hide');
-                             $(this).parent().remove();
-                         });
-                     }
-                 });
-             });
-             $('#searchBtn').on('click',function () {
-                 var conditions=[];
-                 getValues(arrList,conditions);
-                 var parm={'url':'/XCCloud/Merch?action=GetMerchList',
-                     'obj':{'conditions':conditions,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"},
-                     'elem':'#merchantListTable',
-                     cols:[{type:'numbers'}
-                         ,{field:'MerchName', title: '负责人姓名', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
-                         ,{field:'Mobil', title: '手机',width:140, align: 'center'}
-                         ,{field:'MerchTypeStr', title: '商户类别', align: 'center'}
-                         ,{field:'MerchAccount', title: '商户账号', align: 'center'} //单元格内容水平居中
-                         ,{field:'AllowCreateSubStr', title: '创建子账号', align: 'center'} //单元格内容水平居中
-                         ,{field:'AllowCreateCount', title: '账户数量', align: 'center', sort: true}
-                         ,{field:'MerchStatusStr', title: '状态',  align: 'center'}
-                         ,{field:'MerchID', title: '商户ID',  align: 'center'}
-                         ,{fixed: 'right', title: '操作', width:280, align:'center', toolbar: '#barDemo'}
-                     ]};
-                 getInitData(parm);
-                 layer.closeAll()
-             })
-        });
-        $('.allowCreateBtn').click(function () {
-            if(times%2==1){
-                $('#allowCreateSub').removeClass('layui-hide').siblings().addClass('layui-hide');
-            }else {
-                $('#allowCreateSub').addClass('layui-hide').siblings().removeClass('layui-hide');
+            } else {
+                layer.msg('请且勾选一条数据！')
             }
-            times++;
-        });
-        function getAddMerchInfo(openTitle) {
-            $('#btn_reset').trigger('click');
-            setSelect("商户状态","merchStatus",'1');
-            setSelect("商户类别","merchType");
-            showLayerBox('<h2>新增商户</h2>','formtMerchant','1060px');
-            var obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-            var url = "/XCCloud/Merch?action=GetMerchInfo";
-            var parasJson = JSON.stringify(obj);
-            var listData=[];
-            $.ajax({
-                type: "post",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                data: {parasJson: parasJson},
-                success: function (data) {
-                    data=JSON.parse(data);
-                    console.log(data);
-                    if(data.result_code==1){
-                        listData=data.result_data.merchFunction;
-
-                        listData= JSON.stringify(listData).replace(eval("/children/g"),"data").replace(eval("/name/g"),"title").replace(eval("/functionId/g"),"value");
-                        listData=JSON.parse(listData);
-                        layui.use('form', function () {
-                            var form = layui.form;
-                            //创建tree
-                            var xtree = new layuiXtree({
-                                elem: 'demo1' //放xtree的容器（必填）
-                                , form: form              //layui form对象 （必填）
-                                , data: listData              //数据，结构请参照下面 （必填）
-                                , isopen: true            //初次加载时全部展开，默认true （选填）
-                                , color: "#000"           //图标颜色 （选填）
-                                , icon: {                 //图标样式 （选填）
-                                    open: "&#xe7a0;"      //节点打开的图标
-                                    , close: "&#xe622;"   //节点关闭的图标
-                                    , end: "&#xe621;"     //末尾节点的图标
-                                }
-                            });
-							document.getElementById('autoComplete').onchange=showAllUser();
-
-
-                             document.getElementById('btn_getCk').onclick = function () {
-                                 var merchType=_merchType;
-                                 var merchStatus ="";
-                                 if(_merchStatus==""){
-                                     merchStatus=1;
-                                 }else {
-                                     merchStatus=_merchStatus ;
-								 }
-                                 var allowCreateSub =getStorage('allowCS');   //是否允许
-                                 var merchTag=getStorage('allowBC');
-                                 var  merchId= "B4201030001";
-                                 var merchAccount=document.getElementById('merchAccount').value;			//商户账户
-                                 var merchName=$('#autoComplete option:selected').text();				//负责人
-								 var openId=$('#autoComplete option:selected').val();                   //openid
-                                 var mobil=document.getElementById('mobil').value;						//手机
-                                 var allowCreateCount=document.getElementById('allowCreateCount').value;//账号数量
-                                 var comment=document.getElementById('comment').value;                   //备注
-                                 var  createUserId= "B4201030001";
-								 var merchFunction=[];
-                                 var oCks = xtree.GetChecked(); //获取全部选中的末级节点checkbox对象
-                                 for (var i = 0; i < oCks.length; i++) {
-                                     merchFunction.push({'functionId':oCks[i].value,'functionEn':1});
-                                     console.log(oCks[i].value);
-                                 }
-                               var obj={'merchId':merchId,'merchType':merchType,'merchStatus':merchStatus,'merchAccount':merchAccount,'merchTag':merchTag,'merchName':merchName,'mobil':mobil,'allowCreateSub':allowCreateSub,
-							   'allowCreateCount':allowCreateCount,'openId':openId,'createUserId':createUserId,'comment':comment,'merchFunction':merchFunction,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
-							   };
-                                 console.log(obj);
-							     var url='/XCCloud/Merch?action=AddMerch';
-                                 var parasJson = JSON.stringify(obj);
-                                 $.ajax({
-                                     type: "post",
-                                     url: url,
-                                     contentType: "application/json; charset=utf-8",
-                                     data: {parasJson: parasJson},
-                                     success: function (data) {
-                                         data = JSON.parse(data);
-                                         if(data.result_code==1){
-                                             closePage();
-										 }else {
-                                             alert(data.result_msg);
-                                             console.log(data)
-										 }
-                                     }
-                                 })
-                             }
-                        });
-                    }
+        })
+        //修改
+		$('#editBtn').click(function () {
+            let checkStatus = table.checkStatus('merchList'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                var merchIds=checkStatus.data[0].MerchID
+                modefyMerchInfo(merchIds);
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        })
+        //删除按钮
+        $('#delBtn').on('click', function () {
+            let checkStatus = table.checkStatus('ProjectList'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len >0) {
+                let idArr=[];
+                for(let i in checkStatus.data){
+                    idArr.push(checkStatus.data[i].MerchID)
                 }
-            });
+                layer.confirm('FBI warming：删除不可恢复，是否确定删除?', function(index){
+                    var obj1={"merchId":idArr,"createUserId":"B4201030001","userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                    var url = '/XCCloud/Merch?action=DelMerch';
+                    var parasJson = JSON.stringify(obj1);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            var index = layer.load(1, {shade: [0.1,'#fff']});
+                            if(data.result_code==1){
+                                layui.layer.msg('删除成功',{time:2000},function () {
+                                    location.reload()
+                                })
+                            }else {
+                                layui.layer.msg(data.result_msg||data.return_msg
+                                )
+                            }
+                        }
+                    })
+                });
+
+            } else {
+                layer.msg('请至少勾选一条数据！')
+            }
+        });
+        table.on('tool(merchStoreList)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var storeId=data.StoreID;
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if (layEvent === 'detail') { //查看
+                var obj={"storeId":storeId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                var url = "/XCCloud/StoreInfo?action=GetStoreInfo";
+                var parasJson = JSON.stringify(obj);
+                var selttleTypes="";
+                var listData=[];
+                $.ajax({
+                    type: "post",url: url,contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parasJson},
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        console.log(data);
+                        var arr=data.result_data;
+                        if(data.result_code==1){
+                            var   index1=layer.open({
+                                type: 1,
+                                title:'门店信息详情',
+                                content: $('#lookStoreDetils'),
+                                shadeClose:true,
+                                area: ['1400px','666px']
+                            });
+                            if(arr.ParentID=='undefined'){
+                                $('#parentId').val('');
+                            }else {
+                                $('#parentId').val(arr.ParentID);
+                            }
+                            $('#storeName').val(arr.StoreName);
+                            $('#lookPassword').val(arr.Password);
+                            $('#authorExpireDate').val(timeStamp2String(arr.AuthorExpireDate));
+                            $('#demo2').html("").append(' <img src="'+arr.ShopSignPhoto+'" style="display: block;width: 200px;height: 160px;margin: 0 auto">');
+                            $('#Address').val(arr.Address);
+                            $('#lng').val(arr.Lng);
+                            $('#lat').val(arr.Lat);
+                            $('#contracts').val(arr.Contacts);
+                            $('#idCard').val(arr.IDCard);
+                            $('#idExpireDate').val(timeStamp2String(arr.IDExpireDate));
+                            $('#mobile').val(arr.Mobile);
+                            $('#licenceId').val(arr.LicenceID);
+                            $('#demo3').html("").append(' <img src="'+arr.LicencePhoto+'" style="display: block;width: 200px;height: 160px;margin: 0 auto">');
+                            $('#licenceExpireDate').val(timeStamp2String(arr.LicenceExpireDate));
+                            //银行类型
+                            $('#bankType').val(arr.BankTypeStr);
+                            $('#bankCode').val(arr.BankCode);
+                            $('#bankAccount').val(arr.BankAccount);
+
+                            //支付通道类型
+                            $('#selttleType').val(arr.SelttleTypeStr);
+                            selttleTypes=arr.SelttleType;
+                            if(arr.SelttleType==1){
+                                $('.payWayNeed').find('li').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#selttleType').html("").append('<option selected value="1">官方通道</option>');
+                                layui.use(['form'], function() {
+                                    var form = layui.form;
+                                    form.render('select');
+                                });
+                            }else if(arr.SelttleType==2){
+                                $('.payWayNeed').find('li').eq(2).removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#selttleType').html("").append('<option selected value="2">新大陆</option>');
+                                layui.use(['form'], function() {
+                                    var form = layui.form;
+                                    form.render('select');
+                                });
+                            }else if(arr.SelttleType==0){
+                                $('.payWayNeed').find('li').eq(0).removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#selttleType').html("").append('<option selected value="0">个人支付通道</option>');
+                                layui.use(['form'], function() {
+                                    var form = layui.form;
+                                    form.render('select');
+                                });
+                            }
+                            setSign(arr.Lng,arr.Lat,arr.Address,arr.Mobile,'allMap');
+                            $('.backHistory').on('click',function () {
+                                layer.close(index1);
+                            });
+                            $('.backHome').on('click',function () {
+                                layer.closeAll();
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+        form.on('select(merchType)', function(data){
+            _merchType=data.value;
+            if(_merchType==1){
+                $('#allowCreateSub').attr({'checked':false,'disabled':'disabled'});
+                layui.use('form',function () {
+                    var form=layui.form;
+                    form.render();
+                })
+                $('#allowCreateCount').val('1').attr('disabled','disabled');
+            }else {
+                $('#allowCreateCount').val('').removeAttr('disabled');
+                $('#allowCreateSub').removeAttr('disabled');
+                layui.use('form',function () {
+                    var form=layui.form;
+                    form.render();
+                })
+
+            }
+        });
+        form.on('select(merchStatus)', function(data){
+            _merchStatus=data.value;
+        });
+        form.on('switch(allowCS)',function (data) {
+            console.log(data.elem.checked);
+            if(data.elem.checked==true){
+                setStorage('allowCS','1');
+            }else if(data.elem.checked==false){   setStorage('allowCS','0'); }
+
+        });
+        form.on('switch(allowBC)',function (data) {
+            console.log(data.elem.checked);
+            if(data.elem.checked==true){
+                setStorage('allowBC','1');
+            }else if(data.elem.checked==false){
+                setStorage('allowBC','0');
+            }
+
+        });
+    });
+    $('.allowCreateBtn').click(function () {
+        if(times%2==1){
+            $('#allowCreateSub').removeClass('layui-hide').siblings().addClass('layui-hide');
+        }else {
+            $('#allowCreateSub').addClass('layui-hide').siblings().removeClass('layui-hide');
         }
-        function modefyMerchInfo(merchIds) {
-            _merchType="";_merchStatus="";
-            var obj={'merchId':merchIds,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-            var url = "/XCCloud/Merch?action=GetMerchInfo";
-            var parasJson = JSON.stringify(obj);
-            var listData=[];
-            $.ajax({
-                type: "post",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                data: {parasJson: parasJson},
-                success: function (data) {
-                    data=JSON.parse(data);
-                    console.log(data);
-                    if(data.result_code==1){
-                        setSelect("商户状态","merchStatus",data.result_data.merchStatus);
-                        _merchType=data.result_data.merchType;
-                        allowBC=data.result_data.MerchTag;
-                        allowCS=data.result_data.allowCreateSub;
-                        setSelect("商户类别","merchType",_merchType);
-                       $('#merchAccount').val(data.result_data.merchAccount);
-                        $('#mobil').val(data.result_data.mobil);
-                        $('#allowCreateCount').val(data.result_data.allowCreateCount);
-                        $('#comment').val(data.result_data.comment);
-						if(data.result_data.allowCreateSub==1){
-                            $('#allowCreateSub').attr({'checked':true});
-                            layui.use('form',function () {
-                                var form=layui.form;
-                                form.render();
-                            })
-						}else {
-                            $('#allowCreateSub').attr({'checked':false});
-                            layui.use('form',function () {
-                                var form=layui.form;
-                                form.render();
-                            })
-						}
-                        if(data.result_data.MerchTag==1){
-                            $('#allowBC').attr({'checked':true});
-                            layui.use('form',function () {
-                                var form=layui.form;
-                                form.render();
-                            })
-                        }else {
-                            $('#allowCreateSub').attr({'checked':false});
-                            layui.use('form',function () {
-                                var form=layui.form;
-                                form.render();
+        times++;
+    });
+    function getAddMerchInfo(openTitle) {
+        $('#btn_reset').trigger('click');
+        setSelect("商户状态","merchStatus",'1');
+        setSelect("商户类别","merchType");
+        showLayerBox('<h2>新增商户</h2>','formtMerchant','1060px');
+        var obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var url = "/XCCloud/Merch?action=GetMerchInfo";
+        var parasJson = JSON.stringify(obj);
+        var listData=[];
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                console.log(data);
+                if(data.result_code==1){
+                    listData=data.result_data.merchFunction;
+
+                    listData= JSON.stringify(listData).replace(eval("/children/g"),"data").replace(eval("/name/g"),"title").replace(eval("/functionId/g"),"value");
+                    listData=JSON.parse(listData);
+                    layui.use('form', function () {
+                        var form = layui.form;
+                        //创建tree
+                        var xtree = new layuiXtree({
+                            elem: 'demo1' //放xtree的容器（必填）
+                            , form: form              //layui form对象 （必填）
+                            , data: listData              //数据，结构请参照下面 （必填）
+                            , isopen: true            //初次加载时全部展开，默认true （选填）
+                            , color: "#000"           //图标颜色 （选填）
+                            , icon: {                 //图标样式 （选填）
+                                open: "&#xe7a0;"      //节点打开的图标
+                                , close: "&#xe622;"   //节点关闭的图标
+                                , end: "&#xe621;"     //末尾节点的图标
+                            }
+                        });
+                        document.getElementById('autoComplete').onchange=showAllUser();
+
+
+                        document.getElementById('btn_getCk').onclick = function () {
+                            var merchType=_merchType;
+                            var merchStatus ="";
+                            if(_merchStatus==""){
+                                merchStatus=1;
+                            }else {
+                                merchStatus=_merchStatus ;
+                            }
+                            var allowCreateSub =getStorage('allowCS');   //是否允许
+                            var merchTag=getStorage('allowBC');
+                            var  merchId= "B4201030001";
+                            var merchAccount=document.getElementById('merchAccount').value;			//商户账户
+                            var merchName=$('#autoComplete option:selected').text();				//负责人
+                            var openId=$('#autoComplete option:selected').val();                   //openid
+                            var mobil=document.getElementById('mobil').value;						//手机
+                            var allowCreateCount=document.getElementById('allowCreateCount').value;//账号数量
+                            var comment=document.getElementById('comment').value;                   //备注
+                            var  createUserId= "B4201030001";
+                            var merchFunction=[];
+                            var oCks = xtree.GetChecked(); //获取全部选中的末级节点checkbox对象
+                            for (var i = 0; i < oCks.length; i++) {
+                                merchFunction.push({'functionId':oCks[i].value,'functionEn':1});
+                                console.log(oCks[i].value);
+                            }
+                            var obj={'merchId':merchId,'merchType':merchType,'merchStatus':merchStatus,'merchAccount':merchAccount,'merchTag':merchTag,'merchName':merchName,'mobil':mobil,'allowCreateSub':allowCreateSub,
+                                'allowCreateCount':allowCreateCount,'openId':openId,'createUserId':createUserId,'comment':comment,'merchFunction':merchFunction,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
+                            };
+                            console.log(obj);
+                            var url='/XCCloud/Merch?action=AddMerch';
+                            var parasJson = JSON.stringify(obj);
+                            $.ajax({
+                                type: "post",
+                                url: url,
+                                contentType: "application/json; charset=utf-8",
+                                data: {parasJson: parasJson},
+                                success: function (data) {
+                                    data = JSON.parse(data);
+                                    if(data.result_code==1){
+                                        closePage();
+                                    }else {
+                                        alert(data.result_msg);
+                                        console.log(data)
+                                    }
+                                }
                             })
                         }
-                        showAllUser(data.result_data.merchName);
-                        listData=data.result_data.merchFunction;
-                        listData= JSON.stringify(listData).replace(eval("/children/g"),"data").replace(eval("/name/g"),"title").replace(eval("/functionId/g"),"value");
-                        listData=JSON.parse(listData);
-                        layui.use('form', function () {
-                            var form = layui.form;
-                            //创建tree
-                            var xtree = new layuiXtreeLook({
-                                elem: 'demo1' //放xtree的容器（必填）
-                                , form: form               //layui form对象 （必填）
-                                , data: listData           //数据，结构请参照下面 （必填）
-                                , isopen: true            //初次加载时全部展开，默认true （选填）
-                                , color: "#000"           //图标颜色 （选填）
-                                , icon: {                  //图标样式 （选填）
-                                    open: "&#xe7a0;"      //节点打开的图标
-                                    , close: "&#xe622;"   //节点关闭的图标
-                                    , end: "&#xe621;"     //末尾节点的图标
-                                }
-                            });
-
-                            document.getElementById('btn_getCk').onclick = function () {
-                                var merchType=_merchType;
-                                var merchStatus ="";
-                                if(_merchStatus==""){
-                                    merchStatus=1;
-                                }else {
-                                    merchStatus=_merchStatus ;
-                                }
-                                var allowCreateSub =getStorage('allowCS');   //是否允许
-								var merchTag=getStorage('allowBC');
-                                var merchAccount=document.getElementById('merchAccount').value;			//商户账户
-                                var merchName=$('#autoComplete option:selected').text();				//负责人
-								merchName=='-请选择-'?merchName='':merchName
-                                var openId=$('#autoComplete option:selected').val();                   //openid
-                                var mobil=document.getElementById('mobil').value;						//手机
-                                var allowCreateCount=document.getElementById('allowCreateCount').value;//账号数量
-                                var comment=document.getElementById('comment').value;                   //备注
-                                var merchFunction=[];
-                                var oCks = xtree.GetChecked(); //获取全部选中的末级节点checkbox对象
-                                for (var i = 0; i < oCks.length; i++) {
-                                    merchFunction.push({'functionId':oCks[i].value,'functionEn':1});
-                                }
-                                var obj={'merchId':merchIds,'merchType':merchType,'merchStatus':merchStatus,'merchTag':merchTag,'merchAccount':merchAccount,'merchName':merchName,'mobil':mobil,'allowCreateSub':allowCreateSub,
-                                    'allowCreateCount':allowCreateCount,'openId':openId,'comment':comment,'merchFunction':merchFunction,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
-                                };
-                                console.log(obj);
-                                var url='/XCCloud/Merch?action=EditMerch';
-                                var parasJson = JSON.stringify(obj);
-                                $.ajax({
-                                    type: "post",
-                                    url: url,
-                                    contentType: "application/json; charset=utf-8",
-                                    data: {parasJson: parasJson},
-                                    success: function (data) {
-                                        data = JSON.parse(data);
-                                        if(data.result_code==1){
-                                            closePage();
-                                        }else {
-                                            alert(data.result_msg);
-                                            console.log(data)
-                                        }
-                                    }
-                                })
+                    });
+                }
+            }
+        });
+    }
+    function modefyMerchInfo(merchIds) {
+        _merchType="";_merchStatus="";
+        var obj={'merchId':merchIds,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var url = "/XCCloud/Merch?action=GetMerchInfo";
+        var parasJson = JSON.stringify(obj);
+        var listData=[];
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                console.log(data);
+                if(data.result_code==1){
+                    setSelect("商户状态","merchStatus",data.result_data.merchStatus);
+                    _merchType=data.result_data.merchType;
+                    allowBC=data.result_data.MerchTag;
+                    allowCS=data.result_data.allowCreateSub;
+                    setSelect("商户类别","merchType",_merchType);
+                    $('#merchAccount').val(data.result_data.merchAccount);
+                    $('#mobil').val(data.result_data.mobil);
+                    $('#allowCreateCount').val(data.result_data.allowCreateCount);
+                    $('#comment').val(data.result_data.comment);
+                    if(data.result_data.allowCreateSub==1){
+                        $('#allowCreateSub').attr({'checked':true});
+                        layui.use('form',function () {
+                            var form=layui.form;
+                            form.render();
+                        })
+                    }else {
+                        $('#allowCreateSub').attr({'checked':false});
+                        layui.use('form',function () {
+                            var form=layui.form;
+                            form.render();
+                        })
+                    }
+                    if(data.result_data.MerchTag==1){
+                        $('#allowBC').attr({'checked':true});
+                        layui.use('form',function () {
+                            var form=layui.form;
+                            form.render();
+                        })
+                    }else {
+                        $('#allowCreateSub').attr({'checked':false});
+                        layui.use('form',function () {
+                            var form=layui.form;
+                            form.render();
+                        })
+                    }
+                    showAllUser(data.result_data.merchName);
+                    listData=data.result_data.merchFunction;
+                    listData= JSON.stringify(listData).replace(eval("/children/g"),"data").replace(eval("/name/g"),"title").replace(eval("/functionId/g"),"value");
+                    listData=JSON.parse(listData);
+                    layui.use(['form','layer'], function () {
+                        var form = layui.form;
+                        //创建tree
+                        var xtree = new layuiXtreeLook({
+                            elem: 'demo1' //放xtree的容器（必填）
+                            , form: form               //layui form对象 （必填）
+                            , data: listData           //数据，结构请参照下面 （必填）
+                            , isopen: true            //初次加载时全部展开，默认true （选填）
+                            , color: "#000"           //图标颜色 （选填）
+                            , icon: {                  //图标样式 （选填）
+                                open: "&#xe7a0;"      //节点打开的图标
+                                , close: "&#xe622;"   //节点关闭的图标
+                                , end: "&#xe621;"     //末尾节点的图标
                             }
                         });
-                        showLayerBox('<h2>修改商户信息</h2>','formtMerchant','1060px');
-                    }
-                }
-            });
-        }
-        function showAllUser(nicknames){
-            $('#autoComplete').html('<option>-请选择-</option>');
-            var obj={"nextOpenId":"","sysId":"0","versionNo":"0.0.0.1"};
-            var url="/wx/Users?action=GetWxUserList";
-            var parasJson = JSON.stringify(obj);
-            $.ajax({
-                type: "post",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                data: {parasJson: parasJson},
-                success: function (data) {
-                    data = JSON.parse(data);
-                    if(data.result_code==1){
-                        var arr=data.result_data;
-                        if(nicknames!=undefined){
-                            console.log(1);
-                            for(var i=0;i<arr.length;i++){
-                                if(arr[i].nickname==nicknames){
-                                    $('#autoComplete').append('<option value="'+arr[i].openid+'" selected>'+arr[i].nickname+'</option>');
-                                }else{
-                                    $('#autoComplete').append('<option value="'+arr[i].openid+'">'+arr[i].nickname+'</option>');
-                                }
+
+                        document.getElementById('btn_getCk').onclick = function () {
+                            var merchType=_merchType;
+                            var merchStatus ="";
+                            if(_merchStatus==""){
+                                merchStatus=1;
+                            }else {
+                                merchStatus=_merchStatus ;
                             }
-                        }else if(nicknames==undefined){
-                            for(var i=0;i<arr.length;i++){
+                            var allowCreateSub =getStorage('allowCS');   //是否允许
+                            var merchTag=getStorage('allowBC');
+                            var merchAccount=document.getElementById('merchAccount').value;			//商户账户
+                            var merchName=$('#autoComplete option:selected').text();				//负责人
+                            merchName=='-请选择-'?merchName='':merchName
+                            var openId=$('#autoComplete option:selected').val();                   //openid
+                            var mobil=document.getElementById('mobil').value;						//手机
+                            var allowCreateCount=document.getElementById('allowCreateCount').value;//账号数量
+                            var comment=document.getElementById('comment').value;                   //备注
+                            var merchFunction=[];
+                            var oCks = xtree.GetChecked(); //获取全部选中的末级节点checkbox对象
+                            for (var i = 0; i < oCks.length; i++) {
+                                merchFunction.push({'functionId':oCks[i].value,'functionEn':1});
+                            }
+                            var obj={'merchId':merchIds,'merchType':merchType,'merchStatus':merchStatus,'merchTag':merchTag,'merchAccount':merchAccount,'merchName':merchName,'mobil':mobil,'allowCreateSub':allowCreateSub,
+                                'allowCreateCount':allowCreateCount,'openId':openId,'comment':comment,'merchFunction':merchFunction,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
+                            };
+                            console.log(obj);
+                            var url='/XCCloud/Merch?action=EditMerch';
+                            var parasJson = JSON.stringify(obj);
+                            $.ajax({
+                                type: "post",
+                                url: url,
+                                contentType: "application/json; charset=utf-8",
+                                data: {parasJson: parasJson},
+                                success: function (data) {
+                                    data = JSON.parse(data);
+                                    if(data.result_code==1){
+                                       layui.layer.msg('保存成功',{time:2000},function () {
+										   location.reload()
+                                       })
+                                    }else {
+                                        layui.layer.msg(data.result_msg||data.return_msg)
+                                    }
+                                }
+                            })
+                        }
+                    });
+                    showLayerBox('<h2>修改商户信息</h2>','formtMerchant','1060px');
+                }
+            }
+        });
+    }
+    function showAllUser(nicknames){
+        $('#autoComplete').html('<option>-请选择-</option>');
+        var obj={"nextOpenId":"","sysId":"0","versionNo":"0.0.0.1"};
+        var url="/wx/Users?action=GetWxUserList";
+        var parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if(data.result_code==1){
+                    var arr=data.result_data;
+                    if(nicknames!=undefined){
+                        console.log(1);
+                        for(var i=0;i<arr.length;i++){
+                            if(arr[i].nickname==nicknames){
+                                $('#autoComplete').append('<option value="'+arr[i].openid+'" selected>'+arr[i].nickname+'</option>');
+                            }else{
                                 $('#autoComplete').append('<option value="'+arr[i].openid+'">'+arr[i].nickname+'</option>');
                             }
                         }
-                        layui.use(['form', 'layedit', 'laydate'], function() {
-                            var form = layui.form;
-                            form.render('select');
-                        });
-					}else {
-                        layui.use(['layer'], function() {
-                            var layer = layui.layer;
-                            layer.msg('微信用户列表加载失败！');
-                        });
-					}
+                    }else if(nicknames==undefined){
+                        for(var i=0;i<arr.length;i++){
+                            $('#autoComplete').append('<option value="'+arr[i].openid+'">'+arr[i].nickname+'</option>');
+                        }
+                    }
+                    layui.use(['form', 'layedit', 'laydate'], function() {
+                        var form = layui.form;
+                        form.render('select');
+                    });
+                }else {
+                    layui.use(['layer'], function() {
+                        var layer = layui.layer;
+                        layer.msg('微信用户列表加载失败！');
+                    });
                 }
-            })
-        }
-        $('#searchListUp').on('click',function () {
-            $('#searchListDown').slideToggle();
-        });
-	</script>
-	<script type="text/html" id="barDemo">
-		<a class="layui-btn layui-sm" lay-event="detail" >门店明细</a>
-		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
-		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</a>
-	</script>
-	<script type="text/html" id="barDemoLook">
-		<a class="layui-btn layui-sm" lay-event="detail" >查看明细</a>
-	</script>
-	<script type="text/html" id="changeTime">
-		{{# if(d.AuthorExpireDate!=null&&d.AuthorExpireDate!=''){ }}
-		{{timeStamp2String(d.AuthorExpireDate)}}
-		{{# }else{ }}
-		{{d.AuthorExpireDate}}
-		{{#  } }}
-	</script>
-</body>
+            }
+        })
+    }
+    $('#searchListUp').on('click',function () {
+        $('#searchListDown').slideToggle();
+    });
+</script>
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-sm" lay-event="detail" >门店明细</a>
+	<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+	<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</a>
+</script>
+<script type="text/html" id="barDemoLook">
+	<a class="layui-btn layui-sm" lay-event="detail" >查看明细</a>
+</script>
+<script type="text/html" id="changeTime">
+	{{# if(d.AuthorExpireDate!=null&&d.AuthorExpireDate!=''){ }}
+	{{timeStamp2String(d.AuthorExpireDate)}}
+	{{# }else{ }}
+	{{d.AuthorExpireDate}}
+	{{#  } }}
+</script>
 </html>

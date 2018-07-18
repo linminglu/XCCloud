@@ -316,13 +316,14 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 string resultMsg = string.Empty;
                 string id = dicParas.ContainsKey("ID") ? (dicParas["ID"] + "") : string.Empty;
                 string gameId = dicParas.ContainsKey("gameId") ? (dicParas["gameId"] + "") : string.Empty;
                 string gameType = dicParas.ContainsKey("gameType") ? (dicParas["gameType"] + "") : string.Empty;
-                string gameName = dicParas.ContainsKey("GameName") ? (dicParas["GameName"] + "") : string.Empty;
+                string gameName = dicParas.ContainsKey("gameName") ? (dicParas["gameName"] + "") : string.Empty;
                 string area = dicParas.ContainsKey("area") ? (dicParas["area"] + "") : string.Empty;
                 string changeTime = dicParas.ContainsKey("changeTime") ? (dicParas["changeTime"] + "") : string.Empty;
                 string evaluation = dicParas.ContainsKey("evaluation") ? (dicParas["evaluation"] + "") : string.Empty;
@@ -509,8 +510,8 @@ namespace XXCloudService.Api.XCCloud
 
                         if (iId == 0)
                         {                            
-                            data_GameInfo.State = 1;                            
-                            if (!data_GameInfoService.Add(data_GameInfo))
+                            data_GameInfo.State = 1;
+                            if (!data_GameInfoService.Add(data_GameInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "新增游戏机信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -524,7 +525,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            if (!data_GameInfoService.Update(data_GameInfo))
+                            if (!data_GameInfoService.Update(data_GameInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "修改游戏机信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -539,7 +540,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var model in Data_GameFreeLotteryRuleService.I.GetModels(p => p.GameIndex == iId))
                             {
-                                Data_GameFreeLotteryRuleService.I.DeleteModel(model);
+                                Data_GameFreeLotteryRuleService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (IDictionary<string, object> el in freeLotteryRules)
@@ -565,7 +566,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_GameFreeLotteryRule.GameIndex = iId;
                                     data_GameFreeLotteryRule.MerchID = merchId;
                                     data_GameFreeLotteryRule.StoreID = storeId;
-                                    Data_GameFreeLotteryRuleService.I.AddModel(data_GameFreeLotteryRule);
+                                    Data_GameFreeLotteryRuleService.I.AddModel(data_GameFreeLotteryRule, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -585,7 +586,7 @@ namespace XXCloudService.Api.XCCloud
                         foreach(var model in data_GameInfo_ExtService.GetModels(p=>p.GameID == iId))
                         {
                             model.ValidFlag = 0;
-                            data_GameInfo_ExtService.UpdateModel(model);
+                            data_GameInfo_ExtService.UpdateModel(model, true, merchId, merchSecret);
                         }
 
                         var data_GameInfo_Ext = new Data_GameInfo_Ext();
@@ -594,7 +595,7 @@ namespace XXCloudService.Api.XCCloud
                         data_GameInfo_Ext.MerchID = merchId;
                         data_GameInfo_Ext.StoreID = storeId;                        
                         data_GameInfo_Ext.ValidFlag = 1;
-                        data_GameInfo_ExtService.AddModel(data_GameInfo_Ext);
+                        data_GameInfo_ExtService.AddModel(data_GameInfo_Ext, true, merchId, merchSecret);
                         if (!data_GameInfo_ExtService.SaveChanges())
                         {
                             errMsg = "保存游戏机扩展信息失败";
@@ -606,7 +607,7 @@ namespace XXCloudService.Api.XCCloud
                         {                            
                             foreach (var model in data_GameInfo_PhotoService.GetModels(p => p.GameID == iId))
                             {
-                                data_GameInfo_PhotoService.DeleteModel(model);
+                                data_GameInfo_PhotoService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (string photoURL in photoURLs)
@@ -615,7 +616,7 @@ namespace XXCloudService.Api.XCCloud
                                 data_GameInfo_Photo.GameID = iId;
                                 data_GameInfo_Photo.PhotoURL = photoURL;
                                 data_GameInfo_Photo.UploadTime = DateTime.Now;
-                                data_GameInfo_PhotoService.AddModel(data_GameInfo_Photo);
+                                data_GameInfo_PhotoService.AddModel(data_GameInfo_Photo, true, merchId, merchSecret);
                             }
 
                             if (!data_GameInfo_PhotoService.SaveChanges())
@@ -658,13 +659,14 @@ namespace XXCloudService.Api.XCCloud
                 XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string storeId = userTokenModel.StoreId;
                 string merchId = storeId.Substring(0, 6);
+                string merchSecret = Base_MerchantInfoService.I.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => o.MerchSecret).FirstOrDefault();
 
                 string errMsg = string.Empty;
                 string resultMsg = string.Empty;
                 string id = dicParas.ContainsKey("ID") ? (dicParas["ID"] + "") : string.Empty;
                 string gameId = dicParas.ContainsKey("gameId") ? (dicParas["gameId"] + "") : string.Empty;
                 string gameType = dicParas.ContainsKey("gameType") ? (dicParas["gameType"] + "") : string.Empty;
-                string gameName = dicParas.ContainsKey("GameName") ? (dicParas["GameName"] + "") : string.Empty;
+                string gameName = dicParas.ContainsKey("gameName") ? (dicParas["gameName"] + "") : string.Empty;
                 var readCat = dicParas.Get("ReadCat").Toint();
 
                 #region 参数验证
@@ -812,7 +814,7 @@ namespace XXCloudService.Api.XCCloud
                         if (iId == 0)
                         {
                             data_GameInfo.State = 1;
-                            if (!data_GameInfoService.Add(data_GameInfo))
+                            if (!data_GameInfoService.Add(data_GameInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "新增游戏机信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -826,7 +828,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            if (!data_GameInfoService.Update(data_GameInfo))
+                            if (!data_GameInfoService.Update(data_GameInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "修改游戏机信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -865,6 +867,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
 
@@ -890,7 +896,7 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                            if (!data_GameInfoService.Delete(data_GameInfo))
+                            if (!data_GameInfoService.Delete(data_GameInfo, true, merchId, merchSecret))
                             {
                                 errMsg = "删除游戏机信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -970,6 +976,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("gameId").Validintnozero("游戏机ID", out errMsg))
@@ -1011,7 +1018,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_GameAPP_Rule.GameID = gameId;
                                     data_GameAPP_Rule.PayCount = payCount;
                                     data_GameAPP_Rule.PlayCount = playCount;
-                                    Data_GameAPP_RuleService.I.AddModel(data_GameAPP_Rule);
+                                    Data_GameAPP_RuleService.I.AddModel(data_GameAPP_Rule, true, merchId, merchSecret);
                                 }
                                 else
                                 {
@@ -1091,6 +1098,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("gameId").Validintnozero("游戏机ID", out errMsg))
@@ -1151,7 +1159,7 @@ namespace XXCloudService.Api.XCCloud
 
                     if (id == 0)
                     {
-                        if (!Data_GameAPP_MemberRuleService.I.Add(data_GameAPP_MemberRule))
+                        if (!Data_GameAPP_MemberRuleService.I.Add(data_GameAPP_MemberRule, true, merchId, merchSecret))
                         {
                             errMsg = "保存会员扫码规则失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1167,7 +1175,7 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (!Data_GameAPP_MemberRuleService.I.Update(data_GameAPP_MemberRule))
+                        if (!Data_GameAPP_MemberRuleService.I.Update(data_GameAPP_MemberRule, true, merchId, merchSecret))
                         {
                             errMsg = "保存会员扫码规则失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1196,6 +1204,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 var idArr = dicParas.GetArray("id");
@@ -1221,7 +1230,7 @@ namespace XXCloudService.Api.XCCloud
 
                             var data_GameAPP_MemberRule = Data_GameAPP_MemberRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
 
-                            if (!Data_GameAPP_MemberRuleService.I.Delete(data_GameAPP_MemberRule))
+                            if (!Data_GameAPP_MemberRuleService.I.Delete(data_GameAPP_MemberRule, true, merchId, merchSecret))
                             {
                                 errMsg = "删除会员扫码规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

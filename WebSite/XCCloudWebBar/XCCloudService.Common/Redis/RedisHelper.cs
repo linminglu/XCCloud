@@ -1128,8 +1128,15 @@ namespace XCCloudWebBar.Common.Redis
 
         private string ConvertJson<T>(T value)
         {
-            string result = value is string ? value.ToString() : JsonConvert.SerializeObject(value);
-            return result;
+            try
+            {
+                string result = value is string ? value.ToString() : JsonConvert.SerializeObject(value);
+                return result;
+            }
+            catch(JsonException ex)
+            {
+                throw ex;
+            }
         }
 
         private T ConvertObj<T>(RedisValue value)

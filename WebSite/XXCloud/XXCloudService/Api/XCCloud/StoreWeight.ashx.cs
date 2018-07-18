@@ -123,6 +123,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 string storeId = dicParas.ContainsKey("storeId") ? (dicParas["storeId"] + "") : string.Empty;
@@ -177,7 +178,7 @@ namespace XXCloudService.Api.XCCloud
                 base_StoreWeight.WeightType = (int)ChainStoreWeightType.Whole;
                 base_StoreWeight.WeightValue = iWeightValue;
                 base_StoreWeight.MerchID = merchId;
-                if (!base_StoreWeightService.Add(base_StoreWeight))
+                if (!base_StoreWeightService.Add(base_StoreWeight, true, merchId, merchSecret))
                 {
                     errMsg = "添加门店权重信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -196,44 +197,50 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                var idArr = dicParas.GetArray("id");
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
-                if (!idArr.Validarray("门店权重ID列表", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("门店权重ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);       
+
+                var id = dicParas.Get("id").Toint();
+                //var idArr = dicParas.GetArray("id");
+
+                //if (!idArr.Validarray("门店权重ID列表", out errMsg))
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        foreach (var id in idArr)
-                        {
-                            if (!id.Validintnozero("门店权重ID", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //foreach (var id in idArr)
+                        //{
+                        //    if (!id.Validintnozero("门店权重ID", out errMsg))
+                        //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                             IBase_StoreWeightService base_StoreWeightService = BLLContainer.Resolve<IBase_StoreWeightService>();
-                            int iId = Convert.ToInt32(id);
-                            var base_StoreWeight = base_StoreWeightService.GetModels(p => p.ID == iId).FirstOrDefault();
-                            if (!base_StoreWeightService.Delete(base_StoreWeight))
+                            var base_StoreWeight = base_StoreWeightService.GetModels(p => p.ID == id).FirstOrDefault();
+                            if (!base_StoreWeightService.Delete(base_StoreWeight, true, merchId, merchSecret))
                             {
                                 errMsg = "删除门店权重信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_StoreWeight_Game).Namespace);
-                            var base_StoreWeight_Game = dbContext.Set<Base_StoreWeight_Game>().Where(p => p.WeightID == iId).ToList();
-                            foreach (var model in base_StoreWeight_Game)
+                            IBase_StoreWeight_GameService base_StoreWeight_GameService = BLLContainer.Resolve<IBase_StoreWeight_GameService>();
+                            foreach (var model in base_StoreWeight_GameService.GetModels(p => p.WeightID == id))
                             {
-                                dbContext.Entry(model).State = EntityState.Deleted;
+                                base_StoreWeight_GameService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
-                            if (dbContext.SaveChanges() < 0)
+                            if (!base_StoreWeight_GameService.SaveChanges())
                             {
                                 errMsg = "删除门店权重游戏机信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }                        
+                        //}                        
 
                         ts.Complete();
                     }
@@ -372,6 +379,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 string storeId = dicParas.ContainsKey("storeId") ? (dicParas["storeId"] + "") : string.Empty;
@@ -416,7 +424,7 @@ namespace XXCloudService.Api.XCCloud
 
                         var base_StoreWeight = base_StoreWeightService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.BossID == iUserId).FirstOrDefault();
                         base_StoreWeight.WeightType = iWeightType;
-                        if (!base_StoreWeightService.Update(base_StoreWeight))
+                        if (!base_StoreWeightService.Update(base_StoreWeight, true, merchId, merchSecret))
                         {
                             errMsg = "保存权重用户游戏机信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -432,11 +440,10 @@ namespace XXCloudService.Api.XCCloud
 
                             //先删除后添加
                             int iId = base_StoreWeight.ID;
-                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_StoreWeight_Game).Namespace);
-                            var base_StoreWeight_Game = dbContext.Set<Base_StoreWeight_Game>().Where(p => p.WeightID == iId).ToList();
-                            foreach (var model in base_StoreWeight_Game)
+                            var base_StoreWeight_GameService = Base_StoreWeight_GameService.I;
+                            foreach (var model in base_StoreWeight_GameService.GetModels(p=>p.WeightID == iId))
                             {
-                                dbContext.Entry(model).State = EntityState.Deleted;
+                                base_StoreWeight_GameService.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             foreach (var gId in gameIDs)
@@ -445,10 +452,10 @@ namespace XXCloudService.Api.XCCloud
                                 base_StoreWeight_GameModel.WeightID = iId;
                                 base_StoreWeight_GameModel.GameID = gId;
                                 base_StoreWeight_GameModel.MerchID = merchId;
-                                dbContext.Entry(base_StoreWeight_GameModel).State = EntityState.Added;                            
+                                base_StoreWeight_GameService.AddModel(base_StoreWeight_GameModel, true, merchId, merchSecret);                         
                             }
 
-                            if (dbContext.SaveChanges() < 0)
+                            if (!base_StoreWeight_GameService.SaveChanges())
                             {
                                 errMsg = "保存权重用户游戏机信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

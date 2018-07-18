@@ -2853,6 +2853,8 @@
           <Property Name="CommissionTotle" Type="numeric" Precision="10" Scale="2" />
           <Property Name="RealCash" Type="numeric" Precision="10" Scale="2" />
           <Property Name="RealCredit" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Note" Type="varchar" MaxLength="200" />
+          <Property Name="SyncFlag" Type="int" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
         <EntityType Name="Flw_Ticket_Exit">
@@ -3519,7 +3521,6 @@
           <EntitySet Name="Flw_Project_TicketDeviceLog" EntityType="XCCloudDBModel.Flw_Project_TicketDeviceLog" />
           <EntitySet Name="Flw_Project_TicketUse" EntityType="XCCloudDBModel.Flw_Project_TicketUse" />
           <EntitySet Name="Flw_Schedule" EntityType="XCCloudDBModel.Flw_Schedule" />
-          <EntitySet Name="Flw_Schedule_UserInfo" EntityType="XCCloudDBModel.Flw_Schedule_UserInfo" />
           <EntitySet Name="Flw_Ticket_Exit" EntityType="XCCloudDBModel.Flw_Ticket_Exit" />
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Log_Operation" EntityType="XCCloudDBModel.Log_Operation" />
@@ -3552,6 +3553,7 @@
           <EntitySet Name="Flw_MemberCard_Renew" EntityType="XCCloudDBModel.Flw_MemberCard_Renew" />
           <EntitySet Name="Flw_ProjectTicket_Bind" EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" />
           <EntitySet Name="Flw_Project_TicketInfo" EntityType="XCCloudDBModel.Flw_Project_TicketInfo" />
+          <EntitySet Name="Flw_Schedule_UserInfo" EntityType="XCCloudDBModel.Flw_Schedule_UserInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -5938,27 +5940,6 @@
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Flw_Schedule_UserInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="ScheduleName" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="CheckDate" Type="DateTime" Precision="0" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="OpenTime" Type="DateTime" Precision="3" />
-          <Property Name="ShiftTime" Type="DateTime" Precision="3" />
-          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CashTotle" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="NetTotle" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="CommissionTotle" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="RealCash" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="RealCredit" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Flw_Ticket_Exit">
           <Key>
             <PropertyRef Name="ID" />
@@ -6575,6 +6556,29 @@
           <Property Name="BalanceIndex" Type="Int32" />
           <Property Name="BalanceCount" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="RemainDividePrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_Schedule_UserInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ScheduleName" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="CheckDate" Type="DateTime" Precision="0" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="OpenTime" Type="DateTime" Precision="3" />
+          <Property Name="ShiftTime" Type="DateTime" Precision="3" />
+          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CashTotle" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="NetTotle" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CommissionTotle" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="RealCash" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="RealCredit" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="SyncFlag" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -9113,28 +9117,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_Schedule_UserInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Schedule_UserInfo">
-              <MappingFragment StoreEntitySet="Flw_Schedule_UserInfo">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="RealCredit" ColumnName="RealCredit" />
-                <ScalarProperty Name="RealCash" ColumnName="RealCash" />
-                <ScalarProperty Name="CommissionTotle" ColumnName="CommissionTotle" />
-                <ScalarProperty Name="NetTotle" ColumnName="NetTotle" />
-                <ScalarProperty Name="CashTotle" ColumnName="CashTotle" />
-                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
-                <ScalarProperty Name="ShiftTime" ColumnName="ShiftTime" />
-                <ScalarProperty Name="OpenTime" ColumnName="OpenTime" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
-                <ScalarProperty Name="ScheduleName" ColumnName="ScheduleName" />
-                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Flw_Ticket_Exit">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Ticket_Exit">
               <MappingFragment StoreEntitySet="Flw_Ticket_Exit">
@@ -9780,6 +9762,30 @@
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="CardID" ColumnName="CardID" />
                 <ScalarProperty Name="FoodSaleID" ColumnName="FoodSaleID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Schedule_UserInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Schedule_UserInfo">
+              <MappingFragment StoreEntitySet="Flw_Schedule_UserInfo">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="SyncFlag" ColumnName="SyncFlag" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="RealCredit" ColumnName="RealCredit" />
+                <ScalarProperty Name="RealCash" ColumnName="RealCash" />
+                <ScalarProperty Name="CommissionTotle" ColumnName="CommissionTotle" />
+                <ScalarProperty Name="NetTotle" ColumnName="NetTotle" />
+                <ScalarProperty Name="CashTotle" ColumnName="CashTotle" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
+                <ScalarProperty Name="ShiftTime" ColumnName="ShiftTime" />
+                <ScalarProperty Name="OpenTime" ColumnName="OpenTime" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="ScheduleName" ColumnName="ScheduleName" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
