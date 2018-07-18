@@ -138,7 +138,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GroupVerity" Width="1.5" PointX="36.75" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Lottery" Width="1.5" PointX="36.75" PointY="22.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_BalanceCharge" Width="1.5" PointX="22.75" PointY="36.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Exit" Width="1.5" PointX="26.75" PointY="36.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Free" Width="1.5" PointX="36.75" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_LevelChange" Width="1.5" PointX="28.75" PointY="36.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberData" Width="1.5" PointX="36.75" PointY="32.75" />
@@ -184,6 +183,8 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" Width="1.5" PointX="43.375" PointY="16.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_TicketInfo" Width="1.5" PointX="39.375" PointY="40.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Schedule_UserInfo" Width="1.5" PointX="41.375" PointY="40.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberInfo_Change" Width="1.5" PointX="17.375" PointY="43.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Exit" Width="1.5" PointX="25.375" PointY="36.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

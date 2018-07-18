@@ -914,7 +914,7 @@ namespace XXCloudService.Api.XCCloudH5
                     order.MerchID = store.MerchID;
                     order.StoreID = device.StoreID;
                     order.FoodCount = 1;
-                    order.GoodCount = 0;
+                    order.GoodCount = 1;
                     order.MemberID = memberTokenModel.MemberId;
                     order.CardID = memberTokenModel.CurrentCardInfo.CardId;
                     order.OrderSource = OrderSource;
@@ -1408,7 +1408,7 @@ namespace XXCloudService.Api.XCCloudH5
                     order.MerchID = store.MerchID;
                     order.StoreID = store.ID;
                     order.FoodCount = 1;
-                    order.GoodCount = 0;
+                    order.GoodCount = 1;
                     order.MemberID = model.MemberId;
                     order.CardID = model.CurrentCardInfo.CardId;
                     order.OrderSource = 5;

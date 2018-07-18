@@ -281,12 +281,12 @@ namespace XXCloudService.Api.XCCloud
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    if (!dicPara.Get("depotId").Validintnozero("仓库ID", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    //if (!dicPara.Get("depotId").Validintnozero("仓库ID", out errMsg))
+                                    //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPara.Get("workStationId").Validintnozero("工作站ID", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                                    var depotId = dicPara.Get("depotId").Toint();
+                                    var depotId = dicPara.Get("depotId").Toint(0);
                                     var workStationId = dicPara.Get("workStationId").Toint();
                                     if (!Data_WorkstationService.I.Any(p => p.ID == workStationId))
                                     {
@@ -294,11 +294,11 @@ namespace XXCloudService.Api.XCCloud
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
-                                    if (!Base_DepotInfoService.I.Any(p => p.ID == depotId))
-                                    {
-                                        errMsg = "该仓库不存在";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
+                                    //if (!Base_DepotInfoService.I.Any(p => p.ID == depotId))
+                                    //{
+                                    //    errMsg = "该仓库不存在";
+                                    //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    //}
 
                                     var workStation = Data_WorkstationService.I.GetModels(p => p.ID == workStationId).FirstOrDefault();
                                     workStation.DepotID = depotId;

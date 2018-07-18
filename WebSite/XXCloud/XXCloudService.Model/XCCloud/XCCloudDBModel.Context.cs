@@ -158,7 +158,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Flw_Lottery> Flw_Lottery { get; set; }
         public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
-        public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
         public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
@@ -204,5 +203,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
         public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
+        public virtual DbSet<Flw_MemberInfo_Change> Flw_MemberInfo_Change { get; set; }
+        public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
     }
 }

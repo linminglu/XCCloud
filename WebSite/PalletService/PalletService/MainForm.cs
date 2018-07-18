@@ -657,7 +657,7 @@ namespace PalletService
             WorkStationRegisterModel model = new WorkStationRegisterModel();
             object result_data = new object();
             DogTokenModel dogTokenModel = null;
-            if (WorkStationBusiness.Register(Computer.DogId, Computer.WorkStation, ref result_data, out token,ref dogTokenModel))
+            if (WorkStationBusiness.Register(ref result_data, out token,ref dogTokenModel))
             {
                 DogTokenCache.AddToken(dogTokenModel);
                 return true;

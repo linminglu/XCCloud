@@ -75,6 +75,9 @@
     <Compile Include="CustomModel\XCCloud\Base_FoodType.cs" />
     <Compile Include="CustomModel\XCCloud\Base_DeviceInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_FoodTypeListModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_MemberCard_ExitModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_MemberCard_LevelChangeModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_MemberInfo_ChangeModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_RenewModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_ChangeModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodsStockModel.cs" />
@@ -747,6 +750,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberData.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_MemberInfo_Change.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberLevelFree.cs">

@@ -8,23 +8,20 @@ using XCCloudService.Common;
 
 namespace XCCloudService.Model.CustomModel.XCCloud
 {
-    public class Flw_MemberCard_RenewList
+    public class Flw_MemberCard_ExitList
     {
         public string ID { get; set; }
         public string CardID { get; set; }
         public string UserName { get; set; }
-        public DateTime? CreateTime { get; set; }
-        public decimal? RenewFee { get; set; }
-        public string BalanceIndexStr { get; set; }
-        public decimal? PayCount { get; set; }
-        public string FoodSaleID { get; set; }
-        public DateTime? OldEndDate { get; set; }
-        public DateTime? NewEndDate { get; set; }
+        public DateTime? OPTime { get; set; }
+        public string OperateTypeStr { get; set; }
+        public Decimal? Deposit { get; set; }
+        public Decimal? ExitMoney { get; set; }
+        public string Note { get; set; }
         public string StoreName { get; set; }
         public DateTime? CheckDate { get; set; }
         public string ScheduleName { get; set; }
         public string WorkStation { get; set; }
         public string LogName { get; set; }
-        public string Note { get; set; }
-    }   
+    }
 }

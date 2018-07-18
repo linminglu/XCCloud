@@ -112,6 +112,21 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 会员级别变更类别
+    /// </summary>
+    public enum MemberLevelChangeType
+    {
+        [Description("手动变更")]
+        手动变更 = 0,
+        [Description("套餐销售")]
+        套餐销售 = 1,
+        [Description("消费累计升级")]
+        消费累计升级 = 2,
+        [Description("僵尸卡降级")]
+        僵尸卡降级 = 3,
+    }
+
+    /// <summary>
     /// 充值方式
     /// </summary>
     public enum RechargeMode

@@ -72,12 +72,15 @@
 
         <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
             <table class="layui-hide" id="workStationTable" lay-filter="workStationTable"></table>
-            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="allowLogin">计时项目</button>
-            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="forbidLogin">设备绑定</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="allowLogin">允许登录</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="forbidLogin">禁止登录</button>
             <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="saleMsg">售卖信息</button>
             <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="bindMore">批量绑定</button>
         </div>
     </div>
+</div>
+<div id="openModel" style="display: none;padding: 15px">
+    <table class="layui-hide" id="saleMsgTable" lay-filter="saleMsgTable"></table>
 </div>
 </body>
 <script type="text/javascript" src="jquery-1.8.3-min.js"></script>
@@ -104,7 +107,6 @@
             data: {parasJson: parasJson},
             success: function (data) {
                 data = JSON.parse(data);
-                console.log(data)
                 if(data.result_code==1){
                     depotArr=data.result_data;
                 }else {
@@ -112,33 +114,152 @@
                 }
             }
         });
-        xcActionSystem.prototype.showAreaMsg(token,table,form,depotArr)
-        let projectAreaList
+        xcActionSystem.prototype.showAreaMsg([],token,table,form,depotArr);
         form.on('select(testSelect)', function (data) {
             var elem = $(data.elem);
             var trElem = elem.parents('tr');
             var tableData = table.cache['workStationTable'];
             // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
             tableData[trElem.data('index')][elem.attr('name')] =data.value;
-            console.log(tableData[trElem.data('index')])
-            if(projectAreaList.length>0){
-                let flag=false;
-                let index;
-                for(i in projectAreaList){
-                    if(projectAreaList[i].workStationId==tableData[trElem.data('index')].ID){
-                        flag=true;
-                        index=i;
+        });
+        $('#bindMore').click(function () {
+            let checkStatus = table.checkStatus('workStationTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            console.log(checkStatus)
+            if (len >0) {
+                let idArr=[];
+                for(let i in checkStatus.data){
+                    idArr.push({workStationId:checkStatus.data[i].ID,depotId:checkStatus.data[i].DepotID})
+                }
+                let obj={depotWorkstationList:idArr,userToken:token,signkey:'1f626576304bf5d95b72ece2222e42c3'}
+                var  parasJson = JSON.stringify(obj);
+                $.ajax({
+                    type: "post",
+                    url: '/XCCloud/Workstation?action=BindDepotBatch',
+                    contentType: "application/json; charset=utf-8",
+                    async:false,
+                    data: {parasJson: parasJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if(data.result_code==1){
+                            layer.msg('批量设置成功',{time:2000},function () {
+                                location.reload()
+                            })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg)
+                        }
                     }
-                }
-                if(flag){
-                    projectAreaList[index].depotId=data.value
-                }else {
-                    projectAreaList.push({'workStationId':tableData[trElem.data('index')].ID,'depotId':data.value})
-                }
-            }else {
-                projectAreaList.push({'workStationId':tableData[trElem.data('index')].ID,'depotId':data.value})
+                });
+
+            } else {
+                layer.msg('请至少勾选一条数据！')
             }
-            console.log(projectAreaList)
+
+        })
+        //允许登录
+        $('#allowLogin').on('click', function () {
+            let checkStatus = table.checkStatus('workStationTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                // id=checkStatus.data[0].ID
+                let _obj={'id':checkStatus.data[0].ID,state:1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/Workstation?action=SaveWorkstation';
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            layer.msg('设置成功',{time:2000},function () {
+                                location.reload()
+                            })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg);
+                        }
+                    }
+                });
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        });
+        //禁止登录
+        $('#forbidLogin').on('click', function () {
+            let checkStatus = table.checkStatus('workStationTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                let _obj={'id':checkStatus.data[0].ID,state:0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/Workstation?action=SaveWorkstation';
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            layer.msg('设置成功',{time:2000},function () {
+                                location.reload()
+                            })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg);
+                        }
+                    }
+                });
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        });
+        //获取售卖信息
+        $('#saleMsg').on('click', function () {
+            let checkStatus = table.checkStatus('workStationTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                let _obj={'id':checkStatus.data[0].ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/Workstation?action=GetWorkstation';
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            let arr=data.result_data;
+                            table.render({
+                                elem: '#saleMsgTable'
+                                , data: arr
+                                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                ,height:'325'
+                                , cols: [[
+                                    {type:'checkbox'}
+                                    , {field: 'SaleName', title: '售卖项目名称', align: 'center'}
+                                    , {field: 'SaleType', title: '售卖项目类型', align: 'center'}
+                                    , {field: 'Source', title: '来源', align: 'center'}
+                                    // ,{field:'StateStr', title: '状态', align: 'center'}
+                                ]]
+                                , page: {page: true, limits: [5,10, 15, 20, 30, 50]}
+                                , limit: 10
+
+                            });
+                            layer.open({
+                                title:'工作站：'+checkStatus.data[0].WorkStation+'销售记录',
+                                type:1,
+                                content:$('#openModel'),
+                                area:'700px'
+                            })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg);
+                        }
+                    }
+                });
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
         });
         //
         // seachModel({
@@ -152,11 +273,11 @@
         //     'searchBtn': 'searchBtn',
         //     'xc':xc,
         //     'laydate':laydate,
-        //     'parm':parm
+        //     'callback':xcActionSystem.prototype.showAreaMsg([],token,table,form,depotArr)
         // })
     })
-    xcActionSystem.prototype.showAreaMsg=function (token,table,form,depotArr) {
-        var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+    xcActionSystem.prototype.showAreaMsg=function (conditions,token,table,form,depotArr) {
+        var  obj={conditions:conditions,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var  parasJson = JSON.stringify(obj);
         $.ajax({
             type: "post",
@@ -176,7 +297,7 @@
                             {type:'checkbox'}
                             , {field: 'WorkStation', title: '工作站名', align: 'center'}
                             , {field: 'DepotID', title: '绑定仓库', align: 'center',templet:function (d) {
-                                    let _select='<select name="DepotID" lay-filter="testSelect" lay-verify="required" data-value="' + d.DepotName + '" ><option value=""></option>'
+                                    let _select='<select name="DepotID" lay-filter="testSelect" lay-verify="required" data-value="' + d.DepotID + '" ><option value=""></option>'
                                     for(i in depotArr){
                                         if(d.DepotID==depotArr[i].ID){
                                             _select+='<option value="'+depotArr[i].ID+'" selected>'+depotArr[i].DepotName+'</option>'
@@ -186,7 +307,6 @@
                                     }
                                     _select+='</select>'
                                     return _select;
-
                                 }}
                             , {field: 'LastLogName', title: '最后登录用户', align: 'center'}
                             , {field: 'LastLogTime', title: '最后登录时间', align: 'center'}

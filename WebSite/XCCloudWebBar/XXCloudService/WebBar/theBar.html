@@ -1781,7 +1781,12 @@
                                 case "4":
                                     if(that.msgReadCard === "0"){
                                         that.outCoinData.icCardId = receivedMsg.dataObj.icCardId;
-                                        that.getBalanceTypeByICCardId()
+                                        if(that.deviceId == ""){
+                                            that.getBalanceTypeByICCardId()
+                                        }else{
+                                            that.getBalanceTypeByDevice()
+                                        }
+                                        
                                     }else if(that.msgReadCard === "1"){
                                         that.icCardId = receivedMsg.dataObj.icCardId;
                                     }
@@ -2492,6 +2497,11 @@
                 if(that.outCoinData.outCoinCard == "1"){
                     that.outCoinData.icCardId = that.cardList[that.radioValue].ICCardNo;
                     that.outCoinData.outCoinCard == ""
+                    if(that.deviceId == ""){
+                        that.getBalanceTypeByICCardId()
+                    }else{
+                        that.getBalanceTypeByDevice()
+                    }
 				}else {
                     that.icCardId = that.cardList[that.radioValue].ICCardNo;
                     that.cardId = that.cardList[that.radioValue].CardId;
@@ -3470,7 +3480,7 @@
 //          按售币机ID获取代币余额
             getBalanceTypeByDevice:function () {
                 var that = this;
-                var byDeviceData={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.outCoinData.icCardId,deviceId:"21"};
+                var byDeviceData={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.outCoinData.icCardId,deviceId:that.deviceId};
                 console.log(byDeviceData);
                 axios.post('/XCCloud/Member?action=getBalanceTypeByDevice', byDeviceData).then(function (res) {
                     console.log(res.data);

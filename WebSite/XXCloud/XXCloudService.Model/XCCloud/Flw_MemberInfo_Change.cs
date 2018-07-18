@@ -12,23 +12,23 @@ namespace XCCloudService.Model.XCCloud
     using System;
     using System.Collections.Generic;
     
-    public partial class Flw_MemberCard_Exit
+    public partial class Flw_MemberInfo_Change
     {
         public string ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string MemberID { get; set; }
-        public Nullable<int> OperateType { get; set; }
-        public Nullable<System.DateTime> OPTime { get; set; }
-        public string CardID { get; set; }
-        public Nullable<decimal> Deposit { get; set; }
-        public Nullable<decimal> ExitMoney { get; set; }
-        public Nullable<decimal> RemainMoney { get; set; }
+        public string ICCardID { get; set; }
+        public string ModifyFied { get; set; }
+        public string OldContext { get; set; }
+        public string NewContext { get; set; }
+        public Nullable<System.DateTime> ModifyTime { get; set; }
         public string WorkStation { get; set; }
-        public Nullable<int> UserID { get; set; }
         public string ScheduldID { get; set; }
+        public Nullable<int> UserID { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public string Note { get; set; }
+        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

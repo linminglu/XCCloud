@@ -66,6 +66,7 @@
         .form-control{padding: 4px 7px;height: 32px;}
         .input-group-addon {padding: 4px 7px;}
         .btn{padding: 4px 7px;}
+        .transferDatadropup{display: flex;margin-top: 1.2em;}
     </style>
 </head>
 <body>
@@ -430,7 +431,6 @@
                 <div class="col-md-1 col-sm-1 menu-style">
                     <button type="button" class="btn btn-primary" @click="getOrders">查询</button>
                 </div>
-
                 <div class="col-md-12 col-sm-12 heightOver">
                     <div class="col-md-6 col-sm-6 menu-style">
                         <!-- <table id="table" class="table table-bordered">
@@ -516,7 +516,7 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="(item,index) in orderInquiry.goodsData">
-                                    <td><input type="checkbox" :value="index" v-model="orderInquiry.exitChecked" @click.stop=""></td>
+                                    <td><input type="checkbox" :value="index" v-model="orderInquiry.exitChecked"></td>
                                     <td>{{item.foodName}}</td>
                                     <td>{{item.category}}</td>
                                     <td>{{item.saleCount}}</td>
@@ -643,132 +643,148 @@
             </i-col>
             <i-col span="24" v-if="minuData.MenuShow7">
                     <div class="col-lg-4 col-md-4">
-                            <div class="btn-group dropup col-lg-12 col-md-12">
-                                <button type="button" class="btn btn-default">转出卡卡号：</button>
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu cardChoosesty">
-                                    <li @click="transferChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span><em>读卡器</em></li>
-                                    <li @click="transferChoose('1')"><span class="iconfont icon-3"></span><em>手动输入</em></li>
-                                </ul>
-                                <input  class="form-control" placeholder="请输入会员姓名" v-model="transferData.fromICCardId"/>
-                                <button type="button" class="btn btn-default readCard" :disabled="loading" @click="fromICCardIdReadCard">{{transferData.dropChooseTxt1}}</button>
-                            </div> 
-                            <div class="input-group col-lg-12 col-md-12 tab-style">
-                                <span class="input-group-addon addonWidth">转出卡密码：</span>
-                                <input type="password" class="form-control" v-model="transferData.pwd"/>
+                        <div class="btn-group transferDatadropup col-lg-12 col-md-12">
+                            <button type="button" class="btn btn-default">转出卡卡号：</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu cardChoosesty">
+                                <li @click="transferChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span><em>读卡器</em></li>
+                                <li @click="transferChoose('1')"><span class="iconfont icon-3"></span><em>手动输入</em></li>
+                            </ul>
+                            <input  class="form-control" placeholder="请读卡" v-model="transferData.fromICCardId"/>
+                            <button type="button" class="btn btn-default readCard" :disabled="loading" @click="fromICCardIdReadCard">{{transferData.dropChooseTxt1}}</button>
+                        </div> 
+                        <div class="input-group col-lg-12 col-md-12 tab-style">
+                            <span class="input-group-addon addonWidth">转出卡密码：</span>
+                            <input type="password" class="form-control" v-model="transferData.pwd"/>
+                        </div>
+                        <div class="btn-group transferDatadropup col-lg-12 col-md-12 tab-style">
+                            <button type="button" class="btn btn-default">接收卡卡号：</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu cardChoosesty">
+                                <li @click="transferChoose('2')"><span class="iconfont icon-icqiaduqiaqi"></span><em>读卡器</em></li>
+                                <li @click="transferChoose('3')"><span class="iconfont icon-3"></span><em>手动输入</em></li>
+                            </ul>
+                            <input  class="form-control" placeholder="请读卡" v-model="transferData.toICCardId"/>
+                            <button type="button" class="btn btn-default readCard" :disabled="loading" @click="toICCardIdReadCard">{{transferData.dropChooseTxt2}}</button>
+                        </div> 
+                        <div class="col-lg-8 col-md-8 tab-style">
+                            
+                        </div>
+                        <div class="col-lg-4 col-md-4 tab-style">
+                            <button type="button" class="btn btn-default width100" :disabled="loading" @click="memberTransfer">转换</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8">
+                        <div class="col-lg-12 col-md-12 tab-min">
+                            <div class="col-lg-8 col-md-8">
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">手机号码：</span>
+                                    <input   class="form-control" v-model="transferData.Mobile" maxlength="11" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">会员姓名：</span>
+                                    <input   class="form-control" v-model="transferData.UserName" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">性别：</span>
+                                    <input class="form-control" v-model="transferData.Gender" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">到期日期：</span>
+                                    <input   class="form-control" v-model="transferData.EndDate" maxlength="11" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">押金：</span>
+                                    <input   class="form-control" v-model="transferData.Deposit" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">级别：</span>
+                                    <input   class="form-control" v-model="transferData.LevelName" readonly/>
+                                </div>
                             </div>
-                            <div class="btn-group dropup col-lg-12 col-md-12">
-                                <button type="button" class="btn btn-default">接收卡卡号：</button>
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu cardChoosesty">
-                                    <li @click="transferChoose('2')"><span class="iconfont icon-icqiaduqiaqi"></span><em>读卡器</em></li>
-                                    <li @click="transferChoose('3')"><span class="iconfont icon-3"></span><em>手动输入</em></li>
-                                </ul>
-                                <input  class="form-control" placeholder="请输入会员姓名" v-model="transferData.toICCardId"/>
-                                <button type="button" class="btn btn-default readCard" :disabled="loading" @click="toICCardIdReadCard">{{transferData.dropChooseTxt2}}</button>
-                            </div> 
-                            <div class="col-lg-8 col-md-8 tab-style">
-                                
-                            </div>
-                            <div class="col-lg-4 col-md-4 tab-style">
-                                <button type="button" class="btn btn-default width100" :disabled="loading" @click="memberTransfer">转换</button>
+                            <div class="col-lg-4 col-md-4">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="tableCenter">
+                                            <th  colspan="1" rowspan="2"  style="text-align: center;vertical-align: middle;">余额种类</th>
+                                            <th colspan="3" style="text-align: center;">余额</th>
+                                        </tr>
+                                        <tr class="tableCenter">
+                                            <th style="text-align: center;">正价</th>
+                                            <th style="text-align: center;">赠送</th>
+                                            <th style="text-align: center;">总计</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(item,index) in transferData.balanceData" :key="index">
+                                            <td class="billingSty">{{item.BalanceName}}</td>
+                                            <td class="billingColor">{{item.Balance}}</td>
+                                            <td class="billingColor">{{item.BalanceFree}}</td>
+                                            <td class="billingColor">{{item.TotalBalance}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="col-lg-8 col-md-8">
-                            <div class="row">
-                                <div class="col-lg-10 col-md-10 tab-min">
-                                    <div class="tab-text col-lg-12 col-md-12">
-                                        <div class="input-group col-lg-4 col-md-6">
-                                            <span class="input-group-addon addonWidth">手机号码：</span>
-                                            <input   class="form-control" v-model="memberInfo.Mobile" maxlength="11" placeholder="请输入手机号"/>
-                                        </div>
-                                        <div class="input-group col-lg-4 col-md-6">
-                                            <span class="input-group-addon addonWidth">会员姓名：</span>
-                                            <input   class="form-control" v-model="memberInfo.UserName" placeholder="请输入会员姓名"/>
-                                        </div>
-                                        <div class="input-group col-lg-4 col-md-6">
-                                            <span class="input-group-addon addonWidth">性别：</span>
-                                            <select  class="form-control" v-model="memberInfo.Gender">
-                                                <option value="0">男</option>
-                                                <option value="1">女</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                        <!-- <div class="mcImg col-lg-2 col-md-2">
+                            <img :src="memberInfo.Avatar" alt="会员头像">
+                        </div> -->
+                        <div class="col-lg-12 col-md-12 tab-min">
+                            <div class="col-lg-8 col-md-8">
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">手机号码：</span>
+                                    <input   class="form-control" v-model="transferData.Mobile1" maxlength="11" readonly/>
                                 </div>
-                                <div class="mcImg col-lg-2 col-md-2">
-                                    <img :src="memberInfo.Avatar" alt="会员头像">
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">会员姓名：</span>
+                                    <input   class="form-control" v-model="transferData.UserName1" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">性别：</span>
+                                    <input class="form-control" v-model="transferData.Gender1" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">到期日期：</span>
+                                    <input   class="form-control" v-model="transferData.EndDate1" maxlength="11" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">押金：</span>
+                                    <input   class="form-control" v-model="transferData.Deposit1" readonly/>
+                                </div>
+                                <div class="input-group col-lg-6 col-md-6 tab-text">
+                                    <span class="input-group-addon addonWidth">级别：</span>
+                                    <input   class="form-control" v-model="transferData.LevelName1" readonly/>
                                 </div>
                             </div>
-                            <div class="row" style="margin-top: 1em;">
-                                <div class="col-lg-4 col-md-4">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr class="tableCenter">
-                                                <th  colspan="1" rowspan="2" data-valign="middle">余额种类</th>
-                                                <th colspan="3" data-valign="middle">余额</th>
-                                            </tr>
-                                            <tr class="tableCenter">
-                                                <th>正价</th>
-                                                <th>赠送</th>
-                                                <th>总计</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(item,index) in balanceData" :key="index">
-                                                <td class="billingSty">{{item.BalanceName}}</td>
-                                                <td class="billingColor">{{item.Balance}}</td>
-                                                <td class="billingColor">{{item.BalanceFree}}</td>
-                                                <td class="billingColor">{{item.TotalBalance}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-lg-8 col-md-8">
-                                    <div class="col-lg-9 col-md-9">
-                                        <ul class="nav nav-tabs" role="tablist">
-                                            <li role="presentation" class="active"><a href="#ViceCard" aria-controls="ViceCard" role="tab" data-toggle="tab">主卡信息</a></li>
-                                            <li role="presentation" v-for="(item,index) in childCardList" :key="index">
-                                                <a :href="item.titleHref" :aria-controls="item.titleIndex" role="tab" data-toggle="tab">{{item.indexTxt}}</a>
-                                            </li>
-                                        </ul>
-                                        <div class="tab-content">
-                                            <div role="tabpanel" class="tab-pane active" id="ViceCard">
-                                                <div class="col-lg-6 col-md-6">
-                                                    <p class="cardListSty"><span class="cardListSpan">卡号：</span><span class="cardListTxt">{{memberInput.ICCardId}}</span></p>
-                                                    <p class="cardListSty"><span class="cardListSpan">到期日期：</span><span class="cardListTxt">{{memberInput.EndDate}}</span></p>
-                                                    <p class="cardListSty"><span class="cardListSpan">押金：</span><span class="cardListTxt">{{memberInput.Deposit}}</span></p>
-                                                    <p class="cardListSty"><span class="cardListSpan">级别：</span><span class="cardListTxt">{{memberInput.LevelName}}</span></p>
-                                                    <p class="cardLockList" v-for="(item,index) in memberInput.LockList"><span class="colorRed">{{item.LockExplain}}</span><span @click="cardUnLock(index)" class="iconfont icon-jiesuo cardLockUp">解锁</span></p>
-                                                </div>
-                                            
-                                                <div class="col-lg-3 col-md-3">
-                                                    <img class="cardListImg" :src="memberInput.CardAvatar" alt="会员头像">
-                                                </div>
-                                            </div>
-                                            <div role="tabpanel" class="tab-pane" v-for="(item,index) in childCardList" :key="index" :id="item.titleIndex" >
-                                                <div class="col-lg-4 col-md-4">
-                                                    <p class="cardListSty"><span class="viceSty">卡号：</span><span class="cardListTxt">{{item.ChildICCardId}}</span></p>
-                                                    <p class="cardListSty"><span class="viceSty">类别：</span><span class="cardListTxt">{{item.CardShape}}</span></p>
-                                                    <p class="cardListSty"><span class="viceSty">押金：</span><span class="cardListTxt">{{item.Deposit}}元</span></p>
-                                                </div>
-                                                <div class="col-lg-4 col-md-4">
-                                                    <p class="cardListSty"><span class="viceSty">姓名：</span><span class="cardListTxt">{{item.UserName}}</span></p>
-                                                    <p class="cardListSty"><span class="viceSty">性别：</span><span class="cardListTxt">{{item.Gender}}</span></p>
-                                                    <p class="cardListSty"><span class="viceSty">生日：</span><span class="cardListTxt">{{item.Birthday}}元</span></p>
-                                                </div>
-                                                <div class="col-lg-3 col-md-3">
-                                                    <img class="cardListImg" :src="item.Avatar" alt="会员头像">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-lg-4 col-md-4">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="tableCenter">
+                                            <th  colspan="1" rowspan="2"  style="text-align: center;vertical-align: middle;">余额种类</th>
+                                            <th colspan="3" style="text-align: center;">余额</th>
+                                        </tr>
+                                        <tr class="tableCenter">
+                                            <th style="text-align: center;">正价</th>
+                                            <th style="text-align: center;">赠送</th>
+                                            <th style="text-align: center;">总计</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(item,index) in transferData.balanceData1" :key="index">
+                                            <td class="billingSty">{{item.BalanceName}}</td>
+                                            <td class="billingColor">{{item.Balance}}</td>
+                                            <td class="billingColor">{{item.BalanceFree}}</td>
+                                            <td class="billingColor">{{item.TotalBalance}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                    </div>
             </i-col>
             <i-col span="24">
 
@@ -801,8 +817,8 @@
     </div>
 </div>
 <!-- Live the life you want;  -->
-<!-- <script src="js/jquery-2.1.3.min.js"></script> -->
-<!-- <script src="js/bootstrap.min.js"></script> -->
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <!-- 引入 Vue -->
 <!-- <script src="js/vue.js"></script> -->
 <script src="js/axios.min.js"></script>
@@ -1113,6 +1129,20 @@
                 dropChooseTxt2:"读卡",
                 dropChooseTxt1:"读卡",
                 dropChooseIndex:"",
+                Mobile:"",
+                UserName:"",
+                Gender:"",
+                EndDate:"",
+                Deposit:"",
+                LevelName:"",
+                balanceData:[],
+                Mobile1:"",
+                UserName1:"",
+                Gender1:"",
+                EndDate1:"",
+                Deposit1:"",
+                LevelName1:"",
+                balanceData1:[],
             },
             siteClearing:{ 
                 NotSluiceList:[],
@@ -1184,12 +1214,14 @@
                                         that.getBalanceTypeByICCardId()
                                     }else if(that.msgReadCard === "1"){
                                         that.icCardId = receivedMsg.dataObj.icCardId;
-                                        // that.getMenberCardInfo(that.icCardId,"2")
-                                        that.getMenberCardInfo("10004143","2")
+                                        // that.getMenberCardInfo(that.icCardId,"")
+                                        that.getMenberCardInfo("10004143","")
                                     }else if(that.msgReadCard === "2"){
                                         that.transferData.fromICCardId = receivedMsg.dataObj.icCardId;
+                                        that.getMenberCardInfo(that.transferData.fromICCardId,"2")
                                     }else if(that.msgReadCard === "3"){
                                         that.transferData.toICCardId = receivedMsg.dataObj.icCardId;
+                                        that.getMenberCardInfo(that.transferData.toICCardId,"3")
                                     }
                                     break;
                                 case "5":
@@ -1299,7 +1331,6 @@
                     console.log(err);
                 });
             },           
-
 //			选择读卡方式
             dropChoose:function(name){
                 console.log(name)
@@ -1401,31 +1432,44 @@
                     that.msgPrompt(res.data);
                     that.loading = false;
                     if (res.data.result_code === '1') {
-                        that.memberInfo = res.data.result_data.MemberInfo;
-                        that.balanceData = res.data.result_data.MemberBalances;
-                        that.memberInput.LockList = res.data.result_data.LockList;
-                        that.memberInput.ICCardId = res.data.result_data.ICCardId;
-                        that.memberInput.EndDate = res.data.result_data.EndDate;
-                        that.memberInput.Deposit = res.data.result_data.Deposit+"元";
-                        that.memberInput.LevelName = res.data.result_data.LevelName;
-                        that.memberInput.CardAvatar = res.data.result_data.CardAvatar;
-                        var TitleCardList =[];
-                        var childCardList =res.data.result_data.ChildCardList;
-                        for(var i = 0;i<childCardList.length;i++){
-                            TitleCardList.push({
-                                CardShape: childCardList[i].CardShape,
-                                ChildICCardId: childCardList[i].ChildICCardId,
-                                Deposit: childCardList[i].Deposit,
-                                Avatar: childCardList[i].ChildCardMemberInfo.Avatar,
-                                Birthday: childCardList[i].ChildCardMemberInfo.Birthday,
-                                Gender: childCardList[i].ChildCardMemberInfo.Gender,
-                                UserName: childCardList[i].ChildCardMemberInfo.UserName,
-                                titleIndex:"childCard"+(i+1),
-                                titleHref:"#childCard"+(i+1),
-                                indexTxt:"副卡"+(i+1)
-							})
-						}
-                        that.childCardList= TitleCardList;
+                        if(type == "2"){
+                            that.transferData.EndDate = res.data.result_data.EndDate;
+                            that.transferData.Deposit = res.data.result_data.Deposit;
+                            that.transferData.LevelName = res.data.result_data.LevelName;
+                            that.transferData.balanceData = res.data.result_data.MemberBalances;
+                            that.transferData.Mobile = res.data.result_data.MemberInfo.Mobile;
+                            that.transferData.UserName = res.data.result_data.MemberInfo.UserName;
+                            that.transferData.Gender = res.data.result_data.MemberInfo.Gender;
+                        }else if(type == "3"){
+
+                        }else{
+                            that.memberInfo = res.data.result_data.MemberInfo;
+                            that.balanceData = res.data.result_data.MemberBalances;
+                            that.memberInput.LockList = res.data.result_data.LockList;
+                            that.memberInput.ICCardId = res.data.result_data.ICCardId;
+                            that.memberInput.EndDate = res.data.result_data.EndDate;
+                            that.memberInput.Deposit = res.data.result_data.Deposit+"元";
+                            that.memberInput.LevelName = res.data.result_data.LevelName;
+                            that.memberInput.CardAvatar = res.data.result_data.CardAvatar;
+                            var TitleCardList =[];
+                            var childCardList =res.data.result_data.ChildCardList;
+                            for(var i = 0;i<childCardList.length;i++){
+                                TitleCardList.push({
+                                    CardShape: childCardList[i].CardShape,
+                                    ChildICCardId: childCardList[i].ChildICCardId,
+                                    Deposit: childCardList[i].Deposit,
+                                    Avatar: childCardList[i].ChildCardMemberInfo.Avatar,
+                                    Birthday: childCardList[i].ChildCardMemberInfo.Birthday,
+                                    Gender: childCardList[i].ChildCardMemberInfo.Gender,
+                                    UserName: childCardList[i].ChildCardMemberInfo.UserName,
+                                    titleIndex:"childCard"+(i+1),
+                                    titleHref:"#childCard"+(i+1),
+                                    indexTxt:"副卡"+(i+1)
+                                })
+                            }
+                            that.childCardList= TitleCardList;
+                        }
+                        
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -1442,7 +1486,7 @@
                     ws.send(msgType4);
                 }else if(that.transferData.dropChooseIndex == "1"){
                     console.log(that.transferData.fromICCardId)
-                    that.getMenberCardInfo(that.transferData.fromICCardId,"0")
+                    that.getMenberCardInfo(that.transferData.fromICCardId,"")
                 }
 			},
 //          接收卡IC卡号事件
@@ -1631,6 +1675,9 @@
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         that.buyBack.dataCount = res.data.result_data.length;
+                        if(that.buyBack.dataCount == "0"){
+                            that.$Message.warning('暂无数据！');
+                        }
                         that.buyBack.listData = res.data.result_data;
                         if(that.buyBack.dataCount < that.buyBack.pageSize){
                             that.buyBack.listDataShow = that.buyBack.listData;
@@ -1670,8 +1717,6 @@
                 var _end = index * that.buyBack.pageSize;
                 that.buyBack.listDataShow = that.buyBack.listData.slice(_start,_end);
             },
-
-
 //          退货接口
             exitFood:function(){
                 var that = this;

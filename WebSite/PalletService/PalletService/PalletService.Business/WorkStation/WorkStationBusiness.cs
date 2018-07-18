@@ -10,7 +10,7 @@ namespace PalletService.Business.WorkStation
 {
     public class WorkStationBusiness
     {
-        public static bool Register(string dogId, string workStation, ref object result_data, out string token, ref DogTokenModel dogTokenModel)
+        public static bool Register(ref object result_data, out string token, ref DogTokenModel dogTokenModel)
         {
             token = string.Empty;
             string errMsg = string.Empty;
@@ -22,12 +22,10 @@ namespace PalletService.Business.WorkStation
             string resultJson = Utils.HttpPost(url, param);
             if (Utils.CheckApiReturnJson(resultJson, ref result_data, out errMsg))
             {
-                dogId = Utils.GetJsonObjectValue(result_data, "dogId").ToString();
-                workStation = Utils.GetJsonObjectValue(result_data, "workStation").ToString();
                 string merchId = Utils.GetJsonObjectValue(result_data, "merchId").ToString();
                 string storeId = Utils.GetJsonObjectValue(result_data, "storeId").ToString();
                 token = Utils.GetJsonObjectValue(result_data, "token").ToString();
-                dogTokenModel = new DogTokenModel(dogId, workStation, merchId, storeId, token);
+                dogTokenModel = new DogTokenModel(model.DogId, model.WorkStation, merchId, storeId, token);
                 return true;
             }
             else

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PalletService.Utility.Dog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
@@ -63,7 +64,9 @@ namespace PalletService.Common
 
         public static string GetDogId()
         {
-            return "99999999";
+            string dogId = string.Empty;
+            DogUtility.GetBogID(out dogId);
+            return dogId;
         }
 
         /// <summary>
