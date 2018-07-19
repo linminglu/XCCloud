@@ -11,7 +11,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     public class Flw_MemberInfo_ChangeList
     {
         public string ID { get; set; }
-        public string CardID { get; set; }
+        public string ICCardID { get; set; }
         public string UserName { get; set; }
         public DateTime? ModifyTime { get; set; }
         public string ModifyFied { get; set; }

@@ -675,6 +675,21 @@ namespace XCCloudWebBar.Common.Enum
     }
 
     /// <summary>
+    /// 门票状态
+    /// </summary>
+    public enum TicketState
+    {
+        [Description("未使用")]
+        NotUsed = 0,
+        [Description("已使用")]
+        Used = 1,
+        [Description("被锁定")]
+        Lock = 2,
+        [Description("已退票")]
+        Refund = 3
+    }
+
+    /// <summary>
     /// 分摊方式
     /// </summary>
     public enum DivideType

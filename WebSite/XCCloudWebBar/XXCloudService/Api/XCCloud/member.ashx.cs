@@ -5130,7 +5130,7 @@ namespace XCCloudWebBar.Api.XCCloud
 
                         //过户记录
                         Flw_Transfer transfer = new Flw_Transfer();
-                        transfer.id = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        transfer.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                         transfer.MerchID = merchID;
                         transfer.StoreID = storeId;
                         transfer.OpType = 0;
@@ -5169,7 +5169,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.OperationType = (int)MemberDataOperationType.过户转出;
                         fmd.OPTime = DateTime.Now;
                         fmd.SourceType = 0;
-                        fmd.SourceID = transfer.id;
+                        fmd.SourceID = transfer.ID;
                         fmd.BalanceIndex = item.BalanceIndex;
                         fmd.ChangeValue = 0 - changeValue;
                         fmd.Balance = fromBalance.Balance;
@@ -5203,7 +5203,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.OperationType = (int)MemberDataOperationType.过户转入;
                         fmd.OPTime = DateTime.Now;
                         fmd.SourceType = 0;
-                        fmd.SourceID = transfer.id;
+                        fmd.SourceID = transfer.ID;
                         fmd.BalanceIndex = item.BalanceIndex;
                         fmd.ChangeValue = changeValue;
                         fmd.Balance = toBalance.Balance;
@@ -5352,18 +5352,100 @@ namespace XCCloudWebBar.Api.XCCloud
         #endregion
 
         #region 兑换记录
-        
+        ///// <summary>
+        ///// 兑换记录
+        ///// </summary>
+        ///// <param name="dicParas"></param>
+        ///// <returns></returns>
+        //[Authorize(Roles = "StoreUser")]
+        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        //public object getExchangeList(Dictionary<string, object> dicParas)
+        //{
+        //    try
+        //    {
+        //        string errMsg = string.Empty;
+        //        string iccardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
+        //        if (string.IsNullOrEmpty(iccardId))
+        //        {
+        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+        //        }
+
+        //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+        //        string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+        //        string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+        //        string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+        //        int userId = userTokenKeyModel.LogId.Toint(0);
+
+        //        //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+        //        if (!MemberBusiness.ExistsCardByICCardId(iccardId, merchID, storeId, out errMsg))
+        //        {
+        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+        //        }
+        //        //当前会员卡
+        //        Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == iccardId).FirstOrDefault();
+
+        //        //门票信息
+        //        var queryTicket = from a in Flw_Food_Sale_PayService.I.GetModels(t => t.MerchID == merchID)
+        //                          join b in Flw_Food_SaleService.I.GetModels(t => t.MerchID == merchID) on a.FlwFoodID equals b.ID
+        //                          join c in
+        //                              (
+        //                                  from cc in Flw_Order_DetailService.N.GetModels(t => t.MerchID == merchID)
+        //                                  group cc by new
+        //                                  {
+        //                                      cc.OrderFlwID,
+        //                                      cc.FoodFlwID
+        //                                  } into temp
+        //                                  select new
+        //                                  {
+        //                                      OrderId = temp.Key.OrderFlwID,
+        //                                      FoodSaleId = temp.Key.FoodFlwID
+        //                                  }
+        //                                  ) on b.ID equals c.FoodSaleId
+        //                          join d in Flw_OrderService.I.GetModels(t => t.MerchID == merchID && t.CardID == memberCard.ID) on c.OrderId equals d.ID
+        //                          select new
+        //                          {
+        //                              CreateTime = d.CreateTime,
+        //                              OrderId = d.ID,
+        //                              SingleType = b.SingleType,
+        //                              FoodId = b.FoodID,
+        //                              SaleCount = b.SaleCount,
+        //                              OrginalPrice = a.OrginalPrice,
+        //                              Discount = a.Discount,
+        //                              PayCount = a.PayCount,
+        //                              BalanceIndex = a.BalanceIndex,
+        //                              StoreID = b.StoreID,
+        //                              CheckDate = d.CheckDate,
+        //                              ScheduleID = d.ScheduleID,
+        //                              WorkStation = d.WorkStation,
+        //                              UserID = d.UserID,
+        //                              Note = b.Note
+        //                          };
+
+
+        //        var result = new
+        //        {
+        //            Records = ticketList.Count,
+        //            Items = ticketList
+        //        };
+
+        //        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+        //    }
+        //}
         #endregion
 
         #region 门票信息记录
         /// <summary>
-        /// 余额流水查询
+        /// 门票信息记录
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
         [Authorize(Roles = "StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object getProjectTicketList(Dictionary<string, object> dicParas)
+        public object getTicketInfoList(Dictionary<string, object> dicParas)
         {
             try
             {
@@ -5390,63 +5472,43 @@ namespace XCCloudWebBar.Api.XCCloud
 
                 //门票信息
                 var queryTicket = from a in Flw_Project_TicketInfoService.I.GetModels(t => t.MerchID == merchID && t.CardID == memberCard.ID)
-                                          join b in Flw_ProjectTicket_BindService.I.GetModels(t => t.MerchID == merchID) on a.ID equals b.ProjectCode
-                                          join c in Flw_ProjectTicket_EntryService.I.GetModels(t => t.MerchID == merchID) on a.ID equals c.ProjectCode
+                                          join b in Flw_ProjectTicket_BindService.I.GetModels(t => t.MerchID == merchID) on a.Barcode equals b.ProjectCode
+                                  join c in Flw_ProjectTicket_EntryService.I.GetModels(t => t.MerchID == merchID) on a.Barcode equals c.ProjectCode
                                           select new
                                           {
                                               TicketId = a.ID,
                                               TicketName = c.TicketName,
                                               TicketType = c.TicketType,
                                               SaleTime = a.SaleTime,
-                                              EndTime = a.EndTime,
+                                              EndDate = a.EndTime,
                                               WriteOffDays = a.WriteOffDays,
                                               BuyCount = b.BuyCount,
                                               RemainCount = b.RemainCount,
                                               State = a.State,
-                                              Note = ""
+                                              WeekType = c.WeekType,
+                                              Week = c.Week,
+                                              StartTime = c.StartTime,
+                                              EndTime = c.EndTime
                                           };
 
-                var ticketList = queryTicket.ToList();
-
-                ////查询流水
-                //var query = Flw_MemberDataService.I.GetModels(t => t.StoreID == storeId && t.MerchID == merchID && t.CardIndex == memberCard.ID && t.BalanceIndex == balanceIndex).Select(t => new
-                //{
-                //    ChannelType = t.ChannelType,
-                //    OperationType = t.OperationType,
-                //    OPTime = t.OPTime,
-                //    SourceType = t.SourceType,
-                //    SourceID = t.SourceID,
-                //    ChangeValue = t.ChangeValue,
-                //    Balance = t.Balance,
-                //    FreeChangeValue = t.FreeChangeValue,
-                //    FreeBalance = t.FreeBalance,
-                //    BalanceTotal = t.BalanceTotal,
-                //    Note = t.Note,
-                //    DeviceID = t.DeviceID,
-                //    CheckDate = t.CheckDate
-                //});
-
-                //总条数
-                int totalRecords = queryTicket.Count();
-
-                //var list = query.OrderByDescending(t => t.OPTime).ToList().Select(t => new
-                //{
-                //    OPTime = t.OPTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
-                //    OperationType = ((MemberDataOperationType)t.OperationType).ToDescription(),
-                //    BeforeBalance = (t.Balance - t.ChangeValue) + (t.FreeBalance - t.FreeChangeValue),
-                //    ChangeValue = t.ChangeValue + t.FreeChangeValue,
-                //    AfterBalance = t.BalanceTotal,
-                //    ChannelType = ((MemberDataChannelType)t.ChannelType).ToDescription(),
-                //    DeviceName = t.DeviceID > 0 ? (deviceGameList.FirstOrDefault(d => d.DeviceId == t.DeviceID) != null ? deviceGameList.FirstOrDefault(d => d.DeviceId == t.DeviceID).DeviceName : string.Empty) : string.Empty,
-                //    CheckDate = t.CheckDate.Value.ToString("yyyy-MM-dd"),
-                //    Note = t.Note
-                //}).ToList();
+                var ticketList = queryTicket.ToList().Select(t => new
+                {
+                    TicketId = t.TicketId,
+                    TicketName = t.TicketName,
+                    TicketType = t.TicketType.HasValue ? ((TicketType)t.TicketType).ToDescription() : "",
+                    SaleTime = t.SaleTime.HasValue ? t.SaleTime.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
+                    EndDate = t.EndDate.HasValue ? t.EndDate.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
+                    WriteOffDays = t.WriteOffDays.HasValue ? t.WriteOffDays + "天" : "",
+                    BuyCount = t.BuyCount,
+                    RemainCount = t.RemainCount,
+                    State = t.State.HasValue ? ((TicketState)t.State).ToDescription() : "",
+                    Note = getTicketNote(t.WeekType, t.Week, t.StartTime, t.EndTime)
+                }).ToList();
 
                 var result = new
                 {
-                    Records = totalRecords,
-                    //Pages = totalPages,
-                    //Items = list
+                    Records = ticketList.Count,
+                    Items = ticketList
                 };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
@@ -5455,6 +5517,40 @@ namespace XCCloudWebBar.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
+        }
+
+        string getTicketNote(int? weekType, string weeks, TimeSpan? sTime, TimeSpan? eTime)
+        {
+            string note = string.Empty;
+            switch(weekType)
+            {
+                case 0:
+                    if (!string.IsNullOrEmpty(weeks))
+                    {
+                        string[] strArr = { "一", "二", "三", "四", "五", "六", "日" };
+                        char[] weekArr = weeks.Replace("|", "").ToArray();
+                        foreach (var item in weekArr)
+                        {
+                            note += "星期" + strArr[item - 49] + "、"; //ASCII编码 1为49
+                        }
+                        note = note.TrimEnd("、".ToCharArray());
+                    }
+                    break;
+                case 1:
+                    note = "工作日";
+                    break;
+                case 2:
+                    note = "周末";
+                    break;
+                case 3:
+                    note = "节假日";
+                    break;
+            }            
+            if(sTime != null && eTime != null)
+            {
+                note += string.Format(" {0}-{1}可用", sTime, eTime);
+            }
+            return note;
         }
 
         #endregion

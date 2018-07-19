@@ -1441,7 +1441,13 @@
                             that.transferData.UserName = res.data.result_data.MemberInfo.UserName;
                             that.transferData.Gender = res.data.result_data.MemberInfo.Gender;
                         }else if(type == "3"){
-
+                            that.transferData.EndDate1 = res.data.result_data.EndDate;
+                            that.transferData.Deposit1 = res.data.result_data.Deposit;
+                            that.transferData.LevelName1 = res.data.result_data.LevelName;
+                            that.transferData.balanceData1 = res.data.result_data.MemberBalances;
+                            that.transferData.Mobile1 = res.data.result_data.MemberInfo.Mobile;
+                            that.transferData.UserName1 = res.data.result_data.MemberInfo.UserName;
+                            that.transferData.Gender1 = res.data.result_data.MemberInfo.Gender;
                         }else{
                             that.memberInfo = res.data.result_data.MemberInfo;
                             that.balanceData = res.data.result_data.MemberBalances;

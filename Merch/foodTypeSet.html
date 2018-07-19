@@ -410,6 +410,13 @@
             // ,{field:'OrderID', title: '类别编号', align: 'center'}
             ,{field:'DictKey', title: '套餐类别名称', align: 'center'}
             ,{field:'Enabled', title: '状态', align: 'center',templet:'#enabled'}
+            ,{field:'Icon', title: '图标', align: 'center',templet:function (d) {
+                    if(d.Icon!=null&&d.Icon!=''){
+                        return '<i class="icon iconfont '+d.Icon+'"></i>'
+                    }else {
+                        return '<i class="icon iconfont icon-tuijian"></i>'
+                    }
+                }}
             ,{field:'Comment', title: '说明', align: 'center'}
             ,{fixed: 'right', title: '操作', width:240, align:'center', toolbar: '#barDemo'}
         ]
@@ -567,6 +574,26 @@
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
                                 console.log(data)
+                                id=_data.ID;
+                                $('input[name="dictKey"]').val(data.result_data.DictKey)
+                                if(data.result_data.Icon!=null){
+                                    $('#primaryImg').removeClass('icon-icon_jia').addClass(data.result_data.Icon)
+                                }
+
+                                if(data.result_data.Enabled==1){
+                                    $('input[name="enabled"]').attr('checked',true)
+                                }else {
+                                    $('input[name="enabled"]').attr('checked',false)
+                                }
+                                enabled=data.result_data.Enabled;
+                                $('input[name="comment"]').val(data.result_data.Comment)
+                                form.render()
+                                layer.open({
+                                    title:'新增套餐类型',
+                                    type:1,
+                                    area:'700px',
+                                    content:$('#openModel')
+                                })
                             } else {
                                 layer.msg(data.result_msg||return_msg);
                             }

@@ -841,7 +841,7 @@ as
     ' left join Base_StoreInfo d on a.StoreID=d.ID ' +    
     ' where a.MerchID=''' + @MerchID + ''' AND s.StoreID=''' + @StoreID + ''''
     SET @sql = @sql + ') a'
-    SET @sql = @sql + ' inner join ('
+    SET @sql = @sql + ' left join ('
 
     --ªÒ»°”‡∂Ó
     declare @temp table (BalanceTypeID int, BalanceTypeName varchar(50))	
@@ -870,7 +870,7 @@ as
 	SET @ss = @ss + ' from ('
 	SET @ss = @ss + @s + ') a group by a.CardIndex'	
 	SET @sql = @sql + @ss + ') b on a.ID=b.CardIndex'       
-    SET @sql = @sql + ') a where 1=1 ' + ISNULL(@SqlWhere,'')
+    SET @sql = @sql + ') a where 1=1 ' +ISNULL(@SqlWhere,'')
 	
 	--print @sql
 	exec (@sql)	
@@ -887,16 +887,16 @@ as
 	SET @sql = @sql + 'select a.* from ('
 	SET @sql = @sql + 
 	'select a.ICCardID, a.CardName, a.MemberLevelID, c.MemberLevelName, a.CreateTime, a.EndDate, a.JoinChannel, a.OrderID,
-	 b.Deposit, b.OpenFee, d.StoreName, o.CheckDate, sd.ScheduleName, o.WorkStation, u.LogName AS UserName, a.Note ' +    
+	 o.Deposit, o.OpenFee, d.StoreName, o.CheckDate, o.ScheduleName, o.WorkStation, o.LogName AS UserName, o.Note ' +    
     ' from Data_Member_Card a' +
     ' inner join Data_Member_Card_Store s on a.ID=s.CardID ' +
-    ' inner join Flw_Order o on a.OrderID=o.ID ' +
+    ' left join (select o.ID, b.Deposit, b.OpenFee, o.CheckDate, o.WorkStation, o.Note, sd.ScheduleName, u.LogName from Flw_Order o ' +
     ' inner join Flw_Order_Detail od on o.ID=od.OrderFlwID ' +
     ' inner join Flw_Food_Sale b on od.FoodFlwID=b.ID ' +
-    ' inner join Data_MemberLevel c on a.MemberLevelID=c.ID ' +
-    ' left join Base_StoreInfo d on a.StoreID=d.ID ' + 
     ' left join Base_UserInfo u on o.UserID=u.ID ' +  
-    ' left join Flw_Schedule sd on o.ScheduleID=sd.ID ' +     
+    ' left join Flw_Schedule sd on o.ScheduleID=sd.ID) o on a.OrderID=o.ID ' +        
+    ' inner join Data_MemberLevel c on a.MemberLevelID=c.ID ' +
+    ' left join Base_StoreInfo d on a.StoreID=d.ID ' +         
     ' where a.MerchID=''' + @MerchID + ''' AND s.StoreID=''' + @StoreID + ''''
     SET @sql = @sql + ') a where 1=1 ' + ISNULL(@SqlWhere,'')
 	

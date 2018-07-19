@@ -359,16 +359,20 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 
                 string sql = @"SELECT a.* from (
-                                SELECT
+                                SELECT distinct
                                     a.ID, a.NewCardID, b.UserName, a.OldCardID, (case a.OperateType when 0 then '换卡' when 1 then '补卡' else '' end) AS OperateType,
                                     a.CreateTime, a.OpFee, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_Change a
+                                INNER JOIN Data_Member_Card cd1 ON a.NewCardID=cd1.ICCardID
+                                INNER JOIN Data_Member_Card_Store s1 on cd1.ID=s1.CardID
+                                INNER JOIN Data_Member_Card cd2 ON a.OldCardID=cd2.ICCardID
+                                INNER JOIN Data_Member_Card_Store s2 on cd2.ID=s2.CardID
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
-                                LEFT JOIN Base_UseInfo u ON a.UserID=u.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                WHERE a.MerchID='" + merchId + "' AND (s1.StoreID='" + storeId + "' OR s2.StoreID='" + storeId + @"')) a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -408,21 +412,23 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 string sql = @"SELECT a.* from (
-                                SELECT
+                                SELECT distinct
                                     a.ID, a.CardID, b.UserName, a.CreateTime, a.RenewFee, e.TypeName AS BalanceIndexStr, e.PayCount,
                                     a.FoodSaleID, a.OldEndDate, a.NewEndDate, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_Renew a
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ICCardID
+                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
-                                LEFT JOIN Base_UseInfo u ON a.UserID=u.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN (
-                                    SELECT a.ID, b.PayCount, c.TypeName from Flw_Food_Sale a 
+                                    SELECT a.ID, b.PayCount, c.TypeName from Flw_Food_Sale a                                                               
                                     INNER JOIN Flw_Food_Sale_Pay b ON a.ID=b.FlwFoodID
                                     LEFT JOIN Dict_BalanceType c ON b.BalanceIndex=c.ID
                                 ) e ON a.FoodSaleID=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND s.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -462,16 +468,18 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 string sql = @"SELECT a.* from (
-                                SELECT
-                                    a.ID, a.CardID, b.UserName, a.ModifyTime, a.ModifyFied, a.OldContext, a.NewContext,
+                                SELECT distinct
+                                    a.ID, a.ICCardID, b.UserName, a.ModifyTime, a.ModifyFied, a.OldContext, a.NewContext,
                                     c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberInfo_Change a
+                                INNER JOIN Data_Member_Card cd ON a.ICCardID=cd.ICCardID
+                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
-                                LEFT JOIN Base_UseInfo u ON a.UserID=u.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                WHERE a.MerchID='" + merchId + "' AND s.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -511,18 +519,20 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 string sql = @"SELECT a.* from (
-                                SELECT
-                                    a.ID, a.ICCardID, b.UserName, a.OpTime, a.ChangeType, e.MemberLevelName AS OldMemberLevelName, f.MemberLevelName AS NewMemberLevelName,                                    
+                                SELECT distinct
+                                    a.ID, a.ICCardID, b.UserName, a.OpTime, a.ChangeType, e.MemberLevelName AS OldMemberLevelName, f.MemberLevelName AS NewMemberLevleName,                                    
                                     a.OrderID, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName AS OpUserName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_LevelChange a
+                                INNER JOIN Data_Member_Card cd ON a.ICCardID=cd.ICCardID
+                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
-                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
-                                LEFT JOIN Base_UseInfo u ON a.UserID=u.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
                                 LEFT JOIN Data_MemberLevel e ON a.OldMemberLevelID=e.ID
-                                LEFT JOIN Data_MemberLevel f ON a.NewMemberLevelID=f.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                LEFT JOIN Data_MemberLevel f ON a.NewMemberLevleID=f.ID
+                                WHERE a.MerchID='" + merchId + "' AND s.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -562,17 +572,19 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 string sql = @"SELECT a.* from (
-                                SELECT
+                                SELECT distinct
                                     a.ID, a.CardID, b.UserName, a.OPTime, a.Deposit, a.ExitMoney, 
                                     (case a.OperateType when 0 then '退卡' when 1 then '退钱' else '' end) as OperateTypeStr,
                                     c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_Exit a
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ICCardID
+                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID   
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
-                                LEFT JOIN Base_UseInfo u ON a.UserID=u.ID                                
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID                                
+                                WHERE a.MerchID='" + merchId + "' AND s.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";

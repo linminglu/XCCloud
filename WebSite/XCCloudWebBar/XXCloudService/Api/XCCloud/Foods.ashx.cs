@@ -47,6 +47,12 @@ namespace XXCloudService.Api.XCCloud
                     listObj.Add(obj);
                 }
 
+                var obj1 = new
+                {
+                    id = 0,
+                    typeName = "全部"
+                };
+                listObj.Insert(0, obj1);
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
             }
             else
