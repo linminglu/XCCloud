@@ -852,8 +852,12 @@ namespace XCCloudService.Api.XCGame
 
                 //获取token模式
                 XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
-                string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+                var storeId = userTokenModel.StoreId;
+                var merchId = userTokenModel.StoreId.Substring(0, 6);
 
+                string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+                var hkType = dicParas.Get("hkType").Toint();
+                
                 //验证门店
                 StoreBusiness storeBusiness = new StoreBusiness();
                 if (!storeBusiness.IsEffectiveStore(userTokenModel.StoreId, ref storeModel, out errMsg))
@@ -864,11 +868,9 @@ namespace XCCloudService.Api.XCGame
                 //if (storeModel.StoreDBDeployType == 0)
                 //{ 
 
-                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
-
                 SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@MerchID", userTokenModel.StoreId.Substring(0, 6));
-                parameters[1] = new SqlParameter("@StoreID", userTokenModel.StoreId);
+                parameters[0] = new SqlParameter("@MerchID", merchId);
+                parameters[1] = new SqlParameter("@StoreID", storeId);
 
                 string sqlWhere = " and a.ICCardID='" + icCardId + "' ";                
                 string storedProcedure = "QueryMemberInfo";
@@ -887,10 +889,16 @@ namespace XCCloudService.Api.XCGame
 
                 if (ds.Tables.Count > 1)
                 {
+                    var balanceIndexs = new List<string>();
+                    if (!hkType.IsNull())
+                        balanceIndexs = (from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1 && p.MappingType == hkType)
+                                         join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex
+                                         where b.StroeID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
+                                         select a.ID.ToString()).ToList();
                     var jsonArr = new
                     {
                         table1 = Utils.DataTableToJson(ds.Tables[1]), //会员档案信息
-                        table2 = ds.Tables[0].Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1].ToString()) //余额类别列表
+                        table2 = ds.Tables[0].Rows.Cast<DataRow>().Where(w => balanceIndexs.Contains(w[0].ToString())).ToDictionary(x => x[0].ToString(), x => x[1].ToString()) //余额类别列表
                     };
 
                     return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, jsonArr);
