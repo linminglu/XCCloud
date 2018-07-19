@@ -1792,10 +1792,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DSS\DSS.csproj">
-      <Project>{24e3e699-527e-4dbf-a206-78741584524f}</Project>
-      <Name>DSS</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RadarService\RadarService.csproj">
       <Project>{1b9bf09f-a46c-4dc9-81d9-e22223fcee56}</Project>
       <Name>RadarService</Name>

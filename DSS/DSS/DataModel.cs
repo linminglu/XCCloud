@@ -27,16 +27,12 @@ namespace DSS
                     {
                         if (v.ToString() != "")
                         {
-                            if (Identity && pi.Name.ToLower() == "id")
-                            { }
+                            if (pi.Name.ToLower() == "id" && t.Name.ToLower() == "sync_datalist") continue;
+                            fields += pi.Name + ",";
+                            if (pi.PropertyType.FullName.Contains("DateTime"))
+                                values += "'" + (Convert.ToDateTime(v) == DateTime.MinValue ? "" : Convert.ToDateTime(v).ToString("yyyy-MM-dd HH:mm:ss.fff")) + "',";
                             else
-                            {
-                                fields += pi.Name + ",";
-                                if (pi.PropertyType.FullName.Contains("DateTime"))
-                                    values += "'" + (Convert.ToDateTime(v) == DateTime.MinValue ? "" : Convert.ToDateTime(v).ToString("yyyy-MM-dd HH:mm:ss.fff")) + "',";
-                                else
-                                    values += "'" + v.ToString() + "',";
-                            }
+                                values += "'" + v.ToString() + "',";
                         }
                     }
                 }
@@ -130,6 +126,8 @@ namespace DSS
             try
             {
                 string vs = "";
+                bool NeedVerifaction = ContainProperty(o, "verifiction");
+                if (!NeedVerifaction) return true;
                 SortedDictionary<string, string> list = new SortedDictionary<string, string>();
                 Type t = o.GetType();
                 foreach (PropertyInfo pi in t.GetProperties())
@@ -159,6 +157,7 @@ namespace DSS
                     }
                 }
                 string parametArray = "";
+
                 foreach (string key in list.Keys)
                 {
                     parametArray += list[key];
@@ -184,10 +183,15 @@ namespace DSS
         {
             try
             {
+                bool NeedVerifaction = ContainProperty(o, "verifiction");
+                if (!NeedVerifaction) return "";
                 SortedDictionary<string, string> list = new SortedDictionary<string, string>();
                 Type t = o.GetType();
+
                 foreach (PropertyInfo pi in t.GetProperties())
                 {
+                    if (pi.Name.ToLower() == "verifiction")
+                        NeedVerifaction = true;
                     if (Identity && pi.Name.ToLower() == "id")
                     { }
                     else
@@ -202,6 +206,7 @@ namespace DSS
                         }
                     }
                 }
+
                 string parametArray = "";
                 foreach (string key in list.Keys)
                 {
@@ -374,6 +379,21 @@ namespace DSS
                 sw.Close();
             }
             catch { }
+        }
+        /// <summary>
+        /// 判断对象是否包含指定属性名
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        bool ContainProperty(object instance, string propertyName)
+        {
+            if (instance != null && !string.IsNullOrEmpty(propertyName))
+            {
+                PropertyInfo _findedPropertyInfo = instance.GetType().GetProperty(propertyName);
+                return (_findedPropertyInfo != null);
+            }
+            return false;
         }
     }
 }

@@ -500,7 +500,7 @@
             id=_data.ID;
             if(layevent==='del'){
                 layer.confirm('确定删除该规则吗', function(index){
-                    let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let _obj={'id':[_data.ID],'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type:'post',
@@ -577,7 +577,7 @@
                                 id=_data.ID;
                                 $('input[name="dictKey"]').val(data.result_data.DictKey)
                                 if(data.result_data.Icon!=null){
-                                    $('#primaryImg').removeClass('icon-icon_jia').addClass(data.result_data.Icon)
+                                    $('#primaryImg').attr('class','addImg icon iconfont').addClass(data.result_data.Icon)
                                 }
 
                                 if(data.result_data.Enabled==1){

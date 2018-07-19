@@ -283,6 +283,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("id").Validintnozero("套餐类别ID", out errMsg))
@@ -332,7 +333,7 @@ namespace XXCloudService.Api.XCCloud
                             dict_System.OrderID = max;
                         }
 
-                        dict_SystemService.UpdateModel(dict_System);
+                        dict_SystemService.UpdateModel(dict_System, true, merchId, merchSecret);
 
                         var newOrder = dict_System.OrderID ?? 1;
                         if (oldOrder != newOrder)
@@ -342,7 +343,7 @@ namespace XXCloudService.Api.XCCloud
                             if (nextModel != null)
                             {
                                 nextModel.OrderID = oldOrder;
-                                dict_SystemService.UpdateModel(nextModel);
+                                dict_SystemService.UpdateModel(nextModel, true, merchId, merchSecret);
                             }                            
                         }
 

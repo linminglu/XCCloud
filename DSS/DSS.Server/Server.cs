@@ -10,6 +10,7 @@ using System.Web.Script.Serialization;
 using System.Data;
 using DSS;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace DSS.Server
 {
@@ -129,8 +130,8 @@ namespace DSS.Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine("初始化失败");
-                Console.WriteLine(ex);
+                Debug.WriteLine("初始化失败");
+                Debug.WriteLine(ex);
                 LogHelper.WriteLog(ex);
             }
         }
@@ -150,19 +151,19 @@ namespace DSS.Server
             }
             catch (ObjectDisposedException oe)
             {
-                Console.WriteLine(oe);
+                Debug.WriteLine(oe);
                 LogHelper.WriteLog(oe);
                 throw oe;
             }
             catch (SocketException se)
             {
-                Console.WriteLine(se);
+                Debug.WriteLine(se);
                 LogHelper.WriteLog(se);
                 throw se;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Debug.WriteLine(e);
                 LogHelper.WriteLog(e);
                 // 获得接收失败信息 
                 throw e;
@@ -172,7 +173,7 @@ namespace DSS.Server
             {
                 byte[] mybytes = new byte[readBytes];
                 Array.Copy(so.buffer, mybytes, readBytes);
-                Console.WriteLine(tempRemoteEP.ToString() + "  " + recvBUF.Count);
+                Debug.WriteLine(tempRemoteEP.ToString() + "  " + recvBUF.Count);
                 FrameData f = new FrameData(mybytes, tempRemoteEP);
                 if (f.CheckSuccess)
                     queueRecv.Enqueue(f);
@@ -294,13 +295,13 @@ namespace DSS.Server
                                             response.SignKey = jo.GetSignKey(response, secret);
                                             string jsonString = jss.Serialize(response);
                                             SendData(Encoding.UTF8.GetBytes(jsonString), (byte)TransmiteEnum.通知服务器上线应答, f.RecvPoint);
-                                            Console.WriteLine("门店注册上线应答：" + jsonString);
+                                            Debug.WriteLine("门店注册上线应答：" + jsonString);
                                             //上线时同步
                                             SyncOffData(request.StoreID);
                                         }
                                         else
                                         {
-                                            Console.WriteLine("门店注册上线：签名错误");
+                                            Debug.WriteLine("门店注册上线：签名错误");
                                         }
                                     }
                                     break;
@@ -323,16 +324,17 @@ namespace DSS.Server
                                                 RecvClientData(request.StoreID, true);
                                                 //应答心跳数据
                                                 SendData(f.RecvData, (byte)TransmiteEnum.心跳, f.RecvPoint);
+                                                Debug.WriteLine("收到心跳");
                                             }
                                             else
                                             {
-                                                Console.WriteLine("令牌错误");
+                                                Debug.WriteLine("令牌错误");
                                             }
                                         }
                                         else
                                         {
                                             RecvClientData(request.StoreID, false);
-                                            Console.WriteLine("门店心跳：签名错误");
+                                            Debug.WriteLine("门店心跳：签名错误");
                                         }
                                     }
                                     break;
@@ -350,7 +352,10 @@ namespace DSS.Server
                                             //签名验证通过
                                             ClearCommandSend(response.StoreID, response.SN);
                                             ClearDataSyncBUF(response.StoreID, response.SN);
+                                            Debug.WriteLine("同步成功:SN=" + response.SN);
                                         }
+                                        else
+                                            Debug.WriteLine("门店" + response.StoreID + ":签名错误");
                                     }
                                     break;
                                 case TransmiteEnum.门店数据变更同步请求:
@@ -411,7 +416,7 @@ namespace DSS.Server
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    Debug.WriteLine(ex);
                 }
                 finally
                 { }
@@ -445,7 +450,7 @@ namespace DSS.Server
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Debug.WriteLine(e);
             }
         }
         string GetAppSecretFromDict(string storeID)
@@ -528,7 +533,7 @@ namespace DSS.Server
                 {
                     string secret = GetAppSecretFromDict(o.StoreID);
                     CloudDataSync(o.MerchID, secret, o.TableName, o.IDValue, (int)o.SyncType, false, o.SN);
-                    Console.WriteLine("离线同步：storeID=" + storeID + "    table=" + o.TableName + "  id=" + o.IDValue + "   sn=" + o.SN);
+                    Debug.WriteLine("离线同步：storeID=" + storeID + "    table=" + o.TableName + "  id=" + o.IDValue + "   sn=" + o.SN);
                 }
             }
         }
@@ -608,7 +613,7 @@ namespace DSS.Server
                     {
                         //心跳没有超时，表示门店同步服务在线允许发送
                         SetCommandSend(storeID, item);
-                        Console.WriteLine("向门店发送数据：" + storeID);
+                        Debug.WriteLine("向门店发送数据：" + storeID);
                     }
                 }
             }

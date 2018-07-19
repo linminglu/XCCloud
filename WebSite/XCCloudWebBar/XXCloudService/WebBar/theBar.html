@@ -885,45 +885,21 @@
 				<div class="salesAll" v-if="saleShow">
 					<div class="salesTitle">
                         <ul class="clearfix">
-                            <li class="on" @click="screening('All')"><span class="iconfont icon-quanbu-copy"></span><span class="txt">全部</span></li>
+                            <!-- <li class="on" @click="screening('All')"><span class="iconfont icon-quanbu-copy"></span><span class="txt">全部</span></li>
                             <li @click="screening(0)"><span class="iconfont icon-menpiao1"></span><span class="txt">门票</span></li>
-                            <li @click="screening(1)"><span class="iconfont icon-2"></span><span class="txt">商品</span></li>
-							<!--<li v-for="(item,index) in saleTitle" @click="screening(index)">-->
-								<!--<a href="javascript:void(0)">{{item.foodTypeName}}</a>-->
-							<!--</li>-->
+                            <li @click="screening(1)"><span class="iconfont icon-2"></span><span class="txt">商品</span></li> -->
+							<li v-for="(item,index) in saleTitle" @click="screening(index)">
+								<span class="iconfont icon-2"></span><span class="txt">{{}}</span>
+							</li>
                         </ul>
-						<!--<div class="swiper-container swiperSalesTitle">-->
-							<!--<ul class="swiper-wrapper saleTitleBg">-->
-								<!--<li class="swiper-slide on" @click="screening('All')">-->
-									<!--<a href="javascript:void(0)">全部</a>-->
-								<!--</li>-->
-								<!--<li v-for="(item,index) in saleTitle" class="swiper-slide" @click="screening(index)">-->
-									<!--<a href="javascript:void(0)">{{item.foodTypeName}}</a>-->
-								<!--</li>-->
-							<!--</ul>-->
-						<!--</div>-->
-						<!--<div class="swiper-button-next"></div>-->
-						<!--<div class="swiper-button-prev"></div>-->
 					</div>
 					<div class="screeningTitle" v-if="screeningTitle">
                         <i-select v-model="sallData.selectValue1" class="screeningsty">
-                            <i-option v-for="item in sallData.optionList1" :value="item.foodTypeId" :key="item.foodTypeId">{{ item.foodTypeName }}</i-option>
+                            <i-option v-for="item in sallData.optionList1" :value="item.foodTypeId" :key="item.foodTypeId">{{ item.foodTypeName}}</i-option>
                         </i-select>
                         <i-select v-model="sallData.selectValue2" class="screeningsty">
-                            <i-option v-for="item in sallData.optionList2" :value="item.ProjectId" :key="item.ProjectId">{{ item.foodTypeName }}</i-option>
+                            <i-option v-for="item in sallData.optionList2" :value="item.id" :key="item.id">{{ item.typeName }}</i-option>
                         </i-select>
-						<!-- <select class="form-control">
-							<option value="-1">全部</option>
-							<option v-for="(item,index) in saleTitle" :value="index">
-								{{item.foodTypeName}}
-							</option>
-						</select>
-						<select class="form-control">
-							<option value="-1">全部</option>
-							<option v-for="(item,index) in saleTitle" :value="index">
-								{{item.foodTypeName}}
-							</option>
-						</select> -->
 						<input class="form-control screeningsty" v-model="sallData.inputValue1" placeholder="输入最小值">
 						<input class="form-control screeningsty" v-model="sallData.inputValue2" placeholder="输入最大值">
 						<button type="button" class="btn btn-primary" :disabled="loading" @click="screening('All')">查询</button>
@@ -1372,8 +1348,8 @@
                 optionList1:[],
                 selectValue2:"",
                 optionList2:[],
-                inputValue1:[],
-                inputValue2:[],
+                inputValue1:"",
+                inputValue2:"",
             },
 			dataObj:[],
             userToken:'',
@@ -1901,8 +1877,12 @@
                 }).catch(function (err) {
                     console.log(err);
                 });
-                that.icCardId = "10004143";
-                var getQuickFood={userToken:that.userToken,icCardId:that.icCardId,mobile:""};
+                if(that.icCardId == ""){
+                    var icCardId = "0"
+                }else{
+                    var icCardId = that.icCardId
+                }
+                var getQuickFood={userToken:that.userToken,icCardId:icCardId,mobile:""};
                 axios.post('/xccloud/foods?action=getQuickFood', getQuickFood).then(function (res) {	//获取会员等级
                     console.log(res.data);
                     that.msgPrompt(res.data);
@@ -2844,21 +2824,24 @@
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
-                            that.saleTitle = res.data.result_data.foodTypeMainList;
+                            var saleTitle = res.data.result_data.foodTypeMainList;
                             that.foodTypeGoodList = res.data.result_data.foodTypeGoodList;
                             that.foodTypeTicketList = res.data.result_data.foodTypeTicketList;
-                            console.log(that.sallData.optionList1)
-                            console.log(res.data.result_data.foodTypeMainList)
-                            that.sallData.optionList1 = res.data.result_data.foodTypeMainList;
+                            that.screeningTitle = true;
+                            var foodTypeAll = saleTitle[0].foodTypeId;
+                            for(var i = 1;i<saleTitle.length;i++){
+                                foodTypeAll = foodTypeAll+","+saleTitle[i].foodTypeId;
+                            }
+                            var titleAll = {foodTypeId:foodTypeAll,foodTypeName:"全部",icon:"icon-quanbu-copy"}
+                            saleTitle.unshift(titleAll)
+                            that.saleTitle = saleTitle;
+                            console.log(that.sallData)
+                            that.sallData.optionList1 = saleTitle;
+                            that.sallData.selectValue1 = saleTitle[0].foodTypeId;
                             that.$nextTick(function () {
-                                var foodTypeAll = "-2";
-                                for(var i = -1;i<that.saleTitle.length-1;i++){
-                                    foodTypeAll = foodTypeAll+","+i;
-								}
-                                that.screeningTitle = true;
-								console.log(foodTypeAll);
                                 that.getMeal(foodTypeAll);
                             })
+                            
                         }
                     }).catch(function (err) {
                         console.log(err);
@@ -2868,12 +2851,12 @@
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
-                            
+                            that.sallData.optionList2 = res.data.result_data;
+                            that.sallData.selectValue2 = that.sallData.optionList2[0].id;
                         }
                     }).catch(function (err) {
                         console.log(err);
                     });
-                    
 				}
 				that.replacement()
             },
@@ -2942,7 +2925,15 @@
                     var icCardId = that.icCardId
                     var memberLevelId = that.memberLevelId
                 }
-				var priceLimit =[{ category:"0", title:"", balanceIndex:"0", minPrice:"0", maxPrice:"999999"}];
+                console.log(that.sallData)
+                if(that.sallData.inputValue1 > that.sallData.inputValue2){
+                    var minPrice =that.sallData.inputValue1
+                    var maxPrice =that.sallData.inputValue2
+                }else{
+                    var minPrice =that.sallData.inputValue2
+                    var maxPrice =that.sallData.inputValue1
+                }
+				var priceLimit =[{ category:that.sallData.selectValue1, balanceIndex:that.sallData.selectValue2, minPrice:minPrice, maxPrice:maxPrice}];
                 var priceLimitStr = JSON.stringify(priceLimit);
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:memberLevelId,foodTypeStr:foodType,priceLimit:priceLimitStr};
                 var getFood = JSON.stringify(obj);

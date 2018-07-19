@@ -98,11 +98,11 @@
     <Compile Include="UDPServer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DSS.Client\DSS.Client.csproj">
+    <ProjectReference Include="..\..\..\DSS\DSS.Client\DSS.Client.csproj">
       <Project>{6942632e-553c-4ec1-b176-ca8175807786}</Project>
       <Name>DSS.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DSS\DSS.csproj">
+    <ProjectReference Include="..\..\..\DSS\DSS\DSS.csproj">
       <Project>{24e3e699-527e-4dbf-a206-78741584524f}</Project>
       <Name>DSS</Name>
     </ProjectReference>

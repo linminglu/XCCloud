@@ -28,5 +28,8 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
 
         [DataMember(Name = "foodTypeName", Order = 2)]
         public string FoodTypeName { set; get; }
+
+        [DataMember(Name = "icon", Order = 3)]
+        public string Icon { set; get; }
     }
 }

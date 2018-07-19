@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudWebBar", "XXCloudService\XCCloudWebBar.csproj", "{FEBC527E-778E-4217-8CD0-A84FD101CBCB}"
 EndProject
@@ -27,10 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudWebBar.Business", "X
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudWebBar.Common", "XCCloudService.Common\XCCloudWebBar.Common.csproj", "{ADCE73D3-04FF-4D98-846F-C8026A3B6396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSS", "DSS\DSS.csproj", "{24E3E699-527E-4DBF-A206-78741584524F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSS.Client", "DSS.Client\DSS.Client.csproj", "{6942632E-553C-4EC1-B176-CA8175807786}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarService", "RadarService\RadarService.csproj", "{1B9BF09F-A46C-4DC9-81D9-E22223FCEE56}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarService.HKAPI", "RadarService.HKAPI\RadarService.HKAPI.csproj", "{B7C484D1-57ED-41B5-AEA6-C691A12CFB13}"
@@ -40,6 +36,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarService.Notify", "RadarService.Notify\RadarService.Notify.csproj", "{68E92126-8F27-4B44-99F0-DFCD6DC25C86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarService.PublicHelper", "RadarService.PublicHelper\RadarService.PublicHelper.csproj", "{A572252C-2D34-4E15-B304-B48CA6E652B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSS", "..\..\DSS\DSS\DSS.csproj", "{24E3E699-527E-4DBF-A206-78741584524F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSS.Client", "..\..\DSS\DSS.Client\DSS.Client.csproj", "{6942632E-553C-4EC1-B176-CA8175807786}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
@@ -125,18 +125,6 @@ Global
 		{ADCE73D3-04FF-4D98-846F-C8026A3B6396}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADCE73D3-04FF-4D98-846F-C8026A3B6396}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ADCE73D3-04FF-4D98-846F-C8026A3B6396}.Release|x64.ActiveCfg = Release|Any CPU
-		{24E3E699-527E-4DBF-A206-78741584524F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24E3E699-527E-4DBF-A206-78741584524F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24E3E699-527E-4DBF-A206-78741584524F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{24E3E699-527E-4DBF-A206-78741584524F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24E3E699-527E-4DBF-A206-78741584524F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24E3E699-527E-4DBF-A206-78741584524F}.Release|x64.ActiveCfg = Release|Any CPU
-		{6942632E-553C-4EC1-B176-CA8175807786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6942632E-553C-4EC1-B176-CA8175807786}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6942632E-553C-4EC1-B176-CA8175807786}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{6942632E-553C-4EC1-B176-CA8175807786}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6942632E-553C-4EC1-B176-CA8175807786}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6942632E-553C-4EC1-B176-CA8175807786}.Release|x64.ActiveCfg = Release|Any CPU
 		{1B9BF09F-A46C-4DC9-81D9-E22223FCEE56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B9BF09F-A46C-4DC9-81D9-E22223FCEE56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B9BF09F-A46C-4DC9-81D9-E22223FCEE56}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -167,6 +155,18 @@ Global
 		{A572252C-2D34-4E15-B304-B48CA6E652B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A572252C-2D34-4E15-B304-B48CA6E652B8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A572252C-2D34-4E15-B304-B48CA6E652B8}.Release|x64.ActiveCfg = Release|Any CPU
+		{24E3E699-527E-4DBF-A206-78741584524F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24E3E699-527E-4DBF-A206-78741584524F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24E3E699-527E-4DBF-A206-78741584524F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{24E3E699-527E-4DBF-A206-78741584524F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24E3E699-527E-4DBF-A206-78741584524F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24E3E699-527E-4DBF-A206-78741584524F}.Release|x64.ActiveCfg = Release|Any CPU
+		{6942632E-553C-4EC1-B176-CA8175807786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6942632E-553C-4EC1-B176-CA8175807786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6942632E-553C-4EC1-B176-CA8175807786}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6942632E-553C-4EC1-B176-CA8175807786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6942632E-553C-4EC1-B176-CA8175807786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6942632E-553C-4EC1-B176-CA8175807786}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

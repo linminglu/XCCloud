@@ -15,7 +15,7 @@ namespace DSS
         public static string SQLConnectString = "";
         public static string MerchID = "";
         public static string StoreID = "";
-        public static string LogPath = "";
+        public static string LogPath = "d:\\log";
         /// <summary>
         /// 数据库查询
         /// </summary>
@@ -143,7 +143,8 @@ namespace DSS
         {
             JavaScriptSerializer jss = new JavaScriptSerializer();
             //获取命名空间准备反射对象
-            Type t = Type.GetType("DSS.Table." + tableName);
+            Assembly asmb = Assembly.LoadFrom(AppDomain.CurrentDomain.RelativeSearchPath + "\\DSS.dll");
+            Type t = asmb.GetType("DSS.Table." + tableName);
             //JSON数据格式转换
             object o = jss.Deserialize(jsonText, t);
             GMTCheck(ref o);
@@ -159,7 +160,8 @@ namespace DSS
         {
             JavaScriptSerializer jss = new JavaScriptSerializer();
             //获取命名空间准备反射对象
-            Type t = Type.GetType("DSS.Table." + tableName);
+            Assembly asmb = Assembly.LoadFrom(AppDomain.CurrentDomain.RelativeSearchPath + "\\DSS.dll");
+            Type t = asmb.GetType("DSS.Table." + tableName);
             //JSON数据格式转换
             object o = jss.Deserialize(jsonText, t);
             GMTCheck(ref o);
@@ -174,7 +176,7 @@ namespace DSS
         public bool SyncDeleteData(string tableName, string idValue)
         {
             DataModel model = new DataModel();
-            model.Delete(tableName, idValue);
+            model.Delete(tableName, "where id='" + idValue + "'");
             return true;
         }
 

@@ -482,7 +482,7 @@ namespace RadarService.Info
                 data.Verifiction = model.Verifiction(data, PublicHelper.SystemDefiner.AppSecret);
                 model.Add(data);
 
-                会员余额扣除(member.会员卡索引, data.BalanceIndex, Coins);
+                会员余额扣除(member.会员卡索引, data.BalanceIndex.Value, Coins);
                 res = true;
             }
             else
@@ -1048,9 +1048,9 @@ namespace RadarService.Info
                     ticketName = ticket.TicketName;
                     remainCount = ticket.RemainCount;
                     if (ticket.票.FirstUseTime == null)
-                        endDate = ticket.票.EndTime;
+                        endDate = ticket.票.EndTime.Value;
                     else
-                        endDate = ((DateTime)ticket.票.FirstUseTime).AddDays(ticket.票.WriteOffDays);
+                        endDate = ((DateTime)ticket.票.FirstUseTime.Value).AddDays(ticket.票.WriteOffDays.Value);
                     XCCloudSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, ticket);
                 }
                 else
@@ -1106,8 +1106,8 @@ namespace RadarService.Info
             o = new Dict_BalanceType();
             model.CovertToDataModel("select * from Dict_BalanceType where ID='" + balanceIndex + "'", ref o);
             Dict_BalanceType bt = o as Dict_BalanceType;
-            decimal n1 = balance * b.Balance / (b.Balance + f.Balance);
-            decimal n2 = balance * f.Balance / (b.Balance + f.Balance);
+            decimal n1 = balance * b.Balance.Value / (b.Balance.Value + f.Balance.Value);
+            decimal n2 = balance * f.Balance.Value / (b.Balance.Value + f.Balance.Value);
             if (bt.AddingType == 0)
             {
                 //小数不保留
@@ -1123,8 +1123,8 @@ namespace RadarService.Info
             }
             else
             {
-                n1 = Decimal.Round(n1, bt.DecimalNumber);
-                n2 = Decimal.Round(n2, bt.DecimalNumber);
+                n1 = Decimal.Round(n1, bt.DecimalNumber.Value);
+                n2 = Decimal.Round(n2, bt.DecimalNumber.Value);
             }
             b.Balance = b.Balance - n1;
             b.Verifiction = model.Verifiction(b, PublicHelper.SystemDefiner.AppSecret);
@@ -1343,7 +1343,7 @@ namespace RadarService.Info
 
                     //新增门票核销记录
                     Flw_Project_TicketUse t = new Flw_Project_TicketUse();
-                    t.DeviceID = head.设备编号;
+                    t.InDeviceID = head.设备编号;
                     t.DeviceName = head.设备名称;
                     t.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                     t.MemberID = member.会员编号;

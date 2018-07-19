@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebKitBrowser", "..\WebKitBroswer\WebKitBrowser.csproj", "{1C192ABC-31DA-43A2-B542-115F14055E0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLL", "DLL", "{4E4B798D-ABA9-4016-9D92-33F4835B95A7}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\..\项目资料\代码\WebKit.NET-0.5-bin-cairo\bin\WebKit.dll = ..\..\..\..\..\项目资料\代码\WebKit.NET-0.5-bin-cairo\bin\WebKit.dll
+		..\..\..\..\..\项目资料\代码\WebKit.NET-0.5-bin-cairo\bin\WebKit.Interop.dll = ..\..\..\..\..\项目资料\代码\WebKit.NET-0.5-bin-cairo\bin\WebKit.Interop.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C192ABC-31DA-43A2-B542-115F14055E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C192ABC-31DA-43A2-B542-115F14055E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C192ABC-31DA-43A2-B542-115F14055E0A}.Debug|x86.ActiveCfg = Debug|x86
+		{1C192ABC-31DA-43A2-B542-115F14055E0A}.Debug|x86.Build.0 = Debug|x86
+		{1C192ABC-31DA-43A2-B542-115F14055E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C192ABC-31DA-43A2-B542-115F14055E0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C192ABC-31DA-43A2-B542-115F14055E0A}.Release|x86.ActiveCfg = Release|x86
+		{1C192ABC-31DA-43A2-B542-115F14055E0A}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
