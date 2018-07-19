@@ -203,7 +203,7 @@
             html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
             html += ' <dl class="layui-nav-child ">' +
                 '<dd ><a href="javascript:;">' + logMsg.storeName + '</a></dd>' +
-                '<dd ><a href="javascript:;">店ID:' + logMsg.storeId + '</a></dd>' +
+                '<dd ><a href="javascript:;">门店ID:' + logMsg.storeId + '</a></dd>' +
                 '</dl>'
             $('#curLocation').html('').append(html)
         }
@@ -403,7 +403,7 @@
                                     logMsg.MerchTag = data.result_data.Tag;
                                     logMsg.token = data.result_data.Token;
                                     logMsg.logType = 2;
-                                    logMsg.storeId =
+                                    // logMsg.storeId =
                                         xc.setStorage('logMsg', JSON.stringify(logMsg));
                                     xc.setStorage('token', data.result_data.Token);
                                     window.location.href = '/merch/index1.html';
@@ -440,6 +440,13 @@
                                 data = JSON.parse(data);
                                 console.log(data);
                                 if (data.result_code == 1) {
+                                    if(data.result_data.MerchName!=''){
+                                        logMsg.merchName=data.result_data.MerchName
+                                    }else {
+                                        if(data.result_data.MerchAccount!=''){
+                                            logMsg.merchName=data.result_data.MerchAccount
+                                        }
+                                    }
                                     logMsg.MerchTag = data.result_data.Tag;
                                     logMsg.logType = 3;
                                     logMsg.token = data.result_data.Token;

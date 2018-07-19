@@ -22,6 +22,35 @@ namespace XXCloudService.Api.XCCloud
     [Authorize(Roles = "StoreUser")]
     public class Foods : ApiBase
     {
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getFoodDetailPayNum(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+            string sql = "GetFoodDetailPayNum";
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+            parameters[0].Value = userTokenDataModel.MerchID;
+
+            String[] Ary = new String[] { "数据0", "数据1", "数据2", "数据3", "数据4" };
+            List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
+            SqlMetaData[] MetaDataArr = new SqlMetaData[] {
+                new SqlMetaData("FoodId", SqlDbType.Int),
+                new SqlMetaData("Category", SqlDbType.Int),
+                new SqlMetaData("FoodCount", SqlDbType.Int),
+                new SqlMetaData("PayType", SqlDbType.Int),
+                new SqlMetaData("PayNum", SqlDbType.Decimal,18,2),
+                new SqlMetaData("RealPayNum", SqlDbType.Decimal,18,2)
+            };
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+
+
+        }
+
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object getBalanceType(Dictionary<string, object> dicParas)
         {

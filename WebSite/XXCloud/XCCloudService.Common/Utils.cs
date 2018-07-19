@@ -1631,6 +1631,7 @@ namespace XCCloudService.Common
                     case "System.String": return string.Empty;
                     case "System.Int32": return 0;
                     case "System.Decimal": return 0;
+                    default: return null;
                 }
             }            
 

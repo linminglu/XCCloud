@@ -161,7 +161,7 @@ namespace XCCloudService.DAL.Base
             if (result && syncData)
             {
                 if (merchId != "")
-                    cloudSync(merchId, merchSecret, t.GetType().Name, t.ContainProperty("ID") ? Convert.ToString(t.GetPropertyValue("ID")) : "", 0);
+                    cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 0);
             }
 
             return result;
