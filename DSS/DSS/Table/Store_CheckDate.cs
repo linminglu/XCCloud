@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Store_CheckDate
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public DateTime? CheckDate { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }

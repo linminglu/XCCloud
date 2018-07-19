@@ -14,7 +14,6 @@ public int? ExitFoodID { get; set; }
 public int? BalanceIndex { get; set; }
 public decimal? PayCount { get; set; }
 public decimal? Balance { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

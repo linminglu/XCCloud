@@ -24,6 +24,7 @@ using XCCloudWebBar.Business.Common;
 using Newtonsoft.Json;
 using XCCloudWebBar.CacheService;
 using XCCloudWebBar.Business.XCCloud;
+using System.Data.Entity.SqlServer;
 
 namespace XCCloudWebBar.Api.XCCloud
 {    
@@ -5352,89 +5353,147 @@ namespace XCCloudWebBar.Api.XCCloud
         #endregion
 
         #region 兑换记录
-        ///// <summary>
-        ///// 兑换记录
-        ///// </summary>
-        ///// <param name="dicParas"></param>
-        ///// <returns></returns>
-        //[Authorize(Roles = "StoreUser")]
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        //public object getExchangeList(Dictionary<string, object> dicParas)
-        //{
-        //    try
-        //    {
-        //        string errMsg = string.Empty;
-        //        string iccardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
-        //        if (string.IsNullOrEmpty(iccardId))
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
-        //        }
+        /// <summary>
+        /// 兑换记录
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getExchangeList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string iccardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(iccardId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
 
-        //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-        //        string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-        //        string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-        //        string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
-        //        int userId = userTokenKeyModel.LogId.Toint(0);
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+                int userId = userTokenKeyModel.LogId.Toint(0);
 
-        //        //判断会员卡是否存在或是否存在多张相同卡号的会员卡
-        //        if (!MemberBusiness.ExistsCardByICCardId(iccardId, merchID, storeId, out errMsg))
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-        //        }
-        //        //当前会员卡
-        //        Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == iccardId).FirstOrDefault();
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!MemberBusiness.ExistsCardByICCardId(iccardId, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+                //当前会员卡
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == iccardId).FirstOrDefault();
 
-        //        //门票信息
-        //        var queryTicket = from a in Flw_Food_Sale_PayService.I.GetModels(t => t.MerchID == merchID)
-        //                          join b in Flw_Food_SaleService.I.GetModels(t => t.MerchID == merchID) on a.FlwFoodID equals b.ID
-        //                          join c in
-        //                              (
-        //                                  from cc in Flw_Order_DetailService.N.GetModels(t => t.MerchID == merchID)
-        //                                  group cc by new
-        //                                  {
-        //                                      cc.OrderFlwID,
-        //                                      cc.FoodFlwID
-        //                                  } into temp
-        //                                  select new
-        //                                  {
-        //                                      OrderId = temp.Key.OrderFlwID,
-        //                                      FoodSaleId = temp.Key.FoodFlwID
-        //                                  }
-        //                                  ) on b.ID equals c.FoodSaleId
-        //                          join d in Flw_OrderService.I.GetModels(t => t.MerchID == merchID && t.CardID == memberCard.ID) on c.OrderId equals d.ID
-        //                          select new
-        //                          {
-        //                              CreateTime = d.CreateTime,
-        //                              OrderId = d.ID,
-        //                              SingleType = b.SingleType,
-        //                              FoodId = b.FoodID,
-        //                              SaleCount = b.SaleCount,
-        //                              OrginalPrice = a.OrginalPrice,
-        //                              Discount = a.Discount,
-        //                              PayCount = a.PayCount,
-        //                              BalanceIndex = a.BalanceIndex,
-        //                              StoreID = b.StoreID,
-        //                              CheckDate = d.CheckDate,
-        //                              ScheduleID = d.ScheduleID,
-        //                              WorkStation = d.WorkStation,
-        //                              UserID = d.UserID,
-        //                              Note = b.Note
-        //                          };
+                //门票信息
+                var queryExchange = from a in Flw_Food_Sale_PayService.N.GetModels(t => t.MerchID == merchID)
+                                    join b in Flw_Food_SaleService.N.GetModels(t => t.MerchID == merchID) on a.FlwFoodID equals b.ID
+                                    join c in
+                                        (
+                                            from cc in Flw_Order_DetailService.N.GetModels(t => t.MerchID == merchID)
+                                            group cc by new
+                                            {
+                                                cc.OrderFlwID,
+                                                cc.FoodFlwID
+                                            } into temp
+                                            select new
+                                            {
+                                                OrderId = temp.Key.OrderFlwID,
+                                                FoodSaleId = temp.Key.FoodFlwID
+                                            }
+                                            ) on b.ID equals c.FoodSaleId
+                                    join d in Flw_OrderService.N.GetModels(t => t.MerchID == merchID && t.CardID == memberCard.ID) on c.OrderId equals d.ID
+                                    join e in Base_StoreInfoService.N.GetModels(t=>t.MerchID == merchID) on b.StoreID equals e.ID
+                                    join f in Dict_BalanceTypeService.N.GetModels(t=>t.State == 1) on a.BalanceIndex equals f.ID
+                                    join g in Base_UserInfoService.N.GetModels() on d.UserID equals g.ID
+                                    join h in Flw_ScheduleService.N.GetModels(t=>t.MerchID == merchID) on d.ScheduleID equals h.ID
+                                    select new
+                                    {
+                                        CreateTime = d.CreateTime,
+                                        OrderId = d.ID,
+                                        SingleType = b.SingleType,
+                                        FoodId = b.FoodID,
+                                        SaleCount = b.SaleCount,
+                                        OrginalPrice = a.OrginalPrice,
+                                        Discount = a.Discount,
+                                        PayCount = a.PayCount,
+                                        BalanceName = f.TypeName,
+                                        StoreName = e.StoreName,
+                                        CheckDate = h.CheckDate,
+                                        ScheduleName = h.ScheduleName,
+                                        WorkStation = d.WorkStation,
+                                        UserNmae = g.RealName,
+                                        Note = b.Note
+                                    };
 
+                var list = queryExchange.ToList().Select(t => new
+                {
+                    CreateTime = t.CreateTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+                    OrderId = t.OrderId,
+                    ExchangeNmae = getExchangeName(t.SingleType, t.FoodId),
+                    SingleType = t.SingleType == 0 ? "套餐" : t.SingleType == 1 ? "门票" : "商品",
+                    SaleCount = t.SaleCount,
+                    OrginalPrice = t.OrginalPrice.HasValue ? t.OrginalPrice.Value : 0,
+                    Discount = t.Discount.HasValue ? t.Discount.Value : 100,
+                    PayCount = t.PayCount,
+                    BalanceName = t.BalanceName,
+                    StoreName = t.StoreName,
+                    CheckDate = t.CheckDate.HasValue ? t.CheckDate.Value.ToString("yyyy-MM-dd") : "",
+                    ScheduleName = t.ScheduleName,
+                    WorkStation = t.WorkStation,
+                    UserNmae = t.UserNmae,
+                    Note = t.Note
+                }).ToList();
 
-        //        var result = new
-        //        {
-        //            Records = ticketList.Count,
-        //            Items = ticketList
-        //        };
+                var result = new
+                {
+                    Records = list.Count,
+                    Items = list
+                };
 
-        //        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-        //    }
-        //}
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+            }
+            catch (DbEntityValidationException ex)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        string getExchangeName(int? singleType, string exchangeId)
+        {
+            switch(singleType)
+            {
+                case 0:
+                    int foodId = exchangeId.Toint(0);
+                    Data_FoodInfo foodInfo = Data_FoodInfoService.I.GetModels(t => t.ID == foodId).FirstOrDefault();
+                    if (foodInfo != null)
+                    {
+                        return foodInfo.FoodName;
+                    }
+                    break;
+                case 1:
+                    int ticketId = exchangeId.Toint(0);
+                    Data_ProjectTicket ticket = Data_ProjectTicketService.I.GetModels(t => t.ID == ticketId).FirstOrDefault();
+                    if (ticket != null)
+                    {
+                        return ticket.TicketName;
+                    }
+                    break;
+                case 2:
+                    int goodId = exchangeId.Toint(0);
+                    Base_GoodsInfo goodInfo = Base_GoodsInfoService.I.GetModels(t => t.ID == goodId).FirstOrDefault();
+                    if (goodInfo != null)
+                    {
+                        return goodInfo.GoodName;
+                    }
+                    break;
+            }
+            return "";
+        }
         #endregion
 
         #region 门票信息记录
@@ -5529,11 +5588,18 @@ namespace XCCloudWebBar.Api.XCCloud
                     {
                         string[] strArr = { "一", "二", "三", "四", "五", "六", "日" };
                         char[] weekArr = weeks.Replace("|", "").ToArray();
-                        foreach (var item in weekArr)
+                        if (weekArr.Length >= 7)
                         {
-                            note += "星期" + strArr[item - 49] + "、"; //ASCII编码 1为49
+                            note = "每天";
                         }
-                        note = note.TrimEnd("、".ToCharArray());
+                        else
+                        {
+                            foreach (var item in weekArr)
+                            {
+                                note += "星期" + strArr[item - 49] + "、"; //ASCII编码 1为49
+                            }
+                            note = note.TrimEnd("、".ToCharArray());
+                        }
                     }
                     break;
                 case 1:
@@ -5548,9 +5614,9 @@ namespace XCCloudWebBar.Api.XCCloud
             }            
             if(sTime != null && eTime != null)
             {
-                note += string.Format(" {0}-{1}可用", sTime, eTime);
+                note += string.Format(" {0}-{1}", sTime, eTime);
             }
-            return note;
+            return note + "可用";
         }
 
         #endregion

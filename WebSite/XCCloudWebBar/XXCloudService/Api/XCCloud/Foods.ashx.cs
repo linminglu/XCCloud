@@ -386,7 +386,7 @@ namespace XXCloudService.Api.XCCloud
             string memberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
             string foodTypeStr = dicParas.ContainsKey("foodTypeStr") ? dicParas["foodTypeStr"].ToString() : string.Empty;
             string priceLimitJson = dicParas.ContainsKey("priceLimit") ? dicParas["priceLimit"].ToString() : string.Empty;
-            List<PriceLimitModel> priceLimitModelList = Utils.DataContractJsonDeserializer<List<PriceLimitModel>>(priceLimitJson);
+            PriceLimitModel2 priceLimitModel = Utils.DataContractJsonDeserializer<PriceLimitModel2>(priceLimitJson);
 
             if (string.IsNullOrEmpty(memberLevelId))
             {
@@ -402,6 +402,20 @@ namespace XXCloudService.Api.XCCloud
                 new SqlMetaData("MinPrice", SqlDbType.Decimal,18,2),
                 new SqlMetaData("MaxPrice", SqlDbType.Decimal,18,2)
             };
+
+            List<PriceLimitModel> priceLimitModelList = new List<PriceLimitModel>();
+
+            string[] str = Utils.GetStrArr(priceLimitModel.Category,',');
+            for (int j = 0; j < str.Length; j++)
+            {
+                PriceLimitModel model = new PriceLimitModel();
+                model.Title = priceLimitModel.Title;
+                model.BalanceIndex = priceLimitModel.BalanceIndex;
+                model.Category = int.Parse(str[j]);
+                model.MinPrice = priceLimitModel.MinPrice;
+                model.MaxPrice = priceLimitModel.MaxPrice;
+                priceLimitModelList.Add(model);
+            }
 
             for (int i = 0; i < priceLimitModelList.Count; i++)
             {

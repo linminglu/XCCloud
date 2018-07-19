@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_DiscountRule
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string RuleName { get; set; }
 public int? RuleLevel { get; set; }

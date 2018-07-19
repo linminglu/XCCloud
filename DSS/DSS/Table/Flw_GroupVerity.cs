@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Flw_GroupVerity
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public string TicketCode { get; set; }

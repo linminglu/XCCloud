@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_FreeGiveRule
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string RuleName { get; set; }
 public DateTime? StartTime { get; set; }

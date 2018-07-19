@@ -29,7 +29,6 @@ public int? State { get; set; }
 public string Note { get; set; }
 public decimal? ChargeFee { get; set; }
 public string OrderNumber { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

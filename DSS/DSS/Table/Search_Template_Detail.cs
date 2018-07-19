@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Search_Template_Detail
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? TempID { get; set; }
 public string FieldName { get; set; }
 public string Title { get; set; }

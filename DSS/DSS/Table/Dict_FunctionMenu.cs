@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Dict_FunctionMenu
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? ParentID { get; set; }
 public string FunctionName { get; set; }
 public int? OrderID { get; set; }

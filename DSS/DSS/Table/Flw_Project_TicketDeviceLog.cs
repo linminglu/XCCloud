@@ -19,7 +19,6 @@ public int? BalanceIndex { get; set; }
 public decimal? Total { get; set; }
 public int? UseType { get; set; }
 public decimal? CashTotal { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

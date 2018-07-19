@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Flw_Digite_Coin
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public int? FoodID { get; set; }

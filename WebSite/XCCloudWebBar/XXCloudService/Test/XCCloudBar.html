@@ -115,20 +115,12 @@
         }
 
         function do_getFoodList() {
-
-            var buyDetail1 = { category: "0", title: "", balanceIndex: 0, minPrice: "1", maxPrice: "32" }
-            var buyDetail2 = { category: "1", title: "", balanceIndex: 0, minPrice: "1", maxPrice: "300" }
-            var buyDetail3 = { category: "2", title: "", balanceIndex: 0, minPrice: "1", maxPrice: "300" }
-
-            var buyDetails = new Array();
-            //buyDetails.push(buyDetail1);
-            //buyDetails.push(buyDetail2);
-            //buyDetails.push(buyDetail3);
+            var priceLimitObj = { category: $("#txtFoodListFoodTypeStr").val(), title: "", balanceIndex: 0, minPrice: "1", maxPrice: "32" }
 
             var txtUserToken = $("#txtUserToken").val();
             var parasObj = {
                 "sysId": "0", "versionNo": "0.0.0.1", "memberLevelId": "1", "customerType": "1", "userToken": $("#txtUserToken").val(), "foodTypeStr": $("#txtFoodListFoodTypeStr").val(),
-                "priceLimit": JSON.stringify(buyDetails)
+                "priceLimit": JSON.stringify(priceLimitObj)
             };
             var url = "/XCCloud/Foods?action=getFoodList";
             var parasJson = JSON.stringify(parasObj);

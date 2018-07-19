@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_Food_WorkStation
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? FoodID { get; set; }
 public int? WorkStationID { get; set; }
 }

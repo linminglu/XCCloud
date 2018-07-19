@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_SettleLCPay
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string TerminalNo { get; set; }
 public string Token { get; set; }

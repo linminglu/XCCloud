@@ -66,6 +66,7 @@ namespace XCCloudWebBar.Business.XCCloud
                             {
                                 CardId = a.ID
                             };
+
             int cardCount = cardQuery.Count();
 
             if (cardCount == 0)

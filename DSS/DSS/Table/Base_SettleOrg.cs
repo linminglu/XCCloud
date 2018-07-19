@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_SettleOrg
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string WXPayOpenID { get; set; }
 public string WXName { get; set; }

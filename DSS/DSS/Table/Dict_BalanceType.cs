@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Dict_BalanceType
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public int? TypeID { get; set; }
 public string TypeName { get; set; }

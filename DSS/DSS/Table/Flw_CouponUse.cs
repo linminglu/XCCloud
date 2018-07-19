@@ -17,7 +17,6 @@ public string CouponCode { get; set; }
 public decimal? FreeMoney { get; set; }
 public int? Coins { get; set; }
 public DateTime? UseTime { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

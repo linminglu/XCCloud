@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Flw_Ticket_Exit
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string StoreID { get; set; }
 public string Segment { get; set; }
 public string HeadAddress { get; set; }

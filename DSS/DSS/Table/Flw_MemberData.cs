@@ -34,7 +34,6 @@ public string ScheduleID { get; set; }
 public int? AuthorID { get; set; }
 public string WorkStation { get; set; }
 public DateTime? CheckDate { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

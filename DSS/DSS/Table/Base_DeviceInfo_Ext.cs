@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_DeviceInfo_Ext
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? DeviceID { get; set; }
 public int? Motor1EN { get; set; }
 public int? Motor2EN { get; set; }

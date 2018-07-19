@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_BillInfo
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string StoreName { get; set; }
 public string StoreID { get; set; }
 public DateTime? Time { get; set; }

@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Flw_Giveback
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string StoreID { get; set; }
 public int? CardID { get; set; }
 public int? PICCardID { get; set; }

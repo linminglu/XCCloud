@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_GivebackRule
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public int? MemberLevelID { get; set; }
 public int? BackMin { get; set; }

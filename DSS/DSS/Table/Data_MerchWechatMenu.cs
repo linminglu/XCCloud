@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_MerchWechatMenu
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? PID { get; set; }
 public string MerchID { get; set; }
 public string MenuName { get; set; }

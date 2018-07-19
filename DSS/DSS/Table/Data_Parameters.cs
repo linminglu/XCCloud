@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_Parameters
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string StoreID { get; set; }
 public string System { get; set; }
 public string ParameterName { get; set; }

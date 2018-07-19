@@ -15,7 +15,6 @@ public int? FoodType { get; set; }
 public int? ContainID { get; set; }
 public int? ContainCount { get; set; }
 public int? Status { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

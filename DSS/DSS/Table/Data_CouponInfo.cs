@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_CouponInfo
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public int? CouponLevel { get; set; }
 public string CouponName { get; set; }

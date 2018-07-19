@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_GoodRequest_List
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public int? RequestID { get; set; }
 public int? GoodID { get; set; }

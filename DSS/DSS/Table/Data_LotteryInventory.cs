@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_LotteryInventory
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public int? DeviceID { get; set; }

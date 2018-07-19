@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_MemberLevel
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string MemberLevelName { get; set; }
 public string CoverURL { get; set; }

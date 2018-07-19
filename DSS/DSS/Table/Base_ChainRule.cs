@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_ChainRule
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string GroupName { get; set; }
 public string MerchID { get; set; }
 public int? RuleType { get; set; }

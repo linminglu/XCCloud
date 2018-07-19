@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_Message
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? Sender { get; set; }
 public int? SenderType { get; set; }
 public int? Receiver { get; set; }

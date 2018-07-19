@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_Goodinfo_Price
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public int? GoodID { get; set; }
 public int? OperateTypei { get; set; }

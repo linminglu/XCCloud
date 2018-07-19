@@ -179,6 +179,9 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = dicParas.ContainsKey("storeId") ? Convert.ToString(dicParas["storeId"]) : string.Empty;
                 string workStationId = dicParas.ContainsKey("workStationId") ? Convert.ToString(dicParas["workStationId"]) : string.Empty;
                 int? tag = (int?)null;
+                string merchName = string.Empty;
+                string merchAccount = string.Empty;
+                string storeName = string.Empty;
 
                 if (string.IsNullOrEmpty(logType))
                 {
@@ -200,6 +203,9 @@ namespace XXCloudService.Api.XCCloud
                     tag = base_MerchantInfoModel.MerchTag;
                     var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                     userTokenKeyModel.DataModel = TokenDataModel;
+                    merchName = base_MerchantInfoModel.MerchName;
+                    merchAccount = base_MerchantInfoModel.MerchAccount;
+                    storeName = string.Empty;
                 }
                 else if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
@@ -225,11 +231,14 @@ namespace XXCloudService.Api.XCCloud
                     tag = base_StoreInfoModel.StoreTag;
                     var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret };
                     userTokenKeyModel.DataModel = TokenDataModel;
+                    merchName = base_MerchantInfoModel.MerchName;
+                    merchAccount = base_MerchantInfoModel.MerchAccount;
+                    storeName = base_StoreInfoModel.StoreName;
                 }
 
                 var token = XCCloudUserTokenBusiness.SetUserToken(userTokenKeyModel);
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { Tag = tag, Token = token });
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { Tag = tag, Token = token, MerchName = merchName, MerchAccount = merchAccount, StoreName = storeName });
             }
             catch (Exception e)
             {

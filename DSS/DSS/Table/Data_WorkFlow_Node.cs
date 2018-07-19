@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_WorkFlow_Node
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? WorkID { get; set; }
 public int? OrderNumber { get; set; }
 public int? NodeType { get; set; }

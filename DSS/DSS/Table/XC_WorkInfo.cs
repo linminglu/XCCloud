@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class XC_WorkInfo
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? WorkType { get; set; }
 public int? SenderID { get; set; }
 public DateTime? SenderTime { get; set; }

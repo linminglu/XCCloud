@@ -888,8 +888,8 @@
                             <!-- <li class="on" @click="screening('All')"><span class="iconfont icon-quanbu-copy"></span><span class="txt">全部</span></li>
                             <li @click="screening(0)"><span class="iconfont icon-menpiao1"></span><span class="txt">门票</span></li>
                             <li @click="screening(1)"><span class="iconfont icon-2"></span><span class="txt">商品</span></li> -->
-							<li v-for="(item,index) in saleTitle" @click="screening(index)">
-								<span class="iconfont icon-2"></span><span class="txt">{{}}</span>
+							<li v-for="(item,index) in saleTitle" @click="screening(index)" :class="{on:index==sallData.indexPrev}" >
+								<span class="iconfont"></span><span class="txt">{{item.foodTypeName}}</span>
 							</li>
                         </ul>
 					</div>
@@ -902,7 +902,7 @@
                         </i-select>
 						<input class="form-control screeningsty" v-model="sallData.inputValue1" placeholder="输入最小值">
 						<input class="form-control screeningsty" v-model="sallData.inputValue2" placeholder="输入最大值">
-						<button type="button" class="btn btn-primary" :disabled="loading" @click="screening('All')">查询</button>
+						<button type="button" class="btn btn-primary" :disabled="loading" @click="getMeal">查询</button>
 					</div>
 					<div class="saleContent">
 						<div class="treeBox" v-if="treeShow">
@@ -1350,6 +1350,7 @@
                 optionList2:[],
                 inputValue1:"",
                 inputValue2:"",
+                indexPrev:"0"
             },
 			dataObj:[],
             userToken:'',
@@ -2835,13 +2836,10 @@
                             var titleAll = {foodTypeId:foodTypeAll,foodTypeName:"全部",icon:"icon-quanbu-copy"}
                             saleTitle.unshift(titleAll)
                             that.saleTitle = saleTitle;
+                            console.log(that.saleTitle)
                             console.log(that.sallData)
                             that.sallData.optionList1 = saleTitle;
                             that.sallData.selectValue1 = saleTitle[0].foodTypeId;
-                            that.$nextTick(function () {
-                                that.getMeal(foodTypeAll);
-                            })
-                            
                         }
                     }).catch(function (err) {
                         console.log(err);
@@ -2857,6 +2855,12 @@
                     }).catch(function (err) {
                         console.log(err);
                     });
+                    setTimeout(function () {
+                        that.getMeal();
+                    }, 1000);
+                    // that.$nextTick(function () {
+                        
+                    // })
 				}
 				that.replacement()
             },
@@ -2914,7 +2918,7 @@
                 }
             },
 //			获取销售的函数
-			getMeal:function(foodType) {			
+			getMeal:function() {			
 				var that = this;
                 if(that.icCardId == ""){
                     var customerType = "0"
@@ -2926,33 +2930,49 @@
                     var memberLevelId = that.memberLevelId
                 }
                 console.log(that.sallData)
-                if(that.sallData.inputValue1 > that.sallData.inputValue2){
-                    var minPrice =that.sallData.inputValue1
-                    var maxPrice =that.sallData.inputValue2
+                if(that.sallData.inputValue1 == ""){
+                    var inputValue1 ="0"
                 }else{
-                    var minPrice =that.sallData.inputValue2
-                    var maxPrice =that.sallData.inputValue1
+                    var inputValue1 =that.sallData.inputValue1
                 }
-				var priceLimit =[{ category:that.sallData.selectValue1, balanceIndex:that.sallData.selectValue2, minPrice:minPrice, maxPrice:maxPrice}];
+                if(that.sallData.inputValue2 == ""){
+                    var inputValue2 ="999999"
+                }else{
+                    var inputValue2 =that.sallData.inputValue2
+                }
+                if(inputValue1 < inputValue2){
+                    
+                    var minPrice =inputValue1
+                    var maxPrice =inputValue2
+                }else{
+                    var minPrice =inputValue2
+                    var maxPrice =inputValue1
+                }
+                console.log(that.saleTitle)
+                console.log(that.saleTitle[that.sallData.indexPrev])
+                console.log(that.sallData.indexPrev)
+                console.log(that.saleTitle[that.sallData.indexPrev].foodTypeId)
+				var priceLimit ={ category:that.sallData.selectValue1, balanceIndex:that.sallData.selectValue2, minPrice:minPrice, maxPrice:maxPrice};
                 var priceLimitStr = JSON.stringify(priceLimit);
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:memberLevelId,foodTypeStr:foodType,priceLimit:priceLimitStr};
-                var getFood = JSON.stringify(obj);
-                console.log(getFood);
-                axios.post('/XCCloud/Foods?action=getFoodList', getFood).then(function (res) {
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:memberLevelId,foodTypeStr:that.saleTitle[that.sallData.indexPrev].foodTypeId,priceLimit:priceLimitStr};
+                // var getFood = JSON.stringify(obj);
+                console.log(obj);
+                axios.post('/XCCloud/Foods?action=getFoodList', obj).then(function (res) {
                     console.log(res.data);
                     that.loading = false;
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         that.saleAll = res.data.result_data;
-                        var saledata_ = res.data.result_data.food;
-                        for (var i =0;i<saledata_.length;i++){
-							if(saledata_[i].foodName.length > 30){
-                                var foodname = saledata_[i].foodName;
-								foodname = foodname.slice(0,30);
-                                saledata_[i].foodName = foodname
-							}
-						}
-                        that.saleData =saledata_;
+                        // var saledata_ = res.data.result_data.food;
+                        // for (var i =0;i<saledata_.length;i++){
+						// 	if(saledata_[i].foodName.length > 30){
+                        //         var foodname = saledata_[i].foodName;
+						// 		foodname = foodname.slice(0,30);
+                        //         saledata_[i].foodName = foodname
+						// 	}
+						// }
+                        // that.saleData =saledata_;
+                        that.saleData = res.data.result_data.food;
 						that.saleGood =res.data.result_data.good;
 						that.saleTicket =res.data.result_data.ticket;
                     }
@@ -3094,42 +3114,26 @@
 				console.log(index);
 				var that = this;
 				that.treeShow = false;
-				var foodTypeAll = "-1";
                 that.loading = true;
+                that.sallData.indexPrev = index;
                 switch(index){
-                    case 'All':
-                        index = 0;
-                        foodTypeAll = "-2";
-                        console.log(that.saleTitle.length);
-                        that.screeningTitle = true;
-                        for(var i = -1;i<that.saleTitle.length-1;i++){
-                            foodTypeAll = foodTypeAll+","+i;
-                        }
-                        break;
                     case 0:
-                        that.screeningTitle = false;
-                        foodTypeAll = "-1";
-                        console.log(index);
-                        index++;
+                        that.screeningTitle = true;
                         break;
                     case 1:
-                        that.treeShow = true;
-                        foodTypeAll = "-2";
+                        that.screeningTitle = false;
+                        break;
+                    case 2:
                         that.screeningTitle = true;
-                        console.log(index);
-                        index++;
+                        that.treeShow = true;
+                        that.sallData.optionList1 = that.foodTypeGoodList;
+                        that.sallData.selectValue1 =  that.sallData.optionList1[0].foodTypeId;
                         break;
                     default:
                         that.screeningTitle = false;
-                        foodTypeAll = that.saleTitle[index].FoodTypeId;
-                        console.log(that.saleTitle[index].FoodTypeId);
-                        index++;
                         break;
                 }
-
-				console.log(foodTypeAll);
-				$(".salesTitle").find("li").eq(index).addClass("on").siblings().removeClass("on");
-                that.getMeal(foodTypeAll);
+                that.getMeal();
             },
 //          单品标题筛选
             singletonScreening:function(index,foodType){

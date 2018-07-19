@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_WorkFlow_Entry
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? WorkID { get; set; }
 public int? EventID { get; set; }
 public int? EventType { get; set; }

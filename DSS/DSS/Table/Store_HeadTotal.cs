@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Store_HeadTotal
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public DateTime? CheckDate { get; set; }
 public string HeadID { get; set; }
 public int? CoinFromCard { get; set; }

@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_Jackpot_Level
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public int? ActiveID { get; set; }
 public string LevelName { get; set; }

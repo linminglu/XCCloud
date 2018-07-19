@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Flw_Game_Free
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string StoreID { get; set; }
 public string GameID { get; set; }
 public string HeadID { get; set; }

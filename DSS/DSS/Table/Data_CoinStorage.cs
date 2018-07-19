@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_CoinStorage
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public int? StorageCount { get; set; }

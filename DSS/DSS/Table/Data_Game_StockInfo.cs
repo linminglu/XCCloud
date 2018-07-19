@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_Game_StockInfo
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? GameIndex { get; set; }
 public int? GoodID { get; set; }
 public int? DeportID { get; set; }

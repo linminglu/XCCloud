@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_MerchWechatConfig
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? MerchID { get; set; }
 public string AppID { get; set; }
 public string Appsecret { get; set; }

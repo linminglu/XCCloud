@@ -28,7 +28,6 @@ public int? BuyFoodType { get; set; }
 public decimal? TaxFee { get; set; }
 public decimal? TaxTotal { get; set; }
 public string Note { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

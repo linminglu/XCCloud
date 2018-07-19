@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -524,27 +525,71 @@ namespace DSS.Client
             SendData(Encoding.UTF8.GetBytes(jsonString), (byte)TransmiteEnum.心跳);
             ConnectSendTime = DateTime.Now;
         }
-        public void StoreDataSync(string storeID, string tableName, string idValue, int action)
+        /// <summary>
+        /// 门店上线时，同步所有的离线数据
+        /// </summary>
+        void SyncOffData()
         {
+            DataModel model = new DataModel();
+            List<object> dataList = new List<object>();
+            if (model.CovertToDataModel("select * from Sync_DataList where SyncFlag=0", typeof(DSS.Table.Sync_DataList), out dataList))
+            {
+                foreach (DSS.Table.Sync_DataList o in dataList)
+                {
+                    StoreDataSync(o.TableName, o.IDValue, (int)o.SyncType, false, o.SN);
+                    Debug.WriteLine("离线同步：table=" + o.TableName + "  id=" + o.IDValue + "   sn=" + o.SN);
+                }
+            }
+        }
+        /// <summary>
+        /// 门店数据改变时，向云端服务同步
+        /// </summary>
+        /// <param name="tableName">数据表名</param>
+        /// <param name="idValue">数据主键值</param>
+        /// <param name="action">同步类别 0 新增 1 修改 2 删除</param>
+        /// <param name="writeBuf">离线恢复同步不写缓存传FALSE</param>
+        /// <param name="sn">离线恢复同步传sync_datalist的流水号</param>
+        public void StoreDataSync(string tableName, string idValue, int action, bool writeBuf = true, string sn = "")
+        {
+            DataModel model = new DataModel();
             string sql = "select * from " + tableName + " where id='" + idValue + "'";
-            Assembly asmb = Assembly.LoadFrom("DSS.dll");
+            //Assembly asmb = Assembly.LoadFrom("DSS.dll");
+            Assembly asmb = Assembly.LoadFrom(AppDomain.CurrentDomain.RelativeSearchPath + "\\DSS.dll");
             Type t = asmb.GetType("DSS.Table." + tableName);
             object o = System.Activator.CreateInstance(t);
-            DataModel model = new DataModel();
+
             model.CovertToDataModel(sql, ref o);
             JavaScriptSerializer jss = new JavaScriptSerializer();
             string jsonString = jss.Serialize(o);
 
-            if (!InitFlag) return;
             ServerDataItem item = new ServerDataItem();
             item.IDValue = idValue;
             item.JsonData = jsonString;
             item.ReSendTimes = 0;
-            item.SN = Guid.NewGuid().ToString().Replace("-", "").ToLower();
+            if (sn == "")
+                item.SN = Guid.NewGuid().ToString().Replace("-", "").ToLower();
+            else
+                item.SN = sn;
             item.SyncType = action;
             item.TableName = tableName;
 
+            if (writeBuf)
+            {
+                Table.Sync_DataList sync = new Table.Sync_DataList();
+                sync.CreateTime = DateTime.Now;
+                sync.IDValue = idValue;
+                sync.MerchID = MerchID;
+                sync.StoreID = StoreID;
+                sync.SyncFlag = 0;
+                sync.SyncType = action;
+                sync.TableName = tableName;
+                sync.SN = item.SN;
+                sync.Verifiction = model.Verifiction(sync, AppSecret, true);
+                model.Add(sync, true);
+            }
+            //心跳没有超时，表示门店同步服务在线允许发送
             SetCommandSend(item);
+            Debug.WriteLine("向云端发送数据");
         }
         void SendProcess()
         {

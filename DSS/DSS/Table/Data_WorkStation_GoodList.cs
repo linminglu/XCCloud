@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_WorkStation_GoodList
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? GoodID { get; set; }
 public int? WorkStationID { get; set; }
 }

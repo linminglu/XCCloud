@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_MerchAlipay
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string AppID { get; set; }
 public string PrivateKey { get; set; }

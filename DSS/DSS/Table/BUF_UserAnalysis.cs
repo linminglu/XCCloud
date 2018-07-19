@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class BUF_UserAnalysis
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public string MemberID { get; set; }

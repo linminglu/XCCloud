@@ -31,7 +31,6 @@ public decimal? RemainBalance { get; set; }
 public string OrderID { get; set; }
 public string Note { get; set; }
 public DateTime? CheckDate { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }

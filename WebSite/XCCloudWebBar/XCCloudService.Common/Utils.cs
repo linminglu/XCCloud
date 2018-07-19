@@ -2603,6 +2603,11 @@ namespace XCCloudWebBar.Common
         }
 
         #endregion
+
+        public static string[] GetStrArr(string str,char c)
+        {
+            return str.Split(c);
+        }
         
     }
 }

@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_GameInfo_Ext
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? GameID { get; set; }
 public string GameCode { get; set; }
 public decimal? Area { get; set; }

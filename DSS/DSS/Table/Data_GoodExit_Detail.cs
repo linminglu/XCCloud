@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Data_GoodExit_Detail
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public int? DepotID { get; set; }
 public string ExitOrderID { get; set; }

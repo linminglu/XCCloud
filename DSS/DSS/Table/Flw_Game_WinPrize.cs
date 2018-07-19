@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Flw_Game_WinPrize
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? GameIndex { get; set; }
 public int? GoodID { get; set; }
 public string MemberID { get; set; }

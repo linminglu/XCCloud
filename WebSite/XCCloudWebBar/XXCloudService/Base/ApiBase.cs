@@ -133,7 +133,7 @@ namespace XCCloudWebBar.Base
 
 
             return true;
-        }        
+        }
 
         /// <summary>
         /// 获取当前营业日期

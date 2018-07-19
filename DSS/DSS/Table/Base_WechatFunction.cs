@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_WechatFunction
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchID { get; set; }
 public string MenuName { get; set; }
 public int? FunctionType { get; set; }

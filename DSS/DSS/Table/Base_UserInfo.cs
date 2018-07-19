@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_UserInfo
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? AgentID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }

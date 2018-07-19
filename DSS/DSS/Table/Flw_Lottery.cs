@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Flw_Lottery
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? WorkType { get; set; }
 public string GameID { get; set; }
 public string HeadID { get; set; }

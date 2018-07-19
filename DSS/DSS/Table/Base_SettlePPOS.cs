@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Base_SettlePPOS
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public string MerchNo { get; set; }
 public string TerminalNo { get; set; }
 public string Token { get; set; }

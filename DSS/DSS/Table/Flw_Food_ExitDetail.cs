@@ -17,7 +17,6 @@ public int? ContainCount { get; set; }
 public DateTime? ExpireDay { get; set; }
 public int? ValidType { get; set; }
 public int? Status { get; set; }
-public int? SyncFlag { get; set; }
 public string Verifiction { get; set; }
 }
 }
