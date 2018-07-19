@@ -251,7 +251,8 @@
             , {field: 'CardType', title: '卡类别', align: 'center', templet: '#_cardType'}
             , {
                 field: 'Deposit', title: '押金', align: 'center', templet: function (d) {
-                    return '<a href="javascript:void(0);" class="a_line memberDeposit">' + d.Deposit + '</a>'
+                    let aa= d.Deposit==null? 0:d.Deposit
+                    return '<a href="javascript:void(0);" class="a_line memberDeposit">' + aa + '</a>'
                 }
             }
             , {field: 'UpdateTime', title: '余额最后跟新时间', align: 'center'}

@@ -1681,9 +1681,14 @@ namespace XCCloudService.Common
 
         public static string DataTableToJson(DataTable table)
         {
-            string jsonString = string.Empty;
-            jsonString = JsonConvert.SerializeObject(table);
-            return jsonString;
+            JsonSerializerSettings microsoftDateFormatSettings = new JsonSerializerSettings
+            {
+                DateFormatHandling = DateFormatHandling.MicrosoftDateFormat
+            };
+
+            string jsonStr = string.Empty;
+            jsonStr = JsonConvert.SerializeObject(table, microsoftDateFormatSettings);
+            return DateTimeJsonConverter(jsonStr, @"\\/Date\((\d+)\+(\d+)\)\\/", "yyyy-MM-dd HH:mm:ss");
         }
 
         public static void GetModel<T>(IDictionary<string, object> dictData, ref T t) where T : new()

@@ -289,7 +289,7 @@ namespace XXCloudService.Api.XCCloud
                             //先删除，后添加
                             foreach (var model in Base_Goodinfo_PriceService.I.GetModels(p => p.GoodID == id))
                             {
-                                Base_Goodinfo_PriceService.I.DeleteModel(model);
+                                Base_Goodinfo_PriceService.I.DeleteModel(model, true, merchId, merchSecret);
                             }
 
                             List<Base_Goodinfo_Price> priceList = new List<Base_Goodinfo_Price>();
@@ -329,6 +329,7 @@ namespace XXCloudService.Api.XCCloud
                                     base_Goodinfo_Price.OperateTypei = 0;
                                     base_Goodinfo_Price.Count = count0;
                                     base_Goodinfo_Price.GoodID = id;
+                                    base_Goodinfo_Price.MerchID = merchId;
                                     Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price, true, merchId, merchSecret);
                                     priceList.Add(base_Goodinfo_Price);
 
@@ -337,6 +338,7 @@ namespace XXCloudService.Api.XCCloud
                                     base_Goodinfo_Price.OperateTypei = 1;
                                     base_Goodinfo_Price.Count = count1;
                                     base_Goodinfo_Price.GoodID = id;
+                                    base_Goodinfo_Price.MerchID = merchId;
                                     Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price, true, merchId, merchSecret);
                                     priceList.Add(base_Goodinfo_Price);
                                 }
