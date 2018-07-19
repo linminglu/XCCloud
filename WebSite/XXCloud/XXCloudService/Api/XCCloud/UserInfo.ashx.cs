@@ -694,6 +694,7 @@ namespace XCCloudService.Api.XCCloud
                                    StoreID = a.StoreID,
                                    StoreName = b != null ? b.StoreName : "总店",
                                    UserGroupName = c != null ? c.GroupName : string.Empty,
+                                   Status = a.Status,
                                    UserStatusStr = d != null ? d.DictKey : string.Empty
                                };
                     if (!storeId.IsNull())

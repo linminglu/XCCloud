@@ -1213,7 +1213,7 @@
             let checkStatus = table.checkStatus('gameDeviceTable'); //test即为基础参数id对应的值
             let len = checkStatus.data.length;
             if (len == 1) {
-                $('input[name="router"]').val(data.segment);
+                $('input[name="router"]').val(checkStatus.data[0].segment);
                 layer.open({
                     title: '路由器段号设置',
                     type: 1,
