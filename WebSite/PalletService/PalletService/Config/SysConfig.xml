@@ -29,7 +29,7 @@
     </Device>
   </PalmPrints>
   <Printer>
-    <Device Model="KP58 Printer" Name="KP58 Printer" Selected="0">
+    <Device Model="POS58 Printer" Name="POS58 Printer" Selected="0">
     </Device>
   </Printer>
   <PrinterFilter>

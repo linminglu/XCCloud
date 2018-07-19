@@ -1417,7 +1417,7 @@ namespace RadarService
         /// <param name="action">同步方式 0 新增 1 修改 2 删除</param>
         public void 门店数据同步请求(string tableName, string idValue, int action)
         {
-            dsClient.StoreDataSync(PublicHelper.SystemDefiner.StoreID, tableName, idValue, action);
+            dsClient.StoreDataSync(tableName, idValue, action);
         }
     }
 }
