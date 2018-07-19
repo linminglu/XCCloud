@@ -14,7 +14,7 @@ namespace XCCloudWebBar.Model.XCCloud
     
     public partial class Flw_Transfer
     {
-        public string id { get; set; }
+        public string ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> OpType { get; set; }

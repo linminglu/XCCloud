@@ -1223,7 +1223,7 @@ namespace XXCloudService.Api.XCCloud
                 }
                 else
                 {
-                    Flw_Order order = Flw_OrderBusiness.GetOrderModel(OrderId);
+                    Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == OrderId).FirstOrDefault();
                     if(order != null)
                     {
                         model.OrderId = OrderId;

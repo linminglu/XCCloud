@@ -9,12 +9,15 @@ using System.Threading.Tasks;
 using System.Data;
 using RadarService.PublicHelper;
 using RadarService.Notify;
+using DSS;
+using DSS.Client;
 
 namespace RadarService
 {
     public class HostServer
     {
         static XCHelper xcClient = null;
+        Client dsClient = null;
         class RouteData
         {
             public string Token { get; set; }
@@ -23,6 +26,9 @@ namespace RadarService
         }
         string CloudServerIP = "";
         int CloudServerPort = 0;
+
+        string DSServerIP = "";
+        int DSServerPort = 0;
 
         UDPServer udp = new UDPServer();
         Queue<RouteData> RecvList = new Queue<RouteData>();
@@ -37,15 +43,37 @@ namespace RadarService
                 return dt.Rows[0]["IsAllow"].ToString();
             return "";
         }
-
-        public HostServer(string merchID, string storeID, string DBIP, string DBPwd, int udpPort, string cloudIP, int cloudPort)
+        public delegate void 数据交换事件(string messageTxt);
+        public event 数据交换事件 OnRadarRecvMessage;
+        void RadarRecvMessage(string messageTxt)
         {
-            PublicHelper.SystemDefiner.SQLConnectString = string.Format("Data Source ={0};Initial Catalog = XCCloud;User Id = sa;Password = {1};", DBIP, DBPwd);
+            if (OnRadarRecvMessage != null)
+            {
+                OnRadarRecvMessage(messageTxt);
+            }
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="merchID">商户编号</param>
+        /// <param name="storeID">门店编号</param>
+        /// <param name="DBConnectString">数据库连接字符串</param>
+        /// <param name="udpPort">雷达服务端口</param>
+        /// <param name="cloudIP">雷达云端交互服务IP</param>
+        /// <param name="cloudPort">雷达云端交互服务端口</param>
+        /// <param name="dsServerIP">同步服务IP</param>
+        /// <param name="dsServerPort">同步服务端口</param>
+        public HostServer(string merchID, string storeID, string DBConnectString, int udpPort, string cloudIP, int cloudPort, string dsServerIP, int dsServerPort)
+        {
+            DataAccess.SQLConnectString = DBConnectString;
             PublicHelper.SystemDefiner.MerchID = merchID;
             PublicHelper.SystemDefiner.StoreID = storeID;
             ServerPort = udpPort;
             CloudServerIP = cloudIP;
             CloudServerPort = cloudPort;
+            DSServerIP = dsServerIP;
+            DSServerPort = dsServerPort;
 
             DataAccess ac = new DataAccess();
             DataTable dt = ac.ExecuteQueryReturnTable("select MerchSecret,ProxyType from Base_MerchantInfo where MerchID='" + merchID + "'");
@@ -537,9 +565,9 @@ namespace RadarService
         public bool StartServer(string logPath = "")
         {
             if (PublicHelper.SystemDefiner.InitSuccess) return false;
-            string checkdate = XCCouldSerialNo.SerialNoHelper.StringGet("营业日期");
+            string checkdate = XCCloudSerialNo.SerialNoHelper.StringGet("营业日期");
             if (checkdate == null)
-                XCCouldSerialNo.SerialNoHelper.StringSet("营业日期", DateTime.Now.ToString("yyyy-MM-dd"));
+                XCCloudSerialNo.SerialNoHelper.StringSet("营业日期", DateTime.Now.ToString("yyyy-MM-dd"));
 
             if (logPath.Trim() != "")
                 PublicHelper.SystemDefiner.LogPath = logPath;
@@ -566,10 +594,15 @@ namespace RadarService
                     bodySendT.Start();
                 }
 
+                //雷达云端服务连接
                 xcClient = new XCHelper(CloudServerIP, CloudServerPort, PublicHelper.SystemDefiner.StoreID, PublicHelper.SystemDefiner.StorePassword, "");
                 xcClient.OnDeviceControl += xcClient_OnDeviceControl;   //设备远程控制
                 xcClient.Init();    //初始化
                 xcClient.RegistRouteDevice();   //服务在互联网服务上注册
+
+                //数据同步服务连接
+                dsClient = new Client(DSServerIP, DSServerPort, PublicHelper.SystemDefiner.StoreID, PublicHelper.SystemDefiner.MerchID, PublicHelper.SystemDefiner.AppSecret);
+                dsClient.Init();
                 _initSuccess = true;
             }
             catch (Exception ex)
@@ -591,7 +624,7 @@ namespace RadarService
         /// <param name="contorl"></param>
         void xcClient_OnDeviceControl(JsonObject.DeviceControl contorl)
         {
-            Info.DeviceInfo.机头信息 head = XCCouldSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>(contorl.mcuid);
+            Info.DeviceInfo.机头信息 head = XCCloudSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>(contorl.mcuid);
             if (head != null)
             {
                 if (head.状态.在线状态)
@@ -696,6 +729,8 @@ namespace RadarService
                             Command.Recv.Recv机头网络状态报告 function = new Command.Recv.Recv机头网络状态报告(f);
                             udp.SendData(function.SendData, route.RemotePoint);
                             function.SendDate = DateTime.Now;
+                            RadarRecvMessage(function.GetRecvData(processTime));
+                            RadarRecvMessage(function.GetSendData());
                         }
                         break;
                     case CommandType.设置机头长地址应答:
@@ -707,20 +742,34 @@ namespace RadarService
                         {
                             UpdateRouteSegment(route.Token, f.routeAddress);
                             ClearBodyItem(CommandType.设置路由器地址应答, null);
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append("=============================================\r\n");
+                            sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  收到数据\r\n", processTime);
+                            sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);
+                            sb.AppendFormat("指令类别：{0}\r\n", f.commandType);
+                            RadarRecvMessage(sb.ToString());
                         }
                         break;
                     case CommandType.机头地址动态分配:
                         {
                             Command.Recv.Recv机头地址动态分配 function = new Command.Recv.Recv机头地址动态分配(f);
+                            RadarRecvMessage(function.GetRecvData(processTime));
                             if (function.SendData != null)
+                            {
                                 udp.SendData(function.SendData, route.RemotePoint);
+                                RadarRecvMessage(function.GetSendData());
+                            }
                         }
                         break;
                     case CommandType.游戏机参数申请:
                         {
                             Command.Recv.Recv游戏机参数申请 function = new Command.Recv.Recv游戏机参数申请(f);
+                            RadarRecvMessage(function.GetRecvData(processTime));
                             if (function.SendData != null)
+                            {
                                 udp.SendData(function.SendData, route.RemotePoint);
+                                RadarRecvMessage(function.GetSendData());
+                            }
                         }
                         break;
                     case CommandType.液晶卡头扩展信息下发应答指令:
@@ -728,12 +777,20 @@ namespace RadarService
                             string headAddress = Coding.ConvertData.Hex2String(f.commandData[0]);
                             int SN = BitConverter.ToUInt16(f.commandData, 1);
                             ClearBodyItem(f.commandType, null, SN, headAddress);
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append("=============================================\r\n");
+                            sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  收到数据\r\n", processTime);
+                            sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);
+                            sb.AppendFormat("指令类别：{0}\r\n", f.commandType);
+                            sb.AppendFormat("流水号：{0}\r\n", SN);
+                            RadarRecvMessage(sb.ToString());
                         }
                         break;
                     case CommandType.液晶卡头扩展信息请求指令:
                         {
                             Command.Recv.Recv液晶卡头扩展信息请求指令 function = new Command.Recv.Recv液晶卡头扩展信息请求指令(f, processTime);
                             udp.SendData(function.SendData, route.RemotePoint);
+                            RadarRecvMessage(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetSendData());
                             if (!function.isRepeat)
@@ -748,6 +805,8 @@ namespace RadarService
                             udp.SendData(function.SendData, route.RemotePoint);
                             Console.WriteLine(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetSendData());
+                            RadarRecvMessage(function.GetRecvData(processTime));
+                            RadarRecvMessage(function.GetSendData());
                         }
                         break;
                     case CommandType.液晶卡头投币指令:
@@ -759,6 +818,8 @@ namespace RadarService
                             udp.SendData(function.SendData, route.RemotePoint);
                             Console.WriteLine(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetSendData());
+                            RadarRecvMessage(function.GetRecvData(processTime));
+                            RadarRecvMessage(function.GetSendData());
                         }
                         break;
                     case CommandType.IC卡模式会员余额查询:
@@ -769,6 +830,8 @@ namespace RadarService
                             udp.SendData(function.SendData, route.RemotePoint);
                             Console.WriteLine(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetSendData());
+                            RadarRecvMessage(function.GetRecvData(processTime));
+                            RadarRecvMessage(function.GetSendData());
                         }
                         break;
                     case CommandType.IC卡模式退币数据:
@@ -781,6 +844,8 @@ namespace RadarService
 
                             Console.WriteLine(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetSendData());
+                            RadarRecvMessage(function.GetRecvData(processTime));
+                            RadarRecvMessage(function.GetSendData());
                         }
                         break;
                     case CommandType.机头锁定解锁指令应答:
@@ -791,6 +856,7 @@ namespace RadarService
                             sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);
                             sb.AppendFormat("指令类别：{0}\r\n", f.commandType);
                             Console.WriteLine(sb.ToString());
+                            RadarRecvMessage(sb.ToString());
                             ClearBodyItem(f.commandType, null);
                         }
                         break;
@@ -802,19 +868,24 @@ namespace RadarService
                             LogHelper.LogHelper.WriteSNLog("发送", function.机头地址, f.routeAddress, function.流水号.ToString(), function.SendData);
                             Console.WriteLine(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetSendData());
+                            RadarRecvMessage(function.GetRecvData(processTime));
+                            RadarRecvMessage(function.GetSendData());
                         }
                         break;
                     case CommandType.远程投币上分指令应答:
                         {
+                            int SN = BitConverter.ToUInt16(f.recvData, 7);
+                            string headAddress = Coding.ConvertData.Hex2String(f.commandData[0]);
                             StringBuilder sb = new StringBuilder();
                             sb.Append("=============================================\r\n");
                             sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  收到数据\r\n", processTime);
-                            sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);
-                            int SN = BitConverter.ToUInt16(f.recvData, 7);
+                            sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);                            
                             sb.AppendFormat("指令类别：{0}\r\n", f.commandType);
                             sb.AppendFormat("流水号：{0}\r\n", SN);
+                            sb.AppendFormat("机头地址：{0}\r\n", headAddress);
                             Console.WriteLine(sb.ToString());
-                            string headAddress = Coding.ConvertData.Hex2String(f.commandData[0]);
+                            RadarRecvMessage(sb.ToString());
+                            
                             ClearBodyItem(f.commandType, null, SN, headAddress);
                         }
                         break;
@@ -994,16 +1065,7 @@ namespace RadarService
             {
                 LogHelper.LogHelper.WriteLog(ex, route.RecvData);
             }
-        }
-
-        public void Test()
-        {
-            Info.DeviceInfo.机头信息 head = XCCouldSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("20180328000001");
-            IPEndPoint p = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
-            Command.Ask.Ask液晶卡头扩展信息下发指令 a = new Command.Ask.Ask液晶卡头扩展信息下发指令(head, Command.Recv.参数类别.显示参数, p);
-            a.SendShowParamet(head, p);
-        }
-
+        }        
         public void 终端同步()
         {
             Info.DeviceInfo.Init();
@@ -1067,6 +1129,11 @@ namespace RadarService
             }
             return false;
         }
+        public bool 远程退分指令(string segment, string headAddress, out string errMsg)
+        {
+            string mcuid = Info.DeviceInfo.GetBufMCUIDInfo(segment, headAddress);
+            return 远程退分指令(mcuid, out errMsg);
+        }
         public bool 远程投币指令(string mcuid, int coin, string pushTypeName, bool ZKZY, out string errMsg)
         {
             errMsg = "";
@@ -1103,6 +1170,11 @@ namespace RadarService
                 errMsg = ex.Message;
             }
             return false;
+        }
+        public bool 远程投币指令(string segment, string headAddress, int coin, string pushTypeName, bool ZKZY, out string errMsg)
+        {
+            string mcuid = Info.DeviceInfo.GetBufMCUIDInfo(segment, headAddress);
+            return 远程投币指令(mcuid, coin, pushTypeName, ZKZY, out errMsg);
         }
         public bool 远程锁定与解锁指令(string mcuid, bool isLock, out string errMsg)
         {
@@ -1143,6 +1215,11 @@ namespace RadarService
                 errMsg = ex.Message;
             }
             return false;
+        }
+        public bool 远程锁定与解锁指令(string segment, string headAddress, bool isLock, out string errMsg)
+        {
+            string mcuid = Info.DeviceInfo.GetBufMCUIDInfo(segment, headAddress);
+            return 远程锁定与解锁指令(mcuid, isLock, out errMsg);
         }
     }
 }

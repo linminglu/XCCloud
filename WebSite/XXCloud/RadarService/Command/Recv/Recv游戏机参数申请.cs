@@ -20,9 +20,9 @@ namespace RadarService.Command.Recv
             try
             {
                 机头地址 = Coding.ConvertData.Hex2String(data.commandData[0]).ToLower();
-                string MCUID = XCCouldSerialNo.SerialNoHelper.StringGet("info_" + data.routeAddress + "|" + 机头地址);
+                string MCUID = XCCloudSerialNo.SerialNoHelper.StringGet("info_" + data.routeAddress + "|" + 机头地址);
                 if (MCUID == null) return;
-                Info.DeviceInfo.机头信息 head = XCCouldSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("headinfo_" + MCUID);
+                Info.DeviceInfo.机头信息 head = XCCloudSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("headinfo_" + MCUID);
                 if (head != null)
                 {
                     switch (head.类型)

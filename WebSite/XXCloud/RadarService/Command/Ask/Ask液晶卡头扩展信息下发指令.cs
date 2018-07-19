@@ -5,6 +5,7 @@ using System.Text;
 using RadarService.Command.Recv;
 using System.Data;
 using System.Net;
+using DSS;
 
 namespace RadarService.Command.Ask
 {

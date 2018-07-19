@@ -18,6 +18,8 @@ using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCGame;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Business.XCGame;
+using XCCloudService.SocketService.UDP.Security;
+using XCCloudService.SocketService.UDP.Common;
 
 
 namespace XCCloudService.SocketService.UDP
@@ -38,6 +40,16 @@ namespace XCCloudService.SocketService.UDP
         static List<TransmiteObject.文件传输结构> fileRecvBUF = new List<TransmiteObject.文件传输结构>();
         static List<TransmiteObject.文件下载结构> fileSendBUF = new List<TransmiteObject.文件下载结构>();
         const int PacketLength = 1024 * 8;
+        class AskItem
+        {
+            public EndPoint RemotePoint { get; set; }
+            public string Secret { get; set; }
+        }
+        /// <summary>
+        /// 指令流水号对应远程节点
+        /// 用于异步应答远程指令
+        /// </summary>
+        static Dictionary<string, AskItem> AskSNList = new Dictionary<string, AskItem>();
 
         public static Socket SocketServer
         {
@@ -135,7 +147,7 @@ namespace XCCloudService.SocketService.UDP
                 LogHelper.SaveLog(TxtLogType.UPDService, TxtLogContentType.Exception, TxtLogFileType.Time, "ReceiveCallback:" + e.Message);
                 // 获得接收失败信息 
                 throw e;
-            } 
+            }
 
             if (readBytes > 0)
             {
@@ -168,6 +180,19 @@ namespace XCCloudService.SocketService.UDP
                 IPEndPoint clients = new IPEndPoint(IPAddress.Parse(IP), Port);
                 EndPoint epSender = (EndPoint)clients;
                 client.BeginSendTo(data, 0, data.Length, SocketFlags.None, epSender, new AsyncCallback(SendCallBack), client);
+
+            }
+            catch (Exception e)
+            {
+                LogHelper.SaveLog(TxtLogType.UPDService, TxtLogContentType.Exception, TxtLogFileType.Day, "Send(string IP, int Port, byte[] data);" + e.Message);
+                //throw;
+            }
+        }
+        public static void Send(EndPoint p, byte[] data)
+        {
+            try
+            {
+                client.BeginSendTo(data, 0, data.Length, SocketFlags.None, p, new AsyncCallback(SendCallBack), client);
 
             }
             catch (Exception e)
@@ -212,7 +237,6 @@ namespace XCCloudService.SocketService.UDP
                             int requestTransmiteEnumValue = 0;
                             string data = string.Empty;
                             string clientId = string.Empty;
-                            object outModel = null;
                             int packId = 0;
                             int packNum = 0;
                             DataFactory.GetProtocolData(item.data, out requestTransmiteEnumValue, out data, out packId, out packNum);
@@ -245,6 +269,24 @@ namespace XCCloudService.SocketService.UDP
                                 //break;
                                 case TransmiteEnum.卡头解绑同步响应:
                                     CommandHandler.CardHeadResetInsNotify(data, item);
+                                    break;
+                                case TransmiteEnum.门店条码支付请求:
+                                    {
+                                        string sn = "", secret = "";
+                                        CommandHandler.ScanPayRequest(data, item, out sn, out secret);
+                                        if (!AskSNList.ContainsKey(sn))
+                                        {
+                                            AskItem ai = new AskItem();
+                                            ai.Secret = secret;
+                                            ai.RemotePoint = item.remotePoint;
+                                            AskSNList.Add(sn, ai);
+                                        }
+                                        else
+                                        {
+                                            AskSNList[sn].RemotePoint = item.remotePoint;
+                                            AskSNList[sn].Secret = secret;
+                                        }
+                                    }
                                     break;
                                 //case TransmiteEnum.远程门店账目应答通知指令:
                                 //    CommandHandler.StoreQueryNotify(data, item, packId, packNum);
@@ -471,6 +513,29 @@ namespace XCCloudService.SocketService.UDP
                     }
                 }
             }
+        }
+        /// <summary>
+        /// 应答门店条码支付结果
+        /// </summary>
+        /// <param name="result">支付结果 0 支付失败 1 支付成功</param>
+        /// <param name="msg">失败时返回错误消息</param>
+        /// <param name="sn">应答支付流水号</param>
+        public static bool AskScanPayResult(string result, string msg, string sn)
+        {
+            if (AskSNList.ContainsKey(sn))
+            {
+                EndPoint p = AskSNList[sn].RemotePoint;
+                ScanPayResponseModel response = new ScanPayResponseModel(result, msg, sn);
+                response.SignKey = SignKeyHelper.GetSignKey(response, AskSNList[sn].Secret);
+                //对象序列化为字节数组
+                byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(response);
+                //生成发送数据包
+                byte[] requestPackages = DataFactory.CreateResponseProtocolData(TransmiteEnum.远程门店出票条码数据请求, dataByteArr);
+                Send(p, requestPackages);
+                AskSNList.Remove(sn);
+                return true;
+            }
+            return false;
         }
     }
 }

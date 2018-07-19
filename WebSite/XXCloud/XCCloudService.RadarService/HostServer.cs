@@ -33,6 +33,7 @@ namespace XCCloudService.RadarService
 
         public HostServer(string merchID, string storeID, string DBIP, string DBPwd, int udpPort)
         {
+            
             SQLConnectString = string.Format("Data Source ={0};Initial Catalog = XCCloud;User Id = sa;Password = {1};", DBIP, DBPwd);
             MerchID = merchID;
             StoreID = storeID;

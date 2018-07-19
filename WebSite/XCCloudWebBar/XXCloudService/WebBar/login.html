@@ -189,9 +189,6 @@
 //          登录
             login:function(){
                 var that = this;
-                console.log(that.username == "" || that.password == "")
-                console.log(that.username == "")
-                console.log(that.password == "")
                 if(that.username == "" || that.password == ""){
                     that.msg = "输入不能为空！";
                     $('#myModal').modal('show');
@@ -201,7 +198,6 @@
                 }else{
                     that.loading = true;
                     // var obj={'loginName':"lijunjie1",'password':"123456",'workStation':'lijunjie','dogId':'22222222'};
-
                     // var obj={'loginName':"45",'password':"123456",'workStation':'tietou','dogId':'22222222'};
                     // var obj={'loginName':"zwf",'password':"123456",'workStation':'tietou1','dogId':'22222222'};
                     var obj={'loginName':that.username,'password':that.password,'workStation':that.workStation,'dogId':that.dogId};

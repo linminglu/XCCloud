@@ -99,7 +99,7 @@ namespace XXCloudService.PayChannel
             //获得商户订单号out_trade_no
             string out_trade_no = Request.Form["out_trade_no"];
             //判断通知数据中的out_trade_no是否为商户系统中创建的订单号
-            Flw_Order order = Flw_OrderBusiness.GetOrderModel(out_trade_no);
+            Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == out_trade_no).FirstOrDefault();
             if (order == null)
             {
                 return false;

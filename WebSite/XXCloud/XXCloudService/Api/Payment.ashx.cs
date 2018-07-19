@@ -63,7 +63,6 @@ namespace XXCloudService.Api
                 string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
                 string strPayChannel = dicParas.ContainsKey("payChannel") ? dicParas["payChannel"].ToString() : string.Empty;
                 string payType = dicParas.ContainsKey("payType") ? dicParas["payType"].ToString() : string.Empty;
-                string subject = dicParas.ContainsKey("subject") ? dicParas["subject"].ToString() : string.Empty;
 
                 if (string.IsNullOrWhiteSpace(orderId))
                 {
@@ -77,29 +76,24 @@ namespace XXCloudService.Api
                 //支付方式
                 PaymentChannel PayChannel = (PaymentChannel)Convert.ToInt32(payType);
 
-                Flw_Order order = Flw_OrderBusiness.GetOrderModel(orderId);
+                Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == orderId).FirstOrDefault();
                 if (order == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
-                }
-
-                var storeId = order.StoreID;
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单所属门店无效");
                 }
 
                 //订单减免金额
                 decimal freePay = order.FreePay == null ? 0 : order.FreePay.Value;
                 //计算订单实付金额，单位：元 
                 decimal amount = (decimal)order.PayCount - freePay;
+                //订单描述
+                string subject = !string.IsNullOrWhiteSpace(order.Note) ? order.Note : order.ID;
 
                 PayQRcodeModel model = new PayQRcodeModel();
                 model.OrderId = orderId;
 
-                //SelttleType selttleType = (SelttleType)store.SelttleType.Value;
-                SelttleType selttleType = (SelttleType)Convert.ToInt32(strPayChannel);
+                int payChannel = strPayChannel.Toint(2);//默认新大陆支付
+                SelttleType selttleType = (SelttleType)Convert.ToInt32(payChannel);
                 switch (selttleType)
                 {
                     case SelttleType.NotThird:
@@ -279,8 +273,7 @@ namespace XXCloudService.Api
                 string errMsg = string.Empty;
                 string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
                 string strPayChannel = dicParas.ContainsKey("payChannel") ? dicParas["payChannel"].ToString() : string.Empty;
-                string subject = dicParas.ContainsKey("subject") ? dicParas["subject"].ToString() : string.Empty;
-                string payType = dicParas.ContainsKey("payType") ? dicParas["payType"].ToString() : string.Empty;
+                string strPayType = dicParas.ContainsKey("payType") ? dicParas["payType"].ToString() : string.Empty;
                 string authCode = dicParas.ContainsKey("authCode") ? dicParas["authCode"].ToString() : string.Empty;
 
                 if (string.IsNullOrWhiteSpace(orderId))
@@ -288,36 +281,33 @@ namespace XXCloudService.Api
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
                 }
 
-                if (string.IsNullOrWhiteSpace(payType))
+                int payType = strPayType.Toint(0);
+                if (payType == 0)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付方式为空");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付方式不正确");
                 }
-                //支付方式
-                PaymentChannel PayChannel = (PaymentChannel)Convert.ToInt32(payType);
 
-                Flw_Order order = Flw_OrderBusiness.GetOrderModel(orderId);
+                //支付方式
+                PaymentChannel PayChannel = (PaymentChannel)payType;
+
+                Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == orderId).FirstOrDefault();
                 if (order == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
-                }
-
-                var storeId = order.StoreID;
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单所属门店无效");
                 }
 
                 //订单减免金额
                 decimal freePay = order.FreePay == null ? 0 : order.FreePay.Value;
                 //计算订单实付金额，单位：元
                 decimal amount = (decimal)order.PayCount - freePay;
+                //订单描述
+                string subject = !string.IsNullOrWhiteSpace(order.Note) ? order.Note : order.ID;
 
                 BarcodePayModel model = new BarcodePayModel();
                 model.OrderId = orderId;
 
-                //SelttleType selttleType = (SelttleType)store.SelttleType.Value;
-                SelttleType selttleType = (SelttleType)Convert.ToInt32(strPayChannel);
+                int payChannel = strPayChannel.Toint(2);//默认新大陆支付
+                SelttleType selttleType = (SelttleType)Convert.ToInt32(payChannel);
                 switch (selttleType)
                 {
                     case SelttleType.NotThird:

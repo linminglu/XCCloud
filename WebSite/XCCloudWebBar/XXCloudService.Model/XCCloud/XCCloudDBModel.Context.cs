@@ -27,7 +27,6 @@ namespace XCCloudWebBar.Model.XCCloud
     
         public virtual DbSet<Base_ChainRule_Store> Base_ChainRule_Store { get; set; }
         public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
-        public virtual DbSet<Base_EnumParams> Base_EnumParams { get; set; }
         public virtual DbSet<Base_Goodinfo_Price> Base_Goodinfo_Price { get; set; }
         public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
         public virtual DbSet<Base_MerchAlipay> Base_MerchAlipay { get; set; }
@@ -42,22 +41,18 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Base_UserGroup> Base_UserGroup { get; set; }
         public virtual DbSet<Base_UserGroup_Grant> Base_UserGroup_Grant { get; set; }
         public virtual DbSet<Base_WechatFunction> Base_WechatFunction { get; set; }
-        public virtual DbSet<BUF_UserAnalysis> BUF_UserAnalysis { get; set; }
         public virtual DbSet<Data_BalanceChargeRule> Data_BalanceChargeRule { get; set; }
         public virtual DbSet<Data_BalanceType_StoreList> Data_BalanceType_StoreList { get; set; }
         public virtual DbSet<Data_BillInfo> Data_BillInfo { get; set; }
-        public virtual DbSet<Data_Card_BalanceCharge> Data_Card_BalanceCharge { get; set; }
         public virtual DbSet<Data_CoinDestory> Data_CoinDestory { get; set; }
         public virtual DbSet<Data_CoinInventory> Data_CoinInventory { get; set; }
         public virtual DbSet<Data_CoinStorage> Data_CoinStorage { get; set; }
         public virtual DbSet<Data_Coupon_StoreList> Data_Coupon_StoreList { get; set; }
         public virtual DbSet<Data_CouponCondition> Data_CouponCondition { get; set; }
-        public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Data_DigitCoinDestroy> Data_DigitCoinDestroy { get; set; }
         public virtual DbSet<Data_DigitCoinFood> Data_DigitCoinFood { get; set; }
         public virtual DbSet<Data_Discount_Detail> Data_Discount_Detail { get; set; }
         public virtual DbSet<Data_Discount_MemberLevel> Data_Discount_MemberLevel { get; set; }
-        public virtual DbSet<Data_Discount_RecordMember> Data_Discount_RecordMember { get; set; }
         public virtual DbSet<Data_Discount_RecordStore> Data_Discount_RecordStore { get; set; }
         public virtual DbSet<Data_Discount_StoreList> Data_Discount_StoreList { get; set; }
         public virtual DbSet<Data_DiscountRule> Data_DiscountRule { get; set; }
@@ -78,8 +73,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_GoodRequest_List> Data_GoodRequest_List { get; set; }
         public virtual DbSet<Data_GoodStorage> Data_GoodStorage { get; set; }
         public virtual DbSet<Data_GroupArea> Data_GroupArea { get; set; }
-        public virtual DbSet<Data_Jackpot_Level> Data_Jackpot_Level { get; set; }
-        public virtual DbSet<Data_Jackpot_Matrix> Data_Jackpot_Matrix { get; set; }
         public virtual DbSet<Data_JackpotInfo> Data_JackpotInfo { get; set; }
         public virtual DbSet<Data_Member_Card_Store> Data_Member_Card_Store { get; set; }
         public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
@@ -111,14 +104,10 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_Digite_Coin> Flw_Digite_Coin { get; set; }
         public virtual DbSet<Flw_Digite_Coin_Detail> Flw_Digite_Coin_Detail { get; set; }
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
-        public virtual DbSet<Flw_Game_WinPrize> Flw_Game_WinPrize { get; set; }
         public virtual DbSet<Flw_Good_Detail> Flw_Good_Detail { get; set; }
-        public virtual DbSet<Flw_Jackpot> Flw_Jackpot { get; set; }
         public virtual DbSet<Flw_Lottery> Flw_Lottery { get; set; }
         public virtual DbSet<Flw_Order_SerialNumber> Flw_Order_SerialNumber { get; set; }
-        public virtual DbSet<Flw_Project_PlayTime> Flw_Project_PlayTime { get; set; }
         public virtual DbSet<Flw_Ticket_Exit> Flw_Ticket_Exit { get; set; }
-        public virtual DbSet<Log_Operation> Log_Operation { get; set; }
         public virtual DbSet<Search_Template> Search_Template { get; set; }
         public virtual DbSet<Search_Template_Detail> Search_Template_Detail { get; set; }
         public virtual DbSet<Store_GameTotal> Store_GameTotal { get; set; }
@@ -182,7 +171,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
         public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
-        public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
         public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
         public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
@@ -193,16 +181,24 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Base_StoreInfo> Base_StoreInfo { get; set; }
         public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
         public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
-        public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
         public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_Food_Exit_Pay> Flw_Food_Exit_Pay { get; set; }
-        public virtual DbSet<Flw_Good_Buyback> Flw_Good_Buyback { get; set; }
         public virtual DbSet<Flw_Goods> Flw_Goods { get; set; }
-        public virtual DbSet<Flw_Order> Flw_Order { get; set; }
-        public virtual DbSet<XC_SyncBuf> XC_SyncBuf { get; set; }
         public virtual DbSet<XC_WorkInfo> XC_WorkInfo { get; set; }
         public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
+        public virtual DbSet<Flw_Order> Flw_Order { get; set; }
+        public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
+        public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
+        public virtual DbSet<Data_Jackpot_Level> Data_Jackpot_Level { get; set; }
+        public virtual DbSet<Flw_Jackpot> Flw_Jackpot { get; set; }
+        public virtual DbSet<Data_Jackpot_Matrix> Data_Jackpot_Matrix { get; set; }
+        public virtual DbSet<Log_Operation> Log_Operation { get; set; }
+        public virtual DbSet<Flw_Game_WinPrize> Flw_Game_WinPrize { get; set; }
+        public virtual DbSet<Data_Discount_RecordMember> Data_Discount_RecordMember { get; set; }
+        public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
+        public virtual DbSet<Data_Card_BalanceCharge> Data_Card_BalanceCharge { get; set; }
+        public virtual DbSet<BUF_UserAnalysis> BUF_UserAnalysis { get; set; }
     }
 }

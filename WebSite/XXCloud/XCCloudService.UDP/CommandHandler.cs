@@ -41,7 +41,7 @@ namespace XCCloudService.SocketService.UDP
                 item.gID = parmasModel.Token;
                 item.StoreID = parmasModel.StoreId;
                 item.Segment = parmasModel.Segment;
-                ClientList.UpdateClient(item);                
+                ClientList.UpdateClient(item);
             }
             Send(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, parmasModel.ResponsePackages);
             string logTxt = "[接收：" + requestDataJson + "]" + "[响应：" + Utils.SerializeObject(parmasModel) + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -54,7 +54,7 @@ namespace XCCloudService.SocketService.UDP
         {
             object outModel = null;
             object requestModel = null;
-            DataFactory.CreateResponseProtocolData(TransmiteEnum.设备状态变更通知, requestDataJson,ref requestModel, ref outModel);
+            DataFactory.CreateResponseProtocolData(TransmiteEnum.设备状态变更通知, requestDataJson, ref requestModel, ref outModel);
             DeviceStateOutParamsModel responseOutModel = (DeviceStateOutParamsModel)outModel;
             Send(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, ((DeviceStateOutParamsModel)outModel).ResponsePackages);
             DeviceStateRequestDataModel requestDataModel = (DeviceStateRequestDataModel)requestModel;
@@ -81,20 +81,20 @@ namespace XCCloudService.SocketService.UDP
         {
             object outModel = null;
             object requestModel = null;
-            DataFactory.CreateResponseProtocolData(TransmiteEnum.雷达心跳, requestDataJson,ref requestModel ,ref outModel);
+            DataFactory.CreateResponseProtocolData(TransmiteEnum.雷达心跳, requestDataJson, ref requestModel, ref outModel);
             RadarHeartbeatOutParamsModel outDataModel = (RadarHeartbeatOutParamsModel)outModel;
             Send(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, ((RadarHeartbeatOutParamsModel)outModel).ResponsePackages);
             RadarHeartbeatRequestDataModel requestDataModel = (RadarHeartbeatRequestDataModel)requestModel;
-            
+
             //记录心跳日志
             bool bHeadSuccess = false;
-            if(outDataModel.ResponseModel.GetType().Name.Equals("ComonErrorResponseModel"))
+            if (outDataModel.ResponseModel.GetType().Name.Equals("ComonErrorResponseModel"))
             {
                 ComonErrorResponseModel model = (ComonErrorResponseModel)(outDataModel.ResponseModel);
                 bHeadSuccess = model.Result_Code == "1" ? true : false;
             }
             else if (outDataModel.ResponseModel.GetType().Name.Equals("ComonSuccessResponseModel"))
-            { 
+            {
                 ComonSuccessResponseModel model = (ComonSuccessResponseModel)(outDataModel.ResponseModel);
                 bHeadSuccess = model.Result_Code == "1" ? true : false;
             }
@@ -109,7 +109,7 @@ namespace XCCloudService.SocketService.UDP
         {
             object outModel = null;
             object requestModel = null;
-            DataFactory.CreateResponseProtocolData(TransmiteEnum.远程设备控制指令, requestDataJson, ref requestModel,ref outModel);
+            DataFactory.CreateResponseProtocolData(TransmiteEnum.远程设备控制指令, requestDataJson, ref requestModel, ref outModel);
             DeviceControlAnswerRequestDataModel requestDataModel = (DeviceControlAnswerRequestDataModel)requestModel;
             DeviceControlOutParmasModel responseDataModel = (DeviceControlOutParmasModel)outModel;
             UDPSocketAnswerModel answerModel = null;
@@ -124,8 +124,8 @@ namespace XCCloudService.SocketService.UDP
             string logTxt = "[接收：" + requestDataJson + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             string radarToken = string.Empty;
             if (answerModel != null && XCGameRadarDeviceTokenBusiness.GetRouteDeviceToken(requestDataModel.StoreId, answerModel.Segment, out radarToken))
-            { 
-                
+            {
+
             }
             //UDPLogHelper.SaveUDPDeviceControlLog(requestDataModel.StoreId, requestDataModel.OrderId, ((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.SN, requestDataJson, responseDataModel.ResponseJson, bSuccess, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseDataModel.ResponseJson + "]";
@@ -137,13 +137,13 @@ namespace XCCloudService.SocketService.UDP
             object outModel = null;
             object requestModel = null;
 
-            DataFactory.CreateResponseProtocolData(TransmiteEnum.雷达通知指令, requestDataJson, ref requestModel,ref outModel);
+            DataFactory.CreateResponseProtocolData(TransmiteEnum.雷达通知指令, requestDataJson, ref requestModel, ref outModel);
             RadarNotifyRequestModel rnrModel = Utils.DataContractJsonDeserializer<RadarNotifyRequestModel>(requestDataJson);
             RadarNotifyOutParamsModel responseOutModel = (RadarNotifyOutParamsModel)outModel;
             XCGameRadarDeviceTokenModel radarTokenModel = XCGameRadarDeviceTokenBusiness.GetRadarDeviceTokenModel(rnrModel.Token);
             Send(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, ((RadarNotifyOutParamsModel)outModel).ResponsePackages);
             RadarNotifyRequestModel requestDataModel = (RadarNotifyRequestModel)requestModel;
-            
+
             //验证相应模式
             bool bCoinSuccess = false;
             if (responseOutModel.ResponseModel.GetType().Name.Equals("ComonErrorResponseModel"))
@@ -167,7 +167,7 @@ namespace XCCloudService.SocketService.UDP
                 //出币后向客户端发送成功信息
                 try
                 {
-                    TCPAnswerOrderModel taoModel =null;
+                    TCPAnswerOrderModel taoModel = null;
                     //如果订单缓存信息存在
                     if (MPOrderBusiness.ExistTCPAnswerOrder(rnrModel.OrderId, ref taoModel))
                     {
@@ -176,7 +176,7 @@ namespace XCCloudService.SocketService.UDP
                         string answerMsgType = string.Empty;
                         string errMsg = string.Empty;
                         SAppPushMessageCacheModel msgModel = null;
-   
+
                         if (taoModel.Action == "1")
                         {
                             notifyMsg = "成功出币" + taoModel.Coins.ToString() + "个";
@@ -186,12 +186,12 @@ namespace XCCloudService.SocketService.UDP
                                 if (msgModel.SAppMessageType == SAppMessageType.MemberCoinsOperationNotify)
                                 {
                                     MemberCoinsOperationNotifyDataModel dataModel = (MemberCoinsOperationNotifyDataModel)(msgModel.DataObj);
-                                    SAppMessageMana.PushMemberCoinsMsg(msgModel.OpenId,msgModel.SAppAccessToken,"提币",dataModel.StoreName,dataModel.Mobile, dataModel.ICCardId, int.Parse(requestDataModel.Coins), dataModel.LastBalance, msgModel.FormId, "", out errMsg);
+                                    SAppMessageMana.PushMemberCoinsMsg(msgModel.OpenId, msgModel.SAppAccessToken, "提币", dataModel.StoreName, dataModel.Mobile, dataModel.ICCardId, int.Parse(requestDataModel.Coins), dataModel.LastBalance, msgModel.FormId, "", out errMsg);
                                 }
                                 else if (msgModel.SAppMessageType == SAppMessageType.MemberFoodSaleNotify)
                                 {
                                     MemberFoodSaleNotifyDataModel dataModel = (MemberFoodSaleNotifyDataModel)(msgModel.DataObj);
-                                    SAppMessageMana.PushMemberFoodSaleMsg(msgModel.OpenId,msgModel.SAppAccessToken,"购币", dataModel.StoreName,msgModel.Mobile, msgModel.OrderId, dataModel.FoodName, dataModel.FoodNum, dataModel.ICCardId, dataModel.Money, dataModel.Coins, msgModel.FormId, out errMsg);
+                                    SAppMessageMana.PushMemberFoodSaleMsg(msgModel.OpenId, msgModel.SAppAccessToken, "购币", dataModel.StoreName, msgModel.Mobile, msgModel.OrderId, dataModel.FoodName, dataModel.FoodNum, dataModel.ICCardId, dataModel.Money, dataModel.Coins, msgModel.FormId, out errMsg);
                                 }
                             }
                         }
@@ -216,7 +216,7 @@ namespace XCCloudService.SocketService.UDP
                                         }
                                     }
                                 }
-                                catch(Exception e)
+                                catch (Exception e)
                                 {
                                     LogHelper.SaveLog(TxtLogType.Api, TxtLogContentType.Debug, TxtLogFileType.Day, "MemberPreservationBusiness.PreservationBusiness:" + e.Message);
                                 }
@@ -233,14 +233,15 @@ namespace XCCloudService.SocketService.UDP
                             SAppMessageMana.PushMemberCoinsMsg(msgModel.OpenId, msgModel.SAppAccessToken, "退币", dataModel.StoreName, dataModel.Mobile, dataModel.ICCardId, int.Parse(requestDataModel.Coins), dataModel.LastBalance, msgModel.FormId, "", out errMsg);
                         }
 
-                        var dataObj = new {
+                        var dataObj = new
+                        {
                             result_code = "1",
-                            answerMsg = notifyMsg, 
-                            answerMsgType = answerMsgType  
+                            answerMsg = notifyMsg,
+                            answerMsgType = answerMsgType
                         };
                         MPOrderBusiness.RemoveTCPAnswerOrder(rnrModel.OrderId);
                         //TCPServiceBusiness.Send(taoModel.Mobile, dataObj);
-                        XCGameClientHub.SignalrServerToClient.Notify(taoModel.Mobile,dataObj);          
+                        XCGameClientHub.SignalrServerToClient.Notify(taoModel.Mobile, dataObj);
                     }
                 }
                 catch (Exception ex)
@@ -287,7 +288,7 @@ namespace XCCloudService.SocketService.UDP
             DataFactory.CreateResponseProtocolData(TransmiteEnum.远程门店账目查询指令, requestDataJson, ref requestModel, ref outModel);
             StoreQueryResponseModel requestDataModel = (StoreQueryResponseModel)requestModel;
             StoreQueryOutParamsModel responseOutModel = (StoreQueryOutParamsModel)outModel;
-            
+
             //验证相应模式
             bool bSuccess = false;
             if (responseOutModel.ResponseModel.GetType().Name.Equals("ComonErrorResponseModel"))
@@ -321,7 +322,7 @@ namespace XCCloudService.SocketService.UDP
             object outModel = null;
             object requestModel = null;
 
-            DataFactory.CreateResponseProtocolData(TransmiteEnum.远程门店账目应答通知指令, requestDataJson, ref requestModel, ref outModel,packId);
+            DataFactory.CreateResponseProtocolData(TransmiteEnum.远程门店账目应答通知指令, requestDataJson, ref requestModel, ref outModel, packId);
             StoreQueryResultNotifyRequestModel rnrModel = (StoreQueryResultNotifyRequestModel)(requestModel);
             StoreQueryNotifyOutParamsModel responseOutModel = (StoreQueryNotifyOutParamsModel)outModel;
             Send(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, ((StoreQueryNotifyOutParamsModel)outModel).ResponsePackages);
@@ -450,7 +451,7 @@ namespace XCCloudService.SocketService.UDP
                 errMsg = "签名不正确";
                 return;
             }
-   
+
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
@@ -649,6 +650,22 @@ namespace XCCloudService.SocketService.UDP
 
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
+        }
+        public static void ScanPayRequest(string requestDataJson, UDPClientItemBusiness.ClientItem item, out string sn,out string secret)
+        {
+            ScanPayRequestModel scanpay = JsonHelper.DataContractJsonDeserializer<ScanPayRequestModel>(requestDataJson);
+            UDPSocketCommonQueryAnswerModel asnwerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(scanpay.SN);
+            sn = scanpay.SN;
+            secret = asnwerModel.StorePassword;
+            if (SignKeyHelper.CheckSignKey(scanpay, asnwerModel.StorePassword))
+            {
+                //签名不正确
+                return;
+            }
+            TransmiteObject.门店支付请求结构 pay = new TransmiteObject.门店支付请求结构();
+            pay.订单编号 = scanpay.OrderID;
+            pay.付款码 = scanpay.AuthCode;
+            CallBackEvent.ScanPayRequest(pay);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Reflection;
 using RadarService.Command.Ask;
 using RadarService.HKAPI;
 using System.Net;
+using DSS;
 
 namespace RadarService.Info
 {
@@ -418,7 +419,7 @@ namespace RadarService.Info
             FreeCoin = 0;
             msg = "";
             SkipWriteFlw = true;
-            Info.GameInfo.游戏机信息 game = XCCouldSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
+            Info.GameInfo.游戏机信息 game = XCCloudSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
             if (game == null)
             {
                 msg = "错误机台信息";
@@ -433,7 +434,7 @@ namespace RadarService.Info
             if (member.第一余额 >= Coins)
             {
                 TableMemory.Flw_DeviceData data = new TableMemory.Flw_DeviceData();
-                data.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                data.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                 data.MerchID = PublicHelper.SystemDefiner.MerchID;
                 data.StoreID = PublicHelper.SystemDefiner.StoreID;
                 data.DeviceID = head.设备编号;
@@ -445,7 +446,7 @@ namespace RadarService.Info
                 data.Coin = Coins;
                 data.OrderID = data.ID;
                 data.Note = "投币 " + game.通用参数.游戏机名 + " | " + head.位置名称;
-                data.CheckDate = Convert.ToDateTime(XCCouldSerialNo.SerialNoHelper.StringGet("营业日期"));
+                data.CheckDate = Convert.ToDateTime(XCCloudSerialNo.SerialNoHelper.StringGet("营业日期"));
 
                 投币应答.超出当日机头最大净退币上线 = false;
                 投币应答.机头能上分 = member.允许投币;
@@ -508,7 +509,7 @@ namespace RadarService.Info
             int pCoin = 0, bValue = 0;
             bool isAllowOut = false, isAllowIn = false, isAllowZKZY = false;
             bool 是否超分报警 = false;
-            Info.GameInfo.游戏机信息 game = XCCouldSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
+            Info.GameInfo.游戏机信息 game = XCCloudSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
             if (game == null)
             {
                 msg = "错误机台信息";
@@ -519,7 +520,7 @@ namespace RadarService.Info
             isAllowOut = member.允许退币;
             isAllowZKZY = member.专卡专用;
             if (member == null) return res;
-            XCCouldSerialNo.SerialNoHelper.StringSet("headexitcoin_" + member.会员编号, DateTime.Now);
+            XCCloudSerialNo.SerialNoHelper.StringSet("headexitcoin_" + member.会员编号, DateTime.Now);
 
             if (head.彩票模式 && cType == CoinType.电子退币)
                 cType = CoinType.IC退彩票;
@@ -551,7 +552,7 @@ namespace RadarService.Info
                     alerm.HappenTime = DateTime.Now;
                     alerm.HeadAddress = head.机头短地址;
                     alerm.ICCardID = ICCard;
-                    alerm.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                    alerm.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                     alerm.LockGame = 1;
                     alerm.LockMember = 1;
                     alerm.MerchID = PublicHelper.SystemDefiner.MerchID;
@@ -1025,7 +1026,7 @@ namespace RadarService.Info
             remainCount = 0;
             endDate = DateTime.Now;
 
-            Info.GameInfo.游戏机信息 game = XCCouldSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
+            Info.GameInfo.游戏机信息 game = XCCloudSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
             会员卡信息 card = GetCoinInfo(ICCardID, RepeadCode, head, game);
             if (card != null)
             {
@@ -1048,7 +1049,7 @@ namespace RadarService.Info
                         endDate = ticket.票.EndTime;
                     else
                         endDate = ((DateTime)ticket.票.FirstUseTime).AddDays(ticket.票.WriteOffDays);
-                    XCCouldSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, ticket);
+                    XCCloudSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, ticket);
                 }
                 else
                 {
@@ -1059,11 +1060,11 @@ namespace RadarService.Info
                     Balance1 = card.第一余额;
                     Coin2 = card.第二投币比例;
                     Balance2 = card.第二余额;
-                    XCCouldSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, null);
+                    XCCloudSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, null);
                 }
                 return true;
             }
-            XCCouldSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, null);
+            XCCloudSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, null);
             return false;
         }
 
@@ -1129,7 +1130,7 @@ namespace RadarService.Info
             msg = "";
             SkipWriteFlw = true;
 
-            Info.GameInfo.游戏机信息 game = XCCouldSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
+            Info.GameInfo.游戏机信息 game = XCCloudSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
             if (game == null)
             {
                 msg = "错误机台信息";
@@ -1146,7 +1147,7 @@ namespace RadarService.Info
             if ((member.第一余额 >= Coins && UseType == 1) || (member.第二余额 >= Coins && UseType == 2))
             {
                 TableMemory.Flw_DeviceData data = new TableMemory.Flw_DeviceData();
-                data.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                data.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                 data.MerchID = PublicHelper.SystemDefiner.MerchID;
                 data.StoreID = PublicHelper.SystemDefiner.StoreID;
                 data.DeviceID = head.设备编号;
@@ -1158,7 +1159,7 @@ namespace RadarService.Info
                 data.Coin = Coins;
                 data.OrderID = data.ID;
                 data.Note = "投币 " + game.通用参数.游戏机名 + " | " + head.位置名称;
-                data.CheckDate = Convert.ToDateTime(XCCouldSerialNo.SerialNoHelper.StringGet("营业日期"));
+                data.CheckDate = Convert.ToDateTime(XCCloudSerialNo.SerialNoHelper.StringGet("营业日期"));
 
                 投币应答.超出当日机头最大净退币上线 = false;
                 投币应答.机头能上分 = member.允许投币;
@@ -1242,7 +1243,7 @@ namespace RadarService.Info
                     //是否需要入闸判断
                     if (ProjectTicketInfo.门票验票入闸顺序校验(head))
                     {
-                        Info.ProjectTicketInfo.门票信息 ticket = XCCouldSerialNo.SerialNoHelper.StringGet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号);
+                        Info.ProjectTicketInfo.门票信息 ticket = XCCloudSerialNo.SerialNoHelper.StringGet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号);
                         if (ticket == null) return false;   //门票缓存未找到，刷卡时校验的缓存
                         //判断是否存在需要二次入闸的门票
                         string code = "";
@@ -1339,7 +1340,7 @@ namespace RadarService.Info
                     TableMemory.Flw_Project_TicketUse t = new TableMemory.Flw_Project_TicketUse();
                     t.DeviceID = head.设备编号;
                     t.DeviceName = head.设备名称;
-                    t.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                    t.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                     t.MemberID = member.会员编号;
                     t.MerchID = PublicHelper.SystemDefiner.MerchID;
                     t.ProjectTicketCode = ticket.ProjectCode;
@@ -1352,7 +1353,7 @@ namespace RadarService.Info
                     //新增闸机进出记录
                     TableMemory.Flw_Project_TicketDeviceLog l = new TableMemory.Flw_Project_TicketDeviceLog();
                     l.DeviceID = head.设备编号;
-                    l.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                    l.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                     l.LogTime = DateTime.Now;
                     l.LogType = 0;
                     l.ProjectTicketCode = ticket.ProjectCode;
@@ -1388,7 +1389,7 @@ namespace RadarService.Info
             isAllowZKZY = false;
             权限 = new IC卡权限结构();
             string msg = "";
-            Info.GameInfo.游戏机信息 game = XCCouldSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
+            Info.GameInfo.游戏机信息 game = XCCloudSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + head.游戏机索引号.ToString());
             if (game == null)
             {
                 msg = "错误机台信息";
@@ -1404,7 +1405,7 @@ namespace RadarService.Info
                 isAllowZKZY = card.专卡专用;
                 Coins = card.第一投币比例;
                 Balance = (UInt32)card.第一余额;
-                XCCouldSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, null);
+                XCCloudSerialNo.SerialNoHelper.StringSet<Info.ProjectTicketInfo.门票信息>("ticketin_" + head.设备序列号, null);
                 return true;
             }
             return false;

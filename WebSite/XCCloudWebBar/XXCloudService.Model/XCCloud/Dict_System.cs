@@ -23,5 +23,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<int> Enabled { get; set; }
         public string MerchID { get; set; }
         public Nullable<int> DictLevel { get; set; }
+        public string Icon { get; set; }
     }
 }

@@ -261,6 +261,16 @@ namespace XCCloudService.SocketService.UDP
             }
         }
 
+        public delegate void 条码支付请求事件(TransmiteObject.门店支付请求结构 soft);
+        public static event 条码支付请求事件 OnScanPayRequest;
+        public static void ScanPayRequest(TransmiteObject.门店支付请求结构 soft)
+        {
+            if (OnScanPayRequest != null)
+            {
+                OnScanPayRequest(soft);
+            }
+        }
+
         #endregion
     }
 }

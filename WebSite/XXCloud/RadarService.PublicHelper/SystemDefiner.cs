@@ -25,7 +25,6 @@ namespace RadarService.PublicHelper
         public static string AppSecret = "";
         public static bool AllowProjectAddup = false;
         public static string LogPath = "C:\\xclog";
-        public static string SQLConnectString = "";
         public static string MerchID = "";
         public static string StoreID = "";
 

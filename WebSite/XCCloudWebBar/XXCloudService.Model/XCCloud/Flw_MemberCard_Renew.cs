@@ -29,5 +29,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<System.DateTime> CheckDate { get; set; }
         public string Note { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<System.DateTime> CreateTime { get; set; }
     }
 }

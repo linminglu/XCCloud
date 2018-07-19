@@ -17,7 +17,7 @@ namespace XCCloudWebBar.Model.XCCloud
         public string ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> MemberID { get; set; }
+        public string MemberID { get; set; }
         public Nullable<int> SourceBalanceIndex { get; set; }
         public Nullable<decimal> SourceCount { get; set; }
         public Nullable<decimal> SourceRemain { get; set; }

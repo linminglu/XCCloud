@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSS;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -204,7 +205,7 @@ namespace RadarService.Info
                     tims++;
                     string MCUID = row["MCUID"].ToString();
 
-                    机头信息 h = null;// XCCouldSerialNo.SerialNoHelper.StringGet<机头信息>("headinfo_"+MCUID);
+                    机头信息 h = null;// XCCloudSerialNo.SerialNoHelper.StringGet<机头信息>("headinfo_"+MCUID);
                     if (h == null)
                     {
                         机头信息 机头 = new 机头信息();
@@ -228,7 +229,7 @@ namespace RadarService.Info
                         机头.是否为首次投币 = true;
 
                         机头.扩展参数 = GetExtParamets(机头.设备编号);
-                        //string m = XCCouldSerialNo.SerialNoHelper.StringGet("info_"+机头.路由器段号 + "|" + 机头.机头短地址);
+                        //string m = XCCloudSerialNo.SerialNoHelper.StringGet("info_"+机头.路由器段号 + "|" + 机头.机头短地址);
 
                         //if (m == null)
                         SetBufMCUIDInfo(机头.路由器段号, 机头.机头短地址.ToLower(), MCUID);
@@ -312,11 +313,11 @@ namespace RadarService.Info
 
         public static void SetBufMCUIDDeviceInfo(string mcuid, 机头信息 head)
         {
-            XCCouldSerialNo.SerialNoHelper.StringSet<机头信息>("headinfo_" + mcuid, head);
+            XCCloudSerialNo.SerialNoHelper.StringSet<机头信息>("headinfo_" + mcuid, head);
         }
         public static 机头信息 GetBufMCUIDDeviceInfo(string mcuid)
         {
-            return  XCCouldSerialNo.SerialNoHelper.StringGet<机头信息>("headinfo_" + mcuid);
+            return XCCloudSerialNo.SerialNoHelper.StringGet<机头信息>("headinfo_" + mcuid);
         }
         public static 机头信息 GetBufMCUIDDeviceInfo(string segment, string headAddress)
         {
@@ -325,11 +326,11 @@ namespace RadarService.Info
         }
         public static void SetBufMCUIDInfo(string segment,string headAddress,string mcuid)
         {
-            XCCouldSerialNo.SerialNoHelper.StringSet("mcuidinfo_" + segment + "|" + headAddress, mcuid);
+            XCCloudSerialNo.SerialNoHelper.StringSet("mcuidinfo_" + segment + "|" + headAddress, mcuid);
         }
         public static string GetBufMCUIDInfo(string segment, string headAddress)
         {
-            return XCCouldSerialNo.SerialNoHelper.StringGet("mcuidinfo_" + segment + "|" + headAddress);
+            return XCCloudSerialNo.SerialNoHelper.StringGet("mcuidinfo_" + segment + "|" + headAddress);
         }
     }
 }

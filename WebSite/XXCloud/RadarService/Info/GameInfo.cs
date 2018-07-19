@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Data;
+using DSS;
 namespace RadarService.Info
 {
     public static class GameInfo
@@ -140,7 +141,7 @@ namespace RadarService.Info
                 {
                     string sid = row["ID"].ToString();
                     Console.WriteLine(sid);
-                    游戏机信息 游戏机 = null;// XCCouldSerialNo.SerialNoHelper.StringGet<游戏机信息>(sid);
+                    游戏机信息 游戏机 = null;// XCCloudSerialNo.SerialNoHelper.StringGet<游戏机信息>(sid);
                     if (游戏机 == null)
                     {
                         游戏机 = new 游戏机信息();
@@ -239,7 +240,7 @@ namespace RadarService.Info
                                 游戏机.设备列表.Add(t);
                             }
                         }
-                        XCCouldSerialNo.SerialNoHelper.StringSet<游戏机信息>("gameinfo_" + sid, 游戏机);
+                        XCCloudSerialNo.SerialNoHelper.StringSet<游戏机信息>("gameinfo_" + sid, 游戏机);
                     }
                 }
             }
@@ -264,12 +265,12 @@ namespace RadarService.Info
 
         public static void SetGameInfo(游戏机信息 game)
         {
-            XCCouldSerialNo.SerialNoHelper.StringSet<GameInfo.游戏机信息>("gameinfo_" + game.游戏机索引号.ToString(), game);
+            XCCloudSerialNo.SerialNoHelper.StringSet<GameInfo.游戏机信息>("gameinfo_" + game.游戏机索引号.ToString(), game);
         }
 
         public static 游戏机信息 GetGameInfo(int gameIndex)
         {
-            return XCCouldSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + gameIndex);
+            return XCCloudSerialNo.SerialNoHelper.StringGet<Info.GameInfo.游戏机信息>("gameinfo_" + gameIndex);
         }
     }
 }

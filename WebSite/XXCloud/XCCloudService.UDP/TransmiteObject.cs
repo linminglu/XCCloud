@@ -160,5 +160,11 @@ namespace XCCloudService.SocketService.UDP
             public string 软件版本号 = "";
             public string 升级包名 = "";
         }
+        [Serializable]
+        public class 门店支付请求结构
+        {
+            public string 订单编号 = "";
+            public string 付款码 = "";
+        }
     }
 }

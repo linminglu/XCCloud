@@ -165,6 +165,8 @@
     <Compile Include="Socket\UDP\DataChangeInsResultRequestModel.cs" />
     <Compile Include="Socket\UDP\CardHeadResetInsResultRequestModel.cs" />
     <Compile Include="Socket\UDP\ProjectChangeInsResultRequestModel.cs" />
+    <Compile Include="Socket\UDP\ScanPayRequestModel.cs" />
+    <Compile Include="Socket\UDP\ScanPayResponseModel.cs" />
     <Compile Include="Socket\UDP\TicketOperateRequestDataModel.cs" />
     <Compile Include="Socket\UDP\LotteryOperateResultNotifyRequestModel.cs" />
     <Compile Include="Socket\UDP\OutTicketOperateResultNotifyRequestModel.cs" />

@@ -39,9 +39,9 @@ namespace RadarService.Command.Recv
 
                 动态密码 = data.commandData[9];
                 流水号 = BitConverter.ToUInt16(data.commandData, 10);
-                string MCUID = XCCouldSerialNo.SerialNoHelper.StringGet("info_" + data.routeAddress + "|" + 机头地址);
+                string MCUID = XCCloudSerialNo.SerialNoHelper.StringGet("info_" + data.routeAddress + "|" + 机头地址);
                 if (MCUID == null) return;
-                Info.DeviceInfo.机头信息 head = XCCouldSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("headinfo_" + MCUID);
+                Info.DeviceInfo.机头信息 head = XCCloudSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("headinfo_" + MCUID);
                 //防霸位功能检查
                 if (!霸位检查(head, IC卡号码) && IC卡号码 != "")
                 {
@@ -86,7 +86,7 @@ namespace RadarService.Command.Recv
         bool 霸位检查(Info.DeviceInfo.机头信息 head, string ICCardID)
         {
             return false;
-            //HashSet<Info.DeviceInfo.机头信息> list = XCCouldSerialNo.SerialNoHelper.StringGet<HashSet<Info.DeviceInfo.机头信息>>(ICCardID);
+            //HashSet<Info.DeviceInfo.机头信息> list = XCCloudSerialNo.SerialNoHelper.StringGet<HashSet<Info.DeviceInfo.机头信息>>(ICCardID);
             //if (list == null)
             //{
             //    list = new HashSet<Info.DeviceInfo.机头信息>();

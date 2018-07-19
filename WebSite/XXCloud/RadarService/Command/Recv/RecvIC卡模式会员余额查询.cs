@@ -83,7 +83,7 @@ namespace RadarService.Command.Recv
         bool 霸位检查(Info.DeviceInfo.机头信息 head, string ICCardID)
         {
             return false;
-            //HashSet<Info.DeviceInfo.机头信息> list = XCCouldSerialNo.SerialNoHelper.StringGet<HashSet<Info.DeviceInfo.机头信息>>(ICCardID);
+            //HashSet<Info.DeviceInfo.机头信息> list = XCCloudSerialNo.SerialNoHelper.StringGet<HashSet<Info.DeviceInfo.机头信息>>(ICCardID);
             //if (list == null)
             //{
             //    list = new HashSet<Info.DeviceInfo.机头信息>();

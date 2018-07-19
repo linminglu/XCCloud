@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSS;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -167,7 +168,7 @@ namespace RadarService.Info
         public static bool 判断是否需要二次入场(int outTotal, string ticketCode, int projectID, out string FlwID)
         {
             FlwID = "";
-            门票使用信息 info = XCCouldSerialNo.SerialNoHelper.StringGet<门票使用信息>("ticket_" + ticketCode + "_" + projectID);
+            门票使用信息 info = XCCloudSerialNo.SerialNoHelper.StringGet<门票使用信息>("ticket_" + ticketCode + "_" + projectID);
             if (info != null)
             {
                 FlwID = info.FlwID; //入场时的业务流水号
@@ -183,7 +184,7 @@ namespace RadarService.Info
                             //离场累计时间正常可以二次进场
                             info.OutMinuteTotal += count;
                             //更新离场时间缓存
-                            XCCouldSerialNo.SerialNoHelper.StringSet<门票使用信息>("ticket_" + ticketCode + "_" + projectID, info);
+                            XCCloudSerialNo.SerialNoHelper.StringSet<门票使用信息>("ticket_" + ticketCode + "_" + projectID, info);
                             return true;
                         }
                     }

@@ -340,7 +340,6 @@
     <Content Include="OrderPayCallback\LCSWPayCallBack.aspx" />
     <Content Include="OrderPayCallback\PayStatusCheck.aspx" />
     <Content Include="OrderPayCallback\POSPayCallBack.aspx" />
-    <Content Include="OrderPayCallback\PPOSRequestQR.aspx" />
     <Content Include="OrderPayCallback\WxPayCallBack.aspx" />
     <Content Include="OrderPayCallback\XinchenOrder.aspx" />
     <Content Include="Pay\DinPay.aspx" />
@@ -1312,13 +1311,6 @@
     </Compile>
     <Compile Include="OrderPayCallback\POSPayCallBack.aspx.designer.cs">
       <DependentUpon>POSPayCallBack.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="OrderPayCallback\PPOSRequestQR.aspx.cs">
-      <DependentUpon>PPOSRequestQR.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="OrderPayCallback\PPOSRequestQR.aspx.designer.cs">
-      <DependentUpon>PPOSRequestQR.aspx</DependentUpon>
     </Compile>
     <Compile Include="OrderPayCallback\WxPayCallBack.aspx.cs">
       <DependentUpon>WxPayCallBack.aspx</DependentUpon>

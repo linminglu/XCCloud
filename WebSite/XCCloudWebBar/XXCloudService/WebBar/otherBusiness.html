@@ -6,9 +6,12 @@
     <title>吧台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 引入样式 -->
-    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+    <!-- <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
     <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
-    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="css/iview.css">
+    <script type="text/javascript" src="js/vue.min.js"></script>
+    <script type="text/javascript" src="js/iview.min.js"></script>
     <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -210,6 +213,11 @@
                 <span class="iconfont icon-jiabi"></span>
                     吧台加币
             </menu-item>
+            <menu-item name="11">
+                <span class="iconfont icon-recycling-"></span>
+                    卡回收
+            </menu-item>
+            
         </i-menu>
         <row>
             <i-col span="24" v-if="minuData.MenuShow1">
@@ -786,11 +794,14 @@
                         </div>
                     </div>
             </i-col>
-            <i-col span="24">
-
+            <i-col span="24" v-if="minuData.MenuShow8">
+111
             </i-col>
-            <i-col span="24">
-
+            <i-col span="24" v-if="minuData.MenuShow9">
+222
+            </i-col>
+            <i-col span="24" v-if="minuData.MenuShow10">
+                回收卡
             </i-col>
         </row>
     <div class="footer">
@@ -1055,6 +1066,8 @@
                 MenuShow6:false,
                 MenuShow7:false,
                 MenuShow8:false,
+                MenuShow9:false,
+                MenuShow10:false,
             },
             buyBack:{
                 search:"",
@@ -1353,7 +1366,7 @@
 //          菜单选择
             chooseMenu:function(MenuItem){
                 var that = this;
-                that.minuData ={MenuShow1:false,MenuShow2:false,MenuShow3:false,MenuShow4:false,MenuShow5:false,MenuShow6:false,MenuShow7:false,MenuShow8:false}
+                that.minuData ={MenuShow1:false,MenuShow2:false,MenuShow3:false,MenuShow4:false,MenuShow5:false,MenuShow6:false,MenuShow7:false,MenuShow8:false,MenuShow9:false,MenuShow10:false}
                 switch (MenuItem){
 					case "1":
                     window.location.href='thebar.html';
@@ -1380,6 +1393,15 @@
                         break;
                     case "8":
                         that.minuData.MenuShow7 =true;
+                        break;
+                    case "9":
+                        that.minuData.MenuShow8 =true;
+                        break;
+                    case "10":
+                        that.minuData.MenuShow9 =true;
+                        break;
+                    case "11":
+                        that.minuData.MenuShow10 =true;
                         break;
                     default:
                         break;

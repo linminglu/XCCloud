@@ -32,11 +32,10 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\XCCloudWebBar\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="StackExchange.Redis, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\StackExchange.Redis.dll</HintPath>
+    <Reference Include="StackExchange.Redis">
+      <HintPath>..\..\XCCloudWebBar\packages\StackExchange.Redis.1.2.6\lib\net45\StackExchange.Redis.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,9 +44,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="XCCouldSerialNo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\XCCouldSerialNo.dll</HintPath>
+    <Reference Include="XCCloudSerialNo">
+      <HintPath>..\..\XCCloudWebBar\packages\XCCloudSerialNo.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -84,7 +82,6 @@
     <Compile Include="Command\Recv\Recv液晶卡头读卡指令.cs" />
     <Compile Include="Command\Recv\Recv液晶卡头进出币指令.cs" />
     <Compile Include="Command\Recv\Recv游戏机参数申请.cs" />
-    <Compile Include="DataAccess.cs" />
     <Compile Include="DataMember.cs" />
     <Compile Include="FrameData.cs" />
     <Compile Include="HostServer.cs" />
@@ -111,6 +108,14 @@
     <Compile Include="UDPServer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DSS.Client\DSS.Client.csproj">
+      <Project>{6942632e-553c-4ec1-b176-ca8175807786}</Project>
+      <Name>DSS.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DSS\DSS.csproj">
+      <Project>{24e3e699-527e-4dbf-a206-78741584524f}</Project>
+      <Name>DSS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RadarService.HKAPI\RadarService.HKAPI.csproj">
       <Project>{b7c484d1-57ed-41b5-aea6-c691a12cfb13}</Project>
       <Name>RadarService.HKAPI</Name>

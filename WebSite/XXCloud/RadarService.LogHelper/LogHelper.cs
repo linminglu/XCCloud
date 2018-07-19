@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DSS;
 
 namespace RadarService.LogHelper
 {
@@ -232,7 +233,7 @@ namespace RadarService.LogHelper
         public static void RadarDataLog(string segment, int directType, byte[] data)
         {
             string 分库日期 = DateTime.Now.ToString("yyyyMM");
-            PublicHelper.DataAccess ac = new PublicHelper.DataAccess();
+            DataAccess ac = new DataAccess();
             //检查当前雷达日志分库是否存在
             string sql = "select count(name) from sysobjects where xtype='u' and name='Data_RadarLog_" + 分库日期 + "'";
             DataTable dt = ac.ExecuteQueryReturnTable(sql);

@@ -30,5 +30,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public string Note { get; set; }
         public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
+        public string DeviceName { get; set; }
     }
 }

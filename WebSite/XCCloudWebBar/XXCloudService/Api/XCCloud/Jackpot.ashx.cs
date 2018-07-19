@@ -78,59 +78,59 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetJackpotInfo(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "规则ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        //public object GetJackpotInfo(Dictionary<string, object> dicParas)
+        //{
+        //    try
+        //    {
+        //        string errMsg = string.Empty;
+        //        string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
+        //        if (string.IsNullOrEmpty(id))
+        //        {
+        //            errMsg = "规则ID不能为空";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
 
-                int iId = Convert.ToInt32(id);                
-                IData_JackpotInfoService data_JackpotInfoService = BLLContainer.Resolve<IData_JackpotInfoService>();
-                var data_JackpotInfo = data_JackpotInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                if (data_JackpotInfo == null)
-                {
-                    errMsg = "该抽奖规则不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+        //        int iId = Convert.ToInt32(id);                
+        //        IData_JackpotInfoService data_JackpotInfoService = BLLContainer.Resolve<IData_JackpotInfoService>();
+        //        var data_JackpotInfo = data_JackpotInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
+        //        if (data_JackpotInfo == null)
+        //        {
+        //            errMsg = "该抽奖规则不存在";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
 
-                IData_Jackpot_LevelService data_Jackpot_LevelService = BLLContainer.Resolve<IData_Jackpot_LevelService>(resolveNew: true);
-                IBase_GoodsInfoService base_GoodsInfoService = BLLContainer.Resolve<IBase_GoodsInfoService>(resolveNew: true);
-                var JackpotLevels = from a in data_Jackpot_LevelService.GetModels(p => p.ActiveID == iId)
-                                    join b in base_GoodsInfoService.GetModels() on a.GoodID equals b.ID
-                                    select new
-                                    {
-                                        LevelName = a.LevelName,
-                                        GoodCount = a.GoodCount,
-                                        Probability = a.Probability,
-                                        GoodID = a.GoodID,
-                                        GoodName = b.GoodName
-                                    };
+        //        IData_Jackpot_LevelService data_Jackpot_LevelService = BLLContainer.Resolve<IData_Jackpot_LevelService>(resolveNew: true);
+        //        IBase_GoodsInfoService base_GoodsInfoService = BLLContainer.Resolve<IBase_GoodsInfoService>(resolveNew: true);
+        //        var JackpotLevels = from a in data_Jackpot_LevelService.GetModels(p => p.ActiveID == iId)
+        //                            join b in base_GoodsInfoService.GetModels() on a.GoodID equals b.ID
+        //                            select new
+        //                            {
+        //                                LevelName = a.LevelName,
+        //                                GoodCount = a.GoodCount,
+        //                                Probability = a.Probability,
+        //                                GoodID = a.GoodID,
+        //                                GoodName = b.GoodName
+        //                            };
 
-                var result = new
-                {
-                    ID = data_JackpotInfo.ID,
-                    ActiveName = data_JackpotInfo.ActiveName,
-                    Threshold = data_JackpotInfo.Threshold,
-                    Concerned = data_JackpotInfo.Concerned,
-                    StartTime = data_JackpotInfo.StartTime,
-                    EndTime = data_JackpotInfo.EndTime,
-                    JackpotLevels = JackpotLevels
-                };
+        //        var result = new
+        //        {
+        //            ID = data_JackpotInfo.ID,
+        //            ActiveName = data_JackpotInfo.ActiveName,
+        //            Threshold = data_JackpotInfo.Threshold,
+        //            Concerned = data_JackpotInfo.Concerned,
+        //            StartTime = data_JackpotInfo.StartTime,
+        //            EndTime = data_JackpotInfo.EndTime,
+        //            JackpotLevels = JackpotLevels
+        //        };
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
+        //        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+        //    }
+        //}
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveJackpotInfo(Dictionary<string, object> dicParas)
@@ -286,9 +286,9 @@ namespace XXCloudService.Api.XCCloud
                                     var data_Jackpot_LevelModel = new Data_Jackpot_Level();
                                     data_Jackpot_LevelModel.ActiveID = iId;
                                     data_Jackpot_LevelModel.LevelName = levelName;
-                                    data_Jackpot_LevelModel.GoodCount = Convert.ToInt32(goodCount);
+                                    //data_Jackpot_LevelModel.GoodCount = Convert.ToInt32(goodCount);
                                     data_Jackpot_LevelModel.Probability = Convert.ToDecimal(probability);
-                                    data_Jackpot_LevelModel.GoodID = Convert.ToInt32(goodId);
+                                    //data_Jackpot_LevelModel.GoodID = Convert.ToInt32(goodId);
                                     data_Jackpot_LevelService.AddModel(data_Jackpot_LevelModel);                                    
                                 }
                                 else

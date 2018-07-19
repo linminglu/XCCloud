@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -99,7 +100,7 @@ namespace RadarService.Command.Recv
                         log.HappenTime = DateTime.Now;
                         log.HeadAddress = 机头.机头短地址;
                         log.ICCardID = 机头.当前卡片号;
-                        log.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                        log.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                         log.LockGame = 0;
                         log.LockMember = 0;
                         log.MerchID = PublicHelper.SystemDefiner.MerchID;
@@ -125,7 +126,7 @@ namespace RadarService.Command.Recv
                                 log.HappenTime = DateTime.Now;
                                 log.HeadAddress = 机头.机头短地址;
                                 log.ICCardID = 机头.当前卡片号;
-                                log.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                                log.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                                 log.LockGame = 0;
                                 log.LockMember = 0;
                                 log.MerchID = PublicHelper.SystemDefiner.MerchID;
@@ -157,7 +158,7 @@ namespace RadarService.Command.Recv
                                 log.HappenTime = DateTime.Now;
                                 log.HeadAddress = 机头.机头短地址;
                                 log.ICCardID = 机头.当前卡片号;
-                                log.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                                log.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                                 log.LockGame = 0;
                                 log.LockMember = 0;
                                 log.MerchID = PublicHelper.SystemDefiner.MerchID;
@@ -184,7 +185,7 @@ namespace RadarService.Command.Recv
                                     log.HappenTime = DateTime.Now;
                                     log.HeadAddress = 机头.机头短地址;
                                     log.ICCardID = 机头.当前卡片号;
-                                    log.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                                    log.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                                     log.LockGame = 0;
                                     log.LockMember = 0;
                                     log.MerchID = PublicHelper.SystemDefiner.MerchID;
@@ -210,7 +211,7 @@ namespace RadarService.Command.Recv
                                     log.HappenTime = DateTime.Now;
                                     log.HeadAddress = 机头.机头短地址;
                                     log.ICCardID = 机头.当前卡片号;
-                                    log.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                                    log.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                                     log.LockGame = 0;
                                     log.LockMember = 0;
                                     log.MerchID = PublicHelper.SystemDefiner.MerchID;
@@ -240,7 +241,7 @@ namespace RadarService.Command.Recv
                                 log.HappenTime = DateTime.Now;
                                 log.HeadAddress = 机头.机头短地址;
                                 log.ICCardID = 机头.当前卡片号;
-                                log.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                                log.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                                 log.LockGame = 0;
                                 log.LockMember = 0;
                                 log.MerchID = PublicHelper.SystemDefiner.MerchID;
@@ -272,7 +273,7 @@ namespace RadarService.Command.Recv
                                 log.HappenTime = DateTime.Now;
                                 log.HeadAddress = 机头.机头短地址;
                                 log.ICCardID = 机头.当前卡片号;
-                                log.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                                log.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                                 log.LockGame = 0;
                                 log.LockMember = 0;
                                 log.MerchID = PublicHelper.SystemDefiner.MerchID;

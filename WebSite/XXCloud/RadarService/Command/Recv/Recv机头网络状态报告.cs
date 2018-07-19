@@ -5,6 +5,7 @@ using System.Text;
 using System.Runtime.Remoting.Messaging;
 using System.Data;
 using RadarService.Notify;
+using DSS;
 
 namespace RadarService.Command.Recv
 {
@@ -31,9 +32,9 @@ namespace RadarService.Command.Recv
                     int alertCount = 0;
                     bool DeviceState = false;
                     string 机头地址 = Coding.ConvertData.Hex2String(data.commandData[i]);
-                    string MCUID = XCCouldSerialNo.SerialNoHelper.StringGet("info_" + data.routeAddress + "|" + 机头地址);
+                    string MCUID = XCCloudSerialNo.SerialNoHelper.StringGet("info_" + data.routeAddress + "|" + 机头地址);
                     if (MCUID == null) continue;
-                    Info.DeviceInfo.机头信息 机头 = Info.DeviceInfo.GetBufMCUIDDeviceInfo(MCUID);// XCCouldSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("headinfo_" + MCUID);
+                    Info.DeviceInfo.机头信息 机头 = Info.DeviceInfo.GetBufMCUIDDeviceInfo(MCUID);// XCCloudSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("headinfo_" + MCUID);
                     if (机头 != null)
                     {
                         机头.是否从雷达获取到状态 = true;
@@ -231,7 +232,7 @@ namespace RadarService.Command.Recv
                     log.HappenTime = DateTime.Now;
                     log.HeadAddress = head.机头短地址;
                     log.ICCardID = head.当前卡片号;
-                    log.ID = XCCouldSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
+                    log.ID = XCCloudSerialNo.SerialNoHelper.CreateStoreSerialNo(PublicHelper.SystemDefiner.StoreID);
                     log.LockGame = lockGame;
                     log.LockMember = 0;
                     log.MerchID = PublicHelper.SystemDefiner.MerchID;
@@ -259,6 +260,28 @@ namespace RadarService.Command.Recv
             RecvData = data;
             Run(data);
             SendData = Coding.ConvertData.GetFrameDataBytes(data, null, CommandType.机头网络状态报告应答);
+        }
+        public string GetRecvData(DateTime printDate)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("=============================================\r\n");
+            sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  收到数据\r\n", printDate);
+            sb.Append(Coding.ConvertData.BytesToString(RecvData.recvData) + Environment.NewLine);
+            sb.AppendFormat("指令类别：{0}\r\n", RecvData.commandType);
+            sb.AppendFormat("路由器地址：{0}\r\n", RecvData.routeAddress);
+            return sb.ToString();
+        }
+        public string GetSendData()
+        {
+            StringBuilder sb = new StringBuilder();
+            if (SendData != null)
+            {
+                sb.Append("=============================================\r\n");
+                sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  发送数据\r\n", SendDate);
+                sb.Append(Coding.ConvertData.BytesToString(SendData) + Environment.NewLine);
+                sb.AppendFormat("指令类别：{0}\r\n", RecvData.commandType);
+            }
+            return sb.ToString();
         }
     }
 }

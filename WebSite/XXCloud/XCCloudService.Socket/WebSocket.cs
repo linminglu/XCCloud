@@ -64,6 +64,7 @@ namespace XCCloudService.SocketService.TCP
             sockeServer.Bind(new IPEndPoint(IPAddress.Any, port));
             sockeServer.Listen(2000);
             sockeServer.BeginAccept(new AsyncCallback(Accept), sockeServer);
+            
         }
 
         #endregion

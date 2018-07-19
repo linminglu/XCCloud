@@ -22,5 +22,7 @@ namespace XCCloudWebBar.Model.XCCloud
         public string MerchID { get; set; }
         public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<decimal> OrginalPrice { get; set; }
+        public Nullable<decimal> Discount { get; set; }
     }
 }

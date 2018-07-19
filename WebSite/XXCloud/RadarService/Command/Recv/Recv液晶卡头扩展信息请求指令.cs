@@ -30,9 +30,9 @@ namespace RadarService.Command.Recv
             机头地址 = Coding.ConvertData.Hex2String(f.commandData[0]);
             参数 = (参数类别)f.commandData[1];
             流水号 = BitConverter.ToUInt16(f.commandData, 2);
-            string MCUID = XCCouldSerialNo.SerialNoHelper.StringGet("info_" + f.routeAddress + "|" + 机头地址);
+            string MCUID = XCCloudSerialNo.SerialNoHelper.StringGet("info_" + f.routeAddress + "|" + 机头地址);
             if (MCUID == null) return;
-            head = XCCouldSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("headinfo_" + MCUID);
+            head = XCCloudSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>("headinfo_" + MCUID);
 
             RecvData = f;
             object obj = null;

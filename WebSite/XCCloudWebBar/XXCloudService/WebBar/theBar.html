@@ -12,9 +12,9 @@
 	<link rel="stylesheet" href="css/swiper.min.css">
 	<link href="css/bootstrap-table.css" rel="stylesheet">
     <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
-    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
-    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
-    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/iview.css">
+    <script type="text/javascript" src="js/vue.min.js"></script>
+    <script type="text/javascript" src="js/iview.min.js"></script>
     <style>
     .cardLevelList{margin-bottom:3em;}
     .navLeftS{width: 180px;height:4em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
@@ -1482,7 +1482,7 @@
                 foodId:"",
                 allowDevice:false,
             },
-            customerType:"2",
+            customerType:"0",
             inputCash:"",
             cashChange:"",
             inputMoney:"",
@@ -2070,7 +2070,7 @@
                             that.msgPrompt(res.data);
                             if (res.data.result_code === '1') {
                                 var orderFlwId = res.data.result_data.orderFlwId;
-                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:that.customerType};
+                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:customerType};
                                 console.log(obj);
                                 axios.post('/xccloud/order?action=addOrderToCache', obj).then(function (res) {	//挂起订单
                                     console.log(res.data);
@@ -2106,7 +2106,7 @@
                             that.loading = false;
                             if (res.data.result_code === '1') {
                                 var orderFlwId = res.data.result_data.orderFlwId;
-                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:that.customerType};
+                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:customerType};
                                 console.log(obj);
                                 axios.post('/xccloud/order?action=addOrderToCache', obj).then(function (res) {	//挂起订单
                                     console.log(res.data);
@@ -2188,7 +2188,7 @@
                     that.inputCash = inputVl;
                 });
             },
-//			会员入会（获取会员等级）
+//			会员入会（获取会员套餐）
             membership:function () {
                 var that = this;
                 if(!this.memberShow){
@@ -2203,20 +2203,25 @@
                             that.memberShow = true;
                             var membershipData = [];
                             var foodList = res.data.result_data;
-                            for(var i =0;i<foodList.length;i++){
-                                for(var j =0;j<foodList[i].listOpenCardFoodInfoModel.length;j++){
-                                    membershipData.push({
-                                        memberLevelId:foodList[i].listOpenCardFoodInfoModel[j].memberLevelId,
-                                        foodId:foodList[i].listOpenCardFoodInfoModel[j].foodId,
-                                        foodName:foodList[i].listOpenCardFoodInfoModel[j].foodName,
-                                        foodPrice:foodList[i].listOpenCardFoodInfoModel[j].foodPrice,
-                                        foodType:foodList[i].listOpenCardFoodInfoModel[j].foodType,
-                                        imageUrl:foodList[i].listOpenCardFoodInfoModel[j].imageUrl,
-                                        memberLevelName:foodList[i].openCardMemberLevelModel.memberLevelName,
-                                        deposit:foodList[i].openCardMemberLevelModel.deposit,
-                                        openFee:foodList[i].openCardMemberLevelModel.openFee,
-                                        selected: false
-                                    });
+                            if(foodList.length == 0){
+                                that.msg = "获取入会套餐为空，请联系管理员添加！";
+                                $('#myModal').modal('show');
+                            }else{
+                                for(var i =0;i<foodList.length;i++){
+                                    for(var j =0;j<foodList[i].listOpenCardFoodInfoModel.length;j++){
+                                        membershipData.push({
+                                            memberLevelId:foodList[i].listOpenCardFoodInfoModel[j].memberLevelId,
+                                            foodId:foodList[i].listOpenCardFoodInfoModel[j].foodId,
+                                            foodName:foodList[i].listOpenCardFoodInfoModel[j].foodName,
+                                            foodPrice:foodList[i].listOpenCardFoodInfoModel[j].foodPrice,
+                                            foodType:foodList[i].listOpenCardFoodInfoModel[j].foodType,
+                                            imageUrl:foodList[i].listOpenCardFoodInfoModel[j].imageUrl,
+                                            memberLevelName:foodList[i].openCardMemberLevelModel.memberLevelName,
+                                            deposit:foodList[i].openCardMemberLevelModel.deposit,
+                                            openFee:foodList[i].openCardMemberLevelModel.openFee,
+                                            selected: false
+                                        });
+                                    }
                                 }
                             }
                             console.log(membershipData)
@@ -2852,12 +2857,23 @@
 								}
                                 that.screeningTitle = true;
 								console.log(foodTypeAll);
-                                that.getMeal(that.customerType,foodTypeAll);
+                                that.getMeal(foodTypeAll);
                             })
                         }
                     }).catch(function (err) {
                         console.log(err);
                     });
+                    var getBalanceType={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                    axios.post('/XCCloud/Foods?action=getBalanceType', getBalanceType).then(function (res) {	//套餐类别
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                    
 				}
 				that.replacement()
             },
@@ -2915,11 +2931,20 @@
                 }
             },
 //			获取销售的函数
-			getMeal:function(customerType,foodType) {			//获取销售列表
+			getMeal:function(foodType) {			
 				var that = this;
-				var priceLimit =[{ category:"0", title:"", balanceIndex:"0", minPrice:"1", maxPrice:"32" }];
+                if(that.icCardId == ""){
+                    var customerType = "0"
+                    var memberLevelId = "0"
+                    var icCardId = "0"
+                }else{
+                    var customerType = "2"
+                    var icCardId = that.icCardId
+                    var memberLevelId = that.memberLevelId
+                }
+				var priceLimit =[{ category:"0", title:"", balanceIndex:"0", minPrice:"0", maxPrice:"999999"}];
                 var priceLimitStr = JSON.stringify(priceLimit);
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:that.memberLevelId,foodTypeStr:foodType,priceLimit:priceLimitStr};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:memberLevelId,foodTypeStr:foodType,priceLimit:priceLimitStr};
                 var getFood = JSON.stringify(obj);
                 console.log(getFood);
                 axios.post('/XCCloud/Foods?action=getFoodList', getFood).then(function (res) {
@@ -3113,7 +3138,7 @@
 
 				console.log(foodTypeAll);
 				$(".salesTitle").find("li").eq(index).addClass("on").siblings().removeClass("on");
-                that.getMeal(that.customerType,foodTypeAll);
+                that.getMeal(foodTypeAll);
             },
 //          单品标题筛选
             singletonScreening:function(index,foodType){

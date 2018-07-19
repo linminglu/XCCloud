@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.CacheService;
 using XCCloudService.CacheService.XCCloud;
 using XCCloudService.Common.Enum;
@@ -17,27 +18,6 @@ namespace XCCloudService.Business.XCCloud
 {
     public partial class Flw_OrderBusiness
     {
-        /// <summary>
-        /// 订单列表
-        /// </summary>
-        /// <returns></returns>
-        public static IQueryable<Model.XCCloud.Flw_Order> GetOrderList()
-        {
-            BLL.IBLL.XCCloud.IFlw_OrderService orderService = BLLContainer.Resolve<BLL.IBLL.XCCloud.IFlw_OrderService>();
-            var orderList = orderService.GetModels(d => true);
-            return orderList;
-        }
-
-        /// <summary>
-        /// 根据订单号获取订单实体
-        /// </summary>
-        /// <param name="orderId"></param>
-        /// <returns></returns>
-        public static Model.XCCloud.Flw_Order GetOrderModel(string orderId)
-        {
-            return GetOrderList().FirstOrDefault(m => m.ID.Equals(orderId));
-        }
-
         #region 订单支付成功处理
         /// <summary>
         /// 订单支付成功处理
@@ -51,7 +31,7 @@ namespace XCCloudService.Business.XCCloud
             BarcodePayModel model = null;
             try
             {
-                Flw_Order order = Flw_OrderBusiness.GetOrderModel(orderId);
+                Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == orderId).FirstOrDefault();
                 if (order != null)
                 {
                     model = new BarcodePayModel();

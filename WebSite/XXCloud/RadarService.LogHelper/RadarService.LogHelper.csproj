@@ -43,6 +43,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DSS\DSS.csproj">
+      <Project>{24e3e699-527e-4dbf-a206-78741584524f}</Project>
+      <Name>DSS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RadarService.PublicHelper\RadarService.PublicHelper.csproj">
       <Project>{a572252c-2d34-4e15-b304-b48ca6e652b8}</Project>
       <Name>RadarService.PublicHelper</Name>
