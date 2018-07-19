@@ -606,6 +606,12 @@ namespace XCCloudService.Api.XCGame
                             var balanceIndex = dicPara.Get("balanceIndex").Toint();
                             var balance = dicPara.Get("balance").Todecimal(0);
 
+                            //余额类别为代币的才能互转
+                            if (!Dict_BalanceTypeService.I.Any(a => a.ID == balanceIndex && a.MappingType == (int)HKType.Coin))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额类别映射不是代币，不能进行转账操作");
+                            }
+
                             if (balance == 0)
                             {
                                 continue;
