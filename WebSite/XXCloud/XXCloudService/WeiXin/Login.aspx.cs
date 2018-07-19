@@ -74,6 +74,9 @@ namespace XXCloudService.WeiXin
                         string merchId = string.Empty;
                         string storeId = string.Empty;
                         int isSingle = 0;
+                        string merchName = string.Empty;
+                        string merchAccount = string.Empty;
+                        string storeName = string.Empty;
 
                         if (userType == (int)UserType.Xc)
                         {
@@ -116,7 +119,10 @@ namespace XXCloudService.WeiXin
                             var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);                            
                             tag = base_StoreInfoModel.StoreTag;
-                            isSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;                            
+                            isSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
+                            merchName = base_MerchantInfoModel.MerchName;
+                            merchAccount = base_MerchantInfoModel.MerchAccount;
+                            storeName = base_StoreInfoModel.StoreName;
                         }
                         else if (userType == (int)UserType.Agent || userType == (int)UserType.Normal || userType == (int)UserType.Heavy)
                         {
@@ -139,10 +145,14 @@ namespace XXCloudService.WeiXin
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                             tag = base_MerchantInfoModel.MerchTag;
                             isSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
+                            merchName = base_MerchantInfoModel.MerchName;
+                            merchAccount = base_MerchantInfoModel.MerchAccount;
+                            storeName = string.Empty;
                         }
 
                         Response.Redirect(WeiXinConfig.RedirectMainPage + "?token=" + token + "&logType=" + logType + "&userType=" + userType + "&tag=" + tag + "&isSingle=" + isSingle +
-                            "&switchMerch=" + switchMerch + "&switchStore=" + switchStore + "&switchWorkstation=" + switchWorkstation + "&merchId=" + merchId + "&storeId=" + storeId,
+                            "&switchMerch=" + switchMerch + "&switchStore=" + switchStore + "&switchWorkstation=" + switchWorkstation + "&merchId=" + merchId + "&storeId=" + storeId +
+                            "&merchName=" + HttpUtility.UrlEncode(merchName) + "&merchAccount=" + HttpUtility.UrlEncode(merchAccount) + "&storeName=" + HttpUtility.UrlEncode(storeName),
                             false);
                     }
                     else if (count > 1)

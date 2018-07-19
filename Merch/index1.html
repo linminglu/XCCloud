@@ -3,17 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>莘宸管理系统</title>
-    <link rel="shortcut  icon" type="image/x-icon" href="images/xinchen.ico" media="screen"  />
+    <link rel="shortcut  icon" type="image/x-icon" href="images/xinchen.ico" media="screen"/>
     <link rel="stylesheet" href="layui/css/layui.css">
     <style>
-        .iframeBox{height: 92%;}
-        .iframeBox .layui-tab-item{position: absolute;top:45px;left: 0;right: 0;bottom: 0;}
-        .iframeBox iframe{border: none;min-width: 400px;}
-        .layui-nav{background-color: rgba(0,0,0,0.5)!important;}
-        .layui-nav-itemed  .layui-nav-child{background-color: #666!important;}
-        #xcLeftMenu	.layui-nav-item>a{border-bottom: 1px solid #aaa;}
-        #today>i{display: none;}
-        #storeListToGo{
+        .iframeBox {
+            height: 92%;
+        }
+
+        .iframeBox .layui-tab-item {
+            position: absolute;
+            top: 45px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .iframeBox iframe {
+            border: none;
+            min-width: 400px;
+        }
+
+        .layui-nav {
+            background-color: rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .layui-nav-itemed .layui-nav-child {
+            background-color: #666 !important;
+        }
+
+        #xcLeftMenu .layui-nav-item > a {
+            border-bottom: 1px solid #aaa;
+        }
+
+        #today > i {
+            display: none;
+        }
+
+        #storeListToGo {
             position: absolute;
             display: none;
             left: 98px;
@@ -21,32 +47,39 @@
             min-width: 150%;
             line-height: 36px;
             padding: 5px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,.12);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
             border: 1px solid #d2d2d2;
             background-color: #fff;
             z-index: 101;
             border-radius: 2px;
-            white-space: nowrap;}
-        #storeListToGo>li{
-            height:36px;
+            white-space: nowrap;
+        }
+
+        #storeListToGo > li {
+            height: 36px;
             text-align: center;
             color: #000;
             cursor: pointer;
-            line-height: 36px;}
-        .header{
-            background-color: #eee!important;
+            line-height: 36px;
+        }
+
+        .header {
+            background-color: #eee !important;
             height: 70px;
         }
-        .header .dayui-main{
+
+        .header .dayui-main {
             background-color: #eff3f3;
             height: 60px;
         }
-        #header_bar{
-            background-color: #eff3f3!important;
+
+        #header_bar {
+            background-color: #eff3f3 !important;
 
         }
-        #header_bar li a{
-            color:#333!important;
+
+        #header_bar li a {
+            color: #333 !important;
         }
     </style>
 </head>
@@ -67,10 +100,14 @@
                 <!--<li class="layui-nav-item" datapid="1"><a href="javascript:;"><i class="fa fa-cog"></i> <cite>控制台</cite></a></li>-->
                 <!--<li class="layui-nav-item" lay-unselect=""><a href="javascript:;"> <cite>测试</cite></a></li>-->
             </ul>
-            <ul id="header_bar" class="layui-nav layui-layout-right" style="margin-right: 100px;background-color: #eff3f3;!important;" lay-shrink="all">
-                <li class="layui-nav-item" lay-unselect=""><a href="javascript:;">上线时间: <span id="nowTime"></span></a></li>
-                <li class="layui-nav-item" lay-unselect="">
-                    <a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：<span id="myPlace"></span><span class="layui-badge-dot"></span></a>
+            <ul id="header_bar" class="layui-nav layui-layout-right"
+                style="margin-right: 100px;background-color: #eff3f3;!important;" lay-shrink="all">
+                <li class="layui-nav-item" lay-unselect=""><a href="javascript:;">上线时间: <span id="nowTime"></span></a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="" id="curLocation">
+                    <a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：<span
+                            id="myPlace"></span><span class="layui-badge-dot"></span></a>
+
                 </li>
                 <li class="layui-nav-item layui-hide" id="sysExchange">
                     <a href="#">系统切换</a>
@@ -85,15 +122,13 @@
                     </dl>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;"><img src="http://t.cn/RCzsdCq" class="layui-nav-img" id="_logName"><span id="_userName">我</span></a>
+                    <a href="javascript:;"><img src="http://t.cn/RCzsdCq" class="layui-nav-img" id="_logName"><span
+                            id="_userName">我</span></a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">修改信息</a></dd>
+                        <dd><a href="#" id="reLogin">重新登录<span class="layui-badge-dot"></span></a></dd>
                         <dd><a href="javascript:;">安全管理</a></dd>
                         <dd><a href="javascript:;" id="exitSystem">退出</a></dd>
                     </dl>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="#" id="reLogin">重新登录<span class="layui-badge-dot"></span></a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
                     <a href="javascript:;"><span id="_lang">中</span></a>
@@ -109,7 +144,7 @@
     <!-- 左侧导航 -->
     <div class="layui-side layui-bg-black" style="top:70px;!important;">
         <div class="layui-side-scroll">
-            <ul class="layui-nav layui-nav-tree xcLeftMenu" lay-filter="xcLeftMenu" id="xcLeftMenu" >
+            <ul class="layui-nav layui-nav-tree xcLeftMenu" lay-filter="xcLeftMenu" id="xcLeftMenu">
                 <li class="layui-nav-item"><a href="javascript:;">系统总览</a></li>
             </ul>
         </div>
@@ -125,14 +160,15 @@
             </ul>
             <div class="layui-tab-content iframeBox">
                 <div class="layui-tab-item layui-show" style="background-color: #d9dcde">
-                    <iframe src="home.html" frameborder="0" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>
+                    <iframe src="home.html" frameborder="0"
+                            style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>
                 </div>
             </div>
         </div>
     </div>
     <!--&lt;!&ndash; 底部 &ndash;&gt;-->
     <!--<div class="layui-footer footer" style="text-align:center;";>-->
-        <!--"©2017-2018 莘宸科技"-->
+    <!--"©2017-2018 莘宸科技"-->
     <!--</div>-->
 </div>
 </body>
@@ -141,350 +177,404 @@
 <script src="js/storeSystem.js"></script>
 <script src="js/manchartSystem.js"></script>
 <script>
-   $(function () {
+    $(function () {
 
 
-    let logMsg=JSON.parse(getStorage('logMsg'));
-    let token=logMsg.token;
-    let xc=xcActionSystem.prototype;
-    if(logMsg.logType==0){
-        $('#myPlace').text('莘宸工作人员/'+'')
-    }else if(logMsg.logType==1){
-        $('#myPlace').text('莘宸管理员/'+'')
-    }else if(logMsg.logType==2){
-        $('#myPlace').text('门店后台/门店ID:'+logMsg.storeId)
-    }
-    else if(logMsg.logType==3){
-        $('#myPlace').text('商户后台/商户ID:'+logMsg.merchId)
-    }
+        let logMsg = JSON.parse(getStorage('logMsg'));
+        let token = logMsg.token;
+        let xc = xcActionSystem.prototype;
+        if (logMsg.logType == 0) {
+            let html = '';
+            html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
+            html += ' <dl class="layui-nav-child ">' +
+                '<dd ><a href="javascript:;">莘宸工作人员</a></dd>' +
+                '</dl>'
+            $('#curLocation').html('').append(html)
 
-    layui.use(['element','form','layer'],function () {
-        let element=layui.element;
-        let layer=layui.layer;
-        let form=layui.form;
-        let _date=new Date();
-        //动态加载左侧菜单
-        setLeftList("xcLeftMenu");
-        xc.initLeftMenu('xcLeftMenu');
-        //点击菜单，主窗口生成页面
-        $('.xcLeftMenu').on('click','a[class="aMenu"]',function () {
-            var _text = $(this).text();
-            var _id = $(this).attr('id');
-            if(_id=='null'){
-                layer.msg('该功能暂未开放,敬请等待！')
-            }else {
-                if (_text == '数字币入库') {
-                    layer.open({
-                        type: 2,
-                        content: ['digitStorage.html', 'no'],
-                        closeBtn: true,
-                        shade: true,
-                        shadeClose: true,
-                        area: ['800px', '500px']
-                    });
+        } else if (logMsg.logType == 1) {
+            let html = '';
+            html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
+            html += ' <dl class="layui-nav-child ">' +
+                '<dd  ><a href="javascript:;">莘宸管理员</a></dd>' +
+                '</dl>'
+            $('#curLocation').html('').append(html)
+        } else if (logMsg.logType == 2) {
+            let html = '';
+            html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
+            html += ' <dl class="layui-nav-child ">' +
+                '<dd ><a href="javascript:;">' + logMsg.storeName + '</a></dd>' +
+                '<dd ><a href="javascript:;">店ID:' + logMsg.storeId + '</a></dd>' +
+                '</dl>'
+            $('#curLocation').html('').append(html)
+        }
+        else if (logMsg.logType == 3) {
+            let html = '';
+            html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
+            html += '<dl class="layui-nav-child">' +
+            '<dd><a href="javascript:;">' + logMsg.merchName + '</a></dd>' +
+                '<dd><a href="javascript:;">商户ID:' + logMsg.merchId + '</a></dd>' +
+                '</dl>'
+            $('#curLocation').html('').append(html)
+        }
+
+        layui.use(['element', 'form', 'layer'], function () {
+            let element = layui.element;
+            let layer = layui.layer;
+            let form = layui.form;
+            let _date = new Date();
+            //动态加载左侧菜单
+            setLeftList("xcLeftMenu");
+            xc.initLeftMenu('xcLeftMenu');
+            //点击菜单，主窗口生成页面
+            $('.xcLeftMenu').on('click', 'a[class="aMenu"]', function () {
+                var _text = $(this).text();
+                var _id = $(this).attr('id');
+                if (_id == 'null') {
+                    layer.msg('该功能暂未开放,敬请等待！')
                 } else {
-                    var flag = false;
-                    var _length = $("#xcTabMenu").find("li").length;
-                    for (var i = 0; i < _length; i++) {
-                        if ($("#xcTabMenu").find("li").eq(i).attr('lay-id') == _id) {
-                            flag = true;
-                        }
-                    }
-                    if (flag == true) {
-                        element.tabDelete('demo', _id);
-                        element.tabAdd('demo', {
-                            title: _text
-                            , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
-                            , id: _id
+                    if (_text == '数字币入库') {
+                        layer.open({
+                            type: 2,
+                            content: ['digitStorage.html', 'no'],
+                            closeBtn: true,
+                            shade: true,
+                            shadeClose: true,
+                            area: ['800px', '500px']
                         });
-                        element.tabChange('demo', _id);
-
                     } else {
-                        if (_length == 10) {
-
-                            var thisId = $("#xcTabMenu").find("li").eq(1).attr('lay-id');
-                            element.tabDelete('demo', thisId);
+                        var flag = false;
+                        var _length = $("#xcTabMenu").find("li").length;
+                        for (var i = 0; i < _length; i++) {
+                            if ($("#xcTabMenu").find("li").eq(i).attr('lay-id') == _id) {
+                                flag = true;
+                            }
+                        }
+                        if (flag == true) {
+                            element.tabDelete('demo', _id);
                             element.tabAdd('demo', {
                                 title: _text
-                                , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
-                                , id: _id
+                                ,
+                                content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
+                                ,
+                                id: _id
                             });
                             element.tabChange('demo', _id);
+
                         } else {
+                            if (_length == 10) {
 
-                            element.tabAdd('demo',{
-                                title: _text
-                                , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
-                                , id: _id
-                            });
-                            element.tabChange('demo', _id);
-                        }
-                    }
-                }
-            }
-        });
-        $('#_userName').text(getStorage('usernames'));
-        if(logMsg.switchMerch==0&&logMsg.swicthStore==0&&logMsg.switchWorkstation==0){
-            $('#sysExchange').addClass('layui-hide');
-        }else {
-            $('#sysExchange').removeClass('layui-hide');
-            if(logMsg.switchMerch==1){
-                $('#merchSys').removeClass('layui-hide')
-            }
-            if(logMsg.switchStore==1){
-                $('#storeSys').removeClass('layui-hide');
-            }
-            if(logMsg.switchWorkstation==1){
-                $('#barSys').removeClass('layui-hide')
-            }
-        }
-        //set language change cook
-        $('#languageBox').on('click','dd a',function () {
-            if($(this).text()=='简体中文'){
-                xc.setStorage('xc_language','Chinese')
-            }else if($(this).text()=='ENGLISH'){
-                xc.setStorage('xc_language','English')
-            }else if($(this).text()=='francais'){
-                xc.setStorage('xc_language','French')
-            }
-            location.href='/merch/index1.html'
-        });
-        $('#nowTime').text(_date.getFullYear()+'/'+(_date.getMonth()+1)+'/'+_date.getDate()+' '+_date.getHours()+':'+_date.getMinutes()+':'+_date.getSeconds());
-        if(logMsg.switchStore==1){
-            $('#storeListToGo').on('click','li',function (e) {
-                 e.stopPropagation();
-                 let _storeID=$(this).attr('id');
+                                var thisId = $("#xcTabMenu").find("li").eq(1).attr('lay-id');
+                                element.tabDelete('demo', thisId);
+                                element.tabAdd('demo', {
+                                    title: _text
+                                    ,
+                                    content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
+                                    ,
+                                    id: _id
+                                });
+                                element.tabChange('demo', _id);
+                            } else {
 
-                let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':$(this).attr('id'),'logType':2,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parasJson = JSON.stringify(obj);
-                $.ajax({
-                    type: "post",
-                    url: '/XCCloud/Login?action=SwitchUser',
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parasJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if(data.result_code==1){
-                            logMsg.MerchTag=data.result_data.Tag;
-                            logMsg.token=data.result_data.Token;
-                            logMsg.logType=2;
-                            logMsg.storeId=_storeID;
-                            xc.setStorage('logMsg',JSON.stringify(logMsg));
-                            xc.setStorage('token',data.result_data.Token);
-                            window.location.href='/merch/index1.html';
-                        }else{
-                            layer.msg(data.result_msg||data.return_msg)
+                                element.tabAdd('demo', {
+                                    title: _text
+                                    ,
+                                    content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
+                                    ,
+                                    id: _id
+                                });
+                                element.tabChange('demo', _id);
+                            }
                         }
                     }
-                })
-            })
-        }
-        $('#storeSys').on('click',function () {
-            if(logMsg.switchStore==1){
-                if(logMsg.userType==1||logMsg.userType==2){
-                    let obj={'userToken':token,'merchId':logMsg.merchId,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    let parasJson = JSON.stringify(obj);
-                    $.ajax({
-                        type: "post",
-                        url: '/XCCloud/StoreInfo?action=GetUnderStores',
-                        contentType: "application/json; charset=utf-8",
-                        data: {parasJson: parasJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            // console.log(data);
-                            if(data.result_code==1){
-                                let arr=data.result_data;
-                                if(arr.length>0){
-                                    $('#storeListToGo').html('');
-                                    for(let index in arr){
-                                        $('#storeListToGo').append('<li id="'+arr[index].Key+'">'+arr[index].Value+'</li>')
-                                    }
-                                    $('#storeListToGo').css({'display':'block'})
-                                }
-                            }else{
-                                layer.msg(data.result_msg||data.return_msg)
-                            }
-                        }
-                    });
-                }else if(logMsg.userType==4||logMsg.userType==5){
-                    let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':logMsg.storeId,'logType':2,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    let parasJson = JSON.stringify(obj);
-                    $.ajax({
-                        type: "post",
-                        url: '/XCCloud/Login?action=SwitchUser',
-                        contentType: "application/json; charset=utf-8",
-                        data: {parasJson: parasJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            console.log(data);
-                            if(data.result_code==1){
-                                logMsg.MerchTag=data.result_data.Tag;
-                                logMsg.token=data.result_data.Token;
-                                logMsg.logType=2;
-                                logMsg.storeId=
-                                xc.setStorage('logMsg',JSON.stringify(logMsg));
-                                xc.setStorage('token',data.result_data.Token);
-                                window.location.href='/merch/index1.html';
-                            }else{
-                                layer.msg(data.result_msg||data.return_msg)
-                            }
-                        }
-                    })
                 }
-            }
-        }).siblings().on('click',function () {
-            $('#storeListToGo').css({'display':'none'})
-        });
-        $('#merchSys').on('click',function () {
-            if(JSON.parse(getStorage('logMsg')).switchMerch==1){
-                if (logMsg.logType==3){
-                      layer.msg('当前为商户系统，请选择切换其他模式！')
-                }else {
-                    // if(logMsg.userType==1||logMsg.userType==2){
-                    let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':logMsg.storeId,'logType':3,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    let parasJson = JSON.stringify(obj);
-                    $.ajax({
-                        type: "post",
-                        url: '/XCCloud/Login?action=SwitchUser',
-                        contentType: "application/json; charset=utf-8",
-                        data: {parasJson: parasJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            console.log(data);
-                            if(data.result_code==1){
-                                logMsg.MerchTag=data.result_data.Tag;
-                                logMsg.logType=3;
-                                logMsg.token=data.result_data.Token;
-                                xc.setStorage('logMsg',JSON.stringify(logMsg));
-                                xc.setStorage('token',data.result_data.Token);
-                                window.location.href='/merch/index1.html';
-                            }else{
-                                layer.msg(data.result_msg||data.return_msg)
-                            }
-                        }
-                    })
-                }
-                // }
-            }
-        });
-        $('#barSys').on('click',function () {
-            if(JSON.parse(getStorage('logMsg')).switchWorkstation==1){
-                if (logMsg.logType==4){
-                    layer.msg('当前为吧台系统，请选择切换其他模式！')
-                }else {
-                    let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':logMsg.storeId,
-                        'logType':4,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    let parasJson = JSON.stringify(obj);
-                    $.ajax({
-                        type: "post",
-                        url: '/XCCloud/Login?action=SwitchUser',
-                        contentType: "application/json; charset=utf-8",
-                        data: {parasJson: parasJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            console.log(data);
-                            if(data.result_code==1){
-                                logMsg.MerchTag=data.result_data.Tag;
-                                logMsg.logType=4;
-                                logMsg.token=data.result_data.Token;
-                                xc.setStorage('logMsg',JSON.stringify(logMsg));
-                                xc.setStorage('token',data.result_data.Token);
-                                window.location.href='/merch/index1.html';
-                            }else{
-                                layer.msg(data.result_msg||data.return_msg)
-                            }
-                        }
-                    })
-                }
-            }
-        });
-    });
-    //只需要存在一个导航栏打开
-    $('#xcLeftMenu').on('click','li',function () {
-        $(this).addClass('layui-nav-itemed').siblings().removeClass('layui-nav-itemed');
-    });
-    //重新登录
-    $("#reLogin").click(function () {
-        var storage=window.localStorage;
-        storage.clear();
-        window.location.href='/merch/login.html';
-    });
-    //退出系统
-    $('#exitSystem').click(function () {
-        closeWebPage();
-        var storage=window.localStorage;
-        storage.clear();
-    });
-    // 动态加载左侧菜单
-    function setLeftList(id) {
-        var obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        var url="/XCCloud/Main?action=GetMenus";
-        var parasJson = JSON.stringify(obj);
-        var ulBox=$('#'+id);
-        $.ajax({
-            type: "post",
-            url: url,
-            contentType: "application/json; charset=utf-8",
-            data: { parasJson: parasJson },
-            success: function (data) {
-                data=JSON.parse(data);
-                console.log(data);
-                if(data.result_code=="1"){
-                    ulBox.html('<li class="layui-nav-item"><a href="javascript:;">'+data.result_data[0].name+'</a></li>');
-                    var data1=data.result_data[0].children;
-                    for(var j in data1){
-                        if(data1[j].children.length >0){
-                            ulBox.append("<li class='layui-nav-item'>" +
-                                "<a class='' href='javascript:;'>"+data1[j].name+"</a>"+
-                                "<dl class='layui-nav-child'>"+
-                                (function(){
-                                    var arr="";
-                                    for(var i in data1[j].children){
-                                        arr+="<dd><a class='aMenu' href='javascript:;' id="+data1[j].children[i].pageName+">"+data1[j].children[i].name+"</a></dd>";
-                                    }
-                                    return arr;
-                                })() + "</dl></li>")
-                        }
-                        else
-                            {
-                            ulBox.append("<li class='layui-nav-item'>" +
-                                "<a class='aMenu' href='javascript:;'id="+data1[j].pageName+">"+data1[j].name+"</a>"+
-                                "</li>")
-                        }
-                    }
-                    layui.use('element', function(){
-                        var element = layui.element;
-                        element.render('nav');
-                    });
-                }else {
-                    layui.use('layer', function(){
-                        var layer = layui.layer;
-                        layer.msg('操作失败');
-                    });
-                }
-            }
-        });
-    }
-    //关闭浏览器
-    function closeWebPage(){
-        if (navigator.userAgent.indexOf("MSIE") > 0) {//close IE
-            if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
-                window.opener = null;
-                window.close();
+            });
+            $('#_userName').text(getStorage('usernames'));
+            if (logMsg.switchMerch == 0 && logMsg.swicthStore == 0 && logMsg.switchWorkstation == 0) {
+                $('#sysExchange').addClass('layui-hide');
             } else {
-                window.open('', '_top');
-                window.top.close();
+                $('#sysExchange').removeClass('layui-hide');
+                if (logMsg.switchMerch == 1) {
+                    $('#merchSys').removeClass('layui-hide')
+                }
+                if (logMsg.switchStore == 1) {
+                    $('#storeSys').removeClass('layui-hide');
+                }
+                if (logMsg.switchWorkstation == 1) {
+                    $('#barSys').removeClass('layui-hide')
+                }
+            }
+            //set language change cook
+            $('#languageBox').on('click', 'dd a', function () {
+                if ($(this).text() == '简体中文') {
+                    xc.setStorage('xc_language', 'Chinese')
+                } else if ($(this).text() == 'ENGLISH') {
+                    xc.setStorage('xc_language', 'English')
+                } else if ($(this).text() == 'francais') {
+                    xc.setStorage('xc_language', 'French')
+                }
+                location.href = '/merch/index1.html'
+            });
+            $('#nowTime').text(_date.getFullYear() + '/' + (_date.getMonth() + 1) + '/' + _date.getDate() + ' ' + _date.getHours() + ':' + _date.getMinutes() + ':' + _date.getSeconds());
+            if (logMsg.switchStore == 1) {
+                $('#storeListToGo').on('click', 'li', function (e) {
+                    e.stopPropagation();
+                    let _storeID = $(this).attr('id');
+
+                    let obj = {
+                        'userToken': token,
+                        'merchId': logMsg.merchId,
+                        'storeId': $(this).attr('id'),
+                        'logType': 2,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parasJson = JSON.stringify(obj);
+                    $.ajax({
+                        type: "post",
+                        url: '/XCCloud/Login?action=SwitchUser',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.result_code == 1) {
+                                logMsg.MerchTag = data.result_data.Tag;
+                                logMsg.token = data.result_data.Token;
+                                logMsg.logType = 2;
+                                logMsg.storeId = _storeID;
+                                xc.setStorage('logMsg', JSON.stringify(logMsg));
+                                xc.setStorage('token', data.result_data.Token);
+                                window.location.href = '/merch/index1.html';
+                            } else {
+                                layer.msg(data.result_msg || data.return_msg)
+                            }
+                        }
+                    })
+                })
+            }
+            $('#storeSys').on('click', function () {
+                if (logMsg.switchStore == 1) {
+                    if (logMsg.userType == 1 || logMsg.userType == 2) {
+                        let obj = {
+                            'userToken': token,
+                            'merchId': logMsg.merchId,
+                            'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                        };
+                        let parasJson = JSON.stringify(obj);
+                        $.ajax({
+                            type: "post",
+                            url: '/XCCloud/StoreInfo?action=GetUnderStores',
+                            contentType: "application/json; charset=utf-8",
+                            data: {parasJson: parasJson},
+                            success: function (data) {
+                                data = JSON.parse(data);
+                                // console.log(data);
+                                if (data.result_code == 1) {
+                                    let arr = data.result_data;
+                                    if (arr.length > 0) {
+                                        $('#storeListToGo').html('');
+                                        for (let index in arr) {
+                                            $('#storeListToGo').append('<li id="' + arr[index].Key + '">' + arr[index].Value + '</li>')
+                                        }
+                                        $('#storeListToGo').css({'display': 'block'})
+                                    }
+                                } else {
+                                    layer.msg(data.result_msg || data.return_msg)
+                                }
+                            }
+                        });
+                    } else if (logMsg.userType == 4 || logMsg.userType == 5) {
+                        let obj = {
+                            'userToken': token,
+                            'merchId': logMsg.merchId,
+                            'storeId': logMsg.storeId,
+                            'logType': 2,
+                            'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                        };
+                        let parasJson = JSON.stringify(obj);
+                        $.ajax({
+                            type: "post",
+                            url: '/XCCloud/Login?action=SwitchUser',
+                            contentType: "application/json; charset=utf-8",
+                            data: {parasJson: parasJson},
+                            success: function (data) {
+                                data = JSON.parse(data);
+                                console.log(data);
+                                if (data.result_code == 1) {
+                                    logMsg.MerchTag = data.result_data.Tag;
+                                    logMsg.token = data.result_data.Token;
+                                    logMsg.logType = 2;
+                                    logMsg.storeId =
+                                        xc.setStorage('logMsg', JSON.stringify(logMsg));
+                                    xc.setStorage('token', data.result_data.Token);
+                                    window.location.href = '/merch/index1.html';
+                                } else {
+                                    layer.msg(data.result_msg || data.return_msg)
+                                }
+                            }
+                        })
+                    }
+                }
+            }).siblings().on('click', function () {
+                $('#storeListToGo').css({'display': 'none'})
+            });
+            $('#merchSys').on('click', function () {
+                if (JSON.parse(getStorage('logMsg')).switchMerch == 1) {
+                    if (logMsg.logType == 3) {
+                        layer.msg('当前为商户系统，请选择切换其他模式！')
+                    } else {
+                        // if(logMsg.userType==1||logMsg.userType==2){
+                        let obj = {
+                            'userToken': token,
+                            'merchId': logMsg.merchId,
+                            'storeId': logMsg.storeId,
+                            'logType': 3,
+                            'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                        };
+                        let parasJson = JSON.stringify(obj);
+                        $.ajax({
+                            type: "post",
+                            url: '/XCCloud/Login?action=SwitchUser',
+                            contentType: "application/json; charset=utf-8",
+                            data: {parasJson: parasJson},
+                            success: function (data) {
+                                data = JSON.parse(data);
+                                console.log(data);
+                                if (data.result_code == 1) {
+                                    logMsg.MerchTag = data.result_data.Tag;
+                                    logMsg.logType = 3;
+                                    logMsg.token = data.result_data.Token;
+                                    xc.setStorage('logMsg', JSON.stringify(logMsg));
+                                    xc.setStorage('token', data.result_data.Token);
+                                    window.location.href = '/merch/index1.html';
+                                } else {
+                                    layer.msg(data.result_msg || data.return_msg)
+                                }
+                            }
+                        })
+                    }
+                    // }
+                }
+            });
+            $('#barSys').on('click', function () {
+                if (JSON.parse(getStorage('logMsg')).switchWorkstation == 1) {
+                    if (logMsg.logType == 4) {
+                        layer.msg('当前为吧台系统，请选择切换其他模式！')
+                    } else {
+                        let obj = {
+                            'userToken': token, 'merchId': logMsg.merchId, 'storeId': logMsg.storeId,
+                            'logType': 4, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                        };
+                        let parasJson = JSON.stringify(obj);
+                        $.ajax({
+                            type: "post",
+                            url: '/XCCloud/Login?action=SwitchUser',
+                            contentType: "application/json; charset=utf-8",
+                            data: {parasJson: parasJson},
+                            success: function (data) {
+                                data = JSON.parse(data);
+                                console.log(data);
+                                if (data.result_code == 1) {
+                                    logMsg.MerchTag = data.result_data.Tag;
+                                    logMsg.logType = 4;
+                                    logMsg.token = data.result_data.Token;
+                                    xc.setStorage('logMsg', JSON.stringify(logMsg));
+                                    xc.setStorage('token', data.result_data.Token);
+                                    window.location.href = '/merch/index1.html';
+                                } else {
+                                    layer.msg(data.result_msg || data.return_msg)
+                                }
+                            }
+                        })
+                    }
+                }
+            });
+        });
+        //只需要存在一个导航栏打开
+        $('#xcLeftMenu').on('click', 'li', function () {
+            $(this).addClass('layui-nav-itemed').siblings().removeClass('layui-nav-itemed');
+        });
+        //重新登录
+        $("#reLogin").click(function () {
+            var storage = window.localStorage;
+            storage.clear();
+            window.location.href = '/merch/login.html';
+        });
+        //退出系统
+        $('#exitSystem').click(function () {
+            closeWebPage();
+            var storage = window.localStorage;
+            storage.clear();
+        });
+
+        // 动态加载左侧菜单
+        function setLeftList(id) {
+            var obj = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+            var url = "/XCCloud/Main?action=GetMenus";
+            var parasJson = JSON.stringify(obj);
+            var ulBox = $('#' + id);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.result_code == "1") {
+                        ulBox.html('<li class="layui-nav-item"><a href="javascript:;">' + data.result_data[0].name + '</a></li>');
+                        var data1 = data.result_data[0].children;
+                        for (var j in data1) {
+                            if (data1[j].children.length > 0) {
+                                ulBox.append("<li class='layui-nav-item'>" +
+                                    "<a class='' href='javascript:;'>" + data1[j].name + "</a>" +
+                                    "<dl class='layui-nav-child'>" +
+                                    (function () {
+                                        var arr = "";
+                                        for (var i in data1[j].children) {
+                                            arr += "<dd><a class='aMenu' href='javascript:;' id=" + data1[j].children[i].pageName + ">" + data1[j].children[i].name + "</a></dd>";
+                                        }
+                                        return arr;
+                                    })() + "</dl></li>")
+                            }
+                            else {
+                                ulBox.append("<li class='layui-nav-item'>" +
+                                    "<a class='aMenu' href='javascript:;'id=" + data1[j].pageName + ">" + data1[j].name + "</a>" +
+                                    "</li>")
+                            }
+                        }
+                        layui.use('element', function () {
+                            var element = layui.element;
+                            element.render('nav');
+                        });
+                    } else {
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.msg('操作失败');
+                        });
+                    }
+                }
+            });
+        }
+
+        //关闭浏览器
+        function closeWebPage() {
+            if (navigator.userAgent.indexOf("MSIE") > 0) {//close IE
+                if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
+                    window.opener = null;
+                    window.close();
+                } else {
+                    window.open('', '_top');
+                    window.top.close();
+                }
+            }
+            else if (navigator.userAgent.indexOf("Firefox") > 0) {//close firefox
+                window.location.href = 'about:blank ';
+            } else {//close chrome;It is effective when it is only one.
+                window.opener = null;
+                window.open('', '_self');
+                window.close();
             }
         }
-        else if (navigator.userAgent.indexOf("Firefox") > 0) {//close firefox
-            window.location.href = 'about:blank ';
-        } else {//close chrome;It is effective when it is only one.
-            window.opener = null;
-            window.open('', '_self');
-            window.close();
-        }
-    }
-   })
+    })
 </script>
 </html>

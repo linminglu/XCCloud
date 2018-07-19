@@ -80,6 +80,9 @@ namespace XXCloudService.Api.XCCloud
                 userLogResponseModel.MerchID = merchId;
                 userLogResponseModel.StoreID = storeId;
                 userLogResponseModel.IsSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
+                userLogResponseModel.MerchName = base_MerchantInfoModel.MerchName;
+                userLogResponseModel.MerchAccount = userLogResponseModel.MerchAccount;
+                userLogResponseModel.StoreName = base_StoreInfoModel.StoreName;
             }
             else if (userType == (int)UserType.Agent || userType == (int)UserType.Normal || userType == (int)UserType.Heavy)
             {
@@ -104,6 +107,9 @@ namespace XXCloudService.Api.XCCloud
                 userLogResponseModel.MerchID = merchId;
                 userLogResponseModel.StoreID = storeId;
                 userLogResponseModel.IsSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
+                userLogResponseModel.MerchName = base_MerchantInfoModel.MerchName;
+                userLogResponseModel.MerchAccount = userLogResponseModel.MerchAccount;
+                userLogResponseModel.StoreName = string.Empty;
             }
             
             userLogResponseModel.LogType = logType;
