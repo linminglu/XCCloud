@@ -907,3 +907,152 @@ as
 
 GO
 
+CREATE Proc [dbo].[V_GetJackpotMatrixVerifiction]
+(
+@MerchID varchar(15),
+@OrderID int,
+@ActiveID int,
+@CouponCode varchar(32),
+@ActiveFlag int
+)
+as
+  declare @VerifictionType as VerifictionType
+  insert @VerifictionType(FieldName,FieldValue) values('MerchID',@MerchID)
+  insert @VerifictionType(FieldName,FieldValue) values('OrderID',@OrderID) 
+  insert @VerifictionType(FieldName,FieldValue) values('ActiveID',@ActiveID)  
+  insert @VerifictionType(FieldName,FieldValue) values('CouponCode',@CouponCode)
+  insert @VerifictionType(FieldName,FieldValue) values('ActiveFlag',@ActiveFlag) 
+  select FieldName,FieldValue from @VerifictionType
+  
+GO
+
+CREATE proc [dbo].[CreateJackpotMatrix](
+@ActiveID int,@MerchID varchar(15),@Result int output,@ErrMsg varchar(200) output)
+as		
+    --检查奖品是否被抽取或已过期
+    if(EXISTS(SELECT 1 FROM Data_Jackpot_Matrix where ActiveID=@ActiveID and (ActiveFlag=1 or ActiveFlag=2))) 
+    begin
+		set @Result=0
+		set @ErrMsg='活动奖品已被抽取或已过期'
+		return
+    end
+    
+    --检查奖品数量是否足够
+    declare @LevelName varchar(50) = ''  
+    set @LevelName=(select top 1 b.LevelName from (select a.CouponID, Count(a.ID) AS [Count] from Data_CouponList a join Data_Jackpot_Level b on a.CouponID=b.CouponID where b.ActiveID=@ActiveID and a.[State]=2 group by a.CouponID) a 
+     join Data_Jackpot_Level b on a.CouponID=b.CouponID where a.[Count] < b.[Count]) 
+    if(ISNULL(@LevelName,'')!='')
+    begin
+		set @Result=0
+		set @ErrMsg=@LevelName + '的活动奖品数量不足'
+		return
+    end
+    
+    
+    --先删除, 后添加
+    delete from Data_Jackpot_Matrix where ActiveID=@ActiveID
+    
+    --计算奖池最大值
+    declare @maxCount int 
+    select @maxCount = Round(MAX(case when ISNULL(Probability,0)=0 then 0 else Convert(numeric,ISNULL([Count],0))/Probability end),0) from Data_Jackpot_Level where ActiveID=@ActiveID group by LevelName
+    declare @count int = 1
+    declare @row int
+    
+    --创建奖池
+    while(@count<=@maxCount)
+    begin			
+		insert into Data_Jackpot_Matrix(MerchID,OrderID,ActiveID,CouponCode,ActiveFlag,Verifiction)
+		values (@MerchID,@count,@ActiveID,'',0,'')
+		select @row=@@ROWCOUNT
+		if(@row!=1)
+		begin
+			set @Result = -1
+			set @ErrMsg='创建奖池失败'
+			return
+		end
+		
+		set @count = @count + 1
+    end  
+    
+    --填充奖品
+    declare @Index int = 1
+    declare @Record int = 0
+    declare @tempMatrixIDs table (ID int NULL)
+    declare @tempCouponCodes table (CouponCode varchar(32) NULL)	
+    declare @tempLevel table (ID int IDENTITY(1,1) NOT NULL, LevelName varchar(50) NULL, CouponID int NULL, [Count] int NULL, Probability numeric(10,6) NULL)
+    insert @tempLevel select LevelName,CouponID,[Count],Probability from Data_Jackpot_Level where ActiveID=@ActiveID order by Probability
+    
+    select @Record = COUNT(0) from @tempLevel
+    while @Index <= @Record
+    begin
+	  declare @range int 
+	  declare @jackpotNumber int --奖品数量
+	  declare @couponId int --优惠券规则ID
+	  select 
+		@levelName = LevelName,
+		@couponId = ISNULL(CouponID,0),
+		@jackpotNumber = ISNULL([Count],0),
+		@range = Round(case when ISNULL(Probability,0)=0 then 0 else Convert(numeric,ISNULL([Count],0))/Probability end,0) from @tempLevel where ID = @Index
+	  
+	  if(@couponId<=0)
+	  begin
+			set @Result = 0
+			set @ErrMsg=@LevelName + '奖品不存在'
+			return
+	  end
+	  
+	  if(@jackpotNumber<=0)
+	  begin
+			set @Result = 0
+			set @ErrMsg=@LevelName + '奖品数量为0'
+			return
+	  end
+	  
+	  declare @jCount int = 1
+	  while @jCount <= @jackpotNumber
+	  begin
+		declare @randNum int
+		set @randNum = cast(ceiling(rand() * @range) as int)
+		declare @loop int = 0
+		while(@loop < 100 and EXISTS(select 1 from @tempMatrixIDs where ID=@randNum)) 
+		begin
+			set @randNum = cast(ceiling(rand() * @range) as int)
+			set @loop = @loop + 1
+		end
+	  
+		if(EXISTS(select 1 from @tempMatrixIDs where ID=@randNum))
+		begin
+			set @Result = 0
+			set @ErrMsg='填充奖品失败'
+			return
+		end
+	  
+		--获取优惠券实体
+		declare @couponCode varchar(32) = ''
+		set @couponCode = (select top 1 CouponCode from Data_CouponList where CouponID=@couponId and [State]=2 and CouponCode not in (select CouponCode from @tempCouponCodes))
+		
+		--添加验证类型信息
+		declare @VerifictionType as VerifictionType
+		insert @VerifictionType(FieldName,FieldValue)
+		EXEC dbo.V_GetJackpotMatrixVerifiction @MerchID,@randNum,@ActiveID,@couponCode,0
+		declare @Verifiction varchar(32) = dbo.F_GetVerifiction(@VerifictionType)
+		
+		update Data_Jackpot_Matrix set CouponCode=@couponCode, Verifiction=@Verifiction where ActiveID=@ActiveID and MerchID=@MerchID and OrderID=@randNum		
+		insert into @tempCouponCodes values(@couponCode)
+		insert into @tempMatrixIDs values(@randNum)
+		
+		set @jCount = @jCount + 1
+		
+	  end	  	  
+	  
+      set @Index = @Index + 1
+      
+    end
+    
+	set @Result = 1
+
+
+
+
+GO
+

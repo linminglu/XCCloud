@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Transactions;
@@ -7,7 +8,9 @@ using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
+using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -244,18 +247,32 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             var levelNames = new List<string>();
+                            var couponIds = new List<int>();
+                            var data_CouponInfoService = Data_CouponInfoService.I;
+                            var data_Jackpot_MatrixService = Data_Jackpot_MatrixService.N;
+                            var data_CouponListService = Data_CouponListService.N;
                             foreach (IDictionary<string, object> el in jackpotLevels)
                             {
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    string couponId = dicPara.ContainsKey("couponId") ? dicPara["couponId"].ToString() : string.Empty;
+                                    var couponId = dicPara.Get("couponId").Toint();
                                     string levelName = dicPara.ContainsKey("levelName") ? (dicPara["levelName"] + "") : string.Empty;
                                     string count = dicPara.ContainsKey("count") ? (dicPara["count"] + "") : string.Empty;
                                     string probability = dicPara.ContainsKey("probability") ? (dicPara["probability"] + "") : string.Empty;
-                                    if (string.IsNullOrEmpty(couponId))
+                                    if (couponId.IsNull())
                                     {
                                         errMsg = "奖品ID不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if(!data_CouponInfoService.Any(a=>a.ID == couponId && a.EntryCouponFlag == (int)CouponFlag.Digit))
+                                    {
+                                        errMsg = "奖品须为电子优惠券";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (couponIds.Contains(couponId.Value))
+                                    {
+                                        errMsg = "奖品不能重复";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
                                     if (string.IsNullOrEmpty(levelName))
@@ -318,9 +335,30 @@ namespace XXCloudService.Api.XCCloud
                             {
                                 errMsg = "保存抽奖规则信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
+                            }                            
                         }
-                        
+
+                        //更新奖池                                    
+                        string storedProcedure = "CreateJackpotMatrix";
+                        SqlParameter[] parameters = new SqlParameter[0];
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@ActiveID", iId);
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@MerchID", merchId);                        
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@Result", 0);
+                        parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@ErrMsg", "");
+                        parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+
+                        XCCloudBLLExt.ExecuteStoredProcedure(storedProcedure, parameters);
+                        if (parameters[parameters.Length - 2].Value.ToString() != "1")
+                        {
+                            errMsg = parameters[parameters.Length - 1].Value.ToString();
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         ts.Complete();
                     }
                     catch (Exception ex)

@@ -85,6 +85,21 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 抽奖标志
+    /// </summary>
+    public enum ActiveFlag
+    {
+        [Description("未开奖")]
+        未开奖 = 0,
+
+        [Description("已抽取")]
+        已抽取 = 1,
+
+        [Description("已过期")]
+        已过期 = 2,
+    }
+
+    /// <summary>
     /// 单品类别
     /// </summary>
     public enum SingleType
