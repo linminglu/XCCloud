@@ -194,7 +194,7 @@ namespace XXCloudService.Api.XCCloud
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
-                    {
+                    {                        
                         IData_JackpotInfoService data_JackpotInfoService = BLLContainer.Resolve<IData_JackpotInfoService>();
                         var data_JackpotInfo = data_JackpotInfoService.GetModels(p => p.ID == iId).FirstOrDefault() ?? new Data_JackpotInfo();
                         data_JackpotInfo.ActiveName = activeName;
