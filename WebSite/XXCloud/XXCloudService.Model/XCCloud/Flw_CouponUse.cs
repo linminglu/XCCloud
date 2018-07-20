@@ -23,7 +23,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> FreeMoney { get; set; }
         public Nullable<int> Coins { get; set; }
         public Nullable<System.DateTime> UseTime { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

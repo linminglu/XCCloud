@@ -78,6 +78,10 @@
       <Project>{adce73d3-04ff-4d98-846f-c8026a3b6396}</Project>
       <Name>XCCloudService.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XCCloudService.Pay\XCCloudService.Pay.csproj">
+      <Project>{cc20d914-ca39-497b-b70d-99b6e4efb302}</Project>
+      <Name>XCCloudService.Pay</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XCCloudService.Socket\XCCloudService.SocketService.TCP.csproj">
       <Project>{1201063a-0f56-4cfd-abe7-be685df27477}</Project>
       <Name>XCCloudService.SocketService.TCP</Name>

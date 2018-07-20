@@ -250,6 +250,42 @@
                             </div>
 
                         </div>
+                        <div class="layui-form-item">
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: 80px">销售</label>
+                                <div class="layui-input-inline" style="width: 80px">
+                                    <input type="text" class="layui-input" id="sold">
+                                </div>
+                                <div class="layui-input-inline" style="width: 140px">
+                                    <select name="" id="time" lay-filter="time">
+                                        <option value="0">小时</option>
+                                        <option value="1">天</option>
+                                    </select>
+                                </div>
+                                <div class="layui-form-mid">
+                                    后不可退货
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">退货手续费</label>
+                                <div class="layui-input-inline" style="width: 40px">
+                                    <input type="checkbox" id="money" lay-filter="money" lay-skin="primary">
+                                </div>
+                                <div class="layui-input-inline" style="width: 140px">
+                                    <input type="text" id="setmoney" class="layui-input">
+                                    <span class="layui-unit">元</span>
+                                </div>
+                                <div class="layui-input-inline" style="width: 40px">
+                                    <input type="checkbox" id="present" lay-filter="present" lay-skin="primary">
+                                </div>
+                                <div class="layui-input-inline" style="width: 140px">
+                                    <input type="text" id="setpresent" class="layui-input">
+                                    <span class="layui-unit">%</span>
+                                </div>
+
+                            </div>
+                        </div>
                         <div class="layui-form-item layui-hide" id="otherShow">
                             <div class="layui-inline">
                                 <label class="layui-form-label">美团ID</label>
@@ -656,6 +692,10 @@
     let BalanceType = '';//余额类别
     let BalanceTypeStr = '';
 
+    let time=0;
+    let money = 0;
+    let present = 0;
+
     let vipCoinType = '';
     let vipCoinTypeStr = '';
     let OperateType = 0;
@@ -700,6 +740,31 @@
             'parm': parm,
             'laydate': laydate
         })
+        form.on('select(time)', (data) => {
+            time = data.value;
+        });
+        form.on('checkbox(money)', (data) => {
+            if (data.elem.checked == true) {
+                money = 1;
+            } else {
+                money = 0;
+            }
+            $('#present').attr({'checked': false});
+            form.render('checkbox');
+            $('#setmoney').val('');
+        });
+        form.on('checkbox(present)', (data) => {
+            if (data.elem.checked == true) {
+                present = 1;
+            } else {
+                present = 0;
+            }
+            $('#money').attr({'checked': false});
+            form.render('checkbox');
+            $('#setpresent').val('');
+        });
+
+
         form.on('select(FoodType)', function (data) {
             FoodType = data.value == '-请选择-' ? '' : data.value;
         });
@@ -1362,6 +1427,22 @@
                                     $(this).parent('div').remove();
                                 });
                             }
+
+                            time = arr.TimeType;
+                            if (arr.FeeType == 0) {
+                                money = 1;
+                                present = 0;
+                                $('#setmoney').val(arr.ReturnFee);
+                                $('#money').attr({'checked': true})
+                            } else {
+                                money = 0;
+                                present = 1;
+                                $('#setpresent').val(arr.ReturnFee);
+                                $('#present').attr({'checked': true})
+                            }
+                            $('#time').find('option[value="' + arr.TimeType + '"]').prop({'selected': true});
+                            $('#sold').val(arr.ReturnTime);
+
                             form.render();
                             layer.open({
                                 title: '修改套餐',
@@ -1462,6 +1543,14 @@
         });
         //保存主套餐
         $('#lastSave').on('click', function () {
+            let feeTypes;
+            let ReturnFees;
+            if (money == 0 && present == 0) {
+                layer.msg('请设置退货手续费')
+            } else {
+                money == 0 ? feeTypes = 1 : feeTypes = 0
+                money = 0 ? ReturnFees = $('#setpresent').val() : ReturnFees = $('#setmoney').val()
+            }
             let obj = {
                 'FoodId': foodID,
                 'foodName': $('#FoodName').val(),
@@ -1487,6 +1576,13 @@
                 'forbidStart': $('#NoStartTime').val(),
                 'forbidEnd': $('#NoEndTime').val(),
                 'tax': $('#tax').val(),
+
+                'returnTime': $('#sold').val(),
+                'timeType': time,
+
+                'feeType': feeTypes,
+                'ReturnFee': ReturnFees,
+
                 'userToken': token,
                 'signkey': '1f626576304bf5d95b72ece2222e42c3'
             };

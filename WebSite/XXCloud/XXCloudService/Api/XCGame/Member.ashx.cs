@@ -697,7 +697,6 @@ namespace XCCloudService.Api.XCGame
                             transfer.CheckDate = schedule.CheckDate;
                             transfer.State = 1;
                             transfer.Note = "会员转账";
-                            transfer.SyncFlag = 0;
                             if (!Flw_TransferService.I.Add(transfer))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员转账记录失败");
@@ -729,7 +728,6 @@ namespace XCCloudService.Api.XCGame
                             fmd.AuthorID = 0;
                             fmd.WorkStation = workStation;
                             fmd.CheckDate = schedule.CheckDate;
-                            fmd.SyncFlag = 0;
                             if (!Flw_MemberDataService.I.Add(fmd))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -761,7 +759,6 @@ namespace XCCloudService.Api.XCGame
                             fmd.AuthorID = 0;
                             fmd.WorkStation = workStation;
                             fmd.CheckDate = schedule.CheckDate;
-                            fmd.SyncFlag = 0;
                             if (!Flw_MemberDataService.I.Add(fmd))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");

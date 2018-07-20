@@ -23,7 +23,6 @@ namespace XCCloudService.Model.XCCloud
         public string CardID { get; set; }
         public Nullable<int> MatrixID { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

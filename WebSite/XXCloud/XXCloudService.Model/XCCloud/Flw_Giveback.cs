@@ -14,16 +14,16 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_Giveback
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> CardID { get; set; }
-        public Nullable<int> PICCardID { get; set; }
+        public string CardID { get; set; }
+        public string PICCardID { get; set; }
         public string MemberName { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
         public Nullable<int> Coins { get; set; }
         public Nullable<int> AuthorID { get; set; }
         public Nullable<int> UserID { get; set; }
-        public Nullable<int> ScheduleID { get; set; }
+        public string ScheduleID { get; set; }
         public string WorkStation { get; set; }
         public Nullable<System.DateTime> ExitRealTime { get; set; }
         public Nullable<int> ExitAuthorID { get; set; }

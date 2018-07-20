@@ -35,7 +35,6 @@ namespace XCCloudService.Model.XCCloud
         public string Note { get; set; }
         public Nullable<decimal> ChargeFee { get; set; }
         public string OrderNumber { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

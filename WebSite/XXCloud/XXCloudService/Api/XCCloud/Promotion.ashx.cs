@@ -627,6 +627,10 @@ namespace XXCloudService.Api.XCCloud
                     ClientPrice = FoodInfo.ClientPrice,
                     MemberPrice = FoodInfo.MemberPrice,
                     RenewDays = FoodInfo.RenewDays,
+                    ReturnTime = FoodInfo.ReturnTime,
+                    TimeType = FoodInfo.TimeType,
+                    ReturnFee = FoodInfo.ReturnFee,
+                    FeeType = FoodInfo.FeeType,
                     StoreIDs = StoreIDs,
                     FoodDetials = FoodDetials,
                     FoodLevels = FoodLevels,
@@ -670,6 +674,10 @@ namespace XXCloudService.Api.XCCloud
                 var memberPrice = dicParas.Get("memberPrice").Todecimal();
                 var renewDays = dicParas.Get("renewDays").Toint();
                 var imageUrl = dicParas.Get("imageUrl");
+                var returnTime = dicParas.Get("returnTime").Toint();
+                var timeType = dicParas.Get("timeType").Toint();
+                var returnFee = dicParas.Get("returnFee").Todecimal();
+                var feeType = dicParas.Get("feeType").Toint();
                 var storeIds = dicParas.Get("storeIds");
                 object[] foodSales = dicParas.GetArray("foodSales");
                 object[] foodDetials = dicParas.GetArray("foodDetials");
@@ -726,6 +734,10 @@ namespace XXCloudService.Api.XCCloud
                         data_FoodInfo.MerchID = merchId;
                         data_FoodInfo.ImageURL = imageUrl;
                         data_FoodInfo.AllowQuickFood = allowQuickFood;
+                        data_FoodInfo.ReturnTime = returnTime;
+                        data_FoodInfo.TimeType = timeType;
+                        data_FoodInfo.ReturnFee = returnFee;
+                        data_FoodInfo.FeeType = feeType;
                         if (foodId == 0)
                         {
                             //新增

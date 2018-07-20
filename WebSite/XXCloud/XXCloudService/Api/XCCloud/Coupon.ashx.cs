@@ -209,7 +209,7 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (dicParas.Get("couponType").Toint() == (int)CouponType.Charge)
+                if (dicParas.Get("couponType").Toint() == (int)CouponType.Exchange)
                 {
                     if (!dicParas.Get("chargeType").Nonempty("兑换类型", out errMsg))
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1242,7 +1242,7 @@ namespace XXCloudService.Api.XCCloud
                     note = note + "另可享受满" + data_CouponInfo.CouponThreshold + "元打" + data_CouponInfo.CouponDiscount 
                                 + "折扣，最多抵扣" + data_CouponInfo.CouponValue + "元，且允许同时使用" + data_CouponInfo.OverUseCount + "张";
                 }
-                else if (data_CouponInfo.CouponType == (int)CouponType.Charge)
+                else if (data_CouponInfo.CouponType == (int)CouponType.Exchange)
                 {
                     if (data_CouponInfo.ChargeType == (int)ChargeType.Coin)
                     {

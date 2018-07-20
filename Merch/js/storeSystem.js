@@ -318,6 +318,11 @@ xcActionSystem.prototype = {
             var layer = layui.layer;
             var index = layer.load(0, {shade: false});
             var obj = parm.obj, url = parm.url;
+            let _Cols=[]
+            for(let i in parm.cols){
+                _Cols.push(parm.cols[i])
+            }
+
             $.ajax({
                 type: "post", url: url,
                 contentType: "application/json; charset=utf-8",
@@ -331,7 +336,7 @@ xcActionSystem.prototype = {
                         let arr1 = JSON.parse(data.result_data.table1);
                         let arr2 = data.result_data.table2;
                         Object.keys(arr2).forEach(function (key, i, v) {
-                            parm.cols.push({field: key, title: arr2[key], align: 'center'})
+                            _Cols.push({field: key, title: arr2[key], align: 'center'})
                         })
 
                         table.render({
@@ -339,7 +344,7 @@ xcActionSystem.prototype = {
                             , data: arr1
                             // , height:'full-150'
                             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                            , cols: [parm.cols]
+                            , cols: [_Cols]
                             , skin: 'line'
                             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                             , limit: 10

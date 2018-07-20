@@ -281,20 +281,64 @@ namespace XXCloudService.Api
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
                 }
 
-                int payType = strPayType.Toint(0);
-                if (payType == 0)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付方式不正确");
-                }
-
-                //支付方式
-                PaymentChannel PayChannel = (PaymentChannel)payType;
-
+                errMsg = string.Empty;
                 Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == orderId).FirstOrDefault();
                 if (order == null)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
+                    errMsg = "查询不到该订单";
+                    return false;
                 }
+
+                if (!order.CheckVerifiction())
+                {
+                    errMsg = "订单有效性校验失败";
+                    return false;
+                }
+
+                Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.ID == order.StoreID).FirstOrDefault();
+                if (store == null)
+                {
+                    errMsg = "订单所属的门店不存在";
+                    return false;
+                }
+
+                PaymentChannel PayChannel;
+                string head = authCode.Substring(0, 2);
+                if (authCode.Length != 18)
+                {
+                    errMsg = "条码长度异常";
+                    return false;
+                }
+                else
+                {
+                    switch (head)
+                    {
+                        case "10":
+                        case "11":
+                        case "12":
+                        case "13":
+                        case "14":
+                        case "15":
+                            //启动微信支付
+                            PayChannel = PaymentChannel.WXPAY;
+                            break;
+                        case "28":
+                            //启动支付宝支付
+                            PayChannel = PaymentChannel.ALIPAY;
+                            break;
+                        default:
+                            errMsg = "条码识别错误";
+                            return false;
+                    }
+                }
+
+                if (store.SelttleType == null)
+                {
+                    errMsg = "门店结算类型为空";
+                    return false;
+                }
+
+                SelttleType selttleType = (SelttleType)store.SelttleType;
 
                 //订单减免金额
                 decimal freePay = order.FreePay == null ? 0 : order.FreePay.Value;
@@ -306,8 +350,6 @@ namespace XXCloudService.Api
                 BarcodePayModel model = new BarcodePayModel();
                 model.OrderId = orderId;
 
-                int payChannel = strPayChannel.Toint(2);//默认新大陆支付
-                SelttleType selttleType = (SelttleType)Convert.ToInt32(payChannel);
                 switch (selttleType)
                 {
                     case SelttleType.NotThird:

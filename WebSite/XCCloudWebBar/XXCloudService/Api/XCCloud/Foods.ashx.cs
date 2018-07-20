@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using XCCloudWebBar.Api;
 using XCCloudWebBar.Base;
 using XCCloudWebBar.BLL.CommonBLL;
 using XCCloudWebBar.BLL.XCCloud;
@@ -46,8 +47,16 @@ namespace XXCloudService.Api.XCCloud
             };
 
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+            var obj = new {
+                foodId = ds.Tables[0].Rows[0]["FoodId"].ToString(),
+                category = ds.Tables[0].Rows[0]["Category"].ToString(),
+                foodCount = ds.Tables[0].Rows[0]["FoodCount"].ToString(),
+                payType = ds.Tables[0].Rows[0]["PayType"].ToString(),
+                payNum = ds.Tables[0].Rows[0]["PayNum"].ToString(),
+                realPayNum = ds.Tables[0].Rows[0]["RealPayNum"].ToString()
+            };
 
-
+            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
         }
 
 

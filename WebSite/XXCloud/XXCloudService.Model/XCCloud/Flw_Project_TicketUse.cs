@@ -29,7 +29,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> OutDeviceType { get; set; }
         public Nullable<int> OutMinuteTotal { get; set; }
         public string Note { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

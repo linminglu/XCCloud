@@ -37,7 +37,6 @@ namespace XCCloudService.Model.XCCloud
         public string OrderID { get; set; }
         public string Note { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

@@ -20,6 +20,7 @@ using XCCloudService.Business.XCGameMana;
 using XCCloudService.Business.XCGame;
 using XCCloudService.SocketService.UDP.Security;
 using XCCloudService.SocketService.UDP.Common;
+using XCCloudService.Pay;
 
 
 namespace XCCloudService.SocketService.UDP
@@ -285,6 +286,14 @@ namespace XCCloudService.SocketService.UDP
                                         {
                                             AskSNList[sn].RemotePoint = item.remotePoint;
                                             AskSNList[sn].Secret = secret;
+                                        }
+                                        ScanPayRequestModel scanpay = JsonHelper.DataContractJsonDeserializer<ScanPayRequestModel>(data);
+                                        PayOrderHelper payHelper = new PayOrderHelper();
+                                        string errMsg = string.Empty;
+                                        bool ret = payHelper.BarcodePay(scanpay.OrderID, scanpay.AuthCode, out errMsg);
+                                        if(!ret)
+                                        {
+                                            AskScanPayResult("0", errMsg, "");
                                         }
                                     }
                                     break;

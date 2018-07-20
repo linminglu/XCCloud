@@ -29,16 +29,20 @@
                     <div class="layui-form-item" id="serchMode"></div>
                 </div>
 
-                <div class="layui-col-md2" id="form2Box" style="">
+                <div class="layui-col-md1" id="form2Box" style="">
                     <div class="layui-form layui-form-pane" id="form2" style="">
                         <div id="tantion" class="layui-form-item">
                         </div>
                     </div>
                 </div>
-
-                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板"
-                        id="searchBtn">查询
-                </button>
+                <div class="layui-col-md2" style="padding-left: 50px;">
+                    <button type="button" class="layui-btn layui-btn-normal " i18n-content="查询模板"
+                            id="searchBtn">查询
+                    </button>
+                    <button type="button" class="layui-btn layui-btn-normal " i18n-content="查询模板"
+                            id="reSearchBtn">重置
+                    </button>
+                </div>
             </blockquote>
         </div>
         <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
@@ -298,6 +302,7 @@
             'form': form,
             'layer': layer,
             'searchBtn': 'searchBtn',
+            'reSearchBtn':'reSearchBtn',
             'xc': xc,
             'parm': parm,
             'laydate': laydate,

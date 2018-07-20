@@ -33,10 +33,10 @@
         <div class="layui-col-lg12 layui-col-md12 layui-col-sm12">
             <table class="layui-hide" id="giftsStorage" lay-filter="giftsStorage"></table>
 
-            <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">修改</button>-->
-            <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>-->
-            <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" id="forbidBtn">禁止入库</button>-->
-            <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" id="allowBtn">禁止入库</button>-->
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="checkBtn">审核</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" id="backBtn">退货</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" id="cancelBtn">撤销</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="delBtn">删除</button>
             <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" id="add">入库</button>
         </div>
     </div>
@@ -185,18 +185,17 @@
     let merchId = JSON.parse(xc.getStorage('logMsg')).MerchID;
     let storeId = JSON.parse(xc.getStorage('logMsg')).StoreID;
     let LogType = JSON.parse(xc.getStorage('logMsg')).logType;
-    let cols = [
-        {field: 'ID', title: '入库流水号', align: 'center', sort: true}
+    let cols = [{type:'checkbox'}
+        ,{field: 'ID', title: '入库流水号', align: 'center', sort: true}
         , {field: 'StoreName', title: '入库门店', align: 'center', sort: true}
         , {field: 'RealTime', title: '入库时间', align: 'center', templet: '#changeTime'} //width 支持：数字、百分比和不填写。
         , {field: 'Supplier', title: '采购渠道', align: 'center'}
-        // ,{field:'StorageCount', title: '入库数量', align: 'center'}
-        // ,{field:'TaxPrice', title: '采购单价', align: 'center'}
         , {field: 'TotalPrice', title: '入库金额', align: 'center'}
         , {field: 'LogName', title: '入库经办人', align: 'center'}
         , {field: 'DepotName', title: '入库仓库', align: 'center'}
         , {field: 'AuthorFlagStr', title: '审核状态', align: 'center'}
-        , {fixed: 'right', title: '操作', width: 300, align: 'center', toolbar: '#barDemo'}];
+        // , {fixed: 'right', title: '操作', width: 300, align: 'center', toolbar: '#barDemo'}
+        ];
     let parm = {
         'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/GoodsInfo?action=QueryGoodStorage',
@@ -412,14 +411,87 @@
             }
 
         })
-        //监听主表
-        table.on('tool(giftsStorage)', function (obj) {
-            let _data = obj.data;
-            let layevent = obj.event;
-            id = _data.ID;
+        //监听表格选中
+        table.on('checkbox(ProjectList)', function (obj) {
+            console.log(obj.data);
+            // checkedArr.push(obj.data)
+            let d=obj.data;
+            if (obj.checked) {
+                checkedArr.push(obj.data)
+                if (d.AuthorFlag == 1) {
+                    $('#backBtn').removeClass('layui-hide');
+                    $('#cancelBtn').removeClass('layui-hide');
+                    $('#checkBtn').addClass('layui-hide')
+                } else {
+                    if(LogType==3){
+                        $('#backBtn').addClass('layui-hide');
+                        $('#cancelBtn').addClass('layui-hide');
+                        $('#checkBtn').removeClass('layui-hide')
+                    }
+                }
+            } else {
+                for(let i in checkedArr){
+                    if (checkedArr[i].ID==d.ID){
+                        checkedArr.splice(i,1)
+                    }
+                }
+                if(checkedArr.length>0){
+                    if (checkedArr[checkedArr.length-1].ChargeType == 1) {
+                        $('#backBtn').removeClass('layui-hide');
+                        $('#cancelBtn').removeClass('layui-hide');
+                        $('#checkBtn').addClass('layui-hide')
 
-            if (layevent === 'back') {
-                let _obj = {'id': _data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    } else {
+                        if(LogType==3){
+                            $('#backBtn').addClass('layui-hide');
+                            $('#cancelBtn').addClass('layui-hide');
+                            $('#checkBtn').removeClass('layui-hide')
+                        }
+                    }
+                }else {
+                    $('#backBtn').addClass('layui-hide');
+                    $('#cancelBtn').addClass('layui-hide');
+                    $('#checkBtn').addClass('layui-hide')
+                }
+
+            }
+        })
+        //审核
+        $('#checkBtn').click(function () {
+            let checkStatus = table.checkStatus('giftsStorage'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                // id = checkStatus.data[0].ID;
+                layer.confirm('确定审核此入库信息吗？', function (index) {
+                    let _obj = {'id': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/GoodsInfo?action=CheckGoodStorage',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('审核通过', {time: 1500}, function () {
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg || data.return_msg);
+                            }
+                        }
+                    })
+                })
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        }) //审核
+        $('#backBtn').click(function () {
+            let checkStatus = table.checkStatus('giftsStorage'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                // id = checkStatus.data[0].ID;
+                let _obj = {'id': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
                     type: 'post',
@@ -462,51 +534,17 @@
                         }
                     }
                 })
-            } else if (layevent === 'del') {
-                layer.confirm('确定删除此入库信息吗？', function (index) {
-                    let _obj = {'id': _data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
-                    let parseJson = JSON.stringify(_obj);
-                    $.ajax({
-                        type: 'post',
-                        url: '/XCCloud/GoodsInfo?action=DelGoodStorage',
-                        contentType: "application/json; charset=utf-8",
-                        data: {parasJson: parseJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            if (data.result_code == 1) {
-                                layer.msg('删除成功', {time: 1500}, function () {
-                                    location.reload()
-                                })
-                            } else {
-                                layer.msg(data.result_msg || data.return_msg);
-                            }
-                        }
-                    })
-                })
-            } else if (layevent === 'check') {
-                layer.confirm('确定审核此入库信息吗？', function (index) {
-                    let _obj = {'id': _data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
-                    let parseJson = JSON.stringify(_obj);
-                    $.ajax({
-                        type: 'post',
-                        url: '/XCCloud/GoodsInfo?action=CheckGoodStorage',
-                        contentType: "application/json; charset=utf-8",
-                        data: {parasJson: parseJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            if (data.result_code == 1) {
-                                layer.msg('审核通过', {time: 1500}, function () {
-                                    location.reload()
-                                })
-                            } else {
-                                layer.msg(data.result_msg || data.return_msg);
-                            }
-                        }
-                    })
-                })
-            } else if (layevent === 'cancel') {
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        })
+        $('#cancelBtn').click(function () {
+            let checkStatus = table.checkStatus('giftsStorage'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                // id = checkStatus.data[0].ID;
                 layer.confirm('确定撤销此入库信息吗？', function (index) {
-                    let _obj = {'id': _data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let _obj = {'id': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type: 'post',
@@ -525,6 +563,41 @@
                         }
                     })
                 })
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        })
+        $('#delBtn').click(function () {
+            let checkStatus = table.checkStatus('gameFileTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len >0) {
+                let idArr=[];
+                for(let i in checkStatus.data){
+                    idArr.push(checkStatus.data[i].ID)
+                }
+                layer.confirm('确定删除此入库信息吗？', function (index) {
+                    let _obj = {'id': idArr, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/GoodsInfo?action=DelGoodStorage',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('删除成功', {time: 1500}, function () {
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg || data.return_msg);
+                            }
+                        }
+                    })
+                })
+
+            } else {
+                layer.msg('请且勾选一条数据！')
             }
         });
         //监听子表

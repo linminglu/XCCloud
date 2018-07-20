@@ -526,7 +526,7 @@ namespace XCCloudService.Pay.PPosPay
             /// </summary>
             public string result { get; set; }
             /// <summary>
-            /// 系统单号
+            /// 支付渠道订单号
             /// </summary>
             public string orderNo { get; set; }
             /// <summary>

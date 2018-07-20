@@ -55,16 +55,14 @@ namespace XCCloudService.Business.XCCloud
                         if (selttleType == SelttleType.StarPos)
                         {
                             sql = @"SELECT a.ID as StoreID, SettleFee FROM Base_StoreInfo a
-                                INNER JOIN Flw_Order b ON b.StoreID = a.ID
                                 INNER JOIN Base_SettlePPOS c ON c.ID = a.SettleID
-                                WHERE b.ID = '" + orderId + "'";
+                                WHERE a.ID = '" + StoreID + "'";
                         }
                         else if (selttleType == SelttleType.LcswPay)
                         {
                             sql = @"SELECT a.ID as StoreID, SettleFee FROM Base_StoreInfo a
-                                INNER JOIN Flw_Order b ON b.StoreID = a.ID
                                 INNER JOIN Base_SettleLCPay c ON c.ID = a.SettleID
-                                WHERE b.ID = '" + orderId + "'";
+                                WHERE a.ID = '" + StoreID + "'";
                         }
                         else
                         {
@@ -91,8 +89,6 @@ namespace XCCloudService.Business.XCCloud
 
                         model.OrderStatus = OrderState.Alarm;
                     }
-
-                    AddOrderPayCache(orderId, amount, payTime, model.OrderStatus, selttleType);
                 }
             }
             catch
@@ -112,6 +108,6 @@ namespace XCCloudService.Business.XCCloud
             orderPay.PayState = payState;
             orderPay.PayType = payType;
             OrderPayCache.Add<OrderPayCacheModel>(orderId, orderPay, CacheExpires.OrderPayCacheExpiresTime);
-        }        
+        }
     }
 }

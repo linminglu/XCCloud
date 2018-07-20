@@ -891,7 +891,6 @@ namespace XXCloudService.Api.XCCloudH5
                     foodSale.BuyFoodType = 1;
                     foodSale.TaxFee = 0;
                     foodSale.TaxTotal = 0;
-                    foodSale.SyncFlag = 0;
                     if (!Flw_Food_SaleService.I.Add(foodSale))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水失败");
@@ -903,7 +902,6 @@ namespace XXCloudService.Api.XCCloudH5
                     saleDetail.FlwFoodID = foodSale.ID;
                     saleDetail.ContainCount = 1;
                     saleDetail.Status = 1;
-                    saleDetail.SyncFlag = 0;
                     if (!Flw_Food_SaleDetailService.I.Add(saleDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水明细失败");
@@ -1219,7 +1217,6 @@ namespace XXCloudService.Api.XCCloudH5
                     fmd.AuthorID = 0;
                     fmd.WorkStation = "";
                     fmd.CheckDate = schedule.CheckDate;
-                    fmd.SyncFlag = 0;
                     if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -1281,7 +1278,6 @@ namespace XXCloudService.Api.XCCloudH5
                         fmd.AuthorID = 0;
                         fmd.WorkStation = "";
                         fmd.CheckDate = schedule.CheckDate;
-                        fmd.SyncFlag = 0;
                         if (!Flw_MemberDataService.I.Add(fmd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -1385,7 +1381,6 @@ namespace XXCloudService.Api.XCCloudH5
                     foodSale.BuyFoodType = 1;
                     foodSale.TaxFee = 0;
                     foodSale.TaxTotal = 0;
-                    foodSale.SyncFlag = 0;
                     if (!Flw_Food_SaleService.I.Add(foodSale))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水失败");
@@ -1397,7 +1392,6 @@ namespace XXCloudService.Api.XCCloudH5
                     saleDetail.FlwFoodID = foodSale.ID;
                     saleDetail.ContainCount = 1;
                     saleDetail.Status = 1;
-                    saleDetail.SyncFlag = 0;
                     if (!Flw_Food_SaleDetailService.I.Add(saleDetail))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水明细失败");

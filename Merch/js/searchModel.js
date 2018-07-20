@@ -6,7 +6,7 @@ var seachModel = function (options) {
     let pagename = options.pagename;  //数据
     let processname = options.processname;  //数据
     let searchBtn = document.getElementById(options.searchBtn);
-
+    let reSearchBtn=options.reSearchBtn!=null?document.getElementById(options.reSearchBtn):'';
     let token = options.token;//选中的子节点  [{ID:GameID}]
     let form = options.form; //layui from对象
     let layer = options.layer; //layui from对象
@@ -433,7 +433,25 @@ var seachModel = function (options) {
                 }
             }
         })
-    })
+    });
+    if(reSearchBtn){
+        reSearchBtn.addEventListener('click', function () {
+            if(parm==null){
+                options.callback
+            }else {
+                parm.obj.conditions=[];
+                if(types==1){
+                    xc.getInitData(parm);
+                }else {
+                    xc.getActiveTable(parm);
+                }
+            }
+
+            _falg=false;
+            $('#'+options.elem1).parent().slideUp(100);
+        });
+    }
+
 };
 
 function setOption(j) {

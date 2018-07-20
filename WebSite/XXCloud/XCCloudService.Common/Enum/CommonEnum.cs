@@ -375,6 +375,21 @@ namespace XCCloudService.Common.Enum
         手工补币 = 17
     }
 
+    /// <summary>
+    /// 增补币方式
+    /// </summary>
+    public enum FreeType
+    {
+        [Description("吧台手工")]
+        吧台手工 = 0,
+        [Description("机修卡")]
+        机修卡 = 1,
+        [Description("生日赠送")]
+        生日赠送 = 2,
+        [Description("输赢送币")]
+        输赢送币 = 3,
+    }
+
     //设备绑定状态枚举
     public enum DeviceBoundStateEnum : int
     {
@@ -1128,7 +1143,7 @@ namespace XCCloudService.Common.Enum
         [Description("折扣券")]
         Discount = 1,//折扣
         [Description("兑换券")]
-        Charge = 2//兑换
+        Exchange = 2//兑换
     }
 
     /// <summary>
@@ -1600,6 +1615,21 @@ namespace XCCloudService.Common.Enum
         /// 智付
         /// </summary>
         DinPay = 5
+    }
+
+    /// <summary>
+    /// 扫码方式
+    /// </summary>
+    public enum ScanType
+    {
+        /// <summary>
+        /// 二维码（客户主扫）
+        /// </summary>
+        QRcode = 1,
+        /// <summary>
+        /// 条码（商家主扫）
+        /// </summary>
+        BarCode = 2
     }
 
     public enum OrderState

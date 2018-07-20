@@ -30,7 +30,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> RealCash { get; set; }
         public Nullable<decimal> RealCredit { get; set; }
         public string Note { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

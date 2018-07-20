@@ -40,7 +40,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> AuthorID { get; set; }
         public string WorkStation { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

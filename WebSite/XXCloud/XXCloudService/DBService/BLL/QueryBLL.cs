@@ -141,9 +141,12 @@ namespace XCCloudService.DBService.BLL
                         else if (condition == (int)QueryTemplateCondition.Like)
                         {
                             var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
-                            sb.Append(string.Format(" and {1}{0} like '%' + @{0} + '%' ", field, alias));
-                            Array.Resize(ref parameters, parameters.Length + 1);
-                            parameters[parameters.Length - 1] = new SqlParameter("@" + field, values);
+                            if (!values.IsNull())
+                            {
+                                sb.Append(string.Format(" and {1}{0} like '%' + @{0} + '%' ", field, alias));
+                                Array.Resize(ref parameters, parameters.Length + 1);
+                                parameters[parameters.Length - 1] = new SqlParameter("@" + field, values);
+                            }
                         }
                         else
                         {
@@ -260,7 +263,10 @@ namespace XCCloudService.DBService.BLL
                         else if (condition == (int)QueryTemplateCondition.Like)
                         {
                             var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
-                            sb.Append(string.Format(" and {1}{0} like '%{2}%' ", field, alias, values));
+                            if (!values.IsNull())
+                            {
+                                sb.Append(string.Format(" and {1}{0} like '%{2}%' ", field, alias, values));
+                            } 
                         }
                         else
                         {
