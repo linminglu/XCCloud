@@ -11,7 +11,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     public class Flw_MemberCard_RenewList
     {
         public string ID { get; set; }
-        public string CardID { get; set; }
+        public string ICCardID { get; set; }
         public string UserName { get; set; }
         public DateTime? CreateTime { get; set; }
         public decimal? RenewFee { get; set; }

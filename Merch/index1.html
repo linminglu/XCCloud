@@ -105,14 +105,17 @@
                 <li class="layui-nav-item" lay-unselect=""><a href="javascript:;">上线时间: <span id="nowTime"></span></a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="" id="curLocation">
-                    <a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：<span
+                    <a href="#"><i class="layui-icon" style=" color: #666;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：<span
                             id="myPlace"></span><span class="layui-badge-dot"></span></a>
 
                 </li>
                 <li class="layui-nav-item layui-hide" id="sysExchange">
-                    <a href="#">系统切换</a>
+
+                    <a href="#"><i class="layui-icon layui-icon-te" style="color: #666">&#xe630;</i>  系统切换</a>
                     <dl class="layui-nav-child ">
-                        <dd id="storeSys" class="layui-hide"><a href="javascript:;">门店系统</a>
+                        <dd id="storeSys" class="layui-hide">
+
+                            <a href="javascript:;"> 门店系统</a>
                             <ul id="storeListToGo">
 
                             </ul>
@@ -185,7 +188,7 @@
         let xc = xcActionSystem.prototype;
         if (logMsg.logType == 0) {
             let html = '';
-            html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
+            html += '<a href="#"><i class="layui-icon" style="color:#666;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
             html += ' <dl class="layui-nav-child ">' +
                 '<dd ><a href="javascript:;">莘宸工作人员</a></dd>' +
                 '</dl>'
@@ -193,14 +196,14 @@
 
         } else if (logMsg.logType == 1) {
             let html = '';
-            html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
+            html += '<a href="#"><i class="layui-icon" style="color:#666;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
             html += ' <dl class="layui-nav-child ">' +
                 '<dd  ><a href="javascript:;">莘宸管理员</a></dd>' +
                 '</dl>'
             $('#curLocation').html('').append(html)
         } else if (logMsg.logType == 2) {
             let html = '';
-            html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
+            html += '<a href="#"><i class="layui-icon" style="color:#666;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
             html += ' <dl class="layui-nav-child ">' +
                 '<dd ><a href="javascript:;">' + logMsg.storeName + '</a></dd>' +
                 '<dd ><a href="javascript:;">门店ID:' + logMsg.storeId + '</a></dd>' +
@@ -209,7 +212,7 @@
         }
         else if (logMsg.logType == 3) {
             let html = '';
-            html += '<a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
+            html += '<a href="#"><i class="layui-icon" style="color:#666;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：</a>';
             html += '<dl class="layui-nav-child">' +
             '<dd><a href="javascript:;">' + logMsg.merchName + '</a></dd>' +
                 '<dd><a href="javascript:;">商户ID:' + logMsg.merchId + '</a></dd>' +

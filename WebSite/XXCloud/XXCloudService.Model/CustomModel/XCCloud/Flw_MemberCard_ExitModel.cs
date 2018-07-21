@@ -11,7 +11,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     public class Flw_MemberCard_ExitList
     {
         public string ID { get; set; }
-        public string CardID { get; set; }
+        public string ICCardID { get; set; }
         public string UserName { get; set; }
         public DateTime? OPTime { get; set; }
         public string OperateTypeStr { get; set; }

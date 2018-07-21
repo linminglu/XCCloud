@@ -10,7 +10,7 @@
 namespace XCCloudWebBar.DAL.IDAL.XCCloud
 {
     using XCCloudWebBar.Model.XCCloud;
-    public interface IFlw_GoodsDAL : IBaseDAL<Flw_Goods>
+    public interface IFlw_MemberInfo_ChangeDAL : IBaseDAL<Flw_MemberInfo_Change>
     {
     		
     }

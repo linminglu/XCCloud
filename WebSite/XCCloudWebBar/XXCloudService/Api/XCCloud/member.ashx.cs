@@ -1683,7 +1683,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     levelChange.MerchID = merchID;
                     levelChange.StoreID = storeId;
                     levelChange.MemberID = card.MemberID;
-                    levelChange.ICCardID = card.ICCardID;
+                    levelChange.CardID = card.ID;
                     levelChange.OldMemberLevelID = card.MemberLevelID;
                     levelChange.NewMemberLevleID = level.ID;
                     levelChange.ChangeType = 0;
@@ -2343,6 +2343,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 balanceChange.MerchID = merchID;
                                 balanceChange.StoreID = storeId;
                                 balanceChange.MemberID = memberCard.MemberID;
+                                balanceChange.CardIndex = memberCard.ID;
                                 balanceChange.SourceBalanceIndex = item.BalanceIndex;
                                 balanceChange.SourceCount = item.ExchangeQty;
                                 balanceChange.SourceRemain = cardBalance.Balance;
@@ -2401,7 +2402,6 @@ namespace XCCloudWebBar.Api.XCCloud
                                 fmd.AuthorID = 0;
                                 fmd.WorkStation = workStation;
                                 fmd.CheckDate = schedule.CheckDate;
-                                fmd.SyncFlag = 0;
                                 if(!Flw_MemberDataService.I.Add(fmd))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -2435,7 +2435,6 @@ namespace XCCloudWebBar.Api.XCCloud
                                 fmd2.AuthorID = 0;
                                 fmd2.WorkStation = workStation;
                                 fmd2.CheckDate = schedule.CheckDate;
-                                fmd2.SyncFlag = 0;
                                 if (!Flw_MemberDataService.I.Add(fmd2))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -2485,7 +2484,6 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd3.AuthorID = 0;
                         fmd3.WorkStation = workStation;
                         fmd3.CheckDate = schedule.CheckDate;
-                        fmd3.SyncFlag = 0;
                         if (!Flw_MemberDataService.I.Add(fmd3))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -3457,6 +3455,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     change.MerchID = merchID;
                     change.StoreID = storeId;
                     change.MemberID = currCard.MemberID;
+                    change.CardIndex = currCard.ID;
                     change.SourceBalanceIndex = sourceBalance.BalanceIndex;
                     change.SourceCount = iExchangeQty;
                     change.SourceRemain = sourceBalance.Balance;
@@ -3503,7 +3502,6 @@ namespace XCCloudWebBar.Api.XCCloud
                     fmd.AuthorID = 0;
                     fmd.WorkStation = workStation;
                     fmd.CheckDate = schedule.CheckDate;
-                    fmd.SyncFlag = 0;
                     if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -3537,7 +3535,6 @@ namespace XCCloudWebBar.Api.XCCloud
                     fmd.AuthorID = 0;
                     fmd.WorkStation = workStation;
                     fmd.CheckDate = schedule.CheckDate;
-                    fmd.SyncFlag = 0;
                     if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -3754,7 +3751,6 @@ namespace XCCloudWebBar.Api.XCCloud
                             fmd.AuthorID = 0;
                             fmd.WorkStation = workStation;
                             fmd.CheckDate = schedule.CheckDate;
-                            fmd.SyncFlag = 0;
                             if (!Flw_MemberDataService.I.Add(fmd))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -4124,7 +4120,6 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.AuthorID = 0;
                         fmd.WorkStation = workStation;
                         fmd.CheckDate = schedule.CheckDate;
-                        fmd.SyncFlag = 0;
                         if (!Flw_MemberDataService.I.Add(fmd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -5150,7 +5145,6 @@ namespace XCCloudWebBar.Api.XCCloud
                         transfer.CheckDate = schedule.CheckDate;
                         transfer.State = 1;
                         transfer.Note = "会员过户";
-                        transfer.SyncFlag = 0;
                         if(!Flw_TransferService.I.Add(transfer))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员过户记录失败");
@@ -5184,7 +5178,6 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.AuthorID = 0;
                         fmd.WorkStation = workStation;
                         fmd.CheckDate = schedule.CheckDate;
-                        fmd.SyncFlag = 0;
                         if (!Flw_MemberDataService.I.Add(fmd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
@@ -5218,7 +5211,6 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.AuthorID = 0;
                         fmd.WorkStation = workStation;
                         fmd.CheckDate = schedule.CheckDate;
-                        fmd.SyncFlag = 0;
                         if (!Flw_MemberDataService.I.Add(fmd))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");

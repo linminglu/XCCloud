@@ -85,6 +85,24 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 订单状态
+    /// </summary>
+    public enum OrderStatus
+    {
+        [Description("未结算")]
+        未结算 = 0,
+
+        [Description("等待支付")]
+        等待支付 = 1,
+
+        [Description("已支付")]
+        已支付 = 2,
+
+        [Description("支付异常")]
+        支付异常 = 3,
+    }
+
+    /// <summary>
     /// 抽奖标志
     /// </summary>
     public enum ActiveFlag

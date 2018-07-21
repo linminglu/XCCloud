@@ -782,7 +782,6 @@ namespace XXCloudService.Api.XCCloud
                             tdLog.Total = 0;
                             tdLog.UseType = 1;
                             tdLog.CashTotal = 0;
-                            tdLog.SyncFlag = 0;
                             if (!Flw_Project_TicketDeviceLogService.I.Add(tdLog))
                             {
                                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, "创建出闸记录失败");

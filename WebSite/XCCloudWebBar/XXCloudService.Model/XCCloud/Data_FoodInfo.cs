@@ -37,5 +37,9 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<decimal> Tax { get; set; }
         public Nullable<int> RenewDays { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<int> ReturnTime { get; set; }
+        public Nullable<int> TimeType { get; set; }
+        public Nullable<decimal> ReturnFee { get; set; }
+        public Nullable<int> FeeType { get; set; }
     }
 }

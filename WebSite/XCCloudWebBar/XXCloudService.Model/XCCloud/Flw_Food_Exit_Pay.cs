@@ -20,7 +20,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> PayCount { get; set; }
         public Nullable<decimal> Balance { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

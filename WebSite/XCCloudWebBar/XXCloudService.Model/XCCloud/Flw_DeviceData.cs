@@ -21,6 +21,9 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<int> GameIndexID { get; set; }
         public string SiteName { get; set; }
         public Nullable<int> SN { get; set; }
+        public Nullable<int> ACKControlValue { get; set; }
+        public Nullable<int> ACKFreeCoin { get; set; }
+        public Nullable<int> ACKPulesCount { get; set; }
         public Nullable<int> BusinessType { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
@@ -28,6 +31,7 @@ namespace XCCloudWebBar.Model.XCCloud
         public string CreateStoreID { get; set; }
         public string MemberName { get; set; }
         public string ICCardID { get; set; }
+        public Nullable<decimal> Cash { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> Coin { get; set; }
         public Nullable<decimal> RemainBalance { get; set; }
@@ -35,9 +39,5 @@ namespace XCCloudWebBar.Model.XCCloud
         public string Note { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public string Verifiction { get; set; }
-        public Nullable<int> ACKControlValue { get; set; }
-        public Nullable<int> ACKFreeCoin { get; set; }
-        public Nullable<int> ACKPulesCount { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
     }
 }

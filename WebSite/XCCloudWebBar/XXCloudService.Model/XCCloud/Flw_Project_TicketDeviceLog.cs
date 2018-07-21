@@ -25,7 +25,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<decimal> Total { get; set; }
         public Nullable<int> UseType { get; set; }
         public Nullable<decimal> CashTotal { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

@@ -7,10 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace XCCloudWebBar.DAL.IDAL.XCCloud
+namespace XCCloudWebBar.BLL.IBLL.XCCloud
 {
+    
     using XCCloudWebBar.Model.XCCloud;
-    public interface IFlw_Good_DetailDAL : IBaseDAL<Flw_Good_Detail>
+    
+    public interface IFlw_MemberInfo_ChangeService : IBaseService<Flw_MemberInfo_Change>
     {
     		
     }

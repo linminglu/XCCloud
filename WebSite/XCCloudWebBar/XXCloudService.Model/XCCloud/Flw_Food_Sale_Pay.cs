@@ -15,14 +15,13 @@ namespace XCCloudWebBar.Model.XCCloud
     public partial class Flw_Food_Sale_Pay
     {
         public string ID { get; set; }
+        public string MerchID { get; set; }
         public string FlwFoodID { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
-        public Nullable<decimal> PayCount { get; set; }
-        public Nullable<decimal> Balance { get; set; }
-        public string MerchID { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
-        public string Verifiction { get; set; }
         public Nullable<decimal> OrginalPrice { get; set; }
         public Nullable<decimal> Discount { get; set; }
+        public Nullable<decimal> PayCount { get; set; }
+        public Nullable<decimal> Balance { get; set; }
+        public string Verifiction { get; set; }
     }
 }

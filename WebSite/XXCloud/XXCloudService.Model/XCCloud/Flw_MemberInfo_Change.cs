@@ -18,7 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string MemberID { get; set; }
-        public string ICCardID { get; set; }
+        public string CardID { get; set; }
         public string ModifyFied { get; set; }
         public string OldContext { get; set; }
         public string NewContext { get; set; }

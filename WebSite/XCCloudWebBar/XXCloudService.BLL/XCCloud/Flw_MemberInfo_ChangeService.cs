@@ -17,37 +17,37 @@ namespace XCCloudWebBar.BLL.XCCloud
     using XCCloudWebBar.BLL.IBLL.XCCloud;
     using XCCloudWebBar.Model.XCCloud;
     
-    public partial class Flw_Good_DetailService : BaseService<Flw_Good_Detail>, IFlw_Good_DetailService
+    public partial class Flw_MemberInfo_ChangeService : BaseService<Flw_MemberInfo_Change>, IFlw_MemberInfo_ChangeService
     {
     	public override void SetDal()
         {
     
         }
     
-        public Flw_Good_DetailService()
+        public Flw_MemberInfo_ChangeService()
             : this(false)
         {
     
         }
     
-        public Flw_Good_DetailService(bool resolveNew)
+        public Flw_MemberInfo_ChangeService(bool resolveNew)
         {
-            Dal = DALContainer.Resolve<IFlw_Good_DetailDAL>(resolveNew: resolveNew);
+            Dal = DALContainer.Resolve<IFlw_MemberInfo_ChangeDAL>(resolveNew: resolveNew);
         }
     
-    	public static IFlw_Good_DetailService I
+    	public static IFlw_MemberInfo_ChangeService I
         {
             get
             {
-                return BLLContainer.Resolve<IFlw_Good_DetailService>();
+                return BLLContainer.Resolve<IFlw_MemberInfo_ChangeService>();
             }
         }
     
-        public static IFlw_Good_DetailService N
+        public static IFlw_MemberInfo_ChangeService N
         {
             get
             {
-                return BLLContainer.Resolve<IFlw_Good_DetailService>(resolveNew: true);
+                return BLLContainer.Resolve<IFlw_MemberInfo_ChangeService>(resolveNew: true);
             }
         }
     }

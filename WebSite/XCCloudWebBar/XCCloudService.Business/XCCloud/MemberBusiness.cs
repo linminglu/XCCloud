@@ -139,7 +139,6 @@ namespace XCCloudWebBar.Business.XCCloud
                     fmd.AuthorID = 0;
                     fmd.WorkStation = workStation;
                     fmd.CheckDate = schedule.CheckDate;
-                    fmd.SyncFlag = 0;
                     if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return false;
@@ -184,7 +183,6 @@ namespace XCCloudWebBar.Business.XCCloud
                     fmd.AuthorID = 0;
                     fmd.WorkStation = workStation;
                     fmd.CheckDate = schedule.CheckDate;
-                    fmd.SyncFlag = 0;
                     if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return false;

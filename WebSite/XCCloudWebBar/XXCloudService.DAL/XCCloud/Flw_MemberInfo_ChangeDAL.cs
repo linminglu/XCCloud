@@ -13,7 +13,7 @@ namespace XCCloudWebBar.DAL.XCCloud
     using XCCloudWebBar.DAL.Base;
     using XCCloudWebBar.DAL.IDAL.XCCloud;
     using XCCloudWebBar.Model.XCCloud;
-    public partial class Flw_GoodsDAL : BaseDAL<Flw_Goods>, IFlw_GoodsDAL
+    public partial class Flw_MemberInfo_ChangeDAL : BaseDAL<Flw_MemberInfo_Change>, IFlw_MemberInfo_ChangeDAL
     {
     		
     }

@@ -125,9 +125,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Exit" Width="1.5" PointX="34.75" PointY="15.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GroupVerity" Width="1.5" PointX="36.75" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Lottery" Width="1.5" PointX="36.75" PointY="22.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_BalanceCharge" Width="1.5" PointX="22.75" PointY="36.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Free" Width="1.5" PointX="36.75" PointY="27.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_LevelChange" Width="1.5" PointX="28.75" PointY="36.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberLevelFree" Width="1.5" PointX="6.75" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberLevelFree_Detail" Width="1.5" PointX="8.75" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order" Width="1.5" PointX="10.75" PointY="37.75" />
@@ -159,8 +157,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Game_WinPrize" Width="1.5" PointX="43.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Jackpot_Level" Width="1.5" PointX="21.375" PointY="26.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Jackpot_Matrix" Width="1.5" PointX="43.375" PointY="8.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Change" Width="1.5" PointX="15.375" PointY="43.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Renew" Width="1.5" PointX="31.375" PointY="36.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" Width="1.5" PointX="43.375" PointY="16.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_TicketInfo" Width="1.5" PointX="39.375" PointY="40.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Exit" Width="1.5" PointX="25.375" PointY="36.75" />
@@ -173,7 +169,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale_Pay" Width="1.5" PointX="0.75" PointY="35.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Game_Watch" Width="1.5" PointX="33.75" PointY="35.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Jackpot" Width="1.5" PointX="17.75" PointY="35.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberInfo_Change" Width="1.5" PointX="35.75" PointY="35.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Schedule_UserInfo" Width="1.5" PointX="35.75" PointY="40.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Transfer" Width="1.5" PointX="17.75" PointY="43.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_CouponUse" Width="1.5" PointX="35.75" PointY="0.75" />
@@ -183,6 +178,11 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale" Width="1.5" PointX="0.75" PointY="45.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Giveback" Width="1.5" PointX="45.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponList" Width="1.5" PointX="9.375" PointY="45.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_BalanceCharge" Width="1.5" PointX="11.375" PointY="45.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Change" Width="1.5" PointX="13.375" PointY="42.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_LevelChange" Width="1.5" PointX="27.375" PointY="36.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Renew" Width="1.5" PointX="29.375" PointY="36.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberInfo_Change" Width="1.5" PointX="45.375" PointY="16.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

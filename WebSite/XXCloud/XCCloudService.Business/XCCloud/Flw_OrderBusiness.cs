@@ -4,12 +4,14 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.CacheService;
 using XCCloudService.CacheService.XCCloud;
+using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -137,7 +139,7 @@ namespace XCCloudService.Business.XCCloud
         /// 订单退款处理
         /// </summary>
         /// <param name="orderId">订单号</param>
-        /// <param name="amount">实际支付金额</param>
+        /// <param name="amount">退款金额</param>
         /// <returns></returns>
         public bool OrderRefundPay(string orderId, decimal amount)
         {
@@ -160,41 +162,58 @@ namespace XCCloudService.Business.XCCloud
                         FoodSaleId = t.Key
                     }).ToList();
 
-                if(queryOrderDetail.Count > 0)
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
-                    foreach (var item in queryOrderDetail)
+                    if (queryOrderDetail.Count > 0)
                     {
-                        Flw_Food_Sale foodSale = Flw_Food_SaleService.I.GetModels(t => t.ID == item.FoodSaleId).FirstOrDefault();
-                        if (foodSale != null)
+                        foreach (var item in queryOrderDetail)
                         {
-                            decimal returnFee = 0m;
-                            ReturnTaxModel returnModel = getRefundTax(foodSale.SingleType, foodSale.FoodID);
-                            if(returnModel != null)
+                            Flw_Food_Sale foodSale = Flw_Food_SaleService.I.GetModels(t => t.ID == item.FoodSaleId).FirstOrDefault();
+                            if (foodSale != null)
                             {
-                                returnFee = returnModel.ReturnFee.HasValue ? returnModel.ReturnFee.Value : 0m;
-                                if(returnModel.ReturnType == 1)
+                                decimal returnFee = 0m;
+                                ReturnTaxModel returnModel = getRefundTax(foodSale.SingleType, foodSale.FoodID);
+                                if (returnModel != null)
                                 {
-                                    returnFee = amount * returnModel.ReturnFee.Value / 100;
-                                    returnFee = Math.Round(returnFee, 2, MidpointRounding.AwayFromZero);
+                                    returnFee = returnModel.ReturnFee.HasValue ? returnModel.ReturnFee.Value : 0m;
+                                    if (returnModel.ReturnType == 1)
+                                    {
+                                        returnFee = amount * returnModel.ReturnFee.Value / 100;
+                                        returnFee = Math.Round(returnFee, 2, MidpointRounding.AwayFromZero);
+                                    }
                                 }
-                            }
 
-                            Flw_Food_Exit foodExit = new Flw_Food_Exit();
-                            foodExit.ID = RedisCacheHelper.CreateCloudSerialNo(order.StoreID);
-                            foodExit.MerchID = store.MerchID;
-                            foodExit.StoreID = store.ID;
-                            foodExit.OrderID = orderId;
-                            foodExit.FoodID = Convert.ToInt32(foodSale.FoodID);
-                            foodExit.CardID = order.CardID;
-                            foodExit.ExitFee = returnFee;
-                            foodExit.TotalMoney = amount - returnFee;
-                            if (!Flw_Food_ExitService.I.Add(foodExit))
-                            {
-                                return false;
+                                Flw_Food_Exit foodExit = new Flw_Food_Exit();
+                                foodExit.ID = RedisCacheHelper.CreateCloudSerialNo(order.StoreID);
+                                foodExit.MerchID = store.MerchID;
+                                foodExit.StoreID = store.ID;
+                                foodExit.OrderID = orderId;
+                                foodExit.FoodID = Convert.ToInt32(foodSale.FoodID);
+                                foodExit.CardID = order.CardID;
+                                foodExit.ExitFee = returnFee;
+                                foodExit.TotalMoney = amount - returnFee;
+                                foodExit.Note = "订单退款";
+                                foodExit.RealTime = DateTime.Now;
+
+                                if (!Flw_Food_ExitService.I.Add(foodExit))
+                                {
+                                    LogHelper.SaveLog(TxtLogType.PPosPay, "添加退款记录失败");
+                                    return false;
+                                }
                             }
                         }
                     }
-                }                
+
+                    order.ExitPrice = amount;
+                    order.ExitFee = 0;
+                    order.ExitTime = DateTime.Now;
+                    if (!Flw_OrderService.I.Update(order))
+                    {
+                        LogHelper.SaveLog(TxtLogType.PPosPay, string.Format("新大陆退款：订单更新失败，订单号：{0}，退款金额：{1}", orderId, amount));
+                        return false;
+                    }
+                    ts.Complete();
+                }
             }
             catch (Exception ex)
             {

@@ -1836,7 +1836,7 @@ namespace XCCloudService.Api.XCCloud
                     levelChange.MerchID = merchID;
                     levelChange.StoreID = storeId;
                     levelChange.MemberID = card.MemberID;
-                    levelChange.ICCardID = card.ICCardID;
+                    levelChange.CardID = card.ID;
                     levelChange.OldMemberLevelID = card.MemberLevelID;
                     levelChange.NewMemberLevleID = level.ID;
                     levelChange.ChangeType = 0;

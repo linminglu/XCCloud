@@ -360,13 +360,13 @@ namespace XXCloudService.Api.XCCloud
                 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.NewCardID, b.UserName, a.OldCardID, (case a.OperateType when 0 then '换卡' when 1 then '补卡' else '' end) AS OperateType,
+                                    a.ID, cd1.ICCardID AS NewICCardID, b.UserName, cd2.ICCardID AS OldICCardID, (case a.OperateType when 0 then '换卡' when 1 then '补卡' else '' end) AS OperateType,
                                     a.CreateTime, a.OpFee, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_Change a
-                                INNER JOIN Data_Member_Card cd1 ON a.NewCardID=cd1.ICCardID
+                                INNER JOIN Data_Member_Card cd1 ON a.NewCardID=cd1.ID
                                 INNER JOIN Data_Member_Card_Store s1 on cd1.ID=s1.CardID
-                                INNER JOIN Data_Member_Card cd2 ON a.OldCardID=cd2.ICCardID
+                                INNER JOIN Data_Member_Card cd2 ON a.OldCardID=cd2.ID
                                 INNER JOIN Data_Member_Card_Store s2 on cd2.ID=s2.CardID
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
@@ -413,11 +413,11 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.CardID, b.UserName, a.CreateTime, a.RenewFee, e.TypeName AS BalanceIndexStr, e.PayCount,
+                                    a.ID, cd.ICCardID, b.UserName, a.CreateTime, a.RenewFee, e.TypeName AS BalanceIndexStr, e.PayCount,
                                     a.FoodSaleID, a.OldEndDate, a.NewEndDate, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_Renew a
-                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ICCardID
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
                                 INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
@@ -469,11 +469,11 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.ICCardID, b.UserName, a.ModifyTime, a.ModifyFied, a.OldContext, a.NewContext,
+                                    a.ID, cd.ICCardID, b.UserName, a.ModifyTime, a.ModifyFied, a.OldContext, a.NewContext,
                                     c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberInfo_Change a
-                                INNER JOIN Data_Member_Card cd ON a.ICCardID=cd.ICCardID
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
                                 INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
@@ -520,11 +520,11 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.ICCardID, b.UserName, a.OpTime, a.ChangeType, e.MemberLevelName AS OldMemberLevelName, f.MemberLevelName AS NewMemberLevleName,                                    
+                                    a.ID, cd.ICCardID, b.UserName, a.OpTime, a.ChangeType, e.MemberLevelName AS OldMemberLevelName, f.MemberLevelName AS NewMemberLevleName,                                    
                                     a.OrderID, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName AS OpUserName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_LevelChange a
-                                INNER JOIN Data_Member_Card cd ON a.ICCardID=cd.ICCardID
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
                                 INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
@@ -573,12 +573,12 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.CardID, b.UserName, a.OPTime, a.Deposit, a.ExitMoney, 
+                                    a.ID, cd.ICCardID, b.UserName, a.OPTime, a.Deposit, a.ExitMoney, 
                                     (case a.OperateType when 0 then '退卡' when 1 then '退钱' else '' end) as OperateTypeStr,
                                     c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_Exit a
-                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ICCardID
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
                                 INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID   
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
@@ -630,6 +630,59 @@ namespace XXCloudService.Api.XCCloud
                                     e.TypeName AS BalanceIndexStr, (a.Balance+a.FreeBalance) AS Balance, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberData a
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID
+                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
+                                --LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID
+                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                            ";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberDataList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 会员兑换记录
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryMemberExchange(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (
+                                SELECT distinct
+                                    a.ID, a.ICCardID, a.MemberLevelName, a.OperationType, a.OPTime, a.SourceID, 
+                                    (a.Balance+a.FreeBalance-a.ChangeValue-a.FreeChangeValue) AS OldBalance, (a.ChangeValue+a.FreeChangeValue) AS ChangeValue,
+                                    e.TypeName AS BalanceIndexStr, (a.Balance+a.FreeBalance) AS Balance, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_Order a
                                 INNER JOIN Data_Member_Card cd ON a.CardID=cd.ICCardID
                                 INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
                                 --LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID

@@ -104,17 +104,8 @@ namespace XXCloudService.PayChannel
 
                     if (callback.TxnCode.Trim() == "L005") //退款
                     {
-                        Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == out_trade_no).FirstOrDefault();
-                        if(order != null)
-                        {
-                            order.ExitPrice = payAmount;
-                            order.ExitFee = 0;
-                            order.ExitTime = DateTime.Now;
-                            if(! Flw_OrderService.I.Update(order))
-                            {
-                                PayLogHelper.WritePayLog(string.Format("新大陆退款：订单更新失败，订单号：{0}，退款金额：{1}", out_trade_no, callback.TxnAmt));
-                            }
-                        }
+                        //订单退款                     
+                        orderBusiness.OrderRefundPay(out_trade_no, payAmount);
                     }
                     else  //扫码支付、公众号支付
                     {                       

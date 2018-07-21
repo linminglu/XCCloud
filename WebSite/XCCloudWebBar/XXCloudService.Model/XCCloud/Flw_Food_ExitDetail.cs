@@ -15,6 +15,7 @@ namespace XCCloudWebBar.Model.XCCloud
     public partial class Flw_Food_ExitDetail
     {
         public string ID { get; set; }
+        public string MerchID { get; set; }
         public string ExitID { get; set; }
         public Nullable<int> FoodType { get; set; }
         public Nullable<int> ContainID { get; set; }
@@ -22,8 +23,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<System.DateTime> ExpireDay { get; set; }
         public Nullable<int> ValidType { get; set; }
         public Nullable<int> Status { get; set; }
-        public string MerchID { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

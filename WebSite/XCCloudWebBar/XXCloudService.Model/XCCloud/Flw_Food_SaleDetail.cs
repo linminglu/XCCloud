@@ -21,7 +21,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<int> ContainID { get; set; }
         public Nullable<int> ContainCount { get; set; }
         public Nullable<int> Status { get; set; }
-        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

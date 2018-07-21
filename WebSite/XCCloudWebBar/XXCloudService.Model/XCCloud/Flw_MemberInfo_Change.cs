@@ -12,17 +12,22 @@ namespace XCCloudWebBar.Model.XCCloud
     using System;
     using System.Collections.Generic;
     
-    public partial class Flw_Jackpot
+    public partial class Flw_MemberInfo_Change
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> PrizeType { get; set; }
-        public string OrderID { get; set; }
         public string MemberID { get; set; }
         public string CardID { get; set; }
-        public Nullable<int> MatrixID { get; set; }
-        public Nullable<System.DateTime> RealTime { get; set; }
+        public string ModifyFied { get; set; }
+        public string OldContext { get; set; }
+        public string NewContext { get; set; }
+        public Nullable<System.DateTime> ModifyTime { get; set; }
+        public string WorkStation { get; set; }
+        public string ScheduldID { get; set; }
+        public Nullable<int> UserID { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
+        public string Note { get; set; }
         public string Verifiction { get; set; }
     }
 }
