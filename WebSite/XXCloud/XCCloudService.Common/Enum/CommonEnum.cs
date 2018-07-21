@@ -85,24 +85,6 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
-    /// 订单状态
-    /// </summary>
-    public enum OrderStatus
-    {
-        [Description("未结算")]
-        未结算 = 0,
-
-        [Description("等待支付")]
-        等待支付 = 1,
-
-        [Description("已支付")]
-        已支付 = 2,
-
-        [Description("支付异常")]
-        支付异常 = 3,
-    }
-
-    /// <summary>
     /// 抽奖标志
     /// </summary>
     public enum ActiveFlag
@@ -1667,25 +1649,48 @@ namespace XCCloudService.Common.Enum
 
     public enum OrderState
     {
+        [Description("未结算")]
         /// <summary>
         /// 未结算
         /// </summary>
         Unsettled = 0,
 
+        [Description("等待支付")]
         /// <summary>
         /// 未付款
         /// </summary>
         Unpaid = 1,
 
+        [Description("已支付")]
         /// <summary>
         /// 已付款
         /// </summary>
         AlreadyPaid = 2,
 
+        [Description("支付异常")]
         /// <summary>
         /// 异常支付警报
         /// </summary>
-        Alarm = 3
+        Alarm = 3                
+    }
+
+    /// <summary>
+    /// 订单来源
+    /// </summary>
+    public enum OrderSource
+    {
+        [Description("吧台")]
+        吧台 = 0,
+        [Description("自助机")]
+        自助机 = 1,
+        [Description("美团")]
+        美团 = 2,
+        [Description("大众点评")]
+        大众点评 = 3,
+        [Description("糯米")]
+        糯米 = 4,
+        [Description("H5_APP")]
+        H5_APP = 5
     }
 
 

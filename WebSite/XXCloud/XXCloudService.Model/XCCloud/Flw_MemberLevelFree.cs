@@ -28,5 +28,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> EndDate { get; set; }
         public Nullable<System.DateTime> GetFreeTime { get; set; }
         public string Verifiction { get; set; }
+        public string CardIndex { get; set; }
     }
 }

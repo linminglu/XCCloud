@@ -835,11 +835,10 @@ as
 	 a.CardType, a.Deposit, a.UpdateTime, a.EndDate, a.CardSex,
 	 b.Mobile, b.IDCard, a.CreateTime, d.StoreName, a.CardStatus '+    
     ' from Data_Member_Card a'+
-    ' inner join Data_Member_Card_Store s on a.ID=s.CardID '+
     ' inner join Base_MemberInfo b on a.MemberID=b.ID ' +
     ' inner join Data_MemberLevel c on a.MemberLevelID=c.ID '+
     ' left join Base_StoreInfo d on a.StoreID=d.ID ' +    
-    ' where a.MerchID=''' + @MerchID + ''' AND (a.StoreID=''' + @StoreID + ''' OR s.StoreID=''' + @StoreID + ''')'
+    ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
     SET @sql = @sql + ') a'
     SET @sql = @sql + ' left join ('
 
@@ -886,10 +885,9 @@ as
 	SET @sql = ''
 	SET @sql = @sql + 'select a.* from ('
 	SET @sql = @sql + 
-	'select distinct a.ICCardID, a.CardName, a.MemberLevelID, c.MemberLevelName, a.CreateTime, a.EndDate, a.JoinChannel, a.OrderID,
+	'select distinct a.ID, a.ICCardID, a.CardName, a.MemberLevelID, c.MemberLevelName, a.CreateTime, a.EndDate, a.JoinChannel, a.OrderID,
 	 o.Deposit, o.OpenFee, d.StoreName, o.CheckDate, o.ScheduleName, o.WorkStation, o.LogName AS UserName, o.Note ' +    
     ' from Data_Member_Card a' +
-    ' inner join Data_Member_Card_Store s on a.ID=s.CardID ' +
     ' left join (select o.ID, b.Deposit, b.OpenFee, o.CheckDate, o.WorkStation, o.Note, sd.ScheduleName, u.LogName from Flw_Order o ' +
     ' inner join Flw_Order_Detail od on o.ID=od.OrderFlwID ' +
     ' inner join Flw_Food_Sale b on od.FoodFlwID=b.ID ' +
@@ -897,7 +895,7 @@ as
     ' left join Flw_Schedule sd on o.ScheduleID=sd.ID) o on a.OrderID=o.ID ' +        
     ' inner join Data_MemberLevel c on a.MemberLevelID=c.ID ' +
     ' left join Base_StoreInfo d on a.StoreID=d.ID ' +         
-    ' where a.MerchID=''' + @MerchID + ''' AND (a.StoreID=''' + @StoreID + ''' OR s.StoreID=''' + @StoreID + ''')'
+    ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
     SET @sql = @sql + ') a where 1=1 ' + ISNULL(@SqlWhere,'')
 	
 	--print @sql

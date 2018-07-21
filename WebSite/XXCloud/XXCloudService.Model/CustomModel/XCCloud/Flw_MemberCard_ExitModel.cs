@@ -14,7 +14,6 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string ICCardID { get; set; }
         public string UserName { get; set; }
         public DateTime? OPTime { get; set; }
-        public string OperateTypeStr { get; set; }
         public Decimal? Deposit { get; set; }
         public Decimal? ExitMoney { get; set; }
         public string Note { get; set; }

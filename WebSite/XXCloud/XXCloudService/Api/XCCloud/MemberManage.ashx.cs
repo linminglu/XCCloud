@@ -214,6 +214,7 @@ namespace XXCloudService.Api.XCCloud
                     {
                         var obj = new
                         {
+                            ID = ds.Tables[0].Rows[i]["ID"].Tostring(),
                             ICCardID = ds.Tables[0].Rows[i]["ICCardID"].Tostring(),
                             CardName = ds.Tables[0].Rows[i]["CardName"].Tostring(),
                             MemberLevelID = ds.Tables[0].Rows[i]["MemberLevelID"].Toint(),
@@ -365,14 +366,12 @@ namespace XXCloudService.Api.XCCloud
                                 FROM
                                 	Flw_MemberCard_Change a
                                 INNER JOIN Data_Member_Card cd1 ON a.NewCardID=cd1.ID
-                                INNER JOIN Data_Member_Card_Store s1 on cd1.ID=s1.CardID
                                 INNER JOIN Data_Member_Card cd2 ON a.OldCardID=cd2.ID
-                                INNER JOIN Data_Member_Card_Store s2 on cd2.ID=s2.CardID
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s1.StoreID='" + storeId + "' OR s2.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -417,8 +416,7 @@ namespace XXCloudService.Api.XCCloud
                                     a.FoodSaleID, a.OldEndDate, a.NewEndDate, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_Renew a
-                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
-                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID    
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
@@ -428,7 +426,7 @@ namespace XXCloudService.Api.XCCloud
                                     INNER JOIN Flw_Food_Sale_Pay b ON a.ID=b.FlwFoodID
                                     LEFT JOIN Dict_BalanceType c ON b.BalanceIndex=c.ID
                                 ) e ON a.FoodSaleID=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -473,13 +471,12 @@ namespace XXCloudService.Api.XCCloud
                                     c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberInfo_Change a
-                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
-                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID    
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -524,15 +521,14 @@ namespace XXCloudService.Api.XCCloud
                                     a.OrderID, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName AS OpUserName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_LevelChange a
-                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
-                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID   
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
                                 LEFT JOIN Data_MemberLevel e ON a.OldMemberLevelID=e.ID
                                 LEFT JOIN Data_MemberLevel f ON a.NewMemberLevleID=f.ID
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -573,18 +569,16 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, cd.ICCardID, b.UserName, a.OPTime, a.Deposit, a.ExitMoney, 
-                                    (case a.OperateType when 0 then '退卡' when 1 then '退钱' else '' end) as OperateTypeStr,
+                                    a.ID, cd.ICCardID, b.UserName, a.OPTime, a.Deposit, a.ExitMoney,                                     
                                     c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberCard_Exit a
                                 INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
-                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID   
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID                                
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                                WHERE a.OperateType=0 AND a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -630,14 +624,13 @@ namespace XXCloudService.Api.XCCloud
                                     e.TypeName AS BalanceIndexStr, (a.Balance+a.FreeBalance) AS Balance, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberData a
-                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID
-                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
+                                --INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID     
                                 --LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -678,24 +671,187 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.ICCardID, a.MemberLevelName, a.OperationType, a.OPTime, a.SourceID, 
-                                    (a.Balance+a.FreeBalance-a.ChangeValue-a.FreeChangeValue) AS OldBalance, (a.ChangeValue+a.FreeChangeValue) AS ChangeValue,
-                                    e.TypeName AS BalanceIndexStr, (a.Balance+a.FreeBalance) AS Balance, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                    a.ID AS OrderID, cd.ICCardID, b.UserName, f.MemberLevelName, a.CreateTime, fsp.Discount, fsp.OrginalPrice, fsp.PayCount, 
+                                    e.TypeName AS BalanceIndexStr, fs.TotalMoney, a.OrderStatus, a.OrderSource, 
+                                    a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_Order a
-                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ICCardID
-                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
-                                --LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
-                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID  
+                                INNER JOIN Flw_Order_Detail od ON a.ID=od.OrderFlwID 
+                                INNER JOIN Flw_Food_Sale fs ON od.FoodFlwID=fs.ID 
+                                INNER JOIN Flw_Food_Sale_Pay fsp ON fs.ID=fsp.ID 
+                                LEFT JOIN Data_MemberLevel f ON fs.MemberLevelID=f.ID
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                --LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
-                                LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                                LEFT JOIN Dict_BalanceType e ON fsp.BalanceIndex=e.ID
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
 
-                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberDataList>(sql, parameters).ToList();
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberExchangeList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 会员卡内余额互转记录
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryMemberCardBalanceChange(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (
+                                SELECT distinct
+                                    a.ID, cd.ICCardID, b.UserName, f.MemberLevelName, a.OpTime, a.SourceCount, a.SourceRemain, a.TargetCount, a.TargetRemain,                                    
+                                    e1.TypeName AS SourceBalanceStr, e2.TypeName AS TargetBalanceStr, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_MemberCard_BalanceCharge a
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID   
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID  
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
+                                LEFT JOIN Dict_BalanceType e1 ON a.SourceBalanceIndex=e1.ID   
+                                LEFT JOIN Dict_BalanceType e2 ON a.TargetBalanceIndex=e2.ID                             
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                            ";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_BalanceChargeList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 会员赠补币记录
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryMemberCardFree(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (
+                                SELECT distinct
+                                    a.ID, cd.ICCardID, b.UserName, f.MemberLevelName, a.OpTime, a.FreeType, a.FreeCount,
+                                    ('满' + convert(varchar,mlf.ChargeTotal) + '赠' + convert(varchar,mlf.FreeCount)) AS FreeName, '已完成' AS [StateStr],
+                                    e.TypeName AS BalanceIndexStr, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_MemberCard_Free a
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID 
+                                INNER JOIN Flw_MemberLevelFree mlf ON a.CardIndex=mlf.CardIndex  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID  
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID                                                                
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                            ";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_FreeList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 会员退款记录
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryMemberCardExitMoney(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (
+                                SELECT distinct
+                                    a.ID, cd.ICCardID, b.UserName, f.MemberLevelName, a.OPTime, bc.SourceCount, bc.TargetCount, '已退款' AS [StateStr],
+                                    e.TypeName AS SourceBalanceStr, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_MemberCard_Exit a
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID 
+                                INNER JOIN Flw_MemberCard_BalanceCharge bc ON a.ID=bc.ExitID 
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID  
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                LEFT JOIN Dict_BalanceType e ON bc.SourceBalanceIndex=e.ID                                                                
+                                WHERE a.OperateType=1 AND a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                            ";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_ExitMoneyList>(sql, parameters).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
@@ -731,19 +887,19 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.CardIDOut, b1.UserName, a.RealTime, a.TransferCount, e.TypeName AS TransferBalanceStr, a.BalanceOut
-                                    a.CardIDIn, b2.UserName InUserName, a.BalanceIn, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                    a.ID, cd1.ICCardID AS ICCardIDOut, b1.UserName, a.RealTime, a.TransferCount, e.TypeName AS TransferBalanceStr, a.BalanceOut,
+                                    cd2.ICCardID AS ICCardIDIn, b2.UserName InUserName, a.BalanceIn, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberTransfer a
-                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ICCardID
-                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
+                                INNER JOIN Data_Member_Card cd1 ON a.CardIDOut=cd1.ID  
+                                INNER JOIN Data_Member_Card cd2 ON a.CardIDIn=cd2.ID        
                                 LEFT JOIN Base_MemberInfo b1 ON a.OutMemberID=b1.ID
                                 LEFT JOIN Base_MemberInfo b2 ON a.InMemberID=b2.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.TransferBalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -784,18 +940,17 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.CardID, a.RealTime, a.MayCoins, a.Coins, a.WinMoney, a.LastTime, a.WorkStation, u.LogName, u2.LogName AuthorName, a.Note                                    
+                                    a.ID, cd.ICCardID, a.RealTime, a.MayCoins, a.Coins, a.WinMoney, a.LastTime, a.WorkStation, u.LogName, u2.LogName AuthorName, a.Note                                    
                                 FROM
                                 	Flw_MemberData a
-                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ICCardID
-                                INNER JOIN Data_Member_Card_Store s on cd.ID=s.CardID      
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID  
                                 --LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 --LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 --LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Base_UserInfo u2 ON a.AuthorID=u2.ID
                                 --LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND (a.StoreID='" + storeId + "' OR s.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";

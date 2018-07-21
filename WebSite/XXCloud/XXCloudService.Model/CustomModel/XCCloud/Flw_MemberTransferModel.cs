@@ -11,13 +11,13 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     public class Flw_MemberTransferList
     {
         public string ID { get; set; }
-        public string CardIDOut { get; set; }
+        public string ICCardIDOut { get; set; }
         public string UserName { get; set; }
         public DateTime? RealTime { get; set; }
         public string TransferBalanceStr { get; set; }
         public decimal? TransferCount { get; set; }
         public decimal? BalanceOut { get; set; }
-        public string CardIDIn { get; set; }
+        public string ICCardIDIn { get; set; }
         public string InUserName { get; set; }
         public decimal? BalanceIn { get; set; }
         public string StoreName { get; set; }

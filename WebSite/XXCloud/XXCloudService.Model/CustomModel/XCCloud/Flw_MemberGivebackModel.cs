@@ -11,7 +11,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     public class Flw_MemberGivebackList
     {
         public string ID { get; set; }
-        public string CardID { get; set; }
+        public string ICCardID { get; set; }
         public DateTime? RealTime { get; set; }
         public int? MayCoins { get; set; }
         public int? Coins { get; set; }
