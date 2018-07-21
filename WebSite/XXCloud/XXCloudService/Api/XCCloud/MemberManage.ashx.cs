@@ -625,7 +625,7 @@ namespace XXCloudService.Api.XCCloud
                                 FROM
                                 	Flw_MemberData a
                                 INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID     
-                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Data_MemberLevel b ON cd.MemberLevelID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
@@ -683,13 +683,13 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Data_MemberLevel f ON fs.MemberLevelID=f.ID
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 --LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
-                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON fsp.BalanceIndex=e.ID
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
-                sql = sql + " ORDER BY a.ID";
+                sql = sql + " ORDER BY a.OrderID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberExchangeList>(sql, parameters).ToList();
 
@@ -899,7 +899,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.TransferBalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND (cd1.StoreID='" + storeId + "' OR cd2.StoreID='" + storeId + @"')) a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -940,7 +940,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, cd.ICCardID, a.RealTime, a.MayCoins, a.Coins, a.WinMoney, a.LastTime, a.WorkStation, u.LogName, u2.LogName AuthorName, a.Note                                    
+                                    a.ID, cd.ICCardID, a.RealTime, a.MayCoins, a.Coins, a.WinMoney, a.LastTime, a.WorkStation, u.LogName, u2.LogName AuthorName, '' AS Note                                    
                                 FROM
                                 	Flw_Giveback a
                                 INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID  

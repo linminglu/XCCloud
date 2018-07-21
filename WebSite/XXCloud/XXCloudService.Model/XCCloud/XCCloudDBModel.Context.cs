@@ -142,7 +142,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Digite_Coin> Flw_Digite_Coin { get; set; }
         public virtual DbSet<Flw_Digite_Coin_Detail> Flw_Digite_Coin_Detail { get; set; }
         public virtual DbSet<Flw_DiscountRule> Flw_DiscountRule { get; set; }
-        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Flw_Lottery> Flw_Lottery { get; set; }
         public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
@@ -185,7 +184,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
         public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
         public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
-        public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
         public virtual DbSet<Flw_Game_Watch> Flw_Game_Watch { get; set; }
         public virtual DbSet<Flw_Jackpot> Flw_Jackpot { get; set; }
         public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
@@ -195,7 +193,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Food_Exit_Pay> Flw_Food_Exit_Pay { get; set; }
         public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
-        public virtual DbSet<Flw_Giveback> Flw_Giveback { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
         public virtual DbSet<Flw_MemberCard_Change> Flw_MemberCard_Change { get; set; }
@@ -203,5 +200,8 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
         public virtual DbSet<Flw_MemberInfo_Change> Flw_MemberInfo_Change { get; set; }
         public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
+        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
+        public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
+        public virtual DbSet<Flw_Giveback> Flw_Giveback { get; set; }
     }
 }

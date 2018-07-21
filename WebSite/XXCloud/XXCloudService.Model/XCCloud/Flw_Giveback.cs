@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Flw_Giveback
     {
         public string ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string CardID { get; set; }
         public string PICCardID { get; set; }

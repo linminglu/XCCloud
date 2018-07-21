@@ -19,14 +19,15 @@ namespace XCCloudWebBar.Model.XCCloud
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string MemberID { get; set; }
+        public string CardIndex { get; set; }
         public Nullable<decimal> ChargeTotal { get; set; }
         public Nullable<int> FreeBalanceType { get; set; }
         public Nullable<int> FreeCount { get; set; }
         public Nullable<int> MinSpaceDays { get; set; }
         public Nullable<int> OnceFreeCount { get; set; }
+        public Nullable<int> CanGetCount { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
         public Nullable<System.DateTime> GetFreeTime { get; set; }
         public string Verifiction { get; set; }
-        public Nullable<int> CanGetCount { get; set; }
     }
 }

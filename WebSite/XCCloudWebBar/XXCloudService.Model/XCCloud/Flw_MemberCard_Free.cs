@@ -24,6 +24,7 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> FreeCount { get; set; }
         public Nullable<int> DeviceID { get; set; }
+        public Nullable<System.DateTime> OpTime { get; set; }
         public string Note { get; set; }
         public Nullable<int> UserID { get; set; }
         public string ScheduleID { get; set; }

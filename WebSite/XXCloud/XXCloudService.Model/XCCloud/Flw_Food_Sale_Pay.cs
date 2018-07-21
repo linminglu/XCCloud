@@ -18,6 +18,8 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public string FlwFoodID { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
+        public Nullable<decimal> OrginalPrice { get; set; }
+        public Nullable<decimal> Discount { get; set; }
         public Nullable<decimal> PayCount { get; set; }
         public Nullable<decimal> Balance { get; set; }
         public string Verifiction { get; set; }

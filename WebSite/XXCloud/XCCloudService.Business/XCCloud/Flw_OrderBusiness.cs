@@ -188,13 +188,12 @@ namespace XCCloudService.Business.XCCloud
                                 foodExit.MerchID = store.MerchID;
                                 foodExit.StoreID = store.ID;
                                 foodExit.OrderID = orderId;
-                                foodExit.FoodID = Convert.ToInt32(foodSale.FoodID);
+                                foodExit.FoodID = foodSale.FoodID;
                                 foodExit.CardID = order.CardID;
                                 foodExit.ExitFee = returnFee;
                                 foodExit.TotalMoney = amount - returnFee;
                                 foodExit.Note = "订单退款";
                                 foodExit.RealTime = DateTime.Now;
-
                                 if (!Flw_Food_ExitService.I.Add(foodExit))
                                 {
                                     LogHelper.SaveLog(TxtLogType.PPosPay, "添加退款记录失败");

@@ -154,11 +154,9 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Dict_System> Dict_System { get; set; }
-        public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
         public virtual DbSet<Flw_MemberLevelFree_Detail> Flw_MemberLevelFree_Detail { get; set; }
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
         public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
-        public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
         public virtual DbSet<Data_MemberLevelFree> Data_MemberLevelFree { get; set; }
         public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
@@ -169,7 +167,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
         public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
-        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<XC_WorkInfo> XC_WorkInfo { get; set; }
         public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
@@ -199,5 +196,8 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
         public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
         public virtual DbSet<Flw_MemberInfo_Change> Flw_MemberInfo_Change { get; set; }
+        public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
+        public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
+        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
     }
 }

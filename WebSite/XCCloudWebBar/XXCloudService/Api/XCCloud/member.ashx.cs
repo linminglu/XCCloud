@@ -1567,6 +1567,8 @@ namespace XCCloudWebBar.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+                int userId = userTokenKeyModel.LogId.Toint(0);
 
                 //判断会员卡是否存在或是否存在多张相同卡号的会员卡
                 if (!MemberBusiness.ExistsCardByICCardId(icCardId, merchID, storeId, out errMsg))
@@ -1581,25 +1583,64 @@ namespace XCCloudWebBar.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
                 }
 
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行解锁操作");
+                }
+
+                string modifyField = "手动解锁：";
+                switch(lockType)
+                {
+                    case 0: modifyField += "机台退分限额锁定"; break;
+                    case 1: modifyField += "机台非法操作锁定"; break;
+                    case 2: modifyField += "人工锁定"; break;
+                    case 3: modifyField += "游乐项目入场锁定"; break;
+                }
+
+                string oldcontext = card.IsLock.ToString();
                 List<char> strLockBinary = Convert.ToString(card.IsLock.Value, 2).PadLeft(8, '0').ToCharArray().Reverse().ToList();
                 if (strLockBinary[lockType] == '1')
                 {
-                    strLockBinary[lockType] = '0';
-
-                    strLockBinary.Reverse();
-
-                    string strLock = string.Join("", strLockBinary);
-
-                    int lockState = Convert.ToInt32(strLock, 2);
-
-                    card.IsLock = lockState;
-                    card.LastStore = storeId;
-                    card.UpdateTime = DateTime.Now;
-                    if (!Data_Member_CardService.I.Update(card))
+                    using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "解锁失败");
+                        strLockBinary[lockType] = '0';
+
+                        strLockBinary.Reverse();
+
+                        string strLock = string.Join("", strLockBinary);
+
+                        int lockState = Convert.ToInt32(strLock, 2);
+
+                        card.IsLock = lockState;
+                        card.LastStore = storeId;
+                        card.UpdateTime = DateTime.Now;
+                        if (!Data_Member_CardService.I.Update(card))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "解锁失败");
+                        }
+
+                        Flw_MemberInfo_Change mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = modifyField;
+                        mic.OldContext = oldcontext;
+                        mic.NewContext = lockState.ToString();
+                        mic.ModifyTime = DateTime.Now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+                        ts.Complete();
                     }
-                }       
+                }
 
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
             }
@@ -1699,6 +1740,24 @@ namespace XCCloudWebBar.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员卡等级变更记录失败");
                     }
 
+                    Flw_MemberInfo_Change mic = new Flw_MemberInfo_Change();
+                    mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    mic.MerchID = merchID;
+                    mic.StoreID = storeId;
+                    mic.MemberID = card.MemberID;
+                    mic.CardID = card.ID;
+                    mic.ModifyFied = "会员卡等级变更";
+                    mic.OldContext = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
+                    mic.NewContext = XCCloudStoreBusiness.GetMemberLevel(level.ID).MemberLevelName;
+                    mic.ModifyTime = DateTime.Now;
+                    mic.WorkStation = workStation;
+                    mic.UserID = userId;
+                    mic.CheckDate = schedule.CheckDate;
+                    if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                    }
+
                     ts.Complete();
                 }
 
@@ -1733,6 +1792,8 @@ namespace XCCloudWebBar.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+                int userId = userTokenKeyModel.LogId.Toint(0);
 
                 //判断会员卡是否存在或是否存在多张相同卡号的会员卡
                 if (!MemberBusiness.ExistsCardByICCardId(icCardId, merchID, storeId, out errMsg))
@@ -1747,6 +1808,14 @@ namespace XCCloudWebBar.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
                 }
 
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行锁定操作");
+                }
+
+                string oldcontext = card.IsLock.ToString();
                 List<char> strLockBinary = Convert.ToString(card.IsLock.Value, 2).PadLeft(8, '0').ToCharArray().Reverse().ToList();
 
                 strLockBinary[2] = '1';
@@ -1754,12 +1823,34 @@ namespace XCCloudWebBar.Api.XCCloud
                 string strLock = string.Join("", strLockBinary);
                 int lockState = Convert.ToInt32(strLock, 2);
 
-                card.IsLock = lockState;
-                card.LastStore = storeId;
-                card.UpdateTime = DateTime.Now;
-                if (!Data_Member_CardService.I.Update(card))
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "锁卡失败");
+                    card.IsLock = lockState;
+                    card.LastStore = storeId;
+                    card.UpdateTime = DateTime.Now;
+                    if (!Data_Member_CardService.I.Update(card))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "锁卡失败");
+                    }
+
+                    Flw_MemberInfo_Change mic = new Flw_MemberInfo_Change();
+                    mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    mic.MerchID = merchID;
+                    mic.StoreID = storeId;
+                    mic.MemberID = card.MemberID;
+                    mic.CardID = card.ID;
+                    mic.ModifyFied = "吧台人工锁定";
+                    mic.OldContext = oldcontext;
+                    mic.NewContext = lockState.ToString();
+                    mic.ModifyTime = DateTime.Now;
+                    mic.WorkStation = workStation;
+                    mic.UserID = userId;
+                    mic.CheckDate = schedule.CheckDate;
+                    if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                    }
+                    ts.Complete();
                 }
 
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
@@ -1834,24 +1925,236 @@ namespace XCCloudWebBar.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行赠币操作");
                 }
 
+                Flw_MemberInfo_Change mic = null;
+                DateTime now = DateTime.Now;
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
-                    mi.UserName = userName;
-                    mi.Gender = gender.Toint(0);
-                    mi.Note = note;
+                    if (mi.UserName.Trim() != userName.Trim())
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "昵称";
+                        mic.OldContext = mi.UserName;
+                        mic.NewContext = userName;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        mi.UserName = userName;
+                    }
+                    if (mi.Gender != gender.Toint(0))
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "性别";
+                        mic.OldContext = mi.Gender.ToString();
+                        mic.NewContext = gender;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        mi.Gender = gender.Toint(0);
+                    }
+                    if (mi.Note.Trim() != note.Trim())
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "备注";
+                        mic.OldContext = mi.Note;
+                        mic.NewContext = note;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        mi.Note = note;
+                    }                    
                     if (!Base_MemberInfoService.I.Update(mi))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息更新失败");
                     }
 
                     Data_Card_Right right = Data_Card_RightService.I.GetModels(t => t.CardID == card.ID).FirstOrDefault();
-                    right.AllowPush = allowIn.Toint(0);
-                    right.AllowOut = allowOut.Toint(0);
-                    right.AllowExitCoin = allowExitCoin.Toint(0);
-                    right.AllowSaleCoin = allowSaleCoin.Toint(0);
-                    right.AllowSaveCoin = allowSaveCoin.Toint(0);
-                    right.AllowFreeCoin = allowFreeCoin.Toint(0);
-                    right.AllowRenew = allowRenew.Toint(0);
+                    if (right.AllowPush != allowIn.Toint(0))
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "允许上分";
+                        mic.OldContext = right.AllowPush.ToString();
+                        mic.NewContext = allowIn;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        right.AllowPush = allowIn.Toint(0);
+                    }
+                    if (right.AllowOut != allowOut.Toint(0))
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "允许退分";
+                        mic.OldContext = right.AllowOut.ToString();
+                        mic.NewContext = allowOut;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        right.AllowOut = allowOut.Toint(0);
+                    }
+                    if (right.AllowExitCoin != allowExitCoin.Toint(0))
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "允许兑币";
+                        mic.OldContext = right.AllowExitCoin.ToString();
+                        mic.NewContext = allowExitCoin;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        right.AllowExitCoin = allowExitCoin.Toint(0);
+                    }
+                    if (right.AllowSaleCoin != allowSaleCoin.Toint(0))
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "允许售币";
+                        mic.OldContext = right.AllowSaleCoin.ToString();
+                        mic.NewContext = allowSaleCoin;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        right.AllowSaleCoin = allowSaleCoin.Toint(0);
+                    }
+                    if (right.AllowSaveCoin != allowSaveCoin.Toint(0))
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "允许存币";
+                        mic.OldContext = right.AllowSaveCoin.ToString();
+                        mic.NewContext = allowSaveCoin;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        right.AllowSaveCoin = allowSaveCoin.Toint(0);
+                    }
+                    if (right.AllowFreeCoin != allowFreeCoin.Toint(0))
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "允许送币";
+                        mic.OldContext = right.AllowFreeCoin.ToString();
+                        mic.NewContext = allowFreeCoin;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        right.AllowFreeCoin = allowFreeCoin.Toint(0);
+                    }
+                    if (right.AllowRenew != allowRenew.Toint(0))
+                    {
+                        mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = card.MemberID;
+                        mic.CardID = card.ID;
+                        mic.ModifyFied = "允许续卡";
+                        mic.OldContext = right.AllowRenew.ToString();
+                        mic.NewContext = allowRenew;
+                        mic.ModifyTime = now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
+                        right.AllowRenew = allowRenew.Toint(0);
+                    } 
                     if (!Data_Card_RightService.I.Update(right))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡权限更新失败");
@@ -2249,7 +2552,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 mce.StoreID = storeId;
                                 mce.MemberID = card.MemberID;
                                 mce.OperateType = 1;
-                                mce.CardID = card.ICCardID;
+                                mce.CardID = card.ID;
                                 mce.Deposit = card.Deposit;
                                 mce.ExitMoney = 0;
                                 mce.WorkStation = workStation;
@@ -2322,7 +2625,6 @@ namespace XCCloudWebBar.Api.XCCloud
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退款失败");
                                 }
-
                                 //源余额减少
                                 cardBalance.Balance = cardBalance.Balance - item.ExchangeQty;
                                 if (!Data_Card_BalanceService.I.Update(cardBalance))
@@ -2332,10 +2634,6 @@ namespace XCCloudWebBar.Api.XCCloud
 
                                 //储值金增加
                                 targetBalance.Balance += item.ExchangeValue;
-                                //if (!Data_Card_BalanceService.I.Update(targetBalance, false))
-                                //{
-                                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
-                                //}
 
                                 //增加会员卡余额互转记录
                                 Flw_MemberCard_BalanceCharge balanceChange = new Flw_MemberCard_BalanceCharge();
@@ -2496,7 +2794,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         memberParentCardExit.StoreID = storeId;
                         memberParentCardExit.MemberID = memberCard.MemberID;
                         memberParentCardExit.OperateType = Convert.ToInt32(backType);
-                        memberParentCardExit.CardID = memberCard.ICCardID;
+                        memberParentCardExit.CardID = memberCard.ID;
                         memberParentCardExit.Deposit = backType == "0" ? memberCard.Deposit : 0;
                         memberParentCardExit.ExitMoney = backTotal;
                         memberParentCardExit.RemainMoney = remainMoney; //储值金余额
@@ -2654,17 +2952,55 @@ namespace XCCloudWebBar.Api.XCCloud
                 }
                 Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.ID == oldCard.MemberLevelID).FirstOrDefault();
 
+                int singleType = 5;
                 decimal OpFree = 0;
                 switch(operateType)
                 {
-                    case "0": OpFree = memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee.Value : 0; break;
-                    case "1": OpFree = memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee.Value : 0; break;
-                    case "2": OpFree = memberLevel.ContinueFee.HasValue ? memberLevel.ContinueFee.Value : 0; break;
+                    case "0": OpFree = memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee.Value : 0; singleType = 5; break;
+                    case "1": OpFree = memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee.Value : 0; singleType = 4; break;
+                    case "2": OpFree = memberLevel.ContinueFee.HasValue ? memberLevel.ContinueFee.Value : 0; singleType = 3; break;
                 }
                 string orderId = RedisCacheHelper.CreateStoreSerialNo(storeId);
                 int orderStatus = OpFree == 0 ? 2 : 1;
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
-                {           
+                {
+                    Flw_Food_Sale foodSale = new Flw_Food_Sale();
+                    foodSale.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
+                    foodSale.MerchID = merchID;
+                    foodSale.StoreID = storeId;
+                    foodSale.FlowType = 0;
+                    foodSale.SingleType = singleType;
+                    foodSale.FoodID = "";
+                    foodSale.SaleCount = 1;
+                    foodSale.Point = 0;
+                    foodSale.PointBalance = 0;
+                    foodSale.MemberLevelID = oldCard.MemberLevelID;
+                    foodSale.Deposit = 0;
+                    foodSale.OpenFee = 0;
+                    foodSale.RenewFee = memberLevel.ContinueFee.HasValue ? memberLevel.ContinueFee.Value : 0;
+                    foodSale.ChangeFee = memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee.Value : 0;
+                    foodSale.ReissueFee = memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee.Value : 0;
+                    foodSale.TotalMoney = OpFree;
+                    foodSale.Note = operate;
+                    foodSale.BuyFoodType = 1;
+                    foodSale.TaxFee = 0;
+                    foodSale.TaxTotal = 0;
+                    if (!Flw_Food_SaleService.I.Add(foodSale))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水失败");
+                    }
+
+                    Flw_Food_SaleDetail saleDetail = new Flw_Food_SaleDetail();
+                    saleDetail.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
+                    saleDetail.MerchID = merchID;
+                    saleDetail.FlwFoodID = foodSale.ID;
+                    saleDetail.ContainCount = 1;
+                    saleDetail.Status = 1;
+                    if (!Flw_Food_SaleDetailService.I.Add(saleDetail))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水明细失败");
+                    }
+
                     //创建订单
                     Flw_Order order = new Flw_Order();
                     order.ID = orderId;
@@ -2693,6 +3029,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     orderDetail.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                     orderDetail.MerchID = merchID;
                     orderDetail.OrderFlwID = orderId;
+                    orderDetail.FoodFlwID = foodSale.ID;
                     orderDetail.GoodsCount = 1;
                     if (!Flw_Order_DetailService.I.Add(orderDetail))
                     {
@@ -2928,8 +3265,8 @@ namespace XCCloudWebBar.Api.XCCloud
                     cardChange.StoreID = storeId;
                     cardChange.MemberID = oldCard.MemberID;
                     cardChange.OperateType = Convert.ToInt32(operateType);
-                    cardChange.OldCardID = oldCard.ICCardID;
-                    cardChange.NewCardID = newCardNo;
+                    cardChange.OldCardID = oldCard.ID;
+                    cardChange.NewCardID = newCard.ID;
                     cardChange.FoodSaleID = saleId;
                     cardChange.OpFee = OpFree;
                     cardChange.OpStoreID = storeId;
@@ -2943,38 +3280,12 @@ namespace XCCloudWebBar.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("写入{0}记录失败", operate));
                     }
 
-                    //增加销售流水
-                    Flw_Food_Sale sale = new Flw_Food_Sale();
-                    sale.ID = saleId;
-                    sale.MerchID = merchID;
-                    sale.StoreID = storeId;
-                    sale.FlowType = 0;//单品
-                    sale.SingleType = operateType == "0" ? 5 : 4;
+                    //更新销售记录关联的销售来源ID
+                    Flw_Food_Sale sale = Flw_Food_SaleService.I.GetModels(t => t.ID == orderDetail.FoodFlwID).FirstOrDefault();
                     sale.FoodID = cardChange.ID;
-                    sale.SaleCount = 1;
-                    sale.MemberLevelID = oldCard.MemberLevelID;
-                    sale.Deposit = 0;
-                    if (operateType == "1")
+                    if (!Flw_Food_SaleService.I.Update(sale))
                     {
-                        sale.ReissueFee = OpFree;
-                    }
-                    else
-                    {
-                        sale.ChangeFee = OpFree;
-                    }
-                    sale.TotalMoney = OpFree;
-                    sale.BuyFoodType = 0;
-                    sale.Note = operate;
-                    if (!Flw_Food_SaleService.I.Add(sale))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("创建{0}套餐销售记录失败", operate));
-                    }
-
-                    //更新订单详情
-                    orderDetail.FoodFlwID = saleId;
-                    if (!Flw_Order_DetailService.I.Update(orderDetail))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新订单明细失败");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}失败", operate));
                     }
 
                     ts.Complete();
@@ -3071,13 +3382,13 @@ namespace XCCloudWebBar.Api.XCCloud
 
                     string saleId = RedisCacheHelper.CreateStoreSerialNo(storeId);
 
-                    //会员补卡记录
+                    //会员续卡记录
                     Flw_MemberCard_Renew cardRenew = new Flw_MemberCard_Renew();
                     cardRenew.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                     cardRenew.MerchID = merchID;
                     cardRenew.StoreID = storeId;
                     cardRenew.MemberID = memberCard.MemberID;
-                    cardRenew.CardID = memberCard.ICCardID;
+                    cardRenew.CardID = memberCard.ID;
                     cardRenew.OldEndDate = oldEndDate;
                     cardRenew.NewEndDate = memberCard.EndDate;
                     cardRenew.FoodSaleID = saleId;
@@ -3092,31 +3403,12 @@ namespace XCCloudWebBar.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
                     }
 
-                    //增加销售流水
-                    Flw_Food_Sale sale = new Flw_Food_Sale();
-                    sale.ID = saleId;
-                    sale.MerchID = merchID;
-                    sale.StoreID = storeId;
-                    sale.FlowType = 0;//单品
-                    sale.SingleType = 3;
+                    //更新销售记录关联的销售来源ID
+                    Flw_Food_Sale sale = Flw_Food_SaleService.I.GetModels(t => t.ID == orderDetail.FoodFlwID).FirstOrDefault();
                     sale.FoodID = cardRenew.ID;
-                    sale.SaleCount = 1;
-                    sale.MemberLevelID = memberCard.MemberLevelID;
-                    sale.Deposit = 0;
-                    sale.RenewFee = order.PayCount;
-                    sale.TotalMoney = order.PayCount;
-                    sale.BuyFoodType = 0;
-                    sale.Note = "续卡";
-                    if (!Flw_Food_SaleService.I.Add(sale))
+                    if (!Flw_Food_SaleService.I.Update(sale))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
-                    }
-
-                    //更新订单详情
-                    orderDetail.FoodFlwID = saleId;
-                    if (!Flw_Order_DetailService.I.Update(orderDetail))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新订单明细失败");
                     }
 
                     ts.Complete();
@@ -3443,12 +3735,6 @@ namespace XCCloudWebBar.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，扣除余额不成功");
                     }
 
-                    //目标余额增加
-                    targetBalance.Balance += exchangeVal;
-                    if (!Data_Card_BalanceService.I.Update(targetBalance))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，增加余额不成功");
-                    }
                     //添加余额互转记录
                     Flw_MemberCard_BalanceCharge change = new Flw_MemberCard_BalanceCharge();
                     change.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
@@ -3538,6 +3824,50 @@ namespace XCCloudWebBar.Api.XCCloud
                     if (!Flw_MemberDataService.I.Add(fmd))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                    }
+
+                    //目标余额增加
+                    targetBalance.Balance += exchangeVal;
+                    if (!Data_Card_BalanceService.I.Update(targetBalance))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，增加余额不成功");
+                    }
+
+                    //会员信息变更记录,源余额变化
+                    Flw_MemberInfo_Change mic = new Flw_MemberInfo_Change();
+                    mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    mic.MerchID = merchID;
+                    mic.StoreID = storeId;
+                    mic.MemberID = currCard.MemberID;
+                    mic.CardID = currCard.ID;
+                    mic.ModifyFied = note;
+                    mic.OldContext = (sourceBalance.Balance + iExchangeQty).ToString();
+                    mic.NewContext = sourceBalance.Balance.ToString();
+                    mic.ModifyTime = DateTime.Now;
+                    mic.WorkStation = workStation;
+                    mic.UserID = userId;
+                    mic.CheckDate = schedule.CheckDate;
+                    if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                    }
+                    //会员信息变更记录,目标余额变化
+                    mic = new Flw_MemberInfo_Change();
+                    mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    mic.MerchID = merchID;
+                    mic.StoreID = storeId;
+                    mic.MemberID = currCard.MemberID;
+                    mic.CardID = currCard.ID;
+                    mic.ModifyFied = note;
+                    mic.OldContext = (targetBalance.Balance - exchangeVal).ToString();
+                    mic.NewContext = targetBalance.Balance.ToString();
+                    mic.ModifyTime = DateTime.Now;
+                    mic.WorkStation = workStation;
+                    mic.UserID = userId;
+                    mic.CheckDate = schedule.CheckDate;
+                    if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                     }
 
                     ts.Complete();
@@ -3636,11 +3966,13 @@ namespace XCCloudWebBar.Api.XCCloud
                 var storeBalanceTypes = from a in Data_BalanceType_StoreListService.N.GetModels(t => t.StroeID == storeId && t.MerchID == merchID)
                             join b in Dict_BalanceTypeService.N.GetModels(t => t.MerchID == merchID && t.MappingType == 1 && t.State == 1) on a.BalanceIndex equals b.ID
                             where a.BalanceIndex == balanceIndex
-                            select a;
+                            select b;
                 if (storeBalanceTypes.Count() == 0)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补币币种无效");
-                }                
+                }
+
+                string balanceName = storeBalanceTypes.FirstOrDefault().TypeName;
 
                 //判断会员卡是否存在或是否存在多张相同卡号的会员卡
                 if (!MemberBusiness.ExistsCardByICCardId(iccardId, merchID, storeId, out errMsg))
@@ -3754,6 +4086,25 @@ namespace XCCloudWebBar.Api.XCCloud
                             if (!Flw_MemberDataService.I.Add(fmd))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                            }
+
+                            //会员信息变更记录,余额变化
+                            Flw_MemberInfo_Change mic = new Flw_MemberInfo_Change();
+                            mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            mic.MerchID = merchID;
+                            mic.StoreID = storeId;
+                            mic.MemberID = memberCard.MemberID;
+                            mic.CardID = memberCard.ID;
+                            mic.ModifyFied = balanceName + "补币";
+                            mic.OldContext = (balance.Balance + quantity).ToString();
+                            mic.NewContext = balance.Balance.ToString();
+                            mic.ModifyTime = DateTime.Now;
+                            mic.WorkStation = workStation;
+                            mic.UserID = userId;
+                            mic.CheckDate = schedule.CheckDate;
+                            if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                             }
                         }
 
@@ -4030,9 +4381,11 @@ namespace XCCloudWebBar.Api.XCCloud
                     //当前卡在当前门店的余额ID集合
                     var targetBalanceIds = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == parentCard.ID && t.MerchID == merchID && t.BalanceIndex == balanceIndex)
                                            join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                           join c in Dict_BalanceTypeService.N.GetModels(t => t.MerchID == merchID) on a.BalanceIndex equals c.ID
                                            select new
                                            {
-                                               BalanceId = a.ID
+                                               BalanceId = a.ID,
+                                               BalanceName = c.TypeName
                                            };
 
                     //如果当前卡在当前门店没有提币余额种类 或者 不只一个提币余额种类，都无法兑换
@@ -4066,6 +4419,25 @@ namespace XCCloudWebBar.Api.XCCloud
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                         }
 
+                        //会员信息变更记录,提币余额变化
+                        Flw_MemberInfo_Change mic = new Flw_MemberInfo_Change();
+                        mic.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        mic.MerchID = merchID;
+                        mic.StoreID = storeId;
+                        mic.MemberID = memberCard.MemberID;
+                        mic.CardID = memberCard.ID;
+                        mic.ModifyFied = targetBalanceId + "提币";
+                        mic.OldContext = (balance.Balance + quantity).ToString();
+                        mic.NewContext = balance.Balance.ToString();
+                        mic.ModifyTime = DateTime.Now;
+                        mic.WorkStation = workStation;
+                        mic.UserID = userId;
+                        mic.CheckDate = schedule.CheckDate;
+                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                        }
+
                         Flw_DeviceData fdd = new Flw_DeviceData();
                         fdd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                         fdd.MerchID = merchID;
@@ -4080,7 +4452,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fdd.MemberID = memberCard.MemberID;
                         fdd.CreateStoreID = memberCard.StoreID;
                         fdd.MemberName = memberCard.CardName;
-                        fdd.ICCardID = memberCard.ICCardID;
+                        fdd.ICCardID = memberCard.ID;
                         fdd.BalanceIndex = balanceIndex;
                         fdd.Coin = quantity;
                         fdd.RemainBalance = balance.Balance;
@@ -4248,7 +4620,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行赠币操作");
                 }
 
-                List<MemberFreeModel> list = GetFreeCoinList(merchID, storeId, member, level, schedule, deviceBalanceIndex);
+                List<MemberFreeModel> list = GetFreeCoinList(merchID, storeId, member, memberCard, level, schedule, deviceBalanceIndex);
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
             }
@@ -4362,7 +4734,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     isFree = true;
                 }
 
-                List<MemberFreeModel> list = GetFreeCoinList(merchID, storeId, member, level, schedule, deviceBalanceIndex);
+                List<MemberFreeModel> list = GetFreeCoinList(merchID, storeId, member, memberCard, level, schedule, deviceBalanceIndex);
 
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
@@ -4423,6 +4795,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 mcf.BalanceIndex = detail.BalanceIndex;
                                 mcf.FreeCount = detail.Quantity;
                                 mcf.DeviceID = deviceId;
+                                mcf.OpTime = now;
                                 mcf.Note = string.Format("生日赠币，赠送套餐：{0}，套餐ID：{1}", food.FoodName, level.FoodID);
                                 mcf.UserID = userId;
                                 mcf.ScheduleID = schedule.ID;
@@ -4459,6 +4832,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             mcf.BalanceIndex = currFreeDetail.BalanceIndex;
                             mcf.FreeCount = currFreeDetail.Quantity;
                             mcf.DeviceID = deviceId;
+                            mcf.OpTime = now;
                             mcf.Note = freeModel.Content;
                             mcf.UserID = userId;
                             mcf.ScheduleID = schedule.ID;
@@ -4492,7 +4866,7 @@ namespace XCCloudWebBar.Api.XCCloud
         #endregion
 
         #region 获取可赠币集合方法
-        private List<MemberFreeModel> GetFreeCoinList(string merchID, string storeId, Base_MemberInfo member, Data_MemberLevel level, Flw_Schedule schedule, int? deviceBalanceIndex)
+        private List<MemberFreeModel> GetFreeCoinList(string merchID, string storeId, Base_MemberInfo member, Data_Member_Card memberCard, Data_MemberLevel level, Flw_Schedule schedule, int? deviceBalanceIndex)
         {
             //当前商户余额类别
             var balanceTypeList = Dict_BalanceTypeService.I.GetModels(t => t.MerchID == merchID).Select(t => new
@@ -4506,7 +4880,7 @@ namespace XCCloudWebBar.Api.XCCloud
             //预赠币
             DateTime now = DateTime.Now.Date;
             //当前用户所有可赠币规则
-            var memberFreeQuery = Flw_MemberLevelFreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.EndDate >= now)
+            var memberFreeQuery = Flw_MemberLevelFreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.CardIndex == memberCard.ID && t.EndDate >= now)
                                   .Select(t => new
                                   {
                                       Id = t.ID,
@@ -4526,13 +4900,13 @@ namespace XCCloudWebBar.Api.XCCloud
                 RealTime = t.RealTime,
                 Remain = t.Remain
             }).ToList()
-                                  .Where(t => memberFreeQuery.Any(f => f.Id == t.MemberFreeId))
-                                  .GroupBy(t => t.MemberFreeId).Select(t => new
-                                  {
-                                      MemberFreeId = t.Key,
-                                      RealTime = t.Max(m => m.RealTime),
-                                      Remain = t.Min(m => m.Remain)
-                                  }).ToList();
+            .Where(t => memberFreeQuery.Any(f => f.Id == t.MemberFreeId))
+            .GroupBy(t => t.MemberFreeId).Select(t => new
+            {
+                MemberFreeId = t.Key,
+                RealTime = t.Max(m => m.RealTime),
+                Remain = t.Min(m => m.Remain)
+            }).ToList();
 
             var freeTempQuery = from a in memberFreeQuery
                                 //join c in Data_MemberLevelFreeService.I.GetModels(t=>t.MerchID == merchID && t.MemberLevelID == memberCard.MemberLevelID).ToList() on a.FreeID equals c.ID
@@ -4588,7 +4962,7 @@ namespace XCCloudWebBar.Api.XCCloud
             if (level.FoodID.HasValue && level.FoodID.Value > 0)
             {
                 //取最后一条生日赠币记录
-                Flw_MemberCard_Free birthdayFree = Flw_MemberCard_FreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.FreeType == 2)
+                Flw_MemberCard_Free birthdayFree = Flw_MemberCard_FreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.CardIndex == memberCard.ID && t.FreeType == 2)
                                                     .OrderByDescending(t => t.CheckDate).FirstOrDefault();
                 //判断最后的生日赠币记录是否小于当前年份
                 if (member.Birthday.HasValue && (birthdayFree == null || birthdayFree.CheckDate.Value.Year < now.Year))
@@ -4672,7 +5046,7 @@ namespace XCCloudWebBar.Api.XCCloud
             if (level.FreeType.HasValue && level.FreeType.Value != 3 && level.FreeNeedWin.HasValue && level.FreeCoin.HasValue)
             {
                 //取最后输赢赠币记录
-                Flw_MemberCard_Free winOrLoseFree = Flw_MemberCard_FreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.FreeType == 3)
+                Flw_MemberCard_Free winOrLoseFree = Flw_MemberCard_FreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.CardIndex == memberCard.ID && t.FreeType == 3)
                                                     .OrderByDescending(t => t.CheckDate).FirstOrDefault();
 
                 if (winOrLoseFree == null || winOrLoseFree.CheckDate < schedule.CheckDate)
@@ -5011,6 +5385,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 //【正价】转出卡在当前门店的余额ID集合
                 var fromBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
                                        join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                       join c in Dict_BalanceTypeService.N.GetModels(t=>t.MerchID == merchID && t.State == 1 && t.MappingType == 1)  on a.BalanceIndex equals c.ID
                                        select new
                                        {
                                            BalanceId = a.ID,
@@ -5033,6 +5408,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 //【赠送】转出卡在当前门店的余额ID集合
                 var fromBalanceFreeQuery = from a in Data_Card_Balance_FreeService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
                                            join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                           join c in Dict_BalanceTypeService.N.GetModels(t => t.MerchID == merchID && t.State == 1 && t.MappingType == 1) on a.BalanceIndex equals c.ID
                                            select new
                                            {
                                                BalanceId = a.ID,
@@ -5160,6 +5536,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.CardIndex = fromCard.ID;
                         fmd.ICCardID = fromCard.ICCardID;
                         //fmd.MemberLevelName = levelModel.MemberLevelName;
+                        fmd.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(fromCard.MemberLevelID.Value).MemberLevelName;
                         fmd.ChannelType = (int)MemberDataChannelType.吧台;
                         fmd.OperationType = (int)MemberDataOperationType.过户转出;
                         fmd.OPTime = DateTime.Now;
@@ -5192,7 +5569,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         fmd.MemberName = toMember.UserName;
                         fmd.CardIndex = toCard.ID;
                         fmd.ICCardID = toCard.ICCardID;
-                        //fmd.MemberLevelName = levelModel.MemberLevelName;
+                        fmd.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(toCard.MemberLevelID.Value).MemberLevelName;
                         fmd.ChannelType = (int)MemberDataChannelType.吧台;
                         fmd.OperationType = (int)MemberDataOperationType.过户转入;
                         fmd.OPTime = DateTime.Now;
