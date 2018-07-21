@@ -350,8 +350,12 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
-                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+                if(!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                var iCCardId = dicParas.Get("iCCardId");
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+                
                 SqlParameter[] parameters = new SqlParameter[0];
                 string sqlWhere = string.Empty;
 
@@ -374,6 +378,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND (cd1.StoreID='" + storeId + "' OR cd2.StoreID='" + storeId + @"')) a
                             ";
                 sql = sql + sqlWhere;
+                if(!iCCardId.IsNull())
+                    sql = sql + " AND (a.NewICCardID='" + iCCardId + "' OR a.OldICCardID='" + iCCardId + "')";           
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_ChangeList>(sql, parameters).ToList();
@@ -401,6 +407,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -429,6 +439,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_RenewList>(sql, parameters).ToList();
@@ -456,6 +468,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -479,6 +495,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberInfo_ChangeList>(sql, parameters).ToList();
@@ -506,6 +524,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -531,6 +553,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_LevelChangeList>(sql, parameters).ToList();
@@ -558,6 +582,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -581,6 +609,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.OperateType=0 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_ExitList>(sql, parameters).ToList();
@@ -608,6 +638,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -633,6 +667,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberDataList>(sql, parameters).ToList();
@@ -660,6 +696,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -689,6 +729,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.OrderID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberExchangeList>(sql, parameters).ToList();
@@ -716,6 +758,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -742,6 +788,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_BalanceChargeList>(sql, parameters).ToList();
@@ -769,6 +817,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -796,6 +848,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_FreeList>(sql, parameters).ToList();
@@ -823,6 +877,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -849,6 +907,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.OperateType=1 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberCard_ExitMoneyList>(sql, parameters).ToList();
@@ -876,6 +936,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -902,6 +966,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND (cd1.StoreID='" + storeId + "' OR cd2.StoreID='" + storeId + @"')) a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND (a.ICCardIDOut='" + iCCardId + "' OR a.ICCardIDIn='" + iCCardId + "')";
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberTransferList>(sql, parameters).ToList();
@@ -929,6 +995,10 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("iCCardId").Nonempty("会员卡号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var iCCardId = dicParas.Get("iCCardId");
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -953,6 +1023,8 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
+                if (!iCCardId.IsNull())
+                    sql = sql + " AND a.ICCardID='" + iCCardId + "'"; 
                 sql = sql + " ORDER BY a.ID";
 
                 var list = Data_GameInfoService.I.SqlQuery<Flw_MemberGivebackList>(sql, parameters).ToList();
