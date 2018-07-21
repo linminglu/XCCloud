@@ -950,6 +950,7 @@ as
     
     
     --先删除, 后添加
+    update Data_CouponList set JackpotID = null where CouponCode in (select CouponCode from Data_Jackpot_Matrix where ActiveID=@ActiveID and ISNULL(CouponCode,'')!='')
     delete from Data_Jackpot_Matrix where ActiveID=@ActiveID
     
     --计算奖池最大值
@@ -977,8 +978,7 @@ as
     --填充奖品
     declare @Index int = 1
     declare @Record int = 0
-    declare @tempMatrixIDs table (ID int NULL)
-    declare @tempCouponCodes table (CouponCode varchar(32) NULL)	
+    declare @tempMatrixIDs table (ID int NULL)	
     declare @tempLevel table (ID int IDENTITY(1,1) NOT NULL, LevelName varchar(50) NULL, CouponID int NULL, [Count] int NULL, Probability numeric(10,6) NULL)
     insert @tempLevel select LevelName,CouponID,[Count],Probability from Data_Jackpot_Level where ActiveID=@ActiveID order by Probability
     
@@ -1028,17 +1028,17 @@ as
 		end
 	  
 		--获取优惠券实体
-		declare @couponCode varchar(32) = ''
-		set @couponCode = (select top 1 CouponCode from Data_CouponList where CouponID=@couponId and [State]=2 and CouponCode not in (select CouponCode from @tempCouponCodes))
+		declare @CouponCode varchar(32) = ''
+		set @CouponCode = (select top 1 CouponCode from Data_CouponList where CouponID=@couponId and [State]=2 and ISNULL(JackpotID,0)=0)
 		
 		--添加验证类型信息
 		declare @VerifictionType as VerifictionType
 		insert @VerifictionType(FieldName,FieldValue)
 		EXEC dbo.V_GetJackpotMatrixVerifiction @MerchID,@randNum,@ActiveID,@couponCode,0
 		declare @Verifiction varchar(32) = dbo.F_GetVerifiction(@VerifictionType)
-		
-		update Data_Jackpot_Matrix set CouponCode=@couponCode, Verifiction=@Verifiction where ActiveID=@ActiveID and MerchID=@MerchID and OrderID=@randNum		
-		insert into @tempCouponCodes values(@couponCode)
+		declare @JackpotID int = (select top 1 ID from Data_Jackpot_Matrix where ActiveID=@ActiveID and MerchID=@MerchID and OrderID=@randNum)
+		update Data_Jackpot_Matrix set CouponCode=@CouponCode, Verifiction=@Verifiction where ID=@JackpotID		
+		update Data_CouponList set JackpotID=@JackpotID where CouponCode=@CouponCode
 		insert into @tempMatrixIDs values(@randNum)
 		
 		set @jCount = @jCount + 1

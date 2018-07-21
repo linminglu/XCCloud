@@ -69,7 +69,7 @@ namespace XXCloudService.PayChannel
                     decimal total_fee = Convert.ToDecimal(data.GetValue("total_fee"));
                     decimal payAmount = total_fee / 100;
 
-                    Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.AliWxPay);
+                    //Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.AliWxPay);
 
                     #region MyRegion
                     //Flw_Order order = Flw_OrderBusiness.GetOrderModel(out_trade_no);

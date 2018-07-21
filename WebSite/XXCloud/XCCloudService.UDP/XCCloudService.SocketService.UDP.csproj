@@ -74,6 +74,10 @@
       <Project>{391eb2f5-b166-4439-b0bd-91f8e3377271}</Project>
       <Name>XCCloudService.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XCCloudService.CacheService\XCCloudService.CacheService.csproj">
+      <Project>{52f0eb44-359e-47c9-8a33-c459d43da545}</Project>
+      <Name>XCCloudService.CacheService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XCCloudService.Common\XCCloudService.Common.csproj">
       <Project>{adce73d3-04ff-4d98-846f-c8026a3b6396}</Project>
       <Name>XCCloudService.Common</Name>

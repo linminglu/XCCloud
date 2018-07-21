@@ -40,6 +40,15 @@
     .MtcList ul li .MtcListTxt p{margin-top: 0.2em;font-size: 1em;font-weight: 400;}
     .MtcList .swiper-wrapper{padding: 2em auto}
     .screeningsty{margin: 0.8em 1em;height: 2.5em;line-height: 1.4em;}
+    .saleText h3{font-size: 1.2em;margin-top: 0.5em;font-weight: 600;}
+    .saleText a.btn{padding: 0 6px;width: 50%;margin-left: 40%;}
+    .saleText{display: flex;flex-direction: column;width: 15.5em;justify-content: space-between;text-align: left;margin-left: 0.5em;}
+    .salesLi{width: 25em;height: 10em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.5em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
+    .saleDetails{width: 50%;margin-left: 40%;}
+    .salesLi img{width: 8em;height: 8em;}
+    .memberDetails{width: 320px;position: fixed;right: 50px;bottom: 80px;}
+    .memberDetails .input-group{width: 100%;margin: 0.5em 1.2em;}
+    .memberDetails .table{width: 100%;margin: 0.5em 1em;}
     </style>
 </head>
 <body>
@@ -889,7 +898,7 @@
                             <li @click="screening(0)"><span class="iconfont icon-menpiao1"></span><span class="txt">门票</span></li>
                             <li @click="screening(1)"><span class="iconfont icon-2"></span><span class="txt">商品</span></li> -->
 							<li v-for="(item,index) in saleTitle" @click="screening(index)" :class="{on:index==sallData.indexPrev}" >
-								<span class="iconfont"></span><span class="txt">{{item.foodTypeName}}</span>
+								<span class="iconfont" :class="item.icon"></span><span class="txt">{{item.foodTypeName}}</span>
 							</li>
                         </ul>
 					</div>
@@ -926,22 +935,26 @@
 							<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index,'0')">
 								<img :src="item.imageUrl"/>
 								<div class="saleText">
-									<a tabindex="0" class="btn btn-info saleDetails" role="button" data-toggle="popover" @click.stop="details(index,'0')">详情</a>
-									<h3 ref="saleH3">{{item.foodName}}</h3>
+                                    <h3 ref="saleH3">{{item.foodName}}</h3>
+                                    <p>{{item.detailInfoList[0].typeName}}:{{item.detailInfoList[0].useCount}}</p>
+                                    <a tabindex="0" class="btn btn-info saleDetails" role="button" data-toggle="popover" @click.stop="details(index,'0')">详情</a>
 								</div>
 							</li>
 							<li v-for="(item,index) in saleGood" class="salesLi" @click="deletePerson(index,'1')">
 								<img :src="item.imageUrl"/>
 								<div class="saleText">
-									<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'1')">详情</a>
-									<h3 ref="saleH3">{{item.foodName}}</h3>
+                                    <h3 ref="saleH3">{{item.foodName}}</h3>
+                                    <!-- <p>{{item.detailInfoList[0].typeName}}:{{item.detailInfoList[0].useCount}}</p> -->
+                                    <a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'1')">详情</a>
+                                    
 								</div>
 							</li>
 							<li v-for="(item,index) in saleTicket" class="salesLi" @click="deletePerson(index,'2')">
 								<img :src="item.imageUrl"/>
 								<div class="saleText">
-									<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'2')">详情</a>
-									<h3 ref="saleH3">{{item.foodName}}</h3>
+                                    <h3 ref="saleH3">{{item.foodName}}</h3>
+                                    <!-- <p>{{item.detailInfoList[0].typeName}}:{{item.detailInfoList[0].useCount}}</p> -->
+                                    <a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'2')">详情</a>
 								</div>
 							</li>
 						</ul>
@@ -952,10 +965,10 @@
 						<div class="container-fluid">
 							<ul class="nav nav-tabs" role="tablist">
                                 <li role="presentation" class="active"><a href="#TheInformation" aria-controls="TheInformation" role="tab" data-toggle="tab">会员信息</a></li>
-                                <li role="presentation"><a href="#ticketInformation" aria-controls="ticketInformation" role="tab" data-toggle="tab">门票信息</a></li>
+                                <li role="presentation"><a href="#ticketInformation" aria-controls="ticketInformation" role="tab" data-toggle="tab" @click="getTicketInfoList">门票信息</a></li>
 								<li role="presentation"><a href="#salesRecord" aria-controls="salesRecord" role="tab" data-toggle="tab">销售记录</a></li>
 								<li role="presentation"><a href="#playRecording" aria-controls="playRecording" role="tab" data-toggle="tab">游玩记录</a></li>
-								<li role="presentation"><a href="#forRecord" aria-controls="forRecord" role="tab" data-toggle="tab">兑换记录</a></li>
+								<li role="presentation"><a href="#forRecord" aria-controls="forRecord" role="tab" data-toggle="tab" @click="inquireExchange">兑换记录</a></li>
 							</ul>
 							<div class="tab-content">
 								<div role="tabpanel" class="tab-pane active container-fluid" id="TheInformation">
@@ -997,7 +1010,7 @@
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon addonWidth">会员姓名：</span>
-													<input   class="form-control" v-model="memberInfo.UserName" placeholder="请输入会员姓名"/>
+													<input class="form-control" v-model="memberInfo.UserName" placeholder="请输入会员姓名"/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon addonWidth">生日：</span>
@@ -1106,7 +1119,7 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-										</div>
+                                            </div>
 										<div class="col-lg-8 col-md-8">
 											<div class="col-lg-9 col-md-9">
 												<ul class="nav nav-tabs" role="tablist">
@@ -1170,26 +1183,35 @@
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="forRecord">
-									<div class="inquire"><button type="button" class="btn btn-warning" :disabled="loading">查询</button></div>
-									<div class="col-lg-12 col-md-12">
-										<table id="memberTable3"></table>
-									</div>
+                                    <div v-if="inquireExchangeList.tableShow">
+                                        <i-table highlight-row :columns="inquireExchangeList.columns" :data="inquireExchangeList.listDataShow" style="margin-top: 2em;"></i-table>
+                                        <div style="margin: 10px;overflow: hidden">
+                                            <div style="float: right;">
+                                                <Page :total="inquireExchangeList.dataCount" :page-size="inquireExchangeList.pageSize" show-total class="paging" @on-change="inquireExchangeChange"></Page>
+                                            </div>
+                                        </div>
+                                    </div>
+									
 								</div>
 								<div role="tabpanel" class="tab-pane" id="ticketInformation">
-									<div class="inquire"><button type="button" class="btn btn-warning" :disabled="loading">查询</button></div>
-									<div class="col-lg-12 col-md-12">
-										<table id="memberTable4"></table>
-									</div>
+                                    <div v-if="ticketInfoList.tableShow">
+                                        <i-table highlight-row :columns="ticketInfoList.columns" :data="ticketInfoList.listDataShow" style="margin-top: 2em;"></i-table>
+                                        <div style="margin: 10px;overflow: hidden">
+                                            <div style="float: right;">
+                                                <Page :total="ticketInfoList.dataCount" :page-size="ticketInfoList.pageSize" show-total class="paging" @on-change="ticketInfoListChange"></Page>
+                                            </div>
+                                        </div>
+                                    </div>
 								</div>
 							</div>
 						</div>
 						<div class="operationBtn">
-                                <button @click="getExchangeList" type="button" class="btn width100 btn-info" :disabled="loading">余额兑换</button>
-								<button @click="saveManual" type="button" class="btn width100 btn-info" :disabled="loading">补币</button>
-								<button @click="currency" type="button" class="btn width100 btn-info" :disabled="loading">提币</button>
-								<button @click="sendCoin" type="button" class="btn width100 btn-info" :disabled="loading">送币</button>
-								<button @click="backCard" type="button" class="btn width100 btn-info" :disabled="loading">退卡</button>
-							</div>
+                            <button @click="getExchangeList" type="button" class="btn width100 btn-info" :disabled="loading">余额兑换</button>
+                            <button @click="saveManual" type="button" class="btn width100 btn-info" :disabled="loading">补币</button>
+                            <button @click="currency" type="button" class="btn width100 btn-info" :disabled="loading">提币</button>
+                            <button @click="sendCoin" type="button" class="btn width100 btn-info" :disabled="loading">送币</button>
+                            <button @click="backCard" type="button" class="btn width100 btn-info" :disabled="loading">退卡</button>
+                        </div>
 				</div>
 				<!--会员入会-->
 				<div class="enrollment" v-if="memberShow">
@@ -1265,15 +1287,65 @@
 	</div>
 	<!--sale详情的默认模板-->
 	<div class="detailHide">
-		<p>{{detailNote}}</p>
+        <!-- <p>{{detailNote}}</p> -->
+        <h5>{{detailData.detailData1}}</h5>
+        <table class="table table-bordered">
+            <tr v-for="items in detailData.detailData2">
+                <td>{{items.typeName}}</td>
+                <td>{{items.useCount}}</td>
+            </tr>
+        </table>
 		<table class="table table-bordered">
-			<tr v-for="(items,index) in detailData">
+            <!-- <tr v-for="items in detailData.detailData1">
+                <td>{{items.authorizeName}}</td>
+                <td>{{items.foreAuthorize}}</td>
+            </tr> -->
+			<tr v-for="items in detailData.detailData3">
 				<td>{{items.detailFoodTypeName}}</td>
 				<td>{{items.containCount}}</td>
 				<td>{{items.containName}}</td>
-			</tr>
+            </tr>
 		</table>
-	</div>
+    </div>
+    <div class="memberDetails" v-if="memberDetails">
+        <div class="input-group">
+            <span class="input-group-addon addonWidth">会员姓名：</span>
+            <input class="form-control" v-model="memberInfo.UserName" readonly/>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon addonWidth">会员卡号：</span>
+            <input class="form-control" v-model="memberInput.ICCardId" readonly/>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon addonWidth">会员级别：</span>
+            <input class="form-control" v-model="memberInput.LevelName" readonly/>
+        </div>
+        <!-- <div class="input-group">
+            <span class="input-group-addon addonWidth">到期日期：</span>
+            <input class="form-control" v-model="memberInput.EndDate" readonly/>
+        </div> -->
+        <table class="table table-bordered">
+            <thead>
+                <tr class="tableCenter">
+                    <th  colspan="1" rowspan="2" data-valign="middle">余额种类</th>
+                    <th colspan="3" data-valign="middle">余额</th>
+                </tr>
+                <tr class="tableCenter">
+                    <th>正价</th>
+                    <th>赠送</th>
+                    <th>总计</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in balanceData" :key="index">
+                    <td class="billingSty">{{item.BalanceName}}</td>
+                    <td @click="billingRecord(index)" class="billingColor">{{item.Balance}}</td>
+                    <td @click="billingRecord(index)" class="billingColor">{{item.BalanceFree}}</td>
+                    <td @click="billingRecord(index)" class="billingColor">{{item.TotalBalance}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 	<div class="footer" :class="{membershipDetails:footerShow}">
         <div class="btn-group dropup col-lg-3 col-md-3">
             <button type="button" class="btn btn-default" :disabled="loading" @click="AllReadCard">{{dropChooseTxt1}}</button>
@@ -1288,15 +1360,12 @@
             <input class="form-control" placeholder="请输入会员姓名" v-model="readCardInput"/>
             <button type="button" class="btn btn-default" :disabled="loading" @click="AllReadCard">{{dropChooseTxt2}}</button>
         </div>
-		<ul class="member col-lg-9 col-md-9" @click="membershipDetails">
+		<div class="col-lg-7 col-md-7" @click="membershipDetails">
                 
-			<li><span>会员卡号：4444444444444454545454</span></li>
-			<li><span>代币：</span></li>
-			<li><span>会员姓名：</span></li>
-			<li><span>积分：</span></li>
-			<li><span>会员等级：</span></li>
-			<li><span>彩票：</span></li>
-		</ul>
+        </div>
+        <div class="col-lg-2 col-md-2" style="text-align: center;" @click="memberDetailsShow">
+            会员卡详情
+        </div>
 		<ul v-for="(item,index) in footerData" :key="index" class="footerList">
 			<h3>{{item.couponTypeName}}</h3>
 			<li v-for="(items,index) in (item.MemberCouponDetail)" @click.stop="couponDetail">
@@ -1331,6 +1400,7 @@
         el: '#app',
         data:{
             loading:false,
+            memberDetails:false,
             userData:{
                 checkDate:"",
                 scheduleId:"",
@@ -1359,7 +1429,12 @@
 			saleData:[],
 			saleGood:[],
 			saleTicket:[],
-            detailData :[],
+            detailData :{
+                detailData1:"",
+                detailData2:[],
+                detailData3:[],
+                detailDataShow:false,
+            },
             shopping :[],
             memberLevel :[],
             buyDetails :[],
@@ -1430,6 +1505,22 @@
                 columns:[{title: '变更时间',key: 'OPTime'},{title: '变更类别',key: 'OperationType'},{title: '变更前',key: 'AfterBalance'},{title: '变更值',key: 'ChangeValue'},{title: '变更后',key: 'BeforeBalance'},{title: '变更渠道',key: 'ChannelType'},{title: '变更终端',key: 'DeviceName'},{title: '营业日期',key: 'CheckDate'},{title: '备注',key: 'Note'}],
                 listDataShow:[]
             },
+            ticketInfoList:{
+                tableShow:false,
+                ticketInfoListData:[],
+                pageSize:6,
+                dataCount:0,
+                columns:[{title: '门票名称',key: 'TicketName'},{title: '类别',key: 'TicketType'},{title: '购买时间',key: 'SaleTime'},{title: '过期时间',key: 'EndDate'},{title: '核销期',key: 'WriteOffDays'},{title: '购买数量',key: 'BuyCount'},{title: '剩余数量',key: 'RemainCount'},{title: '状态',key: 'State'},{title: '备注',key: 'Note'}],
+                listDataShow:[]
+            },
+            inquireExchangeList:{
+                tableShow:false,
+                inquireExchangeListData:[],
+                pageSize:6,
+                dataCount:0,
+                columns:[{title: '兑换时间',key: 'CreateTime'},{title: '订单号',key: 'OrderId'},{title: '兑换名称',key: 'ExchangeNmae'},{title: '兑换类别',key: 'SingleType'},{title: '兑换数量',key: 'SaleCount'},{title: '原价',key: 'OrginalPrice'},{title: '折扣',key: 'Discount'},{title: '消耗数量',key: 'PayCount'},{title: '消耗类别',key: 'BalanceName'},{title: '操作门店',key: 'StoreName'},{title: '营业日期',key: 'CheckDate'},{title: '班次',key: 'ScheduleName'},{title: '操作终端',key: 'WorkStation'},{title: '操作员',key: 'UserNmae'},{title: '备注',key: 'Note'}],
+                listDataShow:[]
+            },
             onSwitch0:false,
             onSwitch1:false,
             onSwitch2:false,
@@ -1467,7 +1558,6 @@
             footerShow:false,
             inputCashFocus:false,
             payCount:0,
-			detailNote:"",
             icCardId:"",
             cardId:"",
             footerData:[],
@@ -1766,6 +1856,7 @@
                                         
                                     }else if(that.msgReadCard === "1"){
                                         that.icCardId = receivedMsg.dataObj.icCardId;
+                                        that.getMenberCardInfo()
                                     }
                                     break;
                                 case "5":
@@ -1940,6 +2031,7 @@
                         if (res.data.result_code === '1') {
                             that.shopping = [{typeName:"现金",payNum:that.inputMoney}];
                             $('#checkoutModal').modal('show');
+                            that.getDiscountRuleList(payCount)
                             that.inputCashFocus = true;
                         }
                     }).catch(function (err) {
@@ -1986,6 +2078,7 @@
                             that.loading = false;
                             if (res.data.result_code === '1') {
                                 $('#checkoutModal').modal('show');
+                                that.getDiscountRuleList(payCount)
                                 that.inputCashFocus = true;
                             }
                         }).catch(function (err) {
@@ -2006,6 +2099,7 @@
                             that.loading = false;
                             if (res.data.result_code === '1') {
                                 $('#checkoutModal').modal('show');
+                                that.getDiscountRuleList(payCount)
                                 that.inputCashFocus = true;
                             } 
                         }).catch(function (err) {
@@ -2014,6 +2108,23 @@
 					}
 				}
             },
+//          获取满减规则信息
+            getDiscountRuleList:function(foodPrice){
+                var that = this;
+                var obj={userToken:that.userToken,customerType:that.customerType,icCardId:that.icCardId,foodPrice:foodPrice};
+                axios.post('/XCCloud/discount?action=getDiscountRuleList', obj).then(function (res) {	//创建订单
+                    console.log(res.data);
+                    // that.msgPrompt(res.data);
+                    that.loading = false;
+                    if (res.data.result_code === '1') {
+                        // 
+                    } 
+                }).catch(function (err) {
+                    console.log(err);
+                });
+
+            },
+            // /XCCloud/discount?action=getDiscountRuleList
 //			挂单
             cancelled:function () {
                 var that =this;
@@ -2813,6 +2924,82 @@
                 var _end = index * that.billing.pageSize;
                 that.billing.listDataShow = that.billing.billingData.slice(_start,_end);
             },
+//          查询会员门票信息
+            getTicketInfoList:function(){
+                var that = this;
+                if(that.loading == false){
+                    that.loading = true;
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId};
+                    console.log(obj);
+                    axios.post('/XCCloud/Member?action=getTicketInfoList', obj).then(function (res) {	
+                        console.log(res.data);
+                        that.loading = false
+                        that.msgPrompt(res.data);
+                        that.ticketInfoList.tableShow=true;
+                        if (res.data.result_code === '1') {
+                            that.ticketInfoList.ticketInfoListData=res.data.result_data.Items;
+                            that.ticketInfoList.dataCount = res.data.result_data.Items.length;
+                            if(that.ticketInfoList.dataCount < that.ticketInfoList.pageSize){
+                                that.ticketInfoList.listDataShow = that.ticketInfoList.ticketInfoListData;
+                            }else{
+                                that.ticketInfoList.listDataShow = that.ticketInfoList.ticketInfoListData.slice(0,that.ticketInfoList.pageSize);
+                            }
+                            console.log(that.ticketInfoList.dataCount < that.ticketInfoList.pageSize)
+                            console.log(that.ticketInfoList.dataCount)
+                            console.log(that.ticketInfoList.listDataShow)
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
+            },
+//          查询会员门票信息分页按钮
+            ticketInfoListChange:function(index){
+                var that = this;
+                var _start = ( index - 1 ) * that.ticketInfoList.pageSize;
+                var _end = index * that.ticketInfoList.pageSize;
+                that.ticketInfoList.listDataShow = that.ticketInfoList.ticketInfoListData.slice(_start,_end);
+            },
+//          查询会员兑换记录
+            inquireExchange:function(){
+                var that = this;
+                if(that.loading == false){
+                    that.loading = true;
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId};
+                    console.log(obj);
+                    axios.post('/XCCloud/Member?action=getExchangeList', obj).then(function (res) {	
+                        console.log(res.data);
+                        that.loading = false
+                        that.msgPrompt(res.data);
+                        that.inquireExchangeList.tableShow=true;
+                        if (res.data.result_code === '1') {
+                            that.inquireExchangeList.inquireExchangeListData=res.data.result_data.Items;
+                            that.inquireExchangeList.dataCount = res.data.result_data.Items.length;
+                            if(that.inquireExchangeList.dataCount < that.inquireExchangeList.pageSize){
+                                that.inquireExchangeList.listDataShow = that.inquireExchangeList.inquireExchangeListData;
+                            }else{
+                                that.inquireExchangeList.listDataShow = that.inquireExchangeList.inquireExchangeListData.slice(0,that.inquireExchangeList.pageSize);
+                            }
+                            console.log(that.inquireExchangeList.dataCount < that.inquireExchangeList.pageSize)
+                            console.log(that.inquireExchangeList.dataCount)
+                            console.log(that.inquireExchangeList.listDataShow)
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
+            },
+//          查询会员兑换记录分页按钮
+            inquireExchangeChange:function(index){
+                var that = this;
+                var _start = ( index - 1 ) * that.inquireExchangeList.pageSize;
+                var _end = index * that.inquireExchangeList.pageSize;
+                that.inquireExchangeList.listDataShow = that.inquireExchangeList.inquireExchangeListData.slice(_start,_end);
+            },
+//          会员卡详情显示{{}}
+            memberDetailsShow:function(){
+                this.memberDetails = !this.memberDetails
+            },
 //			销售列表
             salesAll:function () {
                 var that = this;
@@ -3084,25 +3271,46 @@
                       default:
                         break;
                     }
-                    console.log(that.saleData[index]);
-                    console.log(that.saleData);
-                    console.log(index);
+                    if(that.saleData[index].foreAuthorize == 1){
+                        that.detailData.detailData1 = "此物品需要授权！"
+                        that.detailData.detailDataShow = true;
+                    }else{
+                        that.detailData.detailDataShow = false;
+                    }
+                    that.detailData.detailData2 = that.saleData[index].detailInfoList
+                    console.log(that.saleData[index].detailInfoList);
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,foodId:saleData_[index].foodId,category:category};
                     axios.post('/XCCloud/Foods?action=getFoodDetail', obj).then(function (res) {
                         console.log(res.data);
-                        that.msgPrompt(res.data);
+                        if(res.data.return_code == 0){
+                            that.msg = res.data.return_msg;
+                            $('#myModal').modal('show');
+                            if(that.msg == "用户令牌已失效, 请重新登录"){
+                                setTimeout(function () {
+                                    window.location.href='login.html';
+                                }, 3000);
+                            }
+                        }else if(res.data.result_code == 0 && res.data.result_msg != "无数据"){
+                            that.msg = res.data.result_msg;
+                            $('#myModal').modal('show');
+                            if(that.msg == "用户令牌已失效, 请重新登录"){
+                                setTimeout(function () {
+                                    window.location.href='login.html';
+                                }, 3000);
+                            }
+                        }
                         that.loading = false;
                         if (res.data.result_code === '1') {
-                            if (typeof(res.data.result_data.note) === "undefined"){ 
-                                that.detailData = res.data.result_data;
-                                that.detailNote = "";
-                            }else{
-                                that.detailData =[];
-                                that.detailNote = res.data.result_data.note
-                            }
-                            
-                            setTimeout("detailTime("+index_+")",10);
+                            // if (typeof(res.data.result_data.note) === "undefined"){ 
+                            //     
+                            //     that.detailNote = "";
+                            // }else{
+                            //     that.detailData =[];
+                            //     that.detailNote = res.data.result_data.note
+                            // }
+                            that.detailData.detailData3 = res.data.result_data;
                         }
+                        setTimeout("detailTime("+index_+")",10);
                     }).catch(function (err) {
                         console.log(err);
                     });
@@ -3917,7 +4125,7 @@
                     console.log(err);
                 });
             },
-//			获取会员详细信息
+//			获取会员优惠券
             membershipDetails:function () {
 			    var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};

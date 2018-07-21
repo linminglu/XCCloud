@@ -35,6 +35,11 @@ namespace XXCloudService.Api.XCCloud
             return Data_CouponListService.I.Any(p => p.CouponID == iId && p.State == (int)CouponState.Activated); //已派发
         }
 
+        private bool isJackpot(int iId)
+        {
+            return Data_CouponListService.I.Any(p => p.CouponID == iId && p.JackpotID > 0); //已入奖池
+        }
+
         private bool isUsed(int iId)
         {
             //return (from a in Data_CouponListService.N.GetModels(p => p.CouponID == iId)
@@ -381,6 +386,13 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
+                            //被奖池占用的优惠券规则不能修改                
+                            if (isJackpot(id))
+                            {
+                                errMsg = "被奖池占用的优惠券规则不能修改";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             //修改
                             if (!Data_CouponInfoService.I.Update(data_CouponInfo, true, merchId, merchSecret))
                             {
@@ -585,6 +597,12 @@ namespace XXCloudService.Api.XCCloud
                             if (isSend((int)id))
                             {
                                 errMsg = "已派发的优惠券规则不能删除";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (isJackpot((int)id))
+                            {
+                                errMsg = "被奖池占用的优惠券规则不能删除";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 

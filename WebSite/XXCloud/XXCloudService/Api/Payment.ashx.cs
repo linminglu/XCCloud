@@ -350,6 +350,8 @@ namespace XXCloudService.Api
                 BarcodePayModel model = new BarcodePayModel();
                 model.OrderId = orderId;
 
+                Flw_OrderBusiness orderBusiness = new Flw_OrderBusiness();
+
                 switch (selttleType)
                 {
                     case SelttleType.NotThird:
@@ -375,10 +377,10 @@ namespace XXCloudService.Api
                                         decimal payAmount = Convert.ToDecimal(payResult.response.TotalAmount);
 
                                         //支付成功后的处理
-                                        BarcodePayModel callbackModel = Flw_OrderBusiness.OrderPay(payResult.response.OutTradeNo, payAmount, selttleType);
+                                        bool ret = orderBusiness.OrderPay(payResult.response.OutTradeNo, payAmount, payResult.response.TradeNo, selttleType, PaymentChannel.ALIPAY, out errMsg);
 
-                                        model.OrderStatus = callbackModel.OrderStatus;
-                                        model.PayAmount = payAmount.ToString("0.00");
+                                        //model.OrderStatus = callbackModel.OrderStatus;
+                                        //model.PayAmount = payAmount.ToString("0.00");
                                     }
                                     else
                                     {
@@ -405,11 +407,11 @@ namespace XXCloudService.Api
                                         decimal total_fee = Convert.ToDecimal(resultData.GetValue("total_fee"));
                                         decimal payAmount = total_fee / 100;
 
-                                        //支付成功后的处理
-                                        BarcodePayModel callbackModel = Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, selttleType);
+                                        ////支付成功后的处理
+                                        //BarcodePayModel callbackModel = orderBusiness.OrderPay(out_trade_no, payAmount, selttleType);
 
-                                        model.OrderStatus = callbackModel.OrderStatus;
-                                        model.PayAmount = payAmount.ToString("0.00");
+                                        //model.OrderStatus = callbackModel.OrderStatus;
+                                        //model.PayAmount = payAmount.ToString("0.00");
                                     }
                                     else
                                     {
@@ -458,10 +460,10 @@ namespace XXCloudService.Api
                             decimal payAmount = total_fee / 100;
 
                             //支付成功后的处理
-                            BarcodePayModel callbackModel = Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, selttleType);
+                            bool orderRet = orderBusiness.OrderPay(out_trade_no, payAmount, result.orderNo, selttleType, PayChannel, out errMsg);
 
-                            model.OrderStatus = callbackModel.OrderStatus;
-                            model.PayAmount = payAmount.ToString("0.00");
+                            //model.OrderStatus = callbackModel.OrderStatus;
+                            //model.PayAmount = payAmount.ToString("0.00");
                         }
                         else
                         {
@@ -488,11 +490,11 @@ namespace XXCloudService.Api
                                 decimal total_fee = Convert.ToDecimal(ack.total_fee);
                                 decimal payAmount = total_fee / 100;
 
-                                //支付成功后的处理
-                                BarcodePayModel callbackModel = Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.LcswPay);
+                                ////支付成功后的处理
+                                //BarcodePayModel callbackModel = orderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.LcswPay);
 
-                                model.OrderStatus = callbackModel.OrderStatus;
-                                model.PayAmount = payAmount.ToString("0.00");
+                                //model.OrderStatus = callbackModel.OrderStatus;
+                                //model.PayAmount = payAmount.ToString("0.00");
                             }
                         }
                         else
@@ -532,10 +534,10 @@ namespace XXCloudService.Api
                             decimal total_fee = Convert.ToDecimal(el.XPathSelectElement("/response/order_amount").Value);
                             decimal payAmount = total_fee / 100;
 
-                            BarcodePayModel callbackModel = Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.DinPay);
+                            //BarcodePayModel callbackModel = orderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.DinPay);
 
-                            model.OrderStatus = callbackModel.OrderStatus;
-                            model.PayAmount = payAmount.ToString("0.00");
+                            //model.OrderStatus = callbackModel.OrderStatus;
+                            //model.PayAmount = payAmount.ToString("0.00");
                         }
                         else
                         {

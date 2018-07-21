@@ -133,12 +133,7 @@ body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;
 .tableTag .selectSty select{background-color: #00F7DE;}
 
 /*销售列表样式修改*/
-.salesLi{width: 20em;height: 7em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.5em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
-.saleText h3{font-size: 1.2em;margin-top: 0.5em;font-weight: 600;}
-.saleText a.btn{padding: 0 6px;width: 50%;margin-left: 40%;}
-.saleText{display: flex;flex-direction: column-reverse;width: 10.5em;justify-content: space-between;text-align: left;margin-left: 0.5em;}
-.saleDetails{width: 50%;margin-left: 40%;}
-.salesLi img{width: 8em;height: 6em;}
+
 /* .saleTitleBg li:nth-child(7n) a{background-color: #3279b4;}
 .saleTitleBg li:nth-child(7n+1) a{background-color: #32c7d2;}
 .saleTitleBg li:nth-child(7n+2) a{background-color: #b196fd;}

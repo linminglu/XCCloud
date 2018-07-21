@@ -117,5 +117,10 @@ namespace XCCloudService.Common
                 return "WxPub_ApiTicket";
             }
         }
+
+        /// <summary>
+        /// UPD订单号与sn缓存KEY
+        /// </summary>
+        public static string UdpOrderSNCache = "UPD_ORDERID_SN";
     }
 }

@@ -171,7 +171,7 @@ namespace XXCloudService.PayChannel
                             decimal total_fee = Convert.ToDecimal(ack.total_fee);
                             decimal payAmount = total_fee / 100;
 
-                            Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.LcswPay);
+                            //Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.LcswPay);
 
                         }
                     }

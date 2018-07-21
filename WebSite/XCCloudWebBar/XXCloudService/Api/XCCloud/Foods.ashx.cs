@@ -13,6 +13,7 @@ using XCCloudWebBar.Business.XCGameMana;
 using XCCloudWebBar.CacheService;
 using XCCloudWebBar.Common;
 using XCCloudWebBar.Model.CustomModel.XCCloud;
+using XCCloudWebBar.Model.CustomModel.XCCloud.Order;
 using XCCloudWebBar.Model.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
@@ -30,12 +31,18 @@ namespace XXCloudService.Api.XCCloud
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
             TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
+            string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+            string buyDetailsJson = dicParas.ContainsKey("buyDetailsJson") ? dicParas["buyDetailsJson"].ToString() : string.Empty;
+
             string sql = "GetFoodDetailPayNum";
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@MerchId", SqlDbType.VarChar,15);
             parameters[0].Value = userTokenDataModel.MerchID;
 
-            String[] Ary = new String[] { "数据0", "数据1", "数据2", "数据3", "数据4" };
+            parameters[1] = new SqlParameter("@ICCardId", SqlDbType.Int);
+            parameters[1].Value = icCardId;
+
+            String[] Ary = new String[] { "数据0", "数据1", "数据2", "数据3", "数据4", "数据5" };
             List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
             SqlMetaData[] MetaDataArr = new SqlMetaData[] {
                 new SqlMetaData("FoodId", SqlDbType.Int),
@@ -45,6 +52,34 @@ namespace XXCloudService.Api.XCCloud
                 new SqlMetaData("PayNum", SqlDbType.Decimal,18,2),
                 new SqlMetaData("RealPayNum", SqlDbType.Decimal,18,2)
             };
+
+            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID, true);
+
+            List<OrderBuyDetailModel2> buyDetailList = Utils.DataContractJsonDeserializer<List<OrderBuyDetailModel2>>(buyDetailsJson);
+            
+            for (int i = 0; i < buyDetailList.Count; i++)
+            {
+                List<object> listParas = new List<object>();
+                listParas.Add(buyDetailList[i].FoodId);
+                listParas.Add(buyDetailList[i].Category);
+                listParas.Add(buyDetailList[i].FoodCount);
+                listParas.Add(buyDetailList[i].PayType);
+                listParas.Add(buyDetailList[i].PayNum);
+                listParas.Add(buyDetailList[i].RealPayNum);
+
+                var record = new SqlDataRecord(MetaDataArr);
+                for (int j = 0; j < Ary.Length; j++)
+                {
+                    record.SetValue(j, listParas[j]);
+                }
+                listSqlDataRecord.Add(record);
+            }
+
+            parameters[2] = new SqlParameter("@FoodSaleDetailListExtType", SqlDbType.Structured);
+            parameters[2].Value = listSqlDataRecord;
+
+            parameters[3] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+            parameters[3].Direction = ParameterDirection.Output;
 
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
             var obj = new {

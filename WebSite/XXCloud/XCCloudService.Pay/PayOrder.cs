@@ -97,8 +97,7 @@ namespace XCCloudService.Pay
             //订单描述
             string subject = !string.IsNullOrWhiteSpace(order.Note) ? order.Note : order.ID;
 
-            BarcodePayModel model = new BarcodePayModel();
-            model.OrderId = orderId;
+            Flw_OrderBusiness orderBusiness = new Flw_OrderBusiness();
 
             switch (selttleType)
             {
@@ -124,10 +123,7 @@ namespace XCCloudService.Pay
                                 decimal payAmount = Convert.ToDecimal(payResult.response.TotalAmount);
 
                                 ////支付成功后的处理
-                                BarcodePayModel callbackModel = Flw_OrderBusiness.OrderPay(payResult.response.OutTradeNo, payAmount, selttleType);
-
-                                //model.OrderStatus = callbackModel.OrderStatus;
-                                //model.PayAmount = payAmount.ToString("0.00");
+                                bool ret = orderBusiness.OrderPay(payResult.response.OutTradeNo, payAmount, "", selttleType, PaymentChannel.ALIPAY, out errMsg);
                                 return true;
                             }
                             else
@@ -154,10 +150,8 @@ namespace XCCloudService.Pay
                                 decimal payAmount = total_fee / 100;
 
                                 //支付成功后的处理
-                                BarcodePayModel callbackModel = Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, selttleType);
+                                bool ret = orderBusiness.OrderPay(out_trade_no, payAmount, "", selttleType, PaymentChannel.WXPAY, out errMsg);
 
-                                //model.OrderStatus = callbackModel.OrderStatus;
-                                //model.PayAmount = payAmount.ToString("0.00");
                                 return true;
                             }
                             else
@@ -188,7 +182,7 @@ namespace XCCloudService.Pay
                     pposOrder.payChannel = payChannel.ToString();
                     pposOrder.subject = subject;
                     pposOrder.selOrderNo = tradeNo;
-                    pposOrder.txnTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+                    pposOrder.txnTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                     pposOrder.signValue = "";
 
                     PPosPayApi ppos = new PPosPayApi();
@@ -196,16 +190,14 @@ namespace XCCloudService.Pay
                     if (result != null)
                     {
                         //SUCCESS
-                        string out_trade_no = result.tradeNo;
-                        string orderNo = result.orderNo;
-                        decimal total_fee = Convert.ToDecimal(result.total_amount);
-                        decimal payAmount = total_fee / 100;
+                        //string out_trade_no = result.tradeNo;
+                        //string channelOrderNo = result.orderNo;
+                        //decimal total_fee = Convert.ToDecimal(result.total_amount);
+                        //decimal payAmount = total_fee / 100;
 
-                        //支付成功后的处理
-                        BarcodePayModel callbackModel = Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, selttleType);
+                        ////支付成功后的处理
+                        //bool orderRet = orderBusiness.OrderPay(out_trade_no, payAmount, channelOrderNo, selttleType, payChannel, out errMsg);
 
-                        model.OrderStatus = callbackModel.OrderStatus;
-                        model.PayAmount = payAmount.ToString("0.00");
                         return true;
                     }
                     else

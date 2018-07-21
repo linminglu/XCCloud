@@ -176,4 +176,11 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     {
 
     }
+
+    public class OrderCacheModel
+    {
+        public string OrderId { get; set; }
+        public string SN { get; set; }
+        //public DateTime CreateTime { get; set; }
+    }
 }

@@ -21,6 +21,8 @@ using XCCloudService.Business.XCGame;
 using XCCloudService.SocketService.UDP.Security;
 using XCCloudService.SocketService.UDP.Common;
 using XCCloudService.Pay;
+using XCCloudService.CacheService;
+using XCCloudService.Model.CustomModel.XCCloud;
 
 
 namespace XCCloudService.SocketService.UDP
@@ -288,13 +290,23 @@ namespace XCCloudService.SocketService.UDP
                                             AskSNList[sn].Secret = secret;
                                         }
                                         ScanPayRequestModel scanpay = JsonHelper.DataContractJsonDeserializer<ScanPayRequestModel>(data);
+
+                                        OrderCacheModel order = new OrderCacheModel();
+                                        order.OrderId = scanpay.OrderID;
+                                        order.SN = scanpay.SN;
+                                        //order.CreateTime = DateTime.Now;
+                                        RedisCacheHelper.HashSet<OrderCacheModel>(CommonConfig.UdpOrderSNCache, scanpay.OrderID, order);
+
                                         PayOrderHelper payHelper = new PayOrderHelper();
                                         string errMsg = string.Empty;
                                         bool ret = payHelper.BarcodePay(scanpay.OrderID, scanpay.AuthCode, out errMsg);
                                         if(!ret)
                                         {
-                                            AskScanPayResult("0", errMsg, "");
+                                            AskScanPayResult("0", errMsg, sn);
                                         }
+
+                                        //string strResult = Convert.ToInt32(ret).ToString();
+                                        //AskScanPayResult(strResult, errMsg, sn);
                                     }
                                     break;
                                 //case TransmiteEnum.远程门店账目应答通知指令:

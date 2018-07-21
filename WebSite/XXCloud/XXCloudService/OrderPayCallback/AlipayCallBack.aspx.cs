@@ -26,6 +26,7 @@ namespace XXCloudService.PayChannel
 
             PayLogHelper.WriteEvent(Request.Form.ToString(), "支付宝支付");
 
+            string errMsg = string.Empty;
 
             if (sPara.Count > 0)//判断是否有带返回参数
             {
@@ -61,7 +62,8 @@ namespace XXCloudService.PayChannel
                         try
                         {
                             decimal amount = Convert.ToDecimal(total_amount);
-                            Flw_OrderBusiness.OrderPay(out_trade_no, amount, SelttleType.AliWxPay);
+                            Flw_OrderBusiness orderBusiness = new Flw_OrderBusiness();
+                            orderBusiness.OrderPay(out_trade_no, amount, trade_no, SelttleType.AliWxPay, PaymentChannel.ALIPAY, out errMsg);
                         }
                         catch (Exception ex)
                         {

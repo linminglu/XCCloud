@@ -43,7 +43,7 @@ namespace XXCloudService.OrderPayCallback
                         string order_amount = arrParams.FirstOrDefault(t => t.Key == "order_amount").Value;
                         decimal amount = Convert.ToDecimal(order_amount);
 
-                        Flw_OrderBusiness.OrderPay(out_trade_no, amount, SelttleType.DinPay);
+                        //Flw_OrderBusiness.OrderPay(out_trade_no, amount, SelttleType.DinPay);
 
                         //订单更新完之后打印SUCCESS
                         Response.Write("SUCCESS");
