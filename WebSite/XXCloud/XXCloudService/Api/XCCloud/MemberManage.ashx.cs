@@ -371,7 +371,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND (cd1.StoreID='" + storeId + "' OR cd2.StoreID='" + storeId + @"')) a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -426,7 +426,7 @@ namespace XXCloudService.Api.XCCloud
                                     INNER JOIN Flw_Food_Sale_Pay b ON a.ID=b.FlwFoodID
                                     LEFT JOIN Dict_BalanceType c ON b.BalanceIndex=c.ID
                                 ) e ON a.FoodSaleID=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -476,7 +476,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -528,7 +528,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
                                 LEFT JOIN Data_MemberLevel e ON a.OldMemberLevelID=e.ID
                                 LEFT JOIN Data_MemberLevel f ON a.NewMemberLevleID=f.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -578,7 +578,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID                                
-                                WHERE a.OperateType=0 AND a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.OperateType=0 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -619,18 +619,18 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (
                                 SELECT distinct
-                                    a.ID, a.ICCardID, a.MemberLevelName, a.OperationType, a.OPTime, a.SourceID, 
+                                    a.ID, cd.ICCardID, b.MemberLevelName, a.OperationType, a.OPTime, a.SourceID, 
                                     (a.Balance+a.FreeBalance-a.ChangeValue-a.FreeChangeValue) AS OldBalance, (a.ChangeValue+a.FreeChangeValue) AS ChangeValue,
                                     e.TypeName AS BalanceIndexStr, (a.Balance+a.FreeBalance) AS Balance, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_MemberData a
-                                --INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID     
-                                --LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID     
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
-                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -686,7 +686,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON fsp.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -739,7 +739,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
                                 LEFT JOIN Dict_BalanceType e1 ON a.SourceBalanceIndex=e1.ID   
                                 LEFT JOIN Dict_BalanceType e2 ON a.TargetBalanceIndex=e2.ID                             
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -790,10 +790,10 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID  
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
-                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID                                                                
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -846,7 +846,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON bc.SourceBalanceIndex=e.ID                                                                
-                                WHERE a.OperateType=1 AND a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.OperateType=1 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -890,16 +890,16 @@ namespace XXCloudService.Api.XCCloud
                                     a.ID, cd1.ICCardID AS ICCardIDOut, b1.UserName, a.RealTime, a.TransferCount, e.TypeName AS TransferBalanceStr, a.BalanceOut,
                                     cd2.ICCardID AS ICCardIDIn, b2.UserName InUserName, a.BalanceIn, c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
-                                	Flw_MemberTransfer a
+                                	Flw_Transfer a
                                 INNER JOIN Data_Member_Card cd1 ON a.CardIDOut=cd1.ID  
                                 INNER JOIN Data_Member_Card cd2 ON a.CardIDIn=cd2.ID        
                                 LEFT JOIN Base_MemberInfo b1 ON a.OutMemberID=b1.ID
                                 LEFT JOIN Base_MemberInfo b2 ON a.InMemberID=b2.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
-                                LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.TransferBalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
@@ -942,7 +942,7 @@ namespace XXCloudService.Api.XCCloud
                                 SELECT distinct
                                     a.ID, cd.ICCardID, a.RealTime, a.MayCoins, a.Coins, a.WinMoney, a.LastTime, a.WorkStation, u.LogName, u2.LogName AuthorName, a.Note                                    
                                 FROM
-                                	Flw_MemberData a
+                                	Flw_Giveback a
                                 INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID  
                                 --LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 --LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
@@ -950,7 +950,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Base_UserInfo u2 ON a.AuthorID=u2.ID
                                 --LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
                             ";
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
