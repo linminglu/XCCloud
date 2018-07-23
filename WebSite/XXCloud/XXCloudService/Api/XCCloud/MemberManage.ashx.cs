@@ -771,7 +771,7 @@ namespace XXCloudService.Api.XCCloud
                     if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                string sql = @"SELECT a.* from (
+                string sql = @"SELECT a.* from (                                
                                 SELECT distinct
                                     a.ID AS OrderID, cd.ICCardID, b.UserName, a.CreateTime, 
                                     fs.MemberLevelName, fs.PointTypeStr, fs.Direction, fs.OpertationTypeStr, fs.OldBalance, fs.ChangeValue, fs.Balance,
@@ -782,32 +782,149 @@ namespace XXCloudService.Api.XCCloud
                                 INNER JOIN Flw_Order_Detail od ON a.ID=od.OrderFlwID 
                                 INNER JOIN 
                                 (
+                                 --1 销售积分
                                  SELECT fs.ID, (fs.PointBalance-fs.Point) AS OldBalance, fs.Point AS ChangeValue, fs.PointBalance AS Balance, f.MemberLevelName, f.PointTypeStr, '存入' AS Direction, '销售积分' AS OpertationTypeStr
                                  FROM Flw_Food_Sale fs
                                  INNER JOIN (select f.ID,f.MemberLevelName,e.TypeName AS PointTypeStr from Data_MemberLevel f INNER JOIN Dict_BalanceType e ON f.PointBalanceIndex=e.ID) f ON fs.MemberLevelID=f.ID
+
                                  UNION
+
+                                 --2 套餐赠送
                                  SELECT fs.ID, (fs.PointBalance-fsd.ContainCount) AS OldBalance, fsd.ContainCount AS ChangeValue, fs.PointBalance AS Balance, f.MemberLevelName, bt.TypeName AS PointTypeStr, '存入' AS Direction, '套餐赠送' AS OpertationTypeStr
                                  FROM Flw_Food_Sale fs
                                  INNER JOIN Data_MemberLevel f ON fs.MemberLevelID=f.ID
                                  INNER JOIN Flw_Food_SaleDetail fsd ON fs.ID=fsd.FlwFoodID
                                  INNER JOIN Dict_BalanceType bt ON fsd.ContainID=bt.ID 
                                  WHERE fsd.FoodType=0 AND bt.MappingType=3
+
+                                 UNION
+            
+                                 --7 兑换
+                                 SELECT fs.ID, (fsp.Balance+fsp.PayCount) AS OldBalance, -fsp.PayCount AS ChangeValue, fsp.Balance AS Balance, f.MemberLevelName, bt.TypeName AS PointTypeStr, '消耗' AS Direction, '兑换' AS OpertationTypeStr
+                                 FROM Flw_Food_Sale fs
+                                 INNER JOIN Data_MemberLevel f ON fs.MemberLevelID=f.ID
+                                 INNER JOIN Flw_Food_Sale_Pay fsp ON fs.ID=fsp.FlwFoodID
+                                 INNER JOIN Dict_BalanceType bt ON fsp.BalanceIndex=bt.ID 
+                                 WHERE bt.MappingType=2
                                 ) fs ON od.FoodFlwID=fs.ID                                                                 
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+
                                 UNION 
+
+                                --4 消费
+                                SELECT distinct
+                                    a.OrderID, cd.ICCardID, b.UserName, a.RealTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS PointTypeStr, '消耗' AS Direction, '消费' AS OpertationTypeStr, (a.RemainBalance+a.Coin) AS OldBalance, -a.Coin AS ChangeValue, a.RemainBalance AS Balance,
+                                    c.StoreName, a.CheckDate, '' AS ScheduleName, d.DeviceName AS WorkStation, '' AS LogName, a.Note                                    
+                                FROM
+                                	Flw_DeviceData a
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID 
+                                INNER JOIN Base_DeviceInfo d ON a.DeviceID=d.ID
+                                INNER JOIN Dict_BalanceType bt ON a.BalanceIndex=bt.ID 
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                WHERE bt.MappingType=3 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"' 
+
+                                UNION
                                 
+                                --6 过户
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.RealTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS PointTypeStr, '消耗' AS Direction, '过户' AS OpertationTypeStr, (a.BalanceOut+a.TransferCount) AS OldBalance, -a.TransferCount AS ChangeValue, a.BalanceOut AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_Transfer a
+                                INNER JOIN Data_Member_Card cd ON a.CardIDOut=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.TransferBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.OutMemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                WHERE bt.MappingType=3 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+
+                                UNION
+
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.RealTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS PointTypeStr, '存入' AS Direction, '过户' AS OpertationTypeStr, (a.BalanceIn-a.TransferCount) AS OldBalance, a.TransferCount AS ChangeValue, a.BalanceIn AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_Transfer a
+                                INNER JOIN Data_Member_Card cd ON a.CardIDIn=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.TransferBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.InMemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                WHERE bt.MappingType=3 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+                                
+                                UNION
+
+                                --7 兑换
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.OpTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS PointTypeStr, '存入' AS Direction, '兑换' AS OpertationTypeStr, (a.TargetRemain-a.TargetCount) AS OldBalance, a.TargetCount AS ChangeValue, a.TargetRemain AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_MemberCard_BalanceCharge a
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.TargetBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
+                                WHERE bt.MappingType=3 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+
+                                UNION
+
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.OpTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS PointTypeStr, '消耗' AS Direction, '兑换' AS OpertationTypeStr, (a.SourceRemain+a.SourceCount) AS OldBalance, -a.SourceCount AS ChangeValue, a.SourceRemain AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_MemberCard_BalanceCharge a
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.SourceBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
+                                WHERE bt.MappingType=3 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+
+                                UNION
+
+                                --9 礼品回购
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.OpTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS PointTypeStr, '存入' AS Direction, '礼品回购' AS OpertationTypeStr, (a.Balance-a.BalanceCount) AS OldBalance, a.BalanceCount AS ChangeValue, a.Balance AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_Good_Buyback a
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.BuybackBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
+                                WHERE bt.MappingType=3 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
                             ) a
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
                     sql = sql + " AND a.ICCardID='" + iCCardId + "'";
-                sql = sql + " ORDER BY a.OrderID";
+                sql = sql + " ORDER BY a.OrderID, a.ICCardID";
 
-                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberExchangeList>(sql, parameters).ToList();
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberPointList>(sql, parameters).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
@@ -845,31 +962,144 @@ namespace XXCloudService.Api.XCCloud
                     if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                string sql = @"SELECT a.* from (
+                string sql = @"SELECT a.* from (                                
                                 SELECT distinct
-                                    a.ID AS OrderID, cd.ICCardID, b.UserName, f.MemberLevelName, a.CreateTime, fsp.Discount, fsp.OrginalPrice, fsp.PayCount, 
-                                    e.TypeName AS BalanceIndexStr, fs.TotalMoney, a.OrderStatus, a.OrderSource, 
-                                    a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                    a.ID AS OrderID, cd.ICCardID, b.UserName, a.CreateTime, 
+                                    fs.MemberLevelName, fs.LotteryTypeStr, fs.Direction, fs.OpertationTypeStr, fs.OldBalance, fs.ChangeValue, fs.Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
                                 FROM
                                 	Flw_Order a
                                 INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID  
                                 INNER JOIN Flw_Order_Detail od ON a.ID=od.OrderFlwID 
-                                INNER JOIN Flw_Food_Sale fs ON od.FoodFlwID=fs.ID 
-                                INNER JOIN Flw_Food_Sale_Pay fsp ON fs.ID=fsp.ID 
-                                LEFT JOIN Data_MemberLevel f ON fs.MemberLevelID=f.ID
+                                INNER JOIN 
+                                (    
+                             
+                                 --7 销售兑换
+                                 SELECT fs.ID, (fsp.Balance+fsp.PayCount) AS OldBalance, -fsp.PayCount AS ChangeValue, fsp.Balance AS Balance, f.MemberLevelName, bt.TypeName AS LotteryTypeStr, '消耗' AS Direction, '销售兑换' AS OpertationTypeStr
+                                 FROM Flw_Food_Sale fs
+                                 INNER JOIN Data_MemberLevel f ON fs.MemberLevelID=f.ID
+                                 INNER JOIN Flw_Food_Sale_Pay fsp ON fs.ID=fsp.FlwFoodID
+                                 INNER JOIN Dict_BalanceType bt ON fsp.BalanceIndex=bt.ID 
+                                 WHERE bt.MappingType=2
+                                ) fs ON od.FoodFlwID=fs.ID                                                                 
                                 LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
-                                --LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
-                                LEFT JOIN Dict_BalanceType e ON fsp.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+
+                                UNION 
+
+                                --1 设备出票
+                                SELECT distinct
+                                    a.OrderID, cd.ICCardID, b.UserName, a.RealTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS LotteryTypeStr, '存入' AS Direction, '设备出票' AS OpertationTypeStr, (a.RemainBalance-a.Coin) AS OldBalance, a.Coin AS ChangeValue, a.RemainBalance AS Balance,
+                                    c.StoreName, a.CheckDate, '' AS ScheduleName, d.DeviceName AS WorkStation, '' AS LogName, a.Note                                    
+                                FROM
+                                	Flw_DeviceData a
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID 
+                                INNER JOIN Base_DeviceInfo d ON a.DeviceID=d.ID
+                                INNER JOIN Dict_BalanceType bt ON a.BalanceIndex=bt.ID 
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                WHERE bt.MappingType=2 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'                                 
+
+                                UNION
+                                
+                                --6 过户
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.RealTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS LotteryTypeStr, '消耗' AS Direction, '过户' AS OpertationTypeStr, (a.BalanceOut+a.TransferCount) AS OldBalance, -a.TransferCount AS ChangeValue, a.BalanceOut AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_Transfer a
+                                INNER JOIN Data_Member_Card cd ON a.CardIDOut=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.TransferBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.OutMemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                WHERE bt.MappingType=2 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+
+                                UNION
+
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.RealTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS LotteryTypeStr, '存入' AS Direction, '过户' AS OpertationTypeStr, (a.BalanceIn-a.TransferCount) AS OldBalance, a.TransferCount AS ChangeValue, a.BalanceIn AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_Transfer a
+                                INNER JOIN Data_Member_Card cd ON a.CardIDIn=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.TransferBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.InMemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
+                                WHERE bt.MappingType=2 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+                                
+                                UNION
+
+                                --7 余额兑换
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.OpTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS LotteryTypeStr, '存入' AS Direction, '余额兑换' AS OpertationTypeStr, (a.TargetRemain-a.TargetCount) AS OldBalance, a.TargetCount AS ChangeValue, a.TargetRemain AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note
+                                FROM
+                                	Flw_MemberCard_BalanceCharge a
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.TargetBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
+                                WHERE bt.MappingType=2 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+
+                                UNION
+
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.OpTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS LotteryTypeStr, '消耗' AS Direction, '余额兑换' AS OpertationTypeStr, (a.SourceRemain+a.SourceCount) AS OldBalance, -a.SourceCount AS ChangeValue, a.SourceRemain AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_MemberCard_BalanceCharge a
+                                INNER JOIN Data_Member_Card cd ON a.CardIndex=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.SourceBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
+                                WHERE bt.MappingType=2 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+
+                                UNION
+
+                                --9 礼品回购
+                                SELECT distinct
+                                    '' AS OrderID, cd.ICCardID, b.UserName, a.OpTime AS CreateTime, 
+                                    f.MemberLevelName, bt.TypeName AS LotteryTypeStr, '存入' AS Direction, '礼品回购' AS OpertationTypeStr, (a.Balance-a.BalanceCount) AS OldBalance, a.BalanceCount AS ChangeValue, a.Balance AS Balance,
+                                    c.StoreName, a.CheckDate, d.ScheduleName, a.WorkStation, u.LogName, a.Note                                    
+                                FROM
+                                	Flw_Good_Buyback a
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID  
+                                INNER JOIN Dict_BalanceType bt ON a.BuybackBalanceIndex=bt.ID  
+                                LEFT JOIN Data_MemberLevel f ON cd.MemberLevelID=f.ID                                                              
+                                LEFT JOIN Base_MemberInfo b ON a.MemberID=b.ID
+                                LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
+                                LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
+                                LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
+                                WHERE bt.MappingType=2 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
+                            ) a
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
                     sql = sql + " AND a.ICCardID='" + iCCardId + "'";
-                sql = sql + " ORDER BY a.OrderID";
+                sql = sql + " ORDER BY a.OrderID, a.ICCardID";
 
-                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberExchangeList>(sql, parameters).ToList();
+                var list = Data_GameInfoService.I.SqlQuery<Flw_MemberLotteryList>(sql, parameters).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }

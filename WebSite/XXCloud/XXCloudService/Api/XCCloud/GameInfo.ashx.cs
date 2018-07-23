@@ -254,6 +254,27 @@ namespace XXCloudService.Api.XCCloud
                                        };
                 result.Add(new { name = "FreeLotteryRules", value = (object)FreeLotteryRules.ToList(), comment = string.Empty });
 
+                //会员消费积分设置
+                var GamePointRules = from a in Data_Game_PointRuleService.N.GetModels(p => p.GameIndex == iId)
+                                     join b in Data_MemberLevelService.N.GetModels() on a.MemberLevelID equals b.ID into b1
+                                     from b in b1.DefaultIfEmpty()
+                                     join c in Dict_BalanceTypeService.N.GetModels() on a.Key1BalanceIndex equals c.ID into c1
+                                     from c in c1.DefaultIfEmpty()
+                                     join d in Dict_BalanceTypeService.N.GetModels() on a.Key2BalanceIndex equals d.ID into d1
+                                     from d in d1.DefaultIfEmpty()
+                                     select new
+                                     {
+                                         MemberLevelID = a.MemberLevelID,
+                                         MemberLevelName = b != null ? b.MemberLevelName : string.Empty,
+                                         Key1BalanceIndex = a.Key1BalanceIndex,
+                                         Key1BalanceName = c != null ? c.TypeName : string.Empty,
+                                         Key1Count = a.Key1Count,
+                                         Key2BalanceIndex = a.Key2BalanceIndex,
+                                         Key2BalanceName = d != null ? d.TypeName : string.Empty,
+                                         Key2Count = a.Key2Count
+                                     };
+                result.Add(new { name = "GamePointRules", value = (object)GamePointRules.ToList(), comment = string.Empty });
+
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);                            
             }
             catch (Exception e)
@@ -335,8 +356,10 @@ namespace XXCloudService.Api.XCCloud
                 var readCat = dicParas.Get("readCat").Toint();
 
                 var freeLotteryRules = dicParas.GetArray("freeLotteryRules");
+                var gamePointRules = dicParas.GetArray("gamePointRules");
 
                 #region 参数验证
+
                 if (string.IsNullOrEmpty(gameName))
                 {
                     errMsg = "游戏机名称GameName不能为空";
@@ -387,6 +410,7 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "中奖概率上限参数highLimit格式不正确";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
                 #endregion
 
                 #region 游戏机参数验证
@@ -578,6 +602,62 @@ namespace XXCloudService.Api.XCCloud
                             if (!Data_GameFreeLotteryRuleService.I.SaveChanges())
                             {
                                 errMsg = "保存会员电子存票赠送设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        //保存会员消费积分设置
+                        if (gamePointRules != null && gamePointRules.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            foreach (var model in Data_Game_PointRuleService.I.GetModels(p => p.GameIndex == iId))
+                            {
+                                Data_Game_PointRuleService.I.DeleteModel(model, true, merchId, merchSecret);
+                            }
+
+                            foreach (IDictionary<string, object> el in gamePointRules)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("memberLevelID").Validintnozero("会员级别ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("state").Validint("是否启用", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("key1BalanceIndex").Validintnozero("按键一获赠类别", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("key1Count").Validintnozero("按键一获赠数量", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                    var memberLevelID = dicPara.Get("memberLevelID").Toint();
+                                    var state = dicPara.Get("state").Toint();
+                                    var key1BalanceIndex = dicPara.Get("key1BalanceIndex").Toint();
+                                    var key1Count = dicPara.Get("key1Count").Toint();
+                                    var key2BalanceIndex = dicPara.Get("key2BalanceIndex").Toint();
+                                    var key2Count = dicPara.Get("key2Count").Toint();
+
+                                    var data_Game_PointRule = new Data_Game_PointRule();
+                                    data_Game_PointRule.MemberLevelID = memberLevelID;
+                                    data_Game_PointRule.State = state;
+                                    data_Game_PointRule.Key1BalanceIndex = key1BalanceIndex;
+                                    data_Game_PointRule.Key1Count = key1Count;
+                                    data_Game_PointRule.Key2BalanceIndex = key2BalanceIndex;
+                                    data_Game_PointRule.Key2Count = key2Count;
+                                    data_Game_PointRule.GameIndex = iId;
+                                    data_Game_PointRule.MerchID = merchId;
+                                    data_Game_PointRule.StoreID = storeId;
+                                    Data_Game_PointRuleService.I.AddModel(data_Game_PointRule, true, merchId, merchSecret);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (!Data_Game_PointRuleService.I.SaveChanges())
+                            {
+                                errMsg = "保存会员消费积分设置失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }

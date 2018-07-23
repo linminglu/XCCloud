@@ -905,6 +905,22 @@
           <Property Name="MemberLevelID" Type="int" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
+        <EntityType Name="Data_Game_PointRule">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="GameIndex" Type="int" />
+          <Property Name="MemberLevelID" Type="int" />
+          <Property Name="State" Type="int" />
+          <Property Name="Key1BalanceIndex" Type="int" />
+          <Property Name="Key1Count" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Key2BalanceIndex" Type="int" />
+          <Property Name="Key2Count" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
+        </EntityType>
         <EntityType Name="Data_Game_StockInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -2329,6 +2345,29 @@
           <Property Name="LastTime" Type="datetime" />
           <Property Name="Balance" Type="int" />
         </EntityType>
+        <EntityType Name="Flw_Good_Buyback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="MemberID" Type="varchar" MaxLength="32" />
+          <Property Name="CardID" Type="varchar" MaxLength="32" />
+          <Property Name="GoodID" Type="int" />
+          <Property Name="GoodCount" Type="int" />
+          <Property Name="BuybackBalanceIndex" Type="int" />
+          <Property Name="BalanceCount" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Balance" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="OpTime" Type="datetime" />
+          <Property Name="OpUserID" Type="int" />
+          <Property Name="ScheduleID" Type="varchar" MaxLength="32" />
+          <Property Name="Workstation" Type="varchar" MaxLength="50" />
+          <Property Name="CheckDate" Type="date" />
+          <Property Name="Note" Type="varchar" MaxLength="200" />
+          <Property Name="SyncFlag" Type="int" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
+        </EntityType>
         <EntityType Name="Flw_GroupVerity">
           <Key>
             <PropertyRef Name="ID" />
@@ -3088,6 +3127,7 @@
           <EntitySet Name="Data_FreeCoinRule" EntityType="Self.Data_FreeCoinRule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_FreeGiveRule" EntityType="Self.Data_FreeGiveRule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_FreeGiveRule_Memberlevel" EntityType="Self.Data_FreeGiveRule_Memberlevel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_Game_PointRule" EntityType="Self.Data_Game_PointRule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Game_StockInfo" EntityType="Self.Data_Game_StockInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GameAPP_MemberRule" EntityType="Self.Data_GameAPP_MemberRule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GameAPP_Rule" EntityType="Self.Data_GameAPP_Rule" Schema="dbo" store:Type="Tables" />
@@ -3168,6 +3208,7 @@
           <EntitySet Name="Flw_Game_Watch" EntityType="Self.Flw_Game_Watch" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Game_WinPrize" EntityType="Self.Flw_Game_WinPrize" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Giveback" EntityType="Self.Flw_Giveback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Flw_Good_Buyback" EntityType="Self.Flw_Good_Buyback" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_GroupVerity" EntityType="Self.Flw_GroupVerity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Jackpot" EntityType="Self.Flw_Jackpot" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Lottery" EntityType="Self.Flw_Lottery" Schema="dbo" store:Type="Tables" />
@@ -3505,6 +3546,8 @@
           <EntitySet Name="Flw_Food_Sale_Pay" EntityType="XCCloudDBModel.Flw_Food_Sale_Pay" />
           <EntitySet Name="Flw_Giveback" EntityType="XCCloudDBModel.Flw_Giveback" />
           <EntitySet Name="Flw_DeviceData" EntityType="XCCloudDBModel.Flw_DeviceData" />
+          <EntitySet Name="Data_Game_PointRule" EntityType="XCCloudDBModel.Data_Game_PointRule" />
+          <EntitySet Name="Flw_Good_Buyback" EntityType="XCCloudDBModel.Flw_Good_Buyback" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -6515,6 +6558,45 @@
           <Property Name="OrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="CheckDate" Type="DateTime" Precision="0" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_Game_PointRule">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GameIndex" Type="Int32" />
+          <Property Name="MemberLevelID" Type="Int32" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="Key1BalanceIndex" Type="Int32" />
+          <Property Name="Key1Count" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Key2BalanceIndex" Type="Int32" />
+          <Property Name="Key2Count" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_Good_Buyback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="CardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="GoodID" Type="Int32" />
+          <Property Name="GoodCount" Type="Int32" />
+          <Property Name="BuybackBalanceIndex" Type="Int32" />
+          <Property Name="BalanceCount" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Balance" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="OpTime" Type="DateTime" Precision="3" />
+          <Property Name="OpUserID" Type="Int32" />
+          <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Workstation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CheckDate" Type="DateTime" Precision="0" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="SyncFlag" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -9705,6 +9787,47 @@
                 <ScalarProperty Name="SiteName" ColumnName="SiteName" />
                 <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Game_PointRule">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Game_PointRule">
+              <MappingFragment StoreEntitySet="Data_Game_PointRule">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Key2Count" ColumnName="Key2Count" />
+                <ScalarProperty Name="Key2BalanceIndex" ColumnName="Key2BalanceIndex" />
+                <ScalarProperty Name="Key1Count" ColumnName="Key1Count" />
+                <ScalarProperty Name="Key1BalanceIndex" ColumnName="Key1BalanceIndex" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
+                <ScalarProperty Name="GameIndex" ColumnName="GameIndex" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Good_Buyback">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Good_Buyback">
+              <MappingFragment StoreEntitySet="Flw_Good_Buyback">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="SyncFlag" ColumnName="SyncFlag" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="Workstation" ColumnName="Workstation" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="OpUserID" ColumnName="OpUserID" />
+                <ScalarProperty Name="OpTime" ColumnName="OpTime" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="BalanceCount" ColumnName="BalanceCount" />
+                <ScalarProperty Name="BuybackBalanceIndex" ColumnName="BuybackBalanceIndex" />
+                <ScalarProperty Name="GoodCount" ColumnName="GoodCount" />
+                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
+                <ScalarProperty Name="CardID" ColumnName="CardID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

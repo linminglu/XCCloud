@@ -80,6 +80,7 @@
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_ExitModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_LevelChangeModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_BalanceChargeModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_MemberLotteryModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberPointModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberExchangeModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberGivebackModel.cs" />
@@ -504,6 +505,9 @@
     <Compile Include="XCCloud\Data_GameInfo_Photo.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_Game_PointRule.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_Game_StockInfo.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -724,6 +728,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Giveback.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Good_Buyback.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_GroupVerity.cs">

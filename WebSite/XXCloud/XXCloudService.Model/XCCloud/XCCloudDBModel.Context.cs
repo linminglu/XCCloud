@@ -203,5 +203,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
         public virtual DbSet<Flw_Giveback> Flw_Giveback { get; set; }
         public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
+        public virtual DbSet<Data_Game_PointRule> Data_Game_PointRule { get; set; }
+        public virtual DbSet<Flw_Good_Buyback> Flw_Good_Buyback { get; set; }
     }
 }
