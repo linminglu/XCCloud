@@ -3776,7 +3776,7 @@ namespace XCCloudService.Api.XCCloud
                         }
                         //判断附属卡是否达到限额
                         //EntityFunctions.DiffDays(DateTime.Now, e.ExpirationDate) 
-                        var consumeCoins = Flw_DeviceDataService.I.GetModels(t => t.StoreID == storeId && t.ICCardID == memberCard.ICCardID && (t.BusinessType == 2 || t.BusinessType == 3) && t.CheckDate == schedule.CheckDate)
+                        var consumeCoins = Flw_DeviceDataService.I.GetModels(t => t.StoreID == storeId && t.CardID == memberCard.ID && (t.BusinessType == 2 || t.BusinessType == 3) && t.CheckDate == schedule.CheckDate)
                                         .Select(t => t.Coin).ToList().Sum().Value;
                         if(consumeCoins + quantity > memberCard.CardLimit)
                         {
@@ -3832,7 +3832,7 @@ namespace XCCloudService.Api.XCCloud
                         fdd.MemberID = memberCard.MemberID;
                         fdd.CreateStoreID = memberCard.StoreID;
                         fdd.MemberName = memberCard.CardName;
-                        fdd.ICCardID = memberCard.ICCardID;
+                        fdd.CardID = memberCard.ID;
                         fdd.BalanceIndex = balanceIndex;
                         fdd.Coin = quantity;
                         fdd.RemainBalance = balance.Balance;

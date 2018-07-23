@@ -30,7 +30,7 @@ namespace XCCloudWebBar.Model.XCCloud
         public string MemberID { get; set; }
         public string CreateStoreID { get; set; }
         public string MemberName { get; set; }
-        public string ICCardID { get; set; }
+        public string CardID { get; set; }
         public Nullable<decimal> Cash { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> Coin { get; set; }

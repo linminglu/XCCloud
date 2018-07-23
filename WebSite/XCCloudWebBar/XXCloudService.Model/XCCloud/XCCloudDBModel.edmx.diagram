@@ -161,7 +161,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.BUF_UserAnalysis" Width="1.5" PointX="0.75" PointY="14.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_BalanceCharge" Width="1.5" PointX="41.375" PointY="35.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_CouponUse" Width="1.5" PointX="19.375" PointY="13.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_DeviceData" Width="1.5" PointX="5.375" PointY="47.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_ExitDetail" Width="1.5" PointX="11.375" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale" Width="1.5" PointX="13.375" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale_Pay" Width="1.5" PointX="27.75" PointY="27.75" />
@@ -179,6 +178,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberLevelFree" Width="1.5" PointX="43.375" PointY="19.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Free" Width="1.5" PointX="45.375" PointY="12.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Exit" Width="1.5" PointX="45.375" PointY="18.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_DeviceData" Width="1.5" PointX="47.375" PointY="12.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

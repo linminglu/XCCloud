@@ -12,20 +12,18 @@
         <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
             <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
                 <div class="layui-form layui-form-pane layui-col-md8 layui-col-sm6 layui-col-xs6 layui-col-lg9" id="form1">
-                    <div class="layui-form-item" id="serchMode">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">会员卡号</label>
-                            <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="needIcCard">
-                            </div>
-                        </div>
-                    </div>
+                    <div class="layui-form-item" id="serchMode"></div>
                 </div>
                 <div class="layui-col-md4 layui-col-sm6 layui-col-xs6 layui-col-lg3">
                     <div class="layui-col-md6 layui-col-sm6 layui-col-xs6 layui-col-lg6" id="form2Box" style="">
                         <div class="layui-form layui-form-pane" id="form2" style="">
                             <div id="tantion" class="layui-form-item">
-
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">会员卡号</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="needIcCard">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -82,21 +80,21 @@
         let layer=layui.layer;
         let table=layui.table;
         let laydate=layui.laydate;
-        // seachModel({
-        //     'elem1': 'tantion',
-        //     'elem2': 'serchMode',
-        //     'pagename': 'memberChangeInfoSearch',
-        //     'processname': 'memberChangeInfoSearch',
-        //     'token': token,
-        //     'form': form,
-        //     'layer': layer,
-        //     'searchBtn': 'searchBtn',
-        //     'reSearchBtn':'reSearchBtn',
-        //     'xc':xc,
-        //     'laydate':laydate,
-        //     'parm':parm,
-        //     'types':''
-        // })
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'memberChangeInfoSearch',
+            'processname': 'memberChangeInfoSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'reSearchBtn':'reSearchBtn',
+            'xc':xc,
+            'laydate':laydate,
+            'parm':parm,
+            'types':''
+        })
     })
 </script>
 <script type="text/html" id="_ICCard"></script>

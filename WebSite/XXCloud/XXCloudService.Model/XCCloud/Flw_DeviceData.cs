@@ -30,7 +30,8 @@ namespace XCCloudService.Model.XCCloud
         public string MemberID { get; set; }
         public string CreateStoreID { get; set; }
         public string MemberName { get; set; }
-        public string ICCardID { get; set; }
+        public string CardID { get; set; }
+        public Nullable<decimal> Cash { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> Coin { get; set; }
         public Nullable<decimal> RemainBalance { get; set; }
@@ -38,6 +39,5 @@ namespace XCCloudService.Model.XCCloud
         public string Note { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public string Verifiction { get; set; }
-        public Nullable<decimal> Cash { get; set; }
     }
 }

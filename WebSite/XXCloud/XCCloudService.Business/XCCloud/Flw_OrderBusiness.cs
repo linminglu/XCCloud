@@ -43,18 +43,34 @@ namespace XCCloudService.Business.XCCloud
                     return false;
                 }
 
+                if(order.OrderStatus == 2 || order.OrderStatus == 3)
+                {
+                    return true;
+                }
+
                 string StoreID = order.StoreID;
                 decimal PayCount = order.PayCount.HasValue ? order.PayCount.Value : 0; //应付金额
                 decimal FreePay = order.FreePay.HasValue ? order.FreePay.Value : 0;   //减免金额
                 decimal payAmount = PayCount - FreePay; //实际应支付金额
 
-                order.PayTime = DateTime.Now;
+                DateTime now = DateTime.Now;
+
+                order.PayTime = now;
                 order.PayType = (int)payment;
                 order.RealPay = amount;
                 order.OrderNumber = channelOrderNo;
 
                 if (payAmount == amount)
                 {
+                    if (order.CreateTime.Value.AddMinutes(1) < now)
+                    {
+                        order.OrderStatus = (int)OrderState.Alarm;
+                        order.Note += " 支付超时";
+                        errMsg = "支付超时";
+                        Flw_OrderService.I.Update(order);
+                        return false;
+                    }
+
                     order.OrderStatus = (int)OrderState.AlreadyPaid;
 
                     decimal? fee = 0;

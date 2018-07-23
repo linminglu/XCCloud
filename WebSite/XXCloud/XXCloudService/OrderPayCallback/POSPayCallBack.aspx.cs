@@ -117,13 +117,19 @@ namespace XXCloudService.PayChannel
                         }
 
                         string errMsg = string.Empty;
-                        //云平台订单处理                        
-                        orderBusiness.OrderPay(out_trade_no, payAmount, callback.OfficeId, SelttleType.StarPos, payment, out errMsg);
 
-                        OrderCacheModel orderCache = RedisCacheHelper.HashGet<OrderCacheModel>(CommonConfig.UdpOrderSNCache, out_trade_no);
-                        if (orderCache != null)
+                        Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == out_trade_no).FirstOrDefault();
+                        if (order != null && order.OrderStatus == 1)
                         {
-                            XCCloudService.SocketService.UDP.Server.AskScanPayResult("1", errMsg, orderCache.SN);
+                            //云平台订单处理                        
+                            orderBusiness.OrderPay(out_trade_no, payAmount, callback.OfficeId, SelttleType.StarPos, payment, out errMsg);
+
+                            OrderCacheModel orderCache = RedisCacheHelper.HashGet<OrderCacheModel>(CommonConfig.UdpOrderSNCache, out_trade_no);
+                            if (orderCache != null)
+                            {
+                                XCCloudService.SocketService.UDP.Server.AskScanPayResult("1", errMsg, orderCache.SN);
+                                RedisCacheHelper.HashDelete(CommonConfig.UdpOrderSNCache, out_trade_no);
+                            }
                         }
                     }
                 }

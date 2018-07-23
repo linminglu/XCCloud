@@ -189,7 +189,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
         public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
         public virtual DbSet<Flw_CouponUse> Flw_CouponUse { get; set; }
-        public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
         public virtual DbSet<Flw_Food_Exit_Pay> Flw_Food_Exit_Pay { get; set; }
         public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
@@ -203,5 +202,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
         public virtual DbSet<Flw_Giveback> Flw_Giveback { get; set; }
+        public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
     }
 }

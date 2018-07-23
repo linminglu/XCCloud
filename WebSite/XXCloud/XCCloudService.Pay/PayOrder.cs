@@ -84,7 +84,7 @@ namespace XCCloudService.Pay
 
             if(store.SelttleType == null)
             {
-                errMsg = "门店结算类型为空";
+                errMsg = "门店支付结算类型为空";
                 return false;
             }
 
@@ -190,13 +190,13 @@ namespace XCCloudService.Pay
                     if (result != null)
                     {
                         //SUCCESS
-                        //string out_trade_no = result.tradeNo;
-                        //string channelOrderNo = result.orderNo;
-                        //decimal total_fee = Convert.ToDecimal(result.total_amount);
-                        //decimal payAmount = total_fee / 100;
+                        string out_trade_no = result.tradeNo;
+                        string channelOrderNo = result.orderNo;
+                        decimal total_fee = Convert.ToDecimal(result.total_amount);
+                        decimal payAmount = total_fee / 100;
 
-                        ////支付成功后的处理
-                        //bool orderRet = orderBusiness.OrderPay(out_trade_no, payAmount, channelOrderNo, selttleType, payChannel, out errMsg);
+                        //支付成功后的处理
+                        bool orderRet = orderBusiness.OrderPay(out_trade_no, payAmount, channelOrderNo, selttleType, payChannel, out errMsg);
 
                         return true;
                     }

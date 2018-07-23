@@ -1177,7 +1177,7 @@ namespace XXCloudService.Api.XCCloudH5
                     fdd.MemberID = memberTokenModel.MemberId;
                     fdd.CreateStoreID = memberTokenModel.CurrentCardInfo.StoreId;
                     fdd.MemberName = memberTokenModel.Info == null ? "散客" : memberTokenModel.Info.nickname ?? "散客";
-                    fdd.ICCardID = memberTokenModel.CurrentCardInfo.ICCardId;
+                    fdd.CardID = memberTokenModel.CurrentCardInfo.CardId;
                     fdd.BalanceIndex = coinRule.PushBalanceIndex1;
                     fdd.Coin = coinRule.PushCoin1;
                     fdd.RemainBalance = remainBalnce1 + remainBalnceFree1;
@@ -1238,7 +1238,7 @@ namespace XXCloudService.Api.XCCloudH5
                         fdd.MemberID = memberTokenModel.MemberId;
                         fdd.CreateStoreID = memberTokenModel.CurrentCardInfo.StoreId;
                         fdd.MemberName = memberTokenModel.Info == null ? "散客" : memberTokenModel.Info.nickname ?? "散客";
-                        fdd.ICCardID = memberTokenModel.CurrentCardInfo.ICCardId;
+                        fdd.CardID = memberTokenModel.CurrentCardInfo.CardId;
                         fdd.BalanceIndex = coinRule.PushBalanceIndex1;
                         fdd.Coin = coinRule.PushCoin2;
                         fdd.RemainBalance = remainBalnce2 + remainBalnceFree2; ;

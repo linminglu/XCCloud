@@ -181,7 +181,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<BUF_UserAnalysis> BUF_UserAnalysis { get; set; }
         public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
         public virtual DbSet<Flw_CouponUse> Flw_CouponUse { get; set; }
-        public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
         public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
@@ -199,5 +198,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
         public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
         public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
+        public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
     }
 }

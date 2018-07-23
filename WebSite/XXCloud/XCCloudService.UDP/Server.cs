@@ -300,7 +300,11 @@ namespace XCCloudService.SocketService.UDP
                                         PayOrderHelper payHelper = new PayOrderHelper();
                                         string errMsg = string.Empty;
                                         bool ret = payHelper.BarcodePay(scanpay.OrderID, scanpay.AuthCode, out errMsg);
-                                        if(!ret)
+                                        if(ret)
+                                        {
+                                            AskScanPayResult("1", errMsg, sn);
+                                        }
+                                        else
                                         {
                                             AskScanPayResult("0", errMsg, sn);
                                         }
