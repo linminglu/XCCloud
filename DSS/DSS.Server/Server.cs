@@ -555,6 +555,28 @@ namespace DSS.Server
                 model.Update(d, "where sn='" + sn + "' and storeid='" + storeID + "'");
             }
         }
+
+        public void CloudDataAsync(string merchID, string secret, string tableName, string idValue, int action, Action<bool> callback, bool writeBuf = true, string sn = "")
+        {
+            Func<bool> func = () =>
+            {
+                try
+                {
+                    CloudDataSync(merchID, secret, tableName, idValue, action, writeBuf, sn);
+                    return true;
+                }
+                catch 
+                {
+                    return false;
+                }                
+            };//声明异步方法实现方式
+            func.BeginInvoke((ar) =>
+            {
+                var result = func.EndInvoke(ar);//调用完毕执行的结果 
+                callback.Invoke(result);//委托执行，回传结果值
+            }, null);
+        }
+
         /// <summary>
         /// 云端数据变更时调用，向门店发送同步
         /// </summary>

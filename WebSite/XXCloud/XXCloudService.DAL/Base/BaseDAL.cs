@@ -150,6 +150,24 @@ namespace XCCloudService.DAL.Base
                 LogHelper.SaveLog("SyncServer数据同步失败:" + e.Message);
             }
         }
+
+        /// <summary>
+        /// 数据同步服务
+        /// </summary>
+        /// <param name="merchId"></param>
+        /// <param name="merchSecret"></param>
+        /// <param name="action">0 新增 1 修改 2 删除</param>
+        protected void cloudAsync(string merchId, string merchSecret, string tableName, string idValue, int action)
+        {
+            try
+            {
+                XCCloudService.SyncService.UDP.Server.CloudDataAsync(merchId, merchSecret, tableName, idValue, action);
+            }
+            catch (Exception e)
+            {
+                LogHelper.SaveLog("SyncServer数据同步失败:" + e.Message);
+            }
+        }
         
         public bool Add(T t, bool syncData = false, string merchId = "", string merchSecret = "")
         {
@@ -161,7 +179,7 @@ namespace XCCloudService.DAL.Base
             if (result && syncData)
             {
                 if (merchId != "")
-                    cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 0);
+                    cloudAsync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 0);
             }
 
             return result;
@@ -179,7 +197,7 @@ namespace XCCloudService.DAL.Base
             if (result && syncData)
             {
                 if (merchId != "")
-                    cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 1);
+                    cloudAsync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 1);
             }
 
             return result;
@@ -196,7 +214,7 @@ namespace XCCloudService.DAL.Base
             if (result && syncData)
             {
                 if (merchId != "")
-                    cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 2);
+                    cloudAsync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 2);
             }
 
             return result;
@@ -214,7 +232,7 @@ namespace XCCloudService.DAL.Base
                 if (result)
                 {
                     if (merchId != "")
-                        cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 0);
+                        cloudAsync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 0);
                 }                
             }
         }
@@ -234,7 +252,7 @@ namespace XCCloudService.DAL.Base
                 if (result)
                 {
                     if (merchId != "")
-                        cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 1);
+                        cloudAsync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 1);
                 }
             }
         }
@@ -254,7 +272,7 @@ namespace XCCloudService.DAL.Base
                 if (result)
                 {
                     if (merchId != "")
-                        cloudSync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 2);
+                        cloudAsync(merchId, merchSecret, t.GetType().Name, Convert.ToString(t.GetPropertyValue("ID")), 2);
                 }
             }
         }

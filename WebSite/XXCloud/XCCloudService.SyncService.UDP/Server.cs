@@ -27,6 +27,12 @@ namespace XCCloudService.SyncService.UDP
             }
         }
 
+        public static void CloudDataAsync(string merchID, string secret, string tableName, string idValue, int action, bool writeBuf = true)
+        {
+            if (server != null)
+                server.CloudDataAsync(merchID, secret, tableName, idValue, action, (r) => { if (!r) LogHelper.SaveLog("SyncServer数据同步失败"); }, writeBuf);
+        }
+
         public static void CloudDataSync(string merchID, string secret, string tableName, string idValue, int action, bool writeBuf = true)
         {
             if (server != null)

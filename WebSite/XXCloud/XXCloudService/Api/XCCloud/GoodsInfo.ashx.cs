@@ -86,7 +86,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_MerchantInfo m ON a.MerchID = m.ID
                                 LEFT JOIN Dict_System c ON a.GoodType = c.ID
                                 WHERE
-                                	a.Status = 1AND a.AllowStorage = 1 ";
+                                	a.Status = 1 ";
                 sql = sql + " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql = sql + " AND a.StoreID='" + storeId + "'";

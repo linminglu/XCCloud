@@ -113,8 +113,7 @@
                     <div class="layui-card layui-col-md6">
                         <div class="layui-card-body">
                             <div id="test2">
-                                <div id="imgBtn" style="width: 80px;display: inline-block"><i class="layui-icon"
-                                                                                              style="font-size: 60px;color: #9F9F9F">&#xe654;</i>
+                                <div id="imgBtn" style="width: 80px;display: inline-block"><i class="layui-icon"style="font-size: 60px;color: #9F9F9F">&#xe654;</i>
                                 </div>
                                 <div class="layui-upload-list" id="demo2" style="margin: 0;display: inline-block">
                                     <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required"
@@ -448,6 +447,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title">会员余额互转规则</h2>
                 <div class="layui-colla-content">
@@ -485,6 +485,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title">其他规则</h2>
                 <div class="layui-colla-content">
@@ -577,6 +578,131 @@
                     </div>
                 </div>
             </div>
+
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">积分规则</h2>
+                <div class="layui-colla-content">
+                    <div class="layui-form-item goodIsAll">
+                        <div class="layui-inline goodIsAll">
+                            <label class="layui-form-label ">允许退卡</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="AllCreatePoint"
+                                       lay-filter="AllCreatePoint">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="padding: 0 8px;white-space: normal">单笔消费现金部分每</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="CashBase" name="CashBase">
+                                <span class="layui-unit">元</span>
+                            </div>
+                            <div class="layui-form-mid">获取</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="PointGet" name="PointGet">
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name=PointBalanceIndex id="PointBalanceIndex" lay-filter="PointBalanceIndex"></select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">签到赠送规则</h2>
+                <div class="layui-colla-content">
+                    <div class="layui-form-item goodIsAll">
+                        <div class="layui-inline goodIsAll">
+                            <label class="layui-form-label ">是否启用</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="是|否" id="bookstate"
+                                       lay-filter="bookstate">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input type="checkbox" title="吧台" id="allowBar" lay-skin="primary" lay-filter="allowBar" name="allowBar" >
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" title="微信" id="allowWexin" lay-skin="primary" lay-filter="allowWexin" name="allowWexin" >
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" title="自助机" id="allowATM" lay-skin="primary" lay-filter="allowATM" name="allowATM" >
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" title="机台刷卡" id="allowGame" lay-skin="primary" lay-filter="allowGame" name="allowGame" >
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-form-item goodIsAll">
+                        <div class="layui-inline">
+                            <label class="layui-form-label " style="padding: 0 8px;white-space: normal">连续签到第1天至</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="milepostDays">
+                            </div>
+                            <div class="layui-form-mid">天赠送</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="dayGetCount">
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="" id="dayGetBalanceIndex" lay-filter="dayGetBalanceIndex">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label " style="padding: 0 8px;white-space: normal">且第10天可领取</label>
+                            <div class="layui-input-inline">
+                                <select name="milepostGetType" id="milepostGetType" lay-filter="milepostGetType">
+                                    <option value="">-请选择-</option>
+                                    <option value="0">余额赠送</option>
+                                    <option value="1">兑换券</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="count">
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="" id="balanceIndex" lay-filter="balanceIndex"></select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="" id="couponId" lay-filter="couponId"></select>
+                            </div>
+                        </div>
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label ">连续签到第11天至</label>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<input type="text" class="layui-input">-->
+                            <!--</div>-->
+                            <!--<div class="layui-form-mid">天赠送</div>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<input type="text" class="layui-input">-->
+                            <!--</div>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<select name="" id=""></select>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label ">且第20天可领取</label>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<select name="" id=""></select>-->
+                            <!--</div>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<input type="text" class="layui-input">-->
+                            <!--</div>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<select name="" id=""></select>-->
+                            <!--</div>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<select name="" id=""></select>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
         </div>
         <div style="text-align: right;padding-right: 80px;margin: 15px 0">
             <button type="button" class="layui-btn layui-btn-normal cancleBtn"><i class="layui-icon">&#xe603;</i>取消
@@ -662,6 +788,12 @@
     let TransferOutLevelID = '';
     let AllowTransferIn = 0;
     let TransferInLevelID = '';
+    //积分规则
+    let AllCreatePoint=0;
+    let PointBalanceIndex='';
+    //赠送规则
+    let bookState=0; let allowBar=0;let allowWexin=0;let allowATM=0;let allowGame=0;
+    let dayGetBalanceIndex='';let milepostGetType='';let balanceIndex='';let couponId='';
     //给下拉框设置option
     let memberLevelList = [];
     let getBalanceTypeDic = (token, layer, form) => {
@@ -682,8 +814,9 @@
                     $('#sourceBalanceType').html('<option>-请选择-</option>');
                     $('#targetBalanceIndex').html('<option>-请选择-</option>');
                     $('#freeBalanceIndex').html('<option>-请选择-</option>');
-                    // $('#TransferOutLevelID').html('<option>-请选择-</option>');
-                    // $('#TransferInLevelID').html('<option>-请选择-</option>');
+                    $('#PointBalanceIndex').html('<option>-请选择-</option>');
+                    $('#balanceIndex').html('<option>-请选择-</option>');
+                    $('#dayGetBalanceIndex').html('<option>-请选择-</option>');
 
                     for (let i in arr) {
                         $('#freeRates').append('<option value="' + arr[i].ID + '" title="' + arr.Unit + '">' + arr[i].TypeName + '</option>');
@@ -691,8 +824,9 @@
                         $('#sourceBalanceType').append('<option value="' + arr[i].ID + '" title="' + arr[i].Unit + '">' + arr[i].TypeName + '</option>');
                         $('#targetBalanceIndex').append('<option value="' + arr[i].ID + '" title="' + arr[i].Unit + '">' + arr[i].TypeName + '</option>');
                         $('#freeBalanceIndex').append('<option value="' + arr[i].ID + '" title="' + arr[i].Unit + '">' + arr[i].TypeName + '</option>');
-                        // $('#TransferOutLevelID').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
-                        // $('#TransferInLevelID').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#PointBalanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#balanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#dayGetBalanceIndex').html('<option>-请选择-</option>');
                     }
                     form.render('select');
                 } else {
@@ -1423,6 +1557,44 @@
             TransferInLevelID = data.value == '-请选择-' ? '' : data.value;
         });
 
+        form.on('switch(AllCreatePoint)', function (data) {
+            data.elem.checked == true ? AllCreatePoint = 1 : AllCreatePoint = 0;
+        });
+        form.on('select(PointBalanceIndex)', function (data) {
+            PointBalanceIndex = data.value == '-请选择-' ? '' : data.value;
+        });
+
+        form.on('switch(bookstate)', function (data) {
+            data.elem.checked == true ? bookstate = 1 : bookstate = 0;
+        });
+        form.on('checkbox(allowBar)', function(data){
+            data.elem.checked?allowBar=1:allowBar=0
+        })
+        form.on('checkbox(allowWexin)', function(data){
+            data.elem.checked?allowWexin=1:allowWexin=0
+        })
+        form.on('checkbox(allowATM)', function(data){
+            data.elem.checked?allowATM=1:allowATM=0
+        })
+        form.on('checkbox(allowGame)', function(data){
+            data.elem.checked?allowGame=1:allowGame=0
+        })
+        form.on('select(dayGetBalanceIndex)', function (data) {
+            dayGetBalanceIndex = data.value == '-请选择-' ? '' : data.value;
+        });
+        form.on('select(milepostGetType)', function (data) {
+            milepostGetType = data.value == '-请选择-' ? '' : data.value;
+
+
+
+
+        });
+        form.on('select(balanceIndex)', function (data) {
+            balanceIndex = data.value == '-请选择-' ? '' : data.value;
+        });
+        form.on('select(couponId)', function (data) {
+            couponId = data.value == '-请选择-' ? '' : data.value;
+        });
     });
     var saveML = (layer, token) => {
         let _memberLevelBalance = [];
@@ -1537,6 +1709,27 @@
             'memberLevelFrees': _memberLevelFrees,
             'memberLevelBalance': _memberLevelBalance,
             'memberLevelBalanceCharge': _memberLevelBalanceCharge,
+
+            AllCreatePoint:AllCreatePoint,
+            CashBase:CashBase,
+            PointBalanceIndex:PointBalanceIndex,
+            PointGet:PointGet,
+
+            memberLevelBookRule:[{
+                state:bookState,
+                allowBar:allowBar,
+                allowWexin:allowWexin,
+                allowATM:allowATM,
+                allowGame:allowGame,
+                milepostDays:$('#milepostDays').val(),
+                dayGetCount:$('#dayGetCount').val(),
+                dayGetBalanceIndex:dayGetBalanceIndex,
+                milepostGetType:milepostGetType,
+                balanceIndex:milepostGetType==0?balanceIndex:'',
+        couponId:milepostGetType==1?couponId:'',
+                count:milepostGetType==0?count:'',
+
+            }],
             // memberLevelBalanceCharge
             'userToken': token,
             'signkey': '1f626576304bf5d95b72ece2222e42c3'
