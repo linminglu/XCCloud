@@ -143,7 +143,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Digite_Coin_Detail> Flw_Digite_Coin_Detail { get; set; }
         public virtual DbSet<Flw_DiscountRule> Flw_DiscountRule { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
-        public virtual DbSet<Flw_Lottery> Flw_Lottery { get; set; }
         public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
         public virtual DbSet<Flw_MemberLevelFree_Detail> Flw_MemberLevelFree_Detail { get; set; }
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
@@ -205,5 +204,8 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
         public virtual DbSet<Data_Game_PointRule> Data_Game_PointRule { get; set; }
         public virtual DbSet<Flw_Good_Buyback> Flw_Good_Buyback { get; set; }
+        public virtual DbSet<Flw_GameAPP_MemberRule> Flw_GameAPP_MemberRule { get; set; }
+        public virtual DbSet<Flw_GameAPP_Rule_Entry> Flw_GameAPP_Rule_Entry { get; set; }
+        public virtual DbSet<Flw_Lottery> Flw_Lottery { get; set; }
     }
 }
