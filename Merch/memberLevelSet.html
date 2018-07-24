@@ -1406,30 +1406,88 @@
                         console.log(data)
                         if (data.result_code == 1) {
                             let arr = data.result_data;
-
-                            if (arr.length == 1) {
-                                $('.bookList select[name="sourceBalanceType"]').val(arr[0].SourceBalanceIndex);
-                                $('.bookList input[name="sourceCount"]').val(arr[0].SourceCount);
-                                $('.bookList select[name="targetBalanceIndex"]').val(arr[0].TargetBalanceIndex);
-                                $('.bookList input[name="targetCount"]').val(arr[0].TargetCount);
-
-                            } else if (arr.length > 1) {
-                                for (let i = 1; i < arr.length; i++) {
-                                    $('.memBalanceBox').append($('body').find($('.memBalance')).eq(0).clone())
+                            if(arr.length>0){
+                                if(arr[0].State==1){
+                                    $('#bookstate').attr('checked',true)
+                                }else if(arr[0].State==0){
+                                    $('#bookstate').attr('checked',false)
                                 }
-                                for (let i = 0; i < arr.length; i++) {
-                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('select[name="sourceBalanceType"]').val(arr[i].SourceBalanceIndex);
-                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('input[name="sourceCount"]').val(arr[i].SourceCount);
-                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('select[name="targetBalanceIndex"]').val(arr[i].TargetBalanceIndex);
-                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('input[name="targetCount"]').val(arr[i].TargetCount);
+                                if(arr[0].AllowBar==1){
+                                    $('#allowBar').attr('checked',true)
+                                }else if(arr[0].AllowBar==0){
+                                    $('#allowBar').attr('checked',false)
                                 }
+                                if(arr[0].AllowWexin==1){
+                                    $('#allowWexin').attr('checked',true)
+                                }else if(arr[0].AllowWexin==0){
+                                    $('#allowWexin').attr('checked',false)
+                                }
+                                if(arr[0].AllowGame==1){
+                                    $('#allowGame').attr('checked',true)
+                                }else if(arr[0].AllowGame==0){
+                                    $('#allowGame').attr('checked',false)
+                                }
+                                if(arr[0].AllowATM==1){
+                                    $('#allowATM').attr('checked',true)
+                                }else if(arr[0].AllowATM==0){
+                                    $('#allowATM').attr('checked',false)
+                                }
+                                bookState=arr[0].State;
+                                allowBar=arr[0].AllowBar;
+                                allowATM=arr[0].AllowATM;
+                                allowGame=arr[0].AllowGame;
+                                allowWexin=arr[0].AllowWexin;
+
+                                if (arr.length == 1) {
+                                    $('.bookList select[name="dayGetBalanceIndex"]').val(arr[0].DayGetBalanceIndex);
+                                    $('.bookList input[name="dayGetCount"]').val(arr[0].DayGetCount);
+                                    $('.bookList input[name="milepostDays"]').val(arr[0].MilepostDays);
+                                    $('.bookList select[name="milepostGetType"]').val(arr[0].MilepostGetType);
+                                    $('.bookList select[name="couponId"]').val(arr[0].CouponId==null?'':arr[0].CouponId);
+                                    $('.bookList select[name="balanceIndex"]').val(arr[0].BalanceIndex==null?'':arr[0].BalanceIndex);
+                                    $('.bookList input[name="count"]').val(arr[0].Count==null?'':arr[0].Count);
+
+                                    if(arr[0].MilepostGetType==1){
+                                        $('.bookList select[name="couponId"]').parent().addClass('layui-hide')
+                                        $('.bookList select[name="balanceIndex"]').parent().removeClass('layui-hide')
+                                    }else {
+                                        $('.bookList select[name="balanceIndex"]').parent().removeClass('layui-hide')
+                                        $('.bookList select[name="couponId"]').parent().addClass('layui-hide')
+                                    }
+
+                                } else if (arr.length > 1) {
+                                    for (let i = 1; i < arr.length; i++) {
+                                        $('.bookBox').append($('body').find($('.bookList')).eq(0).clone())
+                                    }
+                                    for (let i = 1; i < arr.length; i++) {
+                                        let num=parseInt(arr[i].MilepostDays)+1;
+                                        $('body').find($('.bookList')).eq(i).find('label').text('连续签到第'+num+'天至')
+                                    }
+                                    for (let i = 0; i < arr.length; i++) {
+                                        $('.bookBox').find($('.bookList')).eq(i).find('select[name="dayGetBalanceIndex"]').val(arr[i].DayGetBalanceIndex);
+                                        $('.bookBox').find($('.bookList')).eq(i).find('input[name="dayGetCount"]').val(arr[i].DayGetCount);
+                                        $('.bookBox').find($('.bookList')).eq(i).find('select[name="milepostGetType"]').val(arr[i].MilepostGetType);
+                                        $('.bookBox').find($('.bookList')).eq(i).find('input[name="milepostDays"]').val(arr[i].MilepostDays);
+                                        $('.bookBox').find($('.bookList')).eq(i).find('select[name="couponId"]').val(arr[i].CouponId==null?'':arr[i].CouponId);
+                                        $('.bookBox').find($('.bookList')).eq(i).find('select[name="balanceIndex"]').val(arr[i].BalanceIndex==null?'':arr[i].BalanceIndex);
+                                        $('.bookBox').find($('.bookList')).eq(i).find('input[name="count"]').val(arr[i].Count==null?'':arr[i].Count);
+
+                                        if(arr[i].MilepostGetType==1){
+                                            $('.bookBox').find($('.bookList')).eq(i).find('select[name="couponId"]').parent().addClass('layui-hide')
+                                            $('.bookBox').find($('.bookList')).eq(i).find('select[name="balanceIndex"]').parent().removeClass('layui-hide')
+                                        }else {
+                                            $('.bookBox').find($('.bookList')).eq(i).find('select[name="balanceIndex"]').parent().removeClass('layui-hide')
+                                            $('.bookBox').find($('.bookList')).eq(i).find('select[name="couponId"]').parent().addClass('layui-hide')
+                                        }
+                                    }
+                                }
+                                form.render()
                             }
                         } else {
                             layer.msg(data.result_msg || data.return_msg)
                         }
                     }
                 });
-
             } else {
                 layer.msg('请且勾选一条数据！')
             }
