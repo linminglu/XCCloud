@@ -787,7 +787,7 @@ namespace XXCloudService.Api.XCCloud
                         //保存适用门店
                         foreach (var model in Data_Food_StoreListService.I.GetModels(p => p.FoodID == foodId))
                         {
-                            Data_Food_StoreListService.I.DeleteModel(model);
+                            Data_Food_StoreListService.I.DeleteModel(model, true, merchId, merchSecret);
                         }
 
                         if (!string.IsNullOrEmpty(storeIds))
@@ -799,8 +799,8 @@ namespace XXCloudService.Api.XCCloud
 
                                 var model = new Data_Food_StoreList();
                                 model.FoodID = foodId;
-                                model.StoreID = storeId;                                
-                                Data_Food_StoreListService.I.AddModel(model);
+                                model.StoreID = storeId;
+                                Data_Food_StoreListService.I.AddModel(model, true, merchId, merchSecret);
                             }
                         }
 
@@ -816,7 +816,7 @@ namespace XXCloudService.Api.XCCloud
                             foreach (var model in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != foodId && p.AllowQuickFood == 1))
                             {
                                 model.AllowQuickFood = 0;
-                                Data_FoodInfoService.I.UpdateModel(model);
+                                Data_FoodInfoService.I.UpdateModel(model, true, merchId, merchSecret);
                             }
 
                             if (!Data_FoodInfoService.I.SaveChanges())
