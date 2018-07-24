@@ -1024,6 +1024,8 @@ namespace XCCloudService.Api.XCCloud
                                         data_MemberLevel_BookRule.BalanceIndex = balanceIndex;
                                         data_MemberLevel_BookRule.CouponCode = couponCode;
                                         data_MemberLevel_BookRule.Count = count;
+                                        data_MemberLevel_BookRule.MerchID = merchId;
+                                        data_MemberLevel_BookRule.MemberLevelID = iMemberLevelID;
                                         data_MemberLevel_BookRuleService.AddModel(data_MemberLevel_BookRule, true, merchId, merchSecret);
                                     }
                                     else

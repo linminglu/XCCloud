@@ -586,7 +586,7 @@
                         <div class="layui-inline goodIsAll">
                             <label class="layui-form-label ">允许退卡</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="AllCreatePoint"
+                                <input type="checkbox" name="AllCreatePoint" lay-skin="switch" lay-text="启用|禁用" id="AllCreatePoint"
                                        lay-filter="AllCreatePoint">
                             </div>
                         </div>
@@ -622,84 +622,60 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline" style="width: 140px">
                                 <input type="checkbox" title="吧台" id="allowBar" lay-skin="primary" lay-filter="allowBar" name="allowBar" >
                             </div>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline" style="width: 140px">
                                 <input type="checkbox" title="微信" id="allowWexin" lay-skin="primary" lay-filter="allowWexin" name="allowWexin" >
                             </div>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline" style="width: 140px">
                                 <input type="checkbox" title="自助机" id="allowATM" lay-skin="primary" lay-filter="allowATM" name="allowATM" >
                             </div>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline" style="width: 140px">
                                 <input type="checkbox" title="机台刷卡" id="allowGame" lay-skin="primary" lay-filter="allowGame" name="allowGame" >
                             </div>
                         </div>
 
                     </div>
-                    <div class="layui-form-item goodIsAll">
-                        <div class="layui-inline">
-                            <label class="layui-form-label " style="padding: 0 8px;white-space: normal">连续签到第1天至</label>
-                            <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="milepostDays">
+                    <div class="layui-form-item goodIsAll bookBox">
+                        <div class="layui-inline bookList">
+                            <label class="layui-form-label" style="padding: 0 8px;white-space: normal">连续签到第1天至</label>
+                            <div class="layui-input-inline" style="width: 80px">
+                                <input type="text" class="layui-input" name="milepostDays">
                             </div>
                             <div class="layui-form-mid">天赠送</div>
-                            <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="dayGetCount">
+                            <div class="layui-input-inline" style="width: 80px">
+                                <input type="text" class="layui-input" name="dayGetCount">
                             </div>
-                            <div class="layui-input-inline">
-                                <select name="" id="dayGetBalanceIndex" lay-filter="dayGetBalanceIndex">
+                            <div class="layui-input-inline" style="width: 100px">
+                                <select name="dayGetBalanceIndex" id="dayGetBalanceIndex" style="width: 100px;height: 38px" lay-ignore="">
 
                                 </select>
                             </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label " style="padding: 0 8px;white-space: normal">且第10天可领取</label>
-                            <div class="layui-input-inline">
-                                <select name="milepostGetType" id="milepostGetType" lay-filter="milepostGetType">
+                            <div class="layui-form-mid">且最后一天可领取</div>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <select name="milepostGetType" id="milepostGetType" style="width: 100px;height: 38px" lay-ignore="">
                                     <option value="">-请选择-</option>
                                     <option value="0">余额赠送</option>
                                     <option value="1">兑换券</option>
                                 </select>
                             </div>
-                            <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="count">
+                            <div class="layui-input-inline"style="width: 80px" >
+                                <input type="text" class="layui-input" name="count">
                             </div>
-                            <div class="layui-input-inline">
-                                <select name="" id="balanceIndex" lay-filter="balanceIndex"></select>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <select name="balanceIndex" id="balanceIndex" style="width: 100px;height: 38px" lay-ignore=""></select>
                             </div>
-                            <div class="layui-input-inline">
-                                <select name="" id="couponId" lay-filter="couponId"></select>
+                            <div class="layui-input-inline layui-hide" style="width: 100px">
+                                <select name="" id="couponId" style="width: 100px;height: 38px" lay-ignore=""></select>
+                            </div>
+                            <div class="layui-form-mid" style="padding: 4px 0 0 0!important;">
+                                <button type="button" class="layui-btn layui-btn-sm layui-btn-danger bookDelBtn">删除</button>
                             </div>
                         </div>
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label ">连续签到第11天至</label>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<input type="text" class="layui-input">-->
-                            <!--</div>-->
-                            <!--<div class="layui-form-mid">天赠送</div>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<input type="text" class="layui-input">-->
-                            <!--</div>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<select name="" id=""></select>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label ">且第20天可领取</label>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<select name="" id=""></select>-->
-                            <!--</div>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<input type="text" class="layui-input">-->
-                            <!--</div>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<select name="" id=""></select>-->
-                            <!--</div>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<select name="" id=""></select>-->
-                            <!--</div>-->
-                        <!--</div>-->
+                    </div>
+                    <div style="border: 1px solid #eee;padding: 10px">
+                        <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="addBook">增加</button>
                     </div>
                 </div>
             </div>
@@ -718,7 +694,7 @@
 <div id="bindFood" style="display: none;padding: 15px">
     <form action="" class="layui-form">
         <div class="layui-form-item">
-            <label for="" class="layui-form-label">选择套餐</label>
+            <label class="layui-form-label">选择套餐</label>
             <div class="layui-input-block" id="foodListBox">
 
             </div>
@@ -826,7 +802,7 @@
                         $('#freeBalanceIndex').append('<option value="' + arr[i].ID + '" title="' + arr[i].Unit + '">' + arr[i].TypeName + '</option>');
                         $('#PointBalanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                         $('#balanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
-                        $('#dayGetBalanceIndex').html('<option>-请选择-</option>');
+                        $('#dayGetBalanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                     }
                     form.render('select');
                 } else {
@@ -834,6 +810,30 @@
                 }
             }
         });
+    };
+    let getBalanceTypeDicByHk = (token, layer, form) => {
+        let _obj = {'hkType': '3', 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type: 'post',
+            url: '/XCCloud/BalanceType?action=GetBalanceTypeDic',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data)
+                if (data.result_code == 1) {
+                    let arr = data.result_data;
+                    $('#PointBalanceIndex').html('<option>-请选择-</option>');
+                    for (let i in arr) {
+                        $('#PointBalanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg || data.return_msg);
+                }
+            }
+        })
     };
 
     function setTransferLevel(arr, form, id, name) {
@@ -876,6 +876,7 @@
         })
 
         getBalanceTypeDic(token, layer, form);
+        getBalanceTypeDicByHk(token, layer, form);
         xc.setSelect('生日送币方式', 'birthdayFree');
         let _objmem = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
         let parseJsonMem = JSON.stringify(_objmem);
@@ -918,6 +919,8 @@
             if ($('.freeLast').find($('.reduceBox')).length > 1) {
                 $('.freeLast').find($('.reduceBox')).last().remove();
             } else {
+                $('.reduceBox').find('input').val('');
+                $('.reduceBox').find('select').val('');
             }
         });
 
@@ -928,8 +931,32 @@
             if ($('.memBalanceBox').find($('.memBalance')).length > 1) {
                 $('.memBalanceBox').find($('.memBalance')).last().remove();
             } else {
+                $('.memBalance').find('input').val('');
+                $('.memBalance').find('select').val('');
             }
         });
+
+        $('#addBook').click(function () {
+            let len=$('body').find($('.bookList')).length;
+            if($('body').find($('.bookList')).eq(len-1).find('input[name="milepostDays"]').val()!=''){
+                $('.bookBox').append($('body').find($('.bookList')).eq(0).clone());
+                let len1=$('body').find($('.bookList')).length;
+                let num=parseInt($('body').find($('.bookList')).eq(len1-2).find('input[name="milepostDays"]').val())+1;
+                $('body').find($('.bookList')).eq(len1-1).find('label').text('连续签到第'+num+'天至');
+                $('body').find($('.bookList')).eq(len1-1) .find('input').val('');
+                $('body').find($('.bookList')).eq(len1-1) .find('select').val('');
+            }
+
+        });
+        $('.bookBox').on('click','.bookDelBtn',function () {
+            if ($('.bookBox').find($('.bookList')).length > 1) {
+               $(this).parents('.layui-inline').remove();
+            } else {
+                $(this).parents('.layui-inline').find('input').val('');
+                $(this).parents('.layui-inline').find('select').val('');
+            }
+        });
+
         //新增按钮
         $('#add').on('click', () => {
             $('#resetBtn').trigger('click');
@@ -1105,7 +1132,7 @@
                     data: {parasJson: parseJson},
                     success: (data) => {
                         data = JSON.parse(data);
-                        // console.log(data)
+                        console.log(data)
                         if (data.result_code == 1) {
                             getMemberFreeRule(memberLevelID, table, layer, form);
                             let arr = data.result_data;
@@ -1214,7 +1241,14 @@
                                 // 'TransferOutLevelID': arr.TransferOutLevelID,
                                 'AllowTransferIn': arr.AllowTransferIn == 1 ? true : false,
                                 // 'TransferInLevelID': arr.TransferInLevelID,
+                                'AllCreatePoint':arr.AllCreatePoint==1?true:false,
+                                'CashBase':arr.CashBase,
+                                'PointGet':arr.PointGet,
+                                'PointBalanceIndex':arr.PointBalanceIndex,
+
                             });
+                            AllCreatePoint=arr.AllCreatePoint;
+                            PointBalanceIndex=arr.PointBalanceIndex;
                             freeBalanceIndex = arr.FreeBalanceIndex;
                             FoodID = arr.FoodID;
                             upML = arr.UpdateLevelID;
@@ -1345,6 +1379,39 @@
                                 $('.memBalance input[name="sourceCount"]').val(arr[0].SourceCount);
                                 $('.memBalance select[name="targetBalanceIndex"]').val(arr[0].TargetBalanceIndex);
                                 $('.memBalance input[name="targetCount"]').val(arr[0].TargetCount);
+
+                            } else if (arr.length > 1) {
+                                for (let i = 1; i < arr.length; i++) {
+                                    $('.memBalanceBox').append($('body').find($('.memBalance')).eq(0).clone())
+                                }
+                                for (let i = 0; i < arr.length; i++) {
+                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('select[name="sourceBalanceType"]').val(arr[i].SourceBalanceIndex);
+                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('input[name="sourceCount"]').val(arr[i].SourceCount);
+                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('select[name="targetBalanceIndex"]').val(arr[i].TargetBalanceIndex);
+                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('input[name="targetCount"]').val(arr[i].TargetCount);
+                                }
+                            }
+                        } else {
+                            layer.msg(data.result_msg || data.return_msg)
+                        }
+                    }
+                });
+                $.ajax({
+                    type: "post",
+                    url: '/XCCloud/Member?action=GetMemberLevelBookRule',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                        if (data.result_code == 1) {
+                            let arr = data.result_data;
+
+                            if (arr.length == 1) {
+                                $('.bookList select[name="sourceBalanceType"]').val(arr[0].SourceBalanceIndex);
+                                $('.bookList input[name="sourceCount"]').val(arr[0].SourceCount);
+                                $('.bookList select[name="targetBalanceIndex"]').val(arr[0].TargetBalanceIndex);
+                                $('.bookList input[name="targetCount"]').val(arr[0].TargetCount);
 
                             } else if (arr.length > 1) {
                                 for (let i = 1; i < arr.length; i++) {
@@ -1565,7 +1632,7 @@
         });
 
         form.on('switch(bookstate)', function (data) {
-            data.elem.checked == true ? bookstate = 1 : bookstate = 0;
+            data.elem.checked  ? bookstate = 1 : bookstate = 0;
         });
         form.on('checkbox(allowBar)', function(data){
             data.elem.checked?allowBar=1:allowBar=0
@@ -1585,9 +1652,6 @@
         form.on('select(milepostGetType)', function (data) {
             milepostGetType = data.value == '-请选择-' ? '' : data.value;
 
-
-
-
         });
         form.on('select(balanceIndex)', function (data) {
             balanceIndex = data.value == '-请选择-' ? '' : data.value;
@@ -1599,8 +1663,9 @@
     var saveML = (layer, token) => {
         let _memberLevelBalance = [];
         let _memberLevelFrees = [];
-        let _memberLevelFood = [];
         let _memberLevelBalanceCharge = [];
+        let _memberLevelBookRule=[];
+
         $('.goodConvert .goodRules').each(function () {
             if ($(this).find('input[name="chargeOff"]').val() !== '' &&
                 $(this).find('select[name="freeRates"] option:selected').val() !== '' &&
@@ -1647,6 +1712,28 @@
                     'targetBalanceIndex': $(this).find('select[name="targetBalanceIndex"] option:selected').val(),
                     'targetCount': $(this).find('input[name="targetCount"]').val(),
 
+                });
+            }
+        });
+        $('.bookBox .bookList').each(function () {
+            if ($(this).find('input[name="milepostDays"]').val() !== '' &&
+                $(this).find('input[name="dayGetCount"]').val() !== '' &&
+                $(this).find('select[name="dayGetBalanceIndex"] option:selected').val() !== '' &&
+                $(this).find('select[name="milepostGetType"] option:selected').val() !== ''
+            ) {
+                _memberLevelBookRule.push({
+                    state:bookstate,
+                    allowBar:allowBar,
+                    allowWexin:allowWexin,
+                    allowATM:allowATM,
+                    allowGame:allowGame,
+                    milepostDays:$(this).find('input[name="milepostDays"]').val(),
+                    dayGetCount:$(this).find('input[name="dayGetCount"]').val(),
+                    dayGetBalanceIndex:$(this).find('select[name="dayGetBalanceIndex"] option:selected').val(),
+                    milepostGetType:$(this).find('select[name="milepostGetType"] option:selected').val(),
+                    balanceIndex:$(this).find('select[name="milepostGetType"] option:selected').val()==0?$(this).find('select[name="balanceIndex"] option:selected').val():'',
+                    couponId:$(this).find('select[name="milepostGetType"] option:selected').val()==1?$(this).find('select[name="couponId"] option:selected').val():'',
+                    count:$(this).find('select[name="milepostGetType"] option:selected').val()==0?$(this).find('input[name="count"]').val():'',
                 });
             }
         });
@@ -1711,26 +1798,11 @@
             'memberLevelBalanceCharge': _memberLevelBalanceCharge,
 
             AllCreatePoint:AllCreatePoint,
-            CashBase:CashBase,
+            CashBase:$('#CashBase').val(),
             PointBalanceIndex:PointBalanceIndex,
-            PointGet:PointGet,
+            PointGet:$('#PointGet').val(),
 
-            memberLevelBookRule:[{
-                state:bookState,
-                allowBar:allowBar,
-                allowWexin:allowWexin,
-                allowATM:allowATM,
-                allowGame:allowGame,
-                milepostDays:$('#milepostDays').val(),
-                dayGetCount:$('#dayGetCount').val(),
-                dayGetBalanceIndex:dayGetBalanceIndex,
-                milepostGetType:milepostGetType,
-                balanceIndex:milepostGetType==0?balanceIndex:'',
-        couponId:milepostGetType==1?couponId:'',
-                count:milepostGetType==0?count:'',
-
-            }],
-            // memberLevelBalanceCharge
+            memberLevelBookRule:_memberLevelBookRule,
             'userToken': token,
             'signkey': '1f626576304bf5d95b72ece2222e42c3'
         };

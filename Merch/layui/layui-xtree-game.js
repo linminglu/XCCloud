@@ -169,14 +169,16 @@ layuiXtree.prototype.Rendering = function (single) {
                 da.elem.checked=false;
             }else {
                 var xtree_sib=[];
-                for(var i = 0; i < xtree_items.length;i++){
-                    if (xtree_items[i] !=da.elem.parentNode){
-                        xtree_sib.push(xtree_items[i])
+                var cks = document.getElementsByClassName('layui-xtree-checkbox');
+                for (var i = 0; i < cks.length; i++) {
+                    if (cks[i].checked && cks[i].getAttribute('data-xend') == '1' && cks[i] != da.elem) {
+                        xtree_sib.push(cks[i]);
                     }
                 }
                 for(i in xtree_sib){
-                    xtree_sib[i].lastChild.classList.remove('layui-form-checked');
-                    xtree_sib[i].children[1].checked=false;
+                    xtree_sib[i].parentNode.lastChild.classList.remove('layui-form-checked');
+                    xtree_sib[i].checked = false;
+                    _this.ParendCheck(xtree_sib[i]);
                 }
             }
            // console.log(xtree_checkedBox)
