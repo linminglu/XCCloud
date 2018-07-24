@@ -43,10 +43,7 @@ body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;
 .bbs{color: #b63b4d;margin-bottom: 0.5em;}
 .hidden{display: none;}
 .show{display: block;}
-.navLeftS{width: 180px;height:4em;margin-top: 0.4em;background: url("../images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
-.navStyle{margin-top: 0.8em!important;padding: 2px 10px;margin-left: 1.3em; color: #7d8184;width: 160px;display: inline-block;}
-.navStyle h4{font-size: 0.8em;line-height: 1.2em;text-indent: 12px;}
-.navT{width: 80px;margin-top: 1.25em;padding-left: 10px;color: #7d8184;font-weight: 600;font-size: 1em}
+
 .navbar-right{margin-right: 1em;}
 .mainBody{margin: 8px 0;}
 .majorMenu{width: 100px; height: inherit;background: #fff;padding-top: 2em;}
@@ -95,8 +92,8 @@ body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;
 .cardSettings button{width: 48%;margin-top: 1em; }
 .switchZdy{border: 1px solid #999999;border-left:none;text-align: center;line-height: 2.4em;color: #fff;cursor: pointer;border-top-right-radius: 4px;border-bottom-right-radius: 4px;background-color: #349ffd;background-size: 50%;position: relative;display: table-cell;}
 .onSwitch{width: 50%;background-color: #fefefe;height: 100%;position: absolute;top:0;transition-property:width;transition-duration:1s; transition-timing-function:linear;}
-.onSwitch1{left: 1px;}
-.onSwitch2{left: 50%;}
+.onSwitchclass1{left: 1px;}
+.onSwitchclass2{left: 50%;}
 .addonWidth{width: 8em;}
 .addHeight{height: 3em;}
 .addHeight div{height: inherit;line-height: 3em;}
@@ -191,12 +188,7 @@ input.btnSendCode{line-height: 0;}
 .modal-h4{line-height: 2em;border-bottom: 1px solid sandybrown;}
 .modal-p{padding-left: 2em;color: #FF0000;line-height: 2em;}
 .modal-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 1em;padding: 0 2em;}
-/*.card-Img{background: url("images/member.png") no-repeat left center;width: 250px;height: 130px;background-size: 100% 100%;border-radius: 10px;margin-top:2em;position: relative;}*/
-/*.card-text1{position: absolute;right: 10px;bottom: 10px;font-size: 0.82em;color: gold;}*/
-/*.card-text2{position: absolute;left: 30px;bottom: 3px;font-size: 0.7em;color: #000;}*/
-/*.card-text4{position: absolute;right: 10px;bottom: 30px;font-size: 0.7em;color: #666;}*/
-/*.card-text3{position: absolute;right: 10px;bottom: 50px;font-size: 0.7em;color: salmon;}*/
-.btn-margin{margin-top: 3em;}
+
 .givingList{height: 8em;padding: 15px;}
 .givingLiSty{display: flex;flex-direction: row;justify-content: center;}
 .givingCheckbox input{margin-right: 10px;width: 1.3em;height: 1.3em;margin-top: 2.5em;}
@@ -241,6 +233,39 @@ input.btnSendCode{line-height: 0;}
 .cardListImg{margin-top: 2em;width: 3em;height: 3em;}
 .viceSty{display:inline-block;width: 5em;text-align: left;padding: 4px 10px;font-size: 0.9em;color: #333}
 .outCoinReadCard{background-color: #F5DEB3;cursor: pointer;}
+.cardLevelList{margin-bottom:3em;}
+.navLeftS{width: 180px;height:4em;margin-top: 0.4em;background: url("../images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
+.navStyle{margin-top: 0.8em!important;padding: 2px 10px;margin-left: 1.3em; color: #7d8184;width: 160px;display: inline-block;}
+.navStyle h4{font-size: 0.8em;line-height: 1.2em;text-indent: 12px;}
+.navT{width: 80px;margin-top: 1.25em;padding-left: 10px;color: #7d8184;font-weight: 600;font-size: 1em}
+.operationBtn{text-align: right;margin: 2em;padding:0 1em;}
+.operationBtn button{display: inline-block;width: 10em;margin: 0 0.5em;}
+.operationBtn button:hover{display: inline-block;width: 10em;margin: 0 0.5em;}
+.tableCenter{background-color: #fefefe;}
+.tableCenter th{text-align: center;}
+.table>thead>tr>th {vertical-align: middle;}
+.billingColor{cursor: pointer;background-color:#b196fd;text-align: center;}
+.billingSty{text-align: center;font-weight:600;}
+.margin15{margin-right:1.5em;}
+.supStyle{display:inline-block;width:10px;height: 10px;border-radius:50%;background-color:red;margin-left:-5px;}
+.MtcList{width: 100%;height: 20em;margin: 1.5em auto}
+.MtcList ul .swiper-slide{text-align: center;cursor: pointer;margin: 0 1em;font-size: 1.3em;display: -webkit-box;display: -ms-flexbox;display: -webkit-flex;display: flex;-webkit-box-pack: center;-ms-flex-pack: center;-webkit-justify-content: center;flex-direction:column;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;-webkit-align-items: center;align-items: center;}
+.MtcList ul li .img{width: 10em;height: 5em;}
+.MtcList ul li .MtcListTxt{width: 100%;height: inherit;margin-top: 0.2em;margin-left: 0.6em;border: 1px solid #c3c7ce;}
+.MtcList ul li .selected{width: 100%;height: inherit;margin-top: 0.2em;margin-left: 0.6em;border: 1px solid #96cdf9;}
+.MtcList ul li .MtcListTxt h4{font-size: 1em;}
+.MtcList ul li .MtcListTxt p{margin-top: 0.2em;font-size: 1em;font-weight: 400;}
+.MtcList .swiper-wrapper{padding: 2em auto}
+.screeningsty{margin: 0.8em 1em;height: 2.5em;line-height: 1.4em;}
+.saleText h3{font-size: 1.2em;margin-top: 0.5em;font-weight: 600;}
+.saleText a.btn{padding: 0 6px;width: 50%;margin-left: 40%;}
+.saleText{display: flex;flex-direction: column;width: 15.5em;justify-content: space-between;text-align: left;margin-left: 0.5em;}
+.salesLi{width: 25em;height: 10em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.5em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
+.saleDetails{width: 50%;margin-left: 40%;}
+.salesLi img{width: 8em;height: 8em;}
+.memberDetails{width: 320px;position: fixed;right: 50px;bottom: 80px;}
+.memberDetails .input-group{width: 100%;margin: 0.5em 1.2em;}
+.memberDetails .table{width: 100%;margin: 0.5em 1em;}
 @media (min-width: 1024px) and (max-width: 1400px) {
 	.navLeftS{display: none;}
 }

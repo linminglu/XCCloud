@@ -18,7 +18,7 @@
 </head>
 <body>
 <div id="app" v-cloak>
-    <yd-tabbar fixed=true active-color="#000000">
+    <!-- <yd-tabbar fixed=true active-color="#000000">
         <yd-tabbar-item title="首页" active>
             <yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>
         </yd-tabbar-item>
@@ -28,7 +28,12 @@
         <yd-tabbar-item title="个人中心" @click.native="register2">
             <yd-icon name="ucenter-outline" slot="icon" size="0.54rem"></yd-icon>
         </yd-tabbar-item>
-    </yd-tabbar>
+    </yd-tabbar> -->
+    <yd-navbar title="莘拍档">
+        <router-link to="index.html" slot="left">
+            <yd-navbar-back-icon @click.native="goBack">返回</yd-navbar-back-icon>
+        </router-link>
+    </yd-navbar>
     <div style="height: 275px;">
         <yd-slider autoplay="3000" direction="vertical">
             <yd-slider-item v-for="item, key in banner" :key="item.ID">
@@ -156,11 +161,8 @@
                 }
 
             },
-            register1:function () {
-                window.location.href = "MyOrder.html"
-            },
-            register2:function () {
-                window.location.href = "mine.html"
+            goBack:function () {
+              window.location.href = "index.html";
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

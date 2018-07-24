@@ -29,16 +29,25 @@
 </head>
 <body>
 <div id="app" v-cloak>
+    <yd-navbar title="莘拍档">
+        <router-link to="index.html" slot="left">
+            <yd-navbar-back-icon @click.native="goBack">返回</yd-navbar-back-icon>
+        </router-link>
+        <yd-icon slot="right" color="#FF685D" name="search" @click.native="show4 = true"></yd-icon>
+        <!-- <router-link slot="right">
+            <img slot="icon" class="cardIcon" src="images/addpic.png" >
+        </router-link> -->
+    </yd-navbar>
     <div class="page-bottom">
         <div class='top_main'>
             <div class='top_mc'><span>总共</span><span class='color11'>{{Count}}条</span></div>
             <div class='top_mc'><span>购币</span><span class='color11'>{{Buycoins}}个</span></div>
             <div class='top_mc'><span>总币数：</span><span class='color11'>{{Totalcoins}}个</span></div>
             <div class='top_mc'><span>总金额：</span><span class='color11'>{{Totalmoney}}元</span></div>
-            <yd-button class="closeIcon1" size="small" type="danger" @click.native="show4 = true">
+            <!-- <yd-button class="closeIcon1" size="small" type="danger" @click.native="show4 = true">
                 <yd-icon color="#FF685D" name="search"></yd-icon>
                 <p>筛选</p>
-            </yd-button>
+            </yd-button> -->
         </div>
 
         <yd-popup v-model="show4" position="right">
@@ -106,17 +115,6 @@
             <img slot="loadingTip" src="http://static.ydcss.com/uploads/ydui/loading/loading10.svg"/>
         </yd-infinitescroll>
     </div>
-    <yd-tabbar fixed=true active-color="#000000">
-        <yd-tabbar-item title="首页" @click.native="register1">
-            <yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-        <yd-tabbar-item title="我的订单" active>
-            <yd-icon name="shopcart" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-        <yd-tabbar-item title="个人中心" @click.native="register2">
-            <yd-icon name="ucenter-outline" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-    </yd-tabbar>
 </div>
 <script src="js/ydui.flexible.js"></script>
 <!-- 引入 Vue -->
@@ -127,7 +125,7 @@
 <script src="js/axios.min.js"></script>
 <script>
     var sysId = 0; //调用方应用Id
-    var versionNo= "0.89"; //版本号
+    var versionNo= "0.01"; //版本号
     var url_getDataOrder = '/XCGameMana/DataOrder?action=getDataOrder';//获取分页订单列表
     var htmlfnc = new Vue({
         el: '#app',
@@ -159,6 +157,62 @@
             this.Load();
         },
         methods: {
+            Load: function () {
+                var that =this;
+                var mobileToken =  getStorage("mobileToken");//获取手机令牌
+                that.mobileToken = mobileToken;
+                console.log(mobileToken);
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    mobileToken: that.mobileToken,
+                    pageIndex: "0",
+                    storename: "",
+                    startcoins: "",
+                    buytype: "",
+                    startcreatetime: "",
+                    startprice: "",
+                    endcreatetime: "",
+                    endcoins: "",
+                    endprice: ""
+                };
+                axios.post(url_getDataOrder, obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var orderListData = [];
+                        for (var i = 0; i < res.data.result_data.Lists.length; i++) {
+                            orderListData.push({
+                                CreateTime: res.data.result_data.Lists[i].CreateTimes,
+                                Price: res.data.result_data.Lists[i].Price,
+                                Descript: res.data.result_data.Lists[i].Descript,
+                                StoreName: res.data.result_data.Lists[i].StoreName,
+                                Coins: res.data.result_data.Lists[i].Coins,
+                                BuyType: res.data.result_data.Lists[i].BuyType,
+                                OrderType: res.data.result_data.Lists[i].OrderType,
+                                PayStatus: res.data.result_data.Lists[i].PayStatus
+                            })
+                        }
+                        that.orderData =obj;
+                        that.orderList =orderListData;
+                        that.orderPage =res.data.result_data.Page;
+                        that.Count =res.data.result_data.Count;
+                        that.Buycoins =res.data.result_data.Buycoins;
+                        that.Totalcoins =res.data.result_data.Buycoins;
+                        that.Totalmoney =res.data.result_data.Totalmoney;
+                        that.BuyTypelist =res.data.result_data.BuyTypelist;
+                        that.StoreNamelist =res.data.result_data.StoreNamelist;
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            goBack:function () {
+              window.location.href = "index.html";
+            },
             newTimes:function () {
                 var myDate = new Date();
                 var yy = myDate.getFullYear(); //获取完整的年份(4位,1970-????)
@@ -170,12 +224,6 @@
                 this.today =yy+"-"+mm+"-"+dd;
                 this.datetime4 =yy+"-"+mm+"-"+dd;
                 this.datetime5 =yy+"-"+mm+"-"+dd;
-            },
-            register1:function () {
-                window.location.href = "home.html"
-            },
-            register2:function () {
-                window.location.href = "mine.html"
             },
             confirm:function () {
                 var that =this;
@@ -275,59 +323,6 @@
                 that.datetime5=that.today;
                 that.dataSelected1="";
                 that.dataSelected2="";
-            },
-            Load: function () {
-                var that =this;
-                var mobileToken =  getStorage("mobileToken");//获取手机令牌
-                that.mobileToken = mobileToken;
-                console.log(mobileToken);
-                this.$dialog.loading.open('');
-                var obj={
-                    sysId: sysId,
-                    versionNo: versionNo,
-                    mobileToken: that.mobileToken,
-                    pageIndex: "0",
-                    storename: "",
-                    startcoins: "",
-                    buytype: "",
-                    startcreatetime: "",
-                    startprice: "",
-                    endcreatetime: "",
-                    endcoins: "",
-                    endprice: ""
-                };
-                axios.post(url_getDataOrder, obj).then(function (res) {
-                    that.$dialog.loading.close();
-                    that.msgPrompt(res.data);
-                    console.log(res.data);
-                    if (res.data.result_code === '1') {
-                        var orderListData = [];
-                        for (var i = 0; i < res.data.result_data.Lists.length; i++) {
-                            orderListData.push({
-                                CreateTime: res.data.result_data.Lists[i].CreateTimes,
-                                Price: res.data.result_data.Lists[i].Price,
-                                Descript: res.data.result_data.Lists[i].Descript,
-                                StoreName: res.data.result_data.Lists[i].StoreName,
-                                Coins: res.data.result_data.Lists[i].Coins,
-                                BuyType: res.data.result_data.Lists[i].BuyType,
-                                OrderType: res.data.result_data.Lists[i].OrderType,
-                                PayStatus: res.data.result_data.Lists[i].PayStatus
-                            })
-                        }
-                        that.orderData =obj;
-                        that.orderList =orderListData;
-                        that.orderPage =res.data.result_data.Page;
-                        that.Count =res.data.result_data.Count;
-                        that.Buycoins =res.data.result_data.Buycoins;
-                        that.Totalcoins =res.data.result_data.Buycoins;
-                        that.Totalmoney =res.data.result_data.Totalmoney;
-                        that.BuyTypelist =res.data.result_data.BuyTypelist;
-                        that.StoreNamelist =res.data.result_data.StoreNamelist;
-                    }
-                }).catch(function (err) {
-                    that.$dialog.loading.close();
-                    console.log(err);
-                })
             },
             loadList: function (){
                 var that = this;
