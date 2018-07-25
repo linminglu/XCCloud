@@ -74,6 +74,7 @@
     <Compile Include="CustomModel\XCCloud\Base_ExitFood.cs" />
     <Compile Include="CustomModel\XCCloud\Base_FoodType.cs" />
     <Compile Include="CustomModel\XCCloud\Base_DeviceInfoModel.cs" />
+    <Compile Include="CustomModel\XCCloud\CouponInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_FoodTypeListModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodsStockModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_DistinctInfoModel.cs" />
@@ -414,9 +415,6 @@
     <Compile Include="XCCloud\Data_Discount_MemberLevel.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_Discount_RecordMember.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="XCCloud\Data_Discount_RecordStore.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -681,13 +679,13 @@
     <Compile Include="XCCloud\Flw_Food_Sale_Pay.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Flw_GameData_WinPrize.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Flw_Game_Free.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Game_Watch.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="XCCloud\Flw_Game_WinPrize.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Giveback.cs">

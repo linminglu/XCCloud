@@ -14,10 +14,10 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Log_Operation
     {
-        public long ID { get; set; }
+        public string ID { get; set; }
         public string StoreID { get; set; }
         public Nullable<System.DateTime> Realtime { get; set; }
-        public Nullable<int> ScheduleID { get; set; }
+        public string ScheduleID { get; set; }
         public Nullable<int> LogType { get; set; }
         public string OperName { get; set; }
         public string WorkStation { get; set; }

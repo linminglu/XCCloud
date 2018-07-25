@@ -667,7 +667,7 @@ namespace XXCloudService.Api.XCCloud
 
                 //发送指令
                 var radarToken = string.Empty;
-                cardHeadReset(new Guid("N").ToString(), storeId, "", data_DeviceInfo.MCUID, out radarToken, out errMsg);
+                cardHeadReset(System.Guid.NewGuid().ToString("N"), storeId, "", data_DeviceInfo.MCUID, out radarToken, out errMsg);
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
@@ -1062,7 +1062,7 @@ namespace XXCloudService.Api.XCCloud
 
                 //发送指令
                 var radarToken = string.Empty;
-                cardHeadReset(new Guid("N").ToString(), storeId, "", data_DeviceInfo.MCUID, out radarToken, out errMsg);
+                cardHeadReset(System.Guid.NewGuid().ToString("N"), storeId, "", data_DeviceInfo.MCUID, out radarToken, out errMsg);
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

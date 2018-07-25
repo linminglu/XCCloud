@@ -314,7 +314,7 @@ namespace XXCloudService.Api.XCCloud
 
                 //发送指令
                 var radarToken = string.Empty;
-                projectInsChange(new Guid("N").ToString(), storeId, "", model.GameIndex.ToString(), out radarToken, out errMsg);
+                projectInsChange(System.Guid.NewGuid().ToString("N"), storeId, "", model.GameIndex.ToString(), out radarToken, out errMsg);
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultMsg);
             }

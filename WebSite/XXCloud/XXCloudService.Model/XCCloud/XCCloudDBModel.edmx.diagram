@@ -132,7 +132,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Schedule" Width="1.5" PointX="38.75" PointY="21.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Ticket_Exit" Width="1.5" PointX="38.75" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Log_GameAlarm" Width="1.5" PointX="0.75" PointY="39.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Log_Operation" Width="1.5" PointX="2.75" PointY="39.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Search_Template" Width="1.5" PointX="14.75" PointY="39.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Search_Template_Detail" Width="1.5" PointX="16.75" PointY="39.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Store_GameTotal" Width="1.5" PointX="40.75" PointY="0.75" />
@@ -151,7 +150,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.BUF_UserAnalysis" Width="1.5" PointX="21.375" PointY="42.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Card_BalanceCharge" Width="1.5" PointX="33.375" PointY="42.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Discount_RecordMember" Width="1.5" PointX="43.375" PointY="0.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Game_WinPrize" Width="1.5" PointX="43.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Jackpot_Level" Width="1.5" PointX="21.375" PointY="26.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Jackpot_Matrix" Width="1.5" PointX="43.375" PointY="8.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" Width="1.5" PointX="43.375" PointY="16.75" />
@@ -187,6 +185,8 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Lottery" Width="1.5" PointX="45.375" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GameAPP_MemberRule" Width="1.5" PointX="35.375" PointY="22.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GameAPP_Rule_Entry" Width="1.5" PointX="37.375" PointY="26.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Log_Operation" Width="1.5" PointX="45.375" PointY="32.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_GameData_WinPrize" Width="1.5" PointX="45.375" PointY="36.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

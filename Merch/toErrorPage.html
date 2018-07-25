@@ -1,15 +1,38 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>登录失败</title>
+    <title>操作失败</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
     <!--<link rel="stylesheet" href="common.css">-->
     <link rel="stylesheet" href="css/weui1.1.2.css">
+<script src="jquery-1.8.3-min.js" type="text/javascript"></script>
+<script>
+var paras = [];
+var values = [];
+function getPara() {
+    var url = window.location.href;  //获取网址字符串
+    url=decodeURIComponent(url);
+    var len = url.length;
+    var offset = url.indexOf("?");
+    var str = url.substr(offset+1,len);
+    var args = str.split("&");
+    len = args.length;
+    for (var i = 0; i < len; i++) {
+        str = args[i];
+        var arg = str.split("=");
+        if (args.length < 1) {break;}
+        else if(paras[i]!=""&&values[i]!=""){
+            paras[i] = arg[0];      //参数名
+            values[i] = arg[1];     //参数值
+        }
+    }
+}
+</script>
 </head>
-<body>
+<body onload="getPara();$('.result_error_title').html(values[0]);$('.result_error_tips').html(values[1]);">
 <div class="showNext result-success " >
     <div class="weui-msg">
         <div class="weui-msg__icon-area"><i class="weui-icon-warn  weui-icon_msg"></i></div>

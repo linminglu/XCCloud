@@ -57,14 +57,14 @@ namespace XXCloudService.Utility
             errMsg = string.Empty;
             if (deviceStoreType == XCGameManaDeviceStoreType.Store || deviceStoreType == XCGameManaDeviceStoreType.Merch)
             {
-                DeviceStateRequestDataModel deviceStateModel = RedisCacheHelper.HashGet<DeviceStateRequestDataModel>(CommonConfig.DeviceStateKey, mcuId);
+                DeviceStateCacheModel deviceStateModel = RedisCacheHelper.HashGet<DeviceStateCacheModel>(CommonConfig.DeviceStateKey, mcuId);
                 //验证雷达是否上线
                 if (deviceStateModel == null)
                 {
                     errMsg = "雷达未上线";
                     return false;
                 }
-                if (deviceStateModel.Status == "0")
+                if (deviceStateModel.State == "0")
                 {
                     errMsg = "设备不在线";
                     return false;
@@ -76,10 +76,10 @@ namespace XXCloudService.Utility
                 {
                     orderId = System.Guid.NewGuid().ToString("N");
                 }
-                RemoteDeviceControlRequestDataModel deviceControlModel = new RemoteDeviceControlRequestDataModel(deviceStateModel.Token, mcuId, icCardId, action, ruleType, ruleId, count, orderId, sn, storePassword);
+                RemoteDeviceControlRequestDataModel deviceControlModel = new RemoteDeviceControlRequestDataModel(deviceStateModel.Token, mcuId, icCardId, action, ruleType, ruleId, count, orderId, sn);
                 //MPOrderBusiness.AddTCPAnswerOrder(orderId, mobile, count, action, "", storeId);
-                //IconOutLockBusiness.Add(mobile, count);
-                if (!DataFactory.SendCoinInDataToRadar(deviceControlModel, out errMsg))
+                //IconOutLockBusiness.Add(mobile, count);                
+                if (!DataFactory.SendCoinInDataToRadar(deviceControlModel, storePassword, out errMsg))
                 {
                     return false;
                 }

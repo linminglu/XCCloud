@@ -11,39 +11,9 @@
 	<ul>
 		<list v-for="(item,index) in testList" :key="index" :content="item" :index="index" @delete="handleDelete"></list>
     </ul>
-    <p style="white-space: normal;">
-        <a href="https://coupon.jd.com/ilink/couponActiveFront/front_index.action?key=3395313d768a4ce7be69930752345dad&roleId=8557900&to=https://sale.jd.com/act/0mNIlaXDEn.html" target="_blank" style="white-space: normal;">1111</a><br/>
-    </p>
-    
 </div>
 <script src="js/vue.js"></script>
 <script>
-//    var code = "";
-//    window.onload = function(e){
-//
-//        var lastTime,nextTime;
-//        var lastCode,nextCode;
-//        document.onkeypress = function(e) {
-//            nextCode = e.which;
-//            nextTime = new Date().getTime();
-//            if(lastCode == null && lastTime == null) {
-//                // 此处应该怎么判断
-//            }
-//            if(lastCode != null && lastTime != null && nextTime - lastTime <= 30) {
-//                code += String.fromCharCode(nextCode);
-//            } else if(lastCode != null && lastTime != null && nextTime - lastTime > 100){
-//                code = "";
-//            }
-//            lastCode = nextCode;
-//            lastTime = nextTime;
-//        };
-////        this.onkeypress = function(e){
-////            if(e.which == 13){
-////                console.log(code);
-////                code = "";
-////            }
-////        }
-//    };
 
     Vue.component('list', {
         props:["content","index"],
@@ -66,27 +36,13 @@
 		mounted:function () {
 			this.loading()
         },
-        watch:{
-            inputValue0:function(){
-                if(this.inputValue0 == 2){
-                    console.log(888)
-                    this.inputValue0 = 0
-                }
-            }
-        },
+        
         methods: {
             loading:function () {
                 var that = this;
                 var lastTime,nextTime;
 				var lastCode,nextCode;
-                setTimeout(function () {
-                    console.log(111)
-                    that.inputValue0++;
-                }, 3000);
-                setTimeout(function () {
-                    console.log(110)
-                    that.inputValue0++;
-                }, 2000);
+                
                 
                 document.onkeypress = function(e) {
 					nextCode = e.which;

@@ -26,7 +26,7 @@ namespace XCCloudWebBar.Utility
         public static void Init()
         {            
             string dbConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["XCCloudDB"].ConnectionString;
-            server = new HostServer(merchID, storeID, dbConnectString, 6066, "192.168.1.73", 12888, "192.168.1.73", 12886);
+            server = new HostServer(merchID, storeID, dbConnectString, 6066, "192.168.1.130", 12888, "192.168.1.73", 12886);
             server.StartServer();
             server.OnRadarDataShow += server_OnRadarDataShow;
             server.OnTransferSpeed += server_OnTransferSpeed;

@@ -617,20 +617,20 @@ namespace XCCloudService.SocketService.UDP.Factory
         /// <param name="controlModel">出币请求模式</param>
         /// <param name="errMsg">错误信息</param>
         /// <returns></returns>
-        public static bool SendCoinInDataToRadar(RemoteDeviceControlRequestDataModel controlModel, out string errMsg)
+        public static bool SendCoinInDataToRadar(RemoteDeviceControlRequestDataModel controlModel, string storePwd, out string errMsg)
         {
             errMsg = string.Empty;
             string ip = string.Empty;
             string radarToken = controlModel.Token;
             int port = 0;
-            if (!DataFactory.GetRadarClient(radarToken, out ip, out port))
-            {
-                errMsg = "未能获取雷达端地址";
-                return false;
-            }
+            //if (!DataFactory.GetRadarClient(radarToken, out ip, out port))
+            //{
+            //    errMsg = "未能获取雷达端地址";
+            //    return false;
+            //}
             //向雷达发送数据
             RemoteDeviceControlRequestDataModel radarModel = controlModel;
-            SignKeyHelper.SetSignKey(radarModel, controlModel.StorePassword);
+            SignKeyHelper.SetSignKey(radarModel, storePwd);
             //对象序列化为字节数组
             byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(radarModel);
             //生成发送数据包
@@ -639,7 +639,8 @@ namespace XCCloudService.SocketService.UDP.Factory
             UDPSocketAnswerModel answerModel = new UDPSocketAnswerModel(ip, port, requestPackages, controlModel.OrderId, System.DateTime.Now, "", "", "", controlModel.MCUID, 1, controlModel.SN);
             UDPSocketAnswerBusiness.SetAnswer(answerModel);
             //服务端发送数据
-            XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+            XCCloudService.SocketService.UDP.ClientList.SendCommand(controlModel.Token, requestPackages);
+            //XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
             //记录日志
             string requestJson = JsonHelper.DataContractJsonSerializer(radarModel);
             //UDPLogHelper.SaveUDPSendDeviceControlLog(controlModel.StoreId, controlModel.Mobile, controlModel.MCUId, controlModel.OrderId, controlModel.Segment, controlModel.SN, controlModel.Coins, int.Parse(controlModel.Action), requestJson);

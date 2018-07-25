@@ -630,7 +630,7 @@ namespace XCCloudService.Api.XCGame
                             var fromBalance = fromBalanceQuery.FirstOrDefault();
 
                             //【正价】转入卡在当前门店的余额ID集合
-                            var toBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                            var toBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == toCard.ID && t.MerchID == merchID)
                                                  join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
                                                  where a.BalanceIndex == balanceIndex
                                                  select new

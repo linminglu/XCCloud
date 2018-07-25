@@ -337,7 +337,7 @@ namespace XXCloudService.Api.XCCloud
             sb.Append(string.Format("declare @StoreId varchar(15) = '{0}';", userTokenDataModel.StoreID));
             sb.Append(string.Format("declare @CustomerType int = {0};",customerType));
             sb.Append(string.Format("declare @MemberLevelId int = {0};", memberLevelId));
-            sb.Append(string.Format("declare @Mobile varchar(11) = {0};", mobile));
+            sb.Append(string.Format("declare @Mobile varchar(11) = '{0}';", mobile));
             sb.Append(string.Format("declare @ICCardId int = {0};", icCardId));
             sb.Append(string.Format("declare @PayCount decimal(18,2) = {0};", payCount));
             sb.Append(string.Format("declare @FreePay decimal(18,2) = {0};", freePay));
@@ -368,16 +368,14 @@ namespace XXCloudService.Api.XCCloud
 
             sqlParameter[0] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
             sqlParameter[0].Direction = ParameterDirection.Output;
-
             sqlParameter[1] = new SqlParameter("@OrderFlwID", SqlDbType.VarChar,32);
             sqlParameter[1].Direction = ParameterDirection.Output;
-
-            sqlParameter[2] = new SqlParameter("@AddOrderResult", SqlDbType.Int);
-            sqlParameter[2].Direction = ParameterDirection.Output;
+            sqlParameter[2] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[2].Direction = ParameterDirection.ReturnValue;
 
             //System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
             System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sb.ToString(), sqlParameter);
-            if (sqlParameter[2].Value.ToString() == "1")
+            if (sqlParameter[1].Value.ToString() != "")
             {
                 var obj = new {
                     orderFlwId = sqlParameter[1].Value.ToString()
@@ -624,7 +622,6 @@ namespace XXCloudService.Api.XCCloud
             string errMsg = string.Empty;
             string foodSaleDetailListJson = dicParas.ContainsKey("foodSaleDetailListJson") ? dicParas["foodSaleDetailListJson"].ToString() : string.Empty;
             string couponsListJson = dicParas.ContainsKey("couponsListJson") ? dicParas["couponsListJson"].ToString() : string.Empty;
-            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
             string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
             string newFlwOrderId = dicParas.ContainsKey("newFlwOrderId") ? dicParas["newFlwOrderId"].ToString() : string.Empty;
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
@@ -632,7 +629,6 @@ namespace XXCloudService.Api.XCCloud
             string disticntRuleId = dicParas.ContainsKey("disticntRuleId") ? dicParas["disticntRuleId"].ToString() : string.Empty;
             string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
             string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
-            string userId = dicParas.ContainsKey("userId") ? dicParas["userId"].ToString() : string.Empty;
             string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
             string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
             string openFee = dicParas.ContainsKey("openFee") ? dicParas["openFee"].ToString() : string.Empty;
@@ -651,13 +647,13 @@ namespace XXCloudService.Api.XCCloud
             }
 
             string storedProcedure = "updateOrder";
-            SqlParameter[] sqlParameter = new SqlParameter[19];
+            SqlParameter[] sqlParameter = new SqlParameter[18];
             sqlParameter[0] = new SqlParameter("@FoodSaleDetailList", SqlDbType.Structured);
-            sqlParameter[0].Value = FlwFoodOrderBusiness.GetOrderBuyDetailList(storeId, foodSaleDetailListJson);
+            sqlParameter[0].Value = FlwFoodOrderBusiness.GetOrderBuyDetailList(userTokenDataModel.StoreID, foodSaleDetailListJson);
             sqlParameter[1] = new SqlParameter("@CouponsList", SqlDbType.Structured);
-            sqlParameter[1].Value = FlwFoodOrderBusiness.GetOrderBuyDetailList(storeId, couponsListJson);
+            sqlParameter[1].Value = FlwFoodOrderBusiness.GetCouponList(userTokenDataModel.StoreID, couponsListJson);
             sqlParameter[2] = new SqlParameter("@StoreId", SqlDbType.VarChar,15);
-            sqlParameter[2].Value = storeId;
+            sqlParameter[2].Value = userTokenDataModel.StoreID;
             sqlParameter[3] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar,32);
             sqlParameter[3].Value = flwOrderId;
             sqlParameter[4] = new SqlParameter("@NewFlwOrderId", SqlDbType.VarChar,32);
@@ -668,36 +664,37 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[6].Value = disticntRuleId;
             sqlParameter[7] = new SqlParameter("@PayCount", SqlDbType.Decimal);
             sqlParameter[7].Value = payCount;
-            sqlParameter[8] = new SqlParameter("@RealPay", SqlDbType.Decimal);
-            sqlParameter[8].Value = realPay;
-            sqlParameter[9] = new SqlParameter("@FeePay", SqlDbType.Decimal);
-            sqlParameter[9].Value = feePay;
-            sqlParameter[10] = new SqlParameter("@UserId", SqlDbType.Int);
-            sqlParameter[10].Value = userId;
-            sqlParameter[11] = new SqlParameter("@WorkStation", SqlDbType.VarChar,50);
-            sqlParameter[11].Value = workStation;
-            sqlParameter[12] = new SqlParameter("@Note", SqlDbType.VarChar,200);
-            sqlParameter[12].Value = note;
-            sqlParameter[13] = new SqlParameter("@OrderSource", SqlDbType.Int);
-            sqlParameter[13].Value = orderSource;
-            sqlParameter[14] = new SqlParameter("@AuthorId", SqlDbType.Int);
-            sqlParameter[14].Value = authorId;
-            sqlParameter[15] = new SqlParameter("@SaleCoinType", SqlDbType.Int);
-            sqlParameter[15].Value = saleCoinType;
-            sqlParameter[16] = new SqlParameter("@NewFlwOrderId", SqlDbType.VarChar,32);
-            sqlParameter[16].Value = newFlwOrderId;
-            sqlParameter[17] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+            sqlParameter[8] = new SqlParameter("@FeePay", SqlDbType.Decimal);
+            sqlParameter[8].Value = feePay;
+            sqlParameter[9] = new SqlParameter("@UserId", SqlDbType.Int);
+            sqlParameter[9].Value = userTokenDataModel.CreateUserID;
+            sqlParameter[10] = new SqlParameter("@WorkStation", SqlDbType.VarChar,50);
+            sqlParameter[10].Value = workStation;
+            sqlParameter[11] = new SqlParameter("@Note", SqlDbType.VarChar,200);
+            sqlParameter[11].Value = note;
+            sqlParameter[12] = new SqlParameter("@OrderSource", SqlDbType.Int);
+            sqlParameter[12].Value = orderSource;
+            sqlParameter[13] = new SqlParameter("@AuthorId", SqlDbType.Int);
+            sqlParameter[13].Value = authorId;
+            sqlParameter[14] = new SqlParameter("@SaleCoinType", SqlDbType.Int);
+            sqlParameter[14].Value = saleCoinType;
+            sqlParameter[15] = new SqlParameter("@NewFlwOrderId", SqlDbType.VarChar,32);
+            sqlParameter[15].Value = newFlwOrderId;
+            sqlParameter[16] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+            sqlParameter[16].Direction = ParameterDirection.Output;
+            sqlParameter[17] = new SqlParameter("@Return", SqlDbType.Int);
             sqlParameter[17].Direction = ParameterDirection.Output;
-            sqlParameter[18] = new SqlParameter("@Return", SqlDbType.Int);
-            sqlParameter[18].Direction = ParameterDirection.Output;
 
             XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
+            //System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
+
             if (sqlParameter[18].Value.ToString() == "1")
             {
                 var obj = new
                 {
                     orderFlwId = sqlParameter[17].Value.ToString()
                 };
+                //NewOrderDataSync(ds.Tables[0]);
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             else
@@ -716,7 +713,6 @@ namespace XXCloudService.Api.XCCloud
         private bool CheckUpdateOrderParams(Dictionary<string, object> dicParas, out string errMsg)
         {
             errMsg = string.Empty;
-            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
             string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
             //string newFlwOrderId = dicParas.ContainsKey("newFlwOrderId") ? dicParas["newFlwOrderId"].ToString() : string.Empty;
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
@@ -732,12 +728,6 @@ namespace XXCloudService.Api.XCCloud
             string orderSource = dicParas.ContainsKey("orderSource") ? dicParas["orderSource"].ToString() : string.Empty;
             string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
             string saleCoinType = dicParas.ContainsKey("saleCoinType") ? dicParas["saleCoinType"].ToString() : string.Empty;
-
-            if (!Utils.IsDecimal(storeId))
-            {
-                errMsg = "门店无效";
-                return false;
-            }
 
             if (string.IsNullOrEmpty(flwOrderId))
             {

@@ -54,10 +54,10 @@ namespace XXCloudService.Api.XCCloudH5
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备令牌无效");
                 }
 
-                DeviceStateRequestDataModel deviceStateModel = RedisCacheHelper.HashGet<DeviceStateRequestDataModel>(CommonConfig.DeviceStateKey, device.MCUID);
+                DeviceStateCacheModel deviceStateModel = RedisCacheHelper.HashGet<DeviceStateCacheModel>(CommonConfig.DeviceStateKey, device.MCUID);
                 if (deviceStateModel != null)
                 {
-                    switch (deviceStateModel.Status)
+                    switch (deviceStateModel.State)
                     {
                         case "0":
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该设备不在线");

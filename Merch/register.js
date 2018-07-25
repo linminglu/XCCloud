@@ -1,9 +1,9 @@
-var mobile="";
+﻿var mobile="";
 var token="";
 var state=new Date().getTime();
 function checkPhone() {
     var str=$('#phone').val();
-    var reg=/^1[3|4|5|8][0-9]\d{8}$/;
+    var reg=/^1[3|4|5|7|8][0-9]\d{8}$/;
     if(str==""){
         $('.phoneTips').html("tips:手机号码不能为空").css({color:"red","z-index":"2"});
         return false;
@@ -17,7 +17,8 @@ function checkPhone() {
 }
 function checkUsername() {
     var str=$('#username').val();
-    var reg=/^[\u4e00-\u9fa5a-zA-Z0-9]{6,16}$/;
+    //var reg=/^[\u4e00-\u9fa5a-zA-Z0-9]{6,16}$/;
+    var reg=/^[\u4e00-\u9fa5a-zA-Z0-9]{1,16}$/;
     if(str==""){
         $('.nameTips').html("tips:账户名不能为空").css({color:"red","z-index":"2"});
         return false;
@@ -34,7 +35,7 @@ function checkStoreId() {
     var  strUpper=str.toUpperCase();
     console.log(strUpper);
     $('#storeId').val(strUpper);
-    var reg=/^\d{6}$/;
+    var reg=/^\d{15}$/;
     if(strUpper==""){
         $('.storeIdTips').html("tips:店铺ID不能为空").css({color:"red"});
         return false;
@@ -93,7 +94,7 @@ function toNext(obj) {
             url:"/xcgamemana/token?action=checkImgCode",
             data:obj,
             dataType:"json",
-            success:function (data) {
+            success:function (data) {		
                 if(data.result_code=="1"){
                     token=data.result_data.token;
                     mobile=data.result_data.mobile;
@@ -176,23 +177,24 @@ function contactWeiChat() {
   var scode=$('.registerInputCode').val();
 
 
-  var href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx86275e2035a8089d&redirect_uri=";
-    var href2="/test/weixin/registertest.aspx?" +
+  var href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx86275e2035a8089d&redirect_uri=";    
+    var href2="http://mp.4000051530.com/weixin/register.aspx?" +
+    //var href2="/test/weixin/registertest.aspx?" +
       "storeOrMerchId="+storeId+
       "&scode=" +scode+
       "&mobile=" +mobile+
       "&username=" +username+
       "&password=" +password+
       "&realname=" +trueName+
-      "&message=" +userNote+
+      "&message=" +userNote
         //测试
-        "&openId=oNWocwVlugZexFK6-tYgUVgig45Y&unionId=oZtPw1fZM3W8SnIXDda2jqH_ChRA"
+        //+"&openId=oNWocwVlugZexFK6-tYgUVgig45Y&unionId=oZtPw1fZM3W8SnIXDda2jqH_ChRA"
     ;
 
     var  newHref=href+encodeURIComponent(href2)+"&response_type=code&scope=snsapi_base&state="+state+"#wechat_redirect";
     console.log(newHref);
-    // window.location.href=newHref;
-    window.location.href=href2;
+    window.location.href=newHref;
+    //window.location.href=href2;
 }
 
 

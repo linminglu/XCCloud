@@ -53,16 +53,16 @@ namespace XCCloudWebBar.CacheService
             List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
             SqlMetaData[] MetaDataArr = new SqlMetaData[] {
                     new SqlMetaData("couponId", SqlDbType.Int), 
-                    new SqlMetaData("couponCode", SqlDbType.VarChar)  
+                    new SqlMetaData("couponCode", SqlDbType.VarChar,32)  
             };
-            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(storeId);
-            List<OrderBuyDetailModel> buyDetailList = Utils.DataContractJsonDeserializer<List<OrderBuyDetailModel>>(json);
+
+            List<CouponInfoModel> buyDetailList = Utils.DataContractJsonDeserializer<List<CouponInfoModel>>(json);
 
             for (int i = 0; i < buyDetailList.Count; i++)
             {
                 List<object> listParas = new List<object>();
-                listParas.Add(buyDetailList[i].FoodId);
-                listParas.Add(buyDetailList[i].Category);
+                listParas.Add(buyDetailList[i].CouponId);
+                listParas.Add(buyDetailList[i].CouponCode);
 
                 var record = new SqlDataRecord(MetaDataArr);
                 for (int j = 0; j < Ary.Length; j++)

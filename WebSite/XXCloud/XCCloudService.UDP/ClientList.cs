@@ -134,7 +134,17 @@ namespace XCCloudService.SocketService.UDP
                 curClient = clients.First();
                 byte[] dat = ServiceObjectConvert.SerializeObject(data);
                 byte[] sendData = ServiceObjectConvert.协议编码((byte)cType, dat);
-                Server.Send(((IPEndPoint)curClient.remotePoint).Address.ToString(), ((IPEndPoint)curClient.remotePoint).Port, sendData);
+                Server.Send(curClient.remotePoint, sendData);
+            }
+        }
+        public static void SendCommand(string gID, byte[] data)
+        {
+            UDPClientItemBusiness.ClientItem curClient = new UDPClientItemBusiness.ClientItem();
+            var clients = clientList.Where(p => p.gID == gID);
+            if (clients.Count() > 0)
+            {
+                curClient = clients.First();
+                Server.Send(curClient.remotePoint, data);
             }
         }
     }

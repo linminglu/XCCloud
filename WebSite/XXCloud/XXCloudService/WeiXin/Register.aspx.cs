@@ -150,6 +150,7 @@ namespace XXCloudService.WeiXin
 
                         //添加日志
                         var log_OperationModel = new Log_Operation();
+                        log_OperationModel.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                         log_OperationModel.StoreID = storeId;
                         log_OperationModel.UserID = userId;
                         log_OperationModel.AuthorID = auditorId;

@@ -5395,7 +5395,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 var fromBalanceList = fromBalanceQuery.ToList();
 
                 //【正价】转入卡在当前门店的余额ID集合
-                var toBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                var toBalanceQuery = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == toCard.ID && t.MerchID == merchID)
                                      join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
                                      select new
                                      {
@@ -5418,7 +5418,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 var fromBalanceFreeList = fromBalanceFreeQuery.ToList();
 
                 //【赠送】转入卡在当前门店的余额ID集合
-                var toBalanceFreeQuery = from a in Data_Card_Balance_FreeService.N.GetModels(t => t.CardIndex == fromCard.ID && t.MerchID == merchID)
+                var toBalanceFreeQuery = from a in Data_Card_Balance_FreeService.N.GetModels(t => t.CardIndex == toCard.ID && t.MerchID == merchID)
                                          join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
                                          select new
                                          {

@@ -12,8 +12,8 @@ GO
 CREATE Proc [dbo].[SP_RegisterUserFromWx](@StoreId varchar(15),@MerchId varchar(15),@UserType int,@Mobile varchar(16),@Username varchar(50),@Realname varchar(50),@UserPassword varchar(32),@Message varchar(500) = '',@WXOpenID varchar(100) = '',@UnionID varchar(100) = '',@WorkID int output, @Return int output)
 as
 
- begin transaction tran1
- begin try
+ --begin transaction tran1
+ --begin try
 	declare @UserId int 
 	declare @AuditorId int
 	declare @CreateTime datetime = GETDATE()
@@ -30,9 +30,9 @@ as
 	values(@StoreId,@MerchId,@UserType,@Username,@UserPassword,@WXOpenID,@UnionID,@Realname,@Mobile,'',@CreateTime,0,@AuditorId,@Verifiction)
 	set @UserId = @@identity
 	
-    --添加同步
-    insert into Sync_DataList(MerchID,StoreID,TableName,IDValue,SyncType,CreateTime,SyncFlag)
-    values(@MerchId,@StoreId,'Base_UserInfo',CONVERT(varchar, @UserId),0,GETDATE(),0)
+    	--添加同步
+    	insert into Sync_DataList(MerchID,StoreID,TableName,IDValue,SyncType,CreateTime,SyncFlag)
+    	values(@MerchId,@StoreId,'Base_UserInfo',CONVERT(varchar, @UserId),0,GETDATE(),0)
     
 	--添加工单	
 	insert into XC_WorkInfo(SenderID,SenderTime,WorkType,WorkState,WorkBody,AuditorID)
@@ -48,11 +48,11 @@ as
 	commit transaction tran1
 	set @Return = 1
 	select * from XC_WorkInfo where ID = @WorkID
- end try
- begin catch
-	rollback transaction tran1
-	set @Return = 0
- end catch
+ --end try
+ --begin catch
+ --	rollback transaction tran1
+ --	set @Return = 0
+ --end catch
 
 GO
 

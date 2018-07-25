@@ -884,6 +884,8 @@ namespace XXCloudService.Api.XCCloudH5
                     gameRule.MerchID = store.MerchID;
                     gameRule.StoreID = store.ID;
                     gameRule.GameIndexID = coinRule.GameID;
+                    gameRule.DeviceID = device.ID;
+                    gameRule.SiteName = device.SiteName;
                     gameRule.PayCount = PayCount;
                     gameRule.PlayCount = coinRule.PlayCount;
                     if (!Flw_GameAPP_Rule_EntryService.I.Add(gameRule))
@@ -1314,6 +1316,8 @@ namespace XXCloudService.Api.XCCloudH5
                         gmr.MerchID = store.MerchID;
                         gmr.StoreID = store.ID;
                         gmr.GameIndexID = coinRule.GameID;
+                        gmr.DeviceID = device.ID;
+                        gmr.SiteName = device.SiteName;
                         gmr.MemberLevelID = memberTokenModel.CurrentCardInfo.MemberLevelId;
                         gmr.PushBalanceIndex1 = coinRule.PushBalanceIndex1;
                         gmr.PushCoin1 = coinRule.PushCoin1;

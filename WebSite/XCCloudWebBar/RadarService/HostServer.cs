@@ -735,7 +735,7 @@ namespace RadarService
         /// <param name="contorl"></param>
         void xcClient_OnDeviceControl(JsonObject.DeviceControl contorl)
         {
-            Info.DeviceInfo.机头信息 head = XCCloudSerialNo.SerialNoHelper.StringGet<Info.DeviceInfo.机头信息>(contorl.mcuid);
+            Info.DeviceInfo.机头信息 head = Info.DeviceInfo.GetBufMCUIDDeviceInfo(contorl.mcuid);
             if (head != null)
             {
                 if (head.状态.在线状态)
@@ -756,7 +756,7 @@ namespace RadarService
                         Console.WriteLine("莘宸服务器接收【" + info + "】");
                         RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
                         if (route == null) return;
-                        if (contorl.action == "2")
+                        if (contorl.action == "6")
                         {
                             Command.Ask.Ask云端扫码投币数据 a = new Command.Ask.Ask云端扫码投币数据(head, Convert.ToInt32(contorl.ruletype), Convert.ToInt32(contorl.ruleid), Convert.ToInt32(contorl.count), contorl.orderid, (zkzyvalue == 1), PublicHelper.SystemDefiner.雷达主发流水号, Converstring2Endpoint(route.RemotePoint));
                         }

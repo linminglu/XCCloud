@@ -152,7 +152,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Schedule> Flw_Schedule { get; set; }
         public virtual DbSet<Flw_Ticket_Exit> Flw_Ticket_Exit { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
-        public virtual DbSet<Log_Operation> Log_Operation { get; set; }
         public virtual DbSet<Search_Template> Search_Template { get; set; }
         public virtual DbSet<Search_Template_Detail> Search_Template_Detail { get; set; }
         public virtual DbSet<Store_GameTotal> Store_GameTotal { get; set; }
@@ -171,7 +170,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<BUF_UserAnalysis> BUF_UserAnalysis { get; set; }
         public virtual DbSet<Data_Card_BalanceCharge> Data_Card_BalanceCharge { get; set; }
         public virtual DbSet<Data_Discount_RecordMember> Data_Discount_RecordMember { get; set; }
-        public virtual DbSet<Flw_Game_WinPrize> Flw_Game_WinPrize { get; set; }
         public virtual DbSet<Data_Jackpot_Level> Data_Jackpot_Level { get; set; }
         public virtual DbSet<Data_Jackpot_Matrix> Data_Jackpot_Matrix { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
@@ -207,5 +205,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Lottery> Flw_Lottery { get; set; }
         public virtual DbSet<Flw_GameAPP_MemberRule> Flw_GameAPP_MemberRule { get; set; }
         public virtual DbSet<Flw_GameAPP_Rule_Entry> Flw_GameAPP_Rule_Entry { get; set; }
+        public virtual DbSet<Log_Operation> Log_Operation { get; set; }
+        public virtual DbSet<Flw_GameData_WinPrize> Flw_GameData_WinPrize { get; set; }
     }
 }

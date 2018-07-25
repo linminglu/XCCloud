@@ -1033,31 +1033,33 @@ namespace XCCloudService.Api.XCCloud
                     }
                 }
 
+                //修改用户信息
+                Dictionary<string, object> userGroup = new Dictionary<string, object>((IDictionary<string, object>)dicParas["userGroup"], StringComparer.OrdinalIgnoreCase);
+                IBase_UserGroupService base_UserGroupService = BLLContainer.Resolve<IBase_UserGroupService>();
+                int ugid = Convert.ToInt32(userGroup["id"]);
+                if (!base_UserGroupService.Any(w => w.ID.Equals(ugid)))
+                {
+                    errMsg = "工作组" + userGroup["groupName"] + "不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
+                var base_UserInfo = userInfoService.GetModels(p => p.ID.Equals(iUserId)).FirstOrDefault();
+                if (base_UserInfo == null)
+                {
+                    errMsg = "该用户不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                string storeId = base_UserInfo.StoreID;
+
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
                         if (iState == (int)WorkState.Pass) //审核通过
-                        {
-                            //修改用户信息
-                            Dictionary<string, object> userGroup = new Dictionary<string, object>((IDictionary<string, object>)dicParas["userGroup"], StringComparer.OrdinalIgnoreCase);
-                            IBase_UserGroupService base_UserGroupService = BLLContainer.Resolve<IBase_UserGroupService>();
-                            int ugid = Convert.ToInt32(userGroup["id"]);
-                            if (!base_UserGroupService.Any(w => w.ID.Equals(ugid)))
-                            {
-                                errMsg = "工作组" + userGroup["groupName"] + "不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                            var base_UserInfo = userInfoService.GetModels(p => p.ID.Equals(iUserId)).FirstOrDefault();
-                            if (base_UserInfo == null)
-                            {
-                                errMsg = "该用户不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
+                        {                            
                             base_UserInfo.UserGroupID = ugid;
                             base_UserInfo.AuditorTime = DateTime.Now;
                             base_UserInfo.Status = (int)UserStatus.Pass;
@@ -1066,8 +1068,7 @@ namespace XCCloudService.Api.XCCloud
                             base_UserInfo.SwitchMerch = Convert.ToInt32(switchmerch);
                             base_UserInfo.SwitchStore = Convert.ToInt32(switchstore);
                             base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
-
-                            string storeId = base_UserInfo.StoreID;
+                            
                             if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.ID != iUserId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                             {
                                 errMsg = "同一个门店只能有一个管理员";
@@ -1138,6 +1139,7 @@ namespace XCCloudService.Api.XCCloud
                             //添加日志
                             ILog_OperationService log_OperationService = BLLContainer.Resolve<ILog_OperationService>();
                             var log_Operation = new Log_Operation();
+                            log_Operation.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                             log_Operation.UserID = iUserId;
                             log_Operation.AuthorID = xC_WorkInfo.AuditorID;
                             log_Operation.Content = "审核通过";
@@ -1164,6 +1166,7 @@ namespace XCCloudService.Api.XCCloud
                             //添加日志
                             ILog_OperationService log_OperationService = BLLContainer.Resolve<ILog_OperationService>();
                             var log_Operation = new Log_Operation();
+                            log_Operation.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                             log_Operation.UserID = iUserId;
                             log_Operation.AuthorID = xC_WorkInfo.AuditorID;
                             log_Operation.Content = "拒绝理由：" + reason;

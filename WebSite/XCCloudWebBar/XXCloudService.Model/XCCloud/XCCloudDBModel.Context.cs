@@ -173,9 +173,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Data_Jackpot_Level> Data_Jackpot_Level { get; set; }
         public virtual DbSet<Data_Jackpot_Matrix> Data_Jackpot_Matrix { get; set; }
-        public virtual DbSet<Log_Operation> Log_Operation { get; set; }
-        public virtual DbSet<Flw_Game_WinPrize> Flw_Game_WinPrize { get; set; }
-        public virtual DbSet<Data_Discount_RecordMember> Data_Discount_RecordMember { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Data_Card_BalanceCharge> Data_Card_BalanceCharge { get; set; }
         public virtual DbSet<BUF_UserAnalysis> BUF_UserAnalysis { get; set; }
@@ -199,5 +196,7 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
         public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
+        public virtual DbSet<Log_Operation> Log_Operation { get; set; }
+        public virtual DbSet<Flw_GameData_WinPrize> Flw_GameData_WinPrize { get; set; }
     }
 }
