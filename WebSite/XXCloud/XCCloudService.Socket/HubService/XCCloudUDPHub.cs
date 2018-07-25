@@ -36,7 +36,7 @@ namespace XCCloudService.SocketService.TCP.HubService
         }
 
         public static List<XCCloudUDPHub.CurrentUser> ConnectedUsers = new List<XCCloudUDPHub.CurrentUser>();
-        public void Connect(string url, string userID,string storeIdStr,string segmentStr,string insStr)
+        public void Connect(string userID, string insStr)
         {
             var id = Context.ConnectionId;
 

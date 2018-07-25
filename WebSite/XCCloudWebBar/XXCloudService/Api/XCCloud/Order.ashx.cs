@@ -420,13 +420,13 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[19] = new SqlParameter("@Return", SqlDbType.Int);
             sqlParameter[19].Direction = ParameterDirection.ReturnValue;
 
-            XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
             if (sqlParameter[19].Value.ToString() == "1")
             {
                 var obj = new {
                     orderFlwId = sqlParameter[18].Value.ToString()
                 };
-                XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Order", sqlParameter[18].Value.ToString(), 0);
+                NewOrderDataSync(sqlParameter[18].Value.ToString(), ds.Tables[0], ds.Tables[1]);
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             else
@@ -435,6 +435,21 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+
+        private void NewOrderDataSync(string flwOrderId, System.Data.DataTable dt1, System.Data.DataTable dt2)
+        {
+            XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Order", flwOrderId, 0);
+            for (int i = 0; i < dt1.Rows.Count; i++)
+            { 
+                XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Order_Detail", dt1.Rows[i][0].ToString(), 0);
+                XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Food_Sale", dt1.Rows[i][1].ToString(), 0);
+            }
+
+            for (int i = 0; i < dt2.Rows.Count; i++)
+            {
+                XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Food_SaleDetail", dt2.Rows[i][0].ToString(), 0);
+            }
+        }
 
         /// <summary>
         /// 

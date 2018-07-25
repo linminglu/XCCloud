@@ -2320,7 +2320,9 @@
           <Property Name="RuleID" Type="int" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="GameID" Type="int" />
+          <Property Name="GameIndexID" Type="int" />
+          <Property Name="DeviceID" Type="int" />
+          <Property Name="SiteName" Type="varchar" MaxLength="20" />
           <Property Name="MemberLevelID" Type="int" />
           <Property Name="PushBalanceIndex1" Type="int" />
           <Property Name="PushCoin1" Type="numeric" Precision="10" Scale="2" />
@@ -2337,7 +2339,9 @@
           <Property Name="RuleID" Type="int" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="GameID" Type="int" />
+          <Property Name="GameIndexID" Type="int" />
+          <Property Name="DeviceID" Type="int" />
+          <Property Name="SiteName" Type="varchar" MaxLength="20" />
           <Property Name="PayCount" Type="numeric" Precision="10" Scale="2" />
           <Property Name="PlayCount" Type="int" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
@@ -3579,9 +3583,9 @@
           <EntitySet Name="Flw_DeviceData" EntityType="XCCloudDBModel.Flw_DeviceData" />
           <EntitySet Name="Data_Game_PointRule" EntityType="XCCloudDBModel.Data_Game_PointRule" />
           <EntitySet Name="Flw_Good_Buyback" EntityType="XCCloudDBModel.Flw_Good_Buyback" />
+          <EntitySet Name="Flw_Lottery" EntityType="XCCloudDBModel.Flw_Lottery" />
           <EntitySet Name="Flw_GameAPP_MemberRule" EntityType="XCCloudDBModel.Flw_GameAPP_MemberRule" />
           <EntitySet Name="Flw_GameAPP_Rule_Entry" EntityType="XCCloudDBModel.Flw_GameAPP_Rule_Entry" />
-          <EntitySet Name="Flw_Lottery" EntityType="XCCloudDBModel.Flw_Lottery" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -6614,36 +6618,6 @@
           <Property Name="SyncFlag" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Flw_GameAPP_MemberRule">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="RuleID" Type="Int32" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="GameID" Type="Int32" />
-          <Property Name="MemberLevelID" Type="Int32" />
-          <Property Name="PushBalanceIndex1" Type="Int32" />
-          <Property Name="PushCoin1" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="PushBalanceIndex2" Type="Int32" />
-          <Property Name="PushCoin2" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="PlayCount" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Flw_GameAPP_Rule_Entry">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="RuleID" Type="Int32" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="GameID" Type="Int32" />
-          <Property Name="PayCount" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="PlayCount" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Flw_Lottery">
           <Key>
             <PropertyRef Name="ID" />
@@ -6662,6 +6636,40 @@
           <Property Name="ScheduleID" Type="Int32" />
           <Property Name="UserID" Type="Int32" />
           <Property Name="WorkStation" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_GameAPP_MemberRule">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="RuleID" Type="Int32" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GameIndexID" Type="Int32" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="SiteName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MemberLevelID" Type="Int32" />
+          <Property Name="PushBalanceIndex1" Type="Int32" />
+          <Property Name="PushCoin1" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PushBalanceIndex2" Type="Int32" />
+          <Property Name="PushCoin2" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PlayCount" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_GameAPP_Rule_Entry">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="RuleID" Type="Int32" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GameIndexID" Type="Int32" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="SiteName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PayCount" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PlayCount" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -9878,38 +9886,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_GameAPP_MemberRule">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_GameAPP_MemberRule">
-              <MappingFragment StoreEntitySet="Flw_GameAPP_MemberRule">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="PlayCount" ColumnName="PlayCount" />
-                <ScalarProperty Name="PushCoin2" ColumnName="PushCoin2" />
-                <ScalarProperty Name="PushBalanceIndex2" ColumnName="PushBalanceIndex2" />
-                <ScalarProperty Name="PushCoin1" ColumnName="PushCoin1" />
-                <ScalarProperty Name="PushBalanceIndex1" ColumnName="PushBalanceIndex1" />
-                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
-                <ScalarProperty Name="GameID" ColumnName="GameID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="RuleID" ColumnName="RuleID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Flw_GameAPP_Rule_Entry">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_GameAPP_Rule_Entry">
-              <MappingFragment StoreEntitySet="Flw_GameAPP_Rule_Entry">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="PlayCount" ColumnName="PlayCount" />
-                <ScalarProperty Name="PayCount" ColumnName="PayCount" />
-                <ScalarProperty Name="GameID" ColumnName="GameID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="RuleID" ColumnName="RuleID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Flw_Lottery">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Lottery">
               <MappingFragment StoreEntitySet="Flw_Lottery">
@@ -9926,6 +9902,42 @@
                 <ScalarProperty Name="HeadID" ColumnName="HeadID" />
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
                 <ScalarProperty Name="WorkType" ColumnName="WorkType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_GameAPP_MemberRule">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_GameAPP_MemberRule">
+              <MappingFragment StoreEntitySet="Flw_GameAPP_MemberRule">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="PlayCount" ColumnName="PlayCount" />
+                <ScalarProperty Name="PushCoin2" ColumnName="PushCoin2" />
+                <ScalarProperty Name="PushBalanceIndex2" ColumnName="PushBalanceIndex2" />
+                <ScalarProperty Name="PushCoin1" ColumnName="PushCoin1" />
+                <ScalarProperty Name="PushBalanceIndex1" ColumnName="PushBalanceIndex1" />
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
+                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="RuleID" ColumnName="RuleID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_GameAPP_Rule_Entry">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_GameAPP_Rule_Entry">
+              <MappingFragment StoreEntitySet="Flw_GameAPP_Rule_Entry">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="PlayCount" ColumnName="PlayCount" />
+                <ScalarProperty Name="PayCount" ColumnName="PayCount" />
+                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="RuleID" ColumnName="RuleID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -19,117 +19,7 @@
     <script src="/signalr/hubs"></script>
 
     <script type="text/javascript">
-        var chatHub;
-        $(function () {
-            // Declare a proxy to reference the hub
-            chatHub = $.connection.XCCloudUDPHub;
-            registerClientMethods(chatHub);
-            // Start Hub
-            $.connection.hub.start().done(function () {
-                registerEvents(chatHub);
-            });
 
-        });
-
-        function freshRadar() {
-            chatHub.server.getRadarList(userToken);
-        }
-
-
-        //注册客户端事件
-        function registerEvents(chatHub) {
-            var insStr = "240"; //监听指令：240 雷达上线
-            chatHub.server.connect(userToken, insStr);
-        }
-
-        //注册客户端方法
-        function registerClientMethods(chatHub) {
-
-            chatHub.client.onConnected = function (id, userID) {
-                layer.msg("启动监听", "监听已启动..."); 
-                freshRadar();
-            }
-
-            chatHub.client.onUserDisconnected = function (id, userID) {
-                layer.msg("终止监听", "监听已终止..."); 
-            }
-
-            chatHub.client.onExistUserConnected = function (id, userID) {
-                layer.msg("重启监听", "监听已重启..."); 
-            }
-
-            chatHub.client.onExit = function (id, userID, result_code, reuslt_msg) {
-                if (result_code == "1") {
-                    layer.msg("断开连接", "连接已断开..");
-                }
-                else {
-                    layer.msg(reuslt_msg);
-                }
-            }
-
-            chatHub.client.broadcastMessage = function (insId, storeId) {
-                
-            }
-
-            chatHub.client.hubCall = function (data) {
-                switch (data.callType)
-                {
-                    case "getRadarList": bindRadarList(data); break;
-                    case "checkUserRole": checkUserRole(data); break;
-                    default:break;
-                }
-            }
-        }
-
-        function getQeuryMonitorTableBinding(index) {
-            if (index == 0) {
-                return [[{field:'sel',type: 'checkbox'},
-              { field: 'storeId', title: '店Id' },
-              { field: 'storeName', title: '店名', width: "300" },
-              { field: 'token', title: '设备令牌', width: "300" },
-              { field: 'segment', title: '段地址', width: "120" },
-              { field: 'registerTime', title: '注册时间', width: "160" },
-              { field: 'heatTime', title: '心跳时间', width: "160" },
-              { field: 'stateName', title: '状态', width: "120" }
-                ]];
-            }
-            else {
-                return [[]];
-            }
-        }
-
-        function tableFnc(index, tableData) {
-            var tableId = "t_monitor" + index;
-            var tableBinding = getQeuryMonitorTableBinding(index);
-            layui.use('table', function () {
-                var table = layui.table;
-                table.render({
-                    elem: '#' + tableId
-                    , data: tableData
-                    , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                    , cols: tableBinding
-                });
-            });
-        }
-
-        function bindRadarList(data) {
-            if (data.result_code == "1") {
-                tableFnc(0, data.result_data);
-            }
-            else {
-                tableFnc(0, []);
-            }
-        }
-
-        function checkUserRole(data) {
-            if (data.result_code == "0") {
-                layer.msg(data.result_msg);
-            }
-        }
-
-        function changeImgCode() {
-            $("#imgCode").attr("src","/ServicePage/validateimg.aspx?t=" + Math.random());
-        }
     
     </script>
     <title>门店列表</title>
@@ -873,6 +763,147 @@
         storeStatusModify = '', settleTypeModify = '';
     let StoreTag = 0;
     let arrList = [];
+    var parm = {
+        'url': '/XCCloud/StoreInfo?action=GetStoreList',
+        'obj': {"userToken": token, "signkey": "1f626576304bf5d95b72ece2222e42c3"},
+        'elem': '#storeListTable',
+        'cols': [
+            {type: 'checkbox'}
+            , {field: 'StoreID', title: '门店编号', align: 'center', sort: true} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+            , {field: 'MerchID', title: '归属商户', sort: true}
+            , {field: 'StoreName', title: '门头', align: 'center'}
+            , {field: 'Password', title: '消费密码', align: 'center'} //单元格内容水平居中
+            , {field: 'AuthorExpireDate', title: '授权到期日期', align: 'center'} //单元格内容水平居中
+            , {field: 'AreaCode', title: '邮政编号', align: 'center'}
+            , {field: 'Address', title: '地址', align: 'center'}
+            , {field: 'Contacts', title: '负责人', align: 'center'}
+            , {field: 'Mobile', title: '手机号', align: 'center'}
+            , {field: 'SelttleTypeStr', title: '结算类型', align: 'center'}
+            , {field: 'StoreStateStr', title: '门店状态', align: 'center'}
+            , {fixed: 'right', title: '操作', width: 370, align: 'center', toolbar: '#barDemo'}
+        ]
+    };
+    xc.getInitData(parm);
+    var chatHub;
+    $(function () {
+        // Declare a proxy to reference the hub
+        chatHub = $.connection.XCCloudUDPHub;
+        registerClientMethods(chatHub);
+        // Start Hub
+        $.connection.hub.start().done(function () {
+            registerEvents(chatHub);
+        });
+
+    });
+
+    function freshRadar() {
+        chatHub.server.getRadarList(token);
+    }
+
+
+    //注册客户端事件
+    function registerEvents(chatHub) {
+        var insStr = "240"; //监听指令：240 雷达上线
+        chatHub.server.connect(token, insStr);
+    }
+
+    //注册客户端方法
+    function registerClientMethods(chatHub) {
+
+        chatHub.client.onConnected = function (id, userID) {
+            console.log(id)
+            console.log(userID)
+            layer.msg(
+                "监听已启动..."
+           );
+            freshRadar();
+        }
+
+        chatHub.client.onUserDisconnected = function (id, userID) {
+            layer.msg( "监听已终止...");
+        }
+
+        chatHub.client.onExistUserConnected = function (id, userID) {
+            layer.msg( "监听已重启...");
+        }
+
+        chatHub.client.onExit = function (id, userID, result_code, reuslt_msg) {
+            if (result_code == "1") {
+                layer.msg( "连接已断开..");
+            }
+            else {
+                layer.msg(reuslt_msg);
+            }
+        }
+
+        chatHub.client.broadcastMessage = function (insId, storeId) {
+            console.log(insId)
+            if(insId=='240'){
+                parm.onlineStore=storeId
+            }else {
+
+            }
+        }
+
+        chatHub.client.hubCall = function (data) {
+            switch (data.callType)
+            {
+                case "getRadarList": bindRadarList(data); break;
+                case "checkUserRole": checkUserRole(data); break;
+                default:break;
+            }
+        }
+    }
+
+    function getQeuryMonitorTableBinding(index) {
+        if (index == 0) {
+            return [[{field:'sel',type: 'checkbox'},
+                { field: 'storeId', title: '店Id' },
+                { field: 'storeName', title: '店名', width: "300" },
+                { field: 'token', title: '设备令牌', width: "300" },
+                { field: 'segment', title: '段地址', width: "120" },
+                { field: 'registerTime', title: '注册时间', width: "160" },
+                { field: 'heatTime', title: '心跳时间', width: "160" },
+                { field: 'stateName', title: '状态', width: "120" }
+            ]];
+        }
+        else {
+            return [[]];
+        }
+    }
+
+    function tableFnc(index, tableData) {
+        var tableId = "t_monitor" + index;
+        var tableBinding = getQeuryMonitorTableBinding(index);
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#' + tableId
+                , data: tableData
+                , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                , cols: tableBinding
+            });
+        });
+    }
+
+    function bindRadarList(data) {
+        if (data.result_code == "1") {
+            tableFnc(0, data.result_data);
+        }
+        else {
+            tableFnc(0, []);
+        }
+    }
+
+    function checkUserRole(data) {
+        if (data.result_code == "0") {
+            layer.msg(data.result_msg);
+        }
+    }
+
+    function changeImgCode() {
+        $("#imgCode").attr("src","/ServicePage/validateimg.aspx?t=" + Math.random());
+    }
     layui.use('form', function () {
         var form = layui.form;
 
@@ -903,27 +934,7 @@
         })
 
     });
-    var parm = {
-        'url': '/XCCloud/StoreInfo?action=GetStoreList',
-        'obj': {"userToken": token, "signkey": "1f626576304bf5d95b72ece2222e42c3"},
-        'elem': '#storeListTable',
-        'cols': [
-            {type: 'checkbox'}
-            , {field: 'StoreID', title: '门店编号', align: 'center', sort: true} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
-            , {field: 'MerchID', title: '归属商户', sort: true}
-            , {field: 'StoreName', title: '门头', align: 'center'}
-            , {field: 'Password', title: '消费密码', align: 'center'} //单元格内容水平居中
-            , {field: 'AuthorExpireDate', title: '授权到期日期', align: 'center'} //单元格内容水平居中
-            , {field: 'AreaCode', title: '邮政编号', align: 'center'}
-            , {field: 'Address', title: '地址', align: 'center'}
-            , {field: 'Contacts', title: '负责人', align: 'center'}
-            , {field: 'Mobile', title: '手机号', align: 'center'}
-            , {field: 'SelttleTypeStr', title: '结算类型', align: 'center'}
-            , {field: 'StoreStateStr', title: '门店状态', align: 'center'}
-            , {fixed: 'right', title: '操作', width: 370, align: 'center', toolbar: '#barDemo'}
-        ]
-    };
-    xc.getInitData(parm);
+
     layui.use(['upload', 'form', 'layer', 'table', 'laydate'], function () {
         var $ = layui.jquery, upload = layui.upload, form = layui.form, layer = layui.layer, table = layui.table,
             laydate = layui.laydate;

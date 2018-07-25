@@ -708,7 +708,7 @@ namespace XXCloudService.Api.XCCloud
 
                         //发送指令
                         var radarToken = "";
-                        projectInsChange(new Guid("N").ToString(), storeId, "", data_GameInfo.ID.ToString(), out radarToken, out errMsg);
+                        projectInsChange(System.Guid.NewGuid().ToString("N"), storeId, "", data_GameInfo.ID.ToString(), out radarToken, out errMsg);
                         
                         ts.Complete();                        
 
@@ -919,7 +919,7 @@ namespace XXCloudService.Api.XCCloud
 
                         //发送指令
                         var radarToken = "";
-                        projectInsChange(new Guid("N").ToString(), storeId, "", iId.ToString(), out radarToken, out errMsg);
+                        projectInsChange(System.Guid.NewGuid().ToString("N"), storeId, "", iId.ToString(), out radarToken, out errMsg);
 
                         ts.Complete();                        
 

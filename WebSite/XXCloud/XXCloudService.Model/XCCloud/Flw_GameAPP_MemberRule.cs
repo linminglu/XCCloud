@@ -18,7 +18,9 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> RuleID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> GameID { get; set; }
+        public Nullable<int> GameIndexID { get; set; }
+        public Nullable<int> DeviceID { get; set; }
+        public string SiteName { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<int> PushBalanceIndex1 { get; set; }
         public Nullable<decimal> PushCoin1 { get; set; }

@@ -184,9 +184,9 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_DeviceData" Width="1.5" PointX="35.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Game_PointRule" Width="1.5" PointX="35.375" PointY="18.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Good_Buyback" Width="1.5" PointX="45.375" PointY="21.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Lottery" Width="1.5" PointX="45.375" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GameAPP_MemberRule" Width="1.5" PointX="35.375" PointY="22.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GameAPP_Rule_Entry" Width="1.5" PointX="37.375" PointY="26.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Lottery" Width="1.5" PointX="45.375" PointY="27.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

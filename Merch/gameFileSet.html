@@ -888,24 +888,25 @@
                             </div>
                             <div class="layui-form-item pointBox">
                                 <div class="layui-inline pointList">
-                                    <div class="layui-input-inline">
-                                        <select name="pointMemberLevelID" id="pointMemberLevelID"></select>
+                                    <div class="layui-input-inline" style="width: 120px">
+                                        <select name="pointMemberLevelID" id="pointMemberLevelID" lay-ignore="" style="width: 120px;height: 38px;border: 1px solid #eee;"></select>
                                     </div>
                                     <div class="layui-form-mid">按键一每次消费可获得</div>
-                                    <div class="layui-input-inline">
+                                    <div class="layui-input-inline" style="width: 100px">
                                         <input class="layui-input" name="Key1Count">
                                     </div>
-                                    <div class="layui-input-inline">
-                                        <select id="Key1BalanceIndex" name="Key1BalanceIndex" lay-ignore=""></select>
+                                    <div class="layui-input-inline" style="width: 120px">
+                                        <select id="Key1BalanceIndex" name="Key1BalanceIndex" lay-ignore=""  style="width: 120px;height: 38px;border: 1px solid #eee;"></select>
                                     </div>
+                                    <!--<br>-->
                                     <div class="layui-form-mid">按键二每次消费可获得</div>
-                                    <div class="layui-input-inline">
-                                        <input class="layui-input" name="Key2Count">
+                                    <div class="layui-input-inline" style="width: 100px">
+                                        <input class="layui-input" name="Key2Count" >
                                     </div>
-                                    <div class="layui-input-inline">
-                                        <select id="Key2BalanceIndex" name="Key2BalanceIndex" lay-ignore=""></select>
+                                    <div class="layui-input-inline" style="width: 120px">
+                                        <select id="Key2BalanceIndex" name="Key2BalanceIndex" lay-ignore="" style="width: 120px;height: 38px;border: 1px solid #eee;"></select>
                                     </div>
-                                    <div class="layui-input-inline">
+                                    <div class="layui-input-inline" style="width: 40px;margin-top: 5px">
                                         <button type="button" class="layui-btn layui-btn-danger layui-btn-sm delPointBtn">删除</button>
                                     </div>
                                 </div>
@@ -1136,12 +1137,12 @@
         let url = '/XCCloud/GameInfo?action=SaveGameInfo';
 
         let _arr=[];
-        $('.goodConvert .goodRules').each(function () {
-            if ($(this).find('input[name="chargeOff"]').val() !== '' &&
-                $(this).find('select[name="freeRates"] option:selected').val() !== '' &&
-                $(this).find('input[name="maxSaveCount"]').val() !== '' &&
-                $(this).find('input[name="maxUplife"]').val() !== ''
-            ) {
+        $('.pointBox .pointList').each(function () {
+            // if ($(this).find('input[name="chargeOff"]').val() !== '' &&
+            //     $(this).find('select[name="freeRates"] option:selected').val() !== '' &&
+            //     $(this).find('input[name="maxSaveCount"]').val() !== '' &&
+            //     $(this).find('input[name="maxUplife"]').val() !== ''
+            // ) {
                 _arr.push({
                     'state':PointState,
                     'memberLevelID': $(this).find('select[name="pointMemberLevelID"] option:selected').val(),
@@ -1150,7 +1151,7 @@
                     'Key2Count': $(this).find('input[name="Key2Count"]').val(),
                     'Key2BalanceIndex': $(this).find('select[name="Key2BalanceIndex"] option:selected').val(),
                 });
-            }
+            // }
         });
         let _obj = {
             'ID': id,
@@ -1317,13 +1318,13 @@
                 }
             }
         });
-        let __obj = {'hkType': '3', 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
-        let _parseJson = JSON.stringify(__obj);
+        let __obj1 = {'hkType': '3', 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+        let _parseJson1 = JSON.stringify(__obj1);
         $.ajax({
             type: 'post',
             url: '/XCCloud/BalanceType?action=GetBalanceTypeDic',
             contentType: "application/json; charset=utf-8",
-            data: {parasJson: _parseJson},
+            data: {parasJson: _parseJson1},
             async: false,
             success: function (data) {
                 data = JSON.parse(data);
