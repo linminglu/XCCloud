@@ -58,7 +58,8 @@ namespace XCCloudWebBar.Business.XCCloud
             IData_WorkstationService workstationService = BLLContainer.Resolve<IData_WorkstationService>();
             var model = workstationService.GetModels(p => p.MerchID.Equals(merchId) && p.StoreID.Equals(storeId) && p.WorkStation.Equals(workStation) && p.State == 1).FirstOrDefault<Data_Workstation>();
             if (model == null)
-            {  
+            {
+                errMsg = "工作站不存在";
                 return false;
             }
             else

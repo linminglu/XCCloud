@@ -16,11 +16,24 @@ as
  begin try
 	declare @UserId int 
 	declare @AuditorId int
+	declare @CreateTime datetime = GETDATE()
 	--添加门店用户
 	select @AuditorId = ID from Base_UserInfo where OpenID = (select WXOpenID from Base_MerchantInfo where ID = (select MerchID from Base_StoreInfo where ID=@StoreId))
-	insert into Base_UserInfo(StoreID,MerchID,UserType,LogName,LogPassword,OpenID,UnionID,RealName,Mobile,ICCardID,CreateTime,[Status],Auditor)
-	values(@StoreId,@MerchId,@UserType,@Username,@UserPassword,@WXOpenID,@UnionID,@Realname,@Mobile,'',GETDATE(),0,@AuditorId)
-	set @UserId = @@identity	
+	
+	--添加验证类型信息
+	declare @VerifictionType as VerifictionType
+	insert @VerifictionType(FieldName,FieldValue)
+	EXEC dbo.V_GetUserInfoVerifiction null,@MerchId,@StoreId,@UserType,null,@Username,@UserPassword,@WXOpenID,@Realname,@Mobile,'',@CreateTime,0,@AuditorId,null,null,null,@UnionID,null,null,null
+	declare @Verifiction varchar(32) = dbo.F_GetVerifiction(@VerifictionType)
+	
+	insert into Base_UserInfo(StoreID,MerchID,UserType,LogName,LogPassword,OpenID,UnionID,RealName,Mobile,ICCardID,CreateTime,[Status],Auditor,Verifiction)
+	values(@StoreId,@MerchId,@UserType,@Username,@UserPassword,@WXOpenID,@UnionID,@Realname,@Mobile,'',@CreateTime,0,@AuditorId,@Verifiction)
+	set @UserId = @@identity
+	
+    --添加同步
+    insert into Sync_DataList(MerchID,StoreID,TableName,IDValue,SyncType,CreateTime,SyncFlag)
+    values(@MerchId,@StoreId,'Base_UserInfo',CONVERT(varchar, @UserId),0,GETDATE(),0)
+    
 	--添加工单	
 	insert into XC_WorkInfo(SenderID,SenderTime,WorkType,WorkState,WorkBody,AuditorID)
 	values(@UserId,GETDATE(),0,0,@Message,@AuditorId) 
@@ -1051,6 +1064,58 @@ as
 
 
 
+
+GO
+
+CREATE Proc [dbo].[V_GetUserInfoVerifiction]
+(
+@AgentID int = null,
+@MerchID varchar(15),
+@StoreID varchar(15),
+@UserType int = null,
+@IsAdmin int = null,
+@LogName varchar(50),
+@LogPassword varchar(32),
+@OpenID varchar(32),
+@RealName varchar(50),
+@Mobile varchar(16),
+@ICCardID varchar(16),
+@CreateTime datetime = null,
+@Status int = null,
+@Auditor int = null,
+@AuditorTime datetime = null,
+@UserGroupID int = null,
+@AuthorTempID int = null,
+@UnionID varchar(64),
+@SwitchMerch int = null,
+@SwitchStore int = null,
+@SwitchWorkstation int = null
+)
+as
+  declare @VerifictionType as VerifictionType
+  insert @VerifictionType(FieldName,FieldValue) values('AgentID',@AgentID)
+  insert @VerifictionType(FieldName,FieldValue) values('MerchID',@MerchID)
+  insert @VerifictionType(FieldName,FieldValue) values('StoreID',@StoreID)
+  insert @VerifictionType(FieldName,FieldValue) values('UserType',@UserType)
+  insert @VerifictionType(FieldName,FieldValue) values('IsAdmin',@IsAdmin)
+  insert @VerifictionType(FieldName,FieldValue) values('LogName',@LogName)
+  insert @VerifictionType(FieldName,FieldValue) values('LogPassword',@LogPassword)
+  insert @VerifictionType(FieldName,FieldValue) values('OpenID',@OpenID)
+  insert @VerifictionType(FieldName,FieldValue) values('RealName',@RealName)
+  insert @VerifictionType(FieldName,FieldValue) values('Mobile',@Mobile)
+  insert @VerifictionType(FieldName,FieldValue) values('ICCardID',@ICCardID)
+  insert @VerifictionType(FieldName,FieldValue) values('CreateTime',@CreateTime)
+  insert @VerifictionType(FieldName,FieldValue) values('Status',@Status)
+  insert @VerifictionType(FieldName,FieldValue) values('Auditor',@Auditor)
+  insert @VerifictionType(FieldName,FieldValue) values('AuditorTime',@AuditorTime)
+  insert @VerifictionType(FieldName,FieldValue) values('UserGroupID',@UserGroupID)
+  insert @VerifictionType(FieldName,FieldValue) values('AuthorTempID',@AuthorTempID)
+  insert @VerifictionType(FieldName,FieldValue) values('UnionID',@UnionID)
+  insert @VerifictionType(FieldName,FieldValue) values('SwitchMerch',@SwitchMerch)
+  insert @VerifictionType(FieldName,FieldValue) values('SwitchStore',@SwitchStore)
+  insert @VerifictionType(FieldName,FieldValue) values('SwitchWorkstation',@SwitchWorkstation)
+  select FieldName,FieldValue from @VerifictionType
+  
 
 GO
 

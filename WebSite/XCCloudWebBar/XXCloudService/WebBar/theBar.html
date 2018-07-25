@@ -16,7 +16,7 @@
     <script type="text/javascript" src="js/vue.min.js"></script>
     <script type="text/javascript" src="js/iview.min.js"></script>
     <style>
-
+        .emptyShopping{margin: 0.5em auto;}
     </style>
 </head>
 <body>
@@ -830,13 +830,13 @@
 					</div>
 					<div v-if="orderIf" class="orderList-text">
 						<h4>挂单列表</h4>
-						<div v-for="(item,index) in orderList" @click.stop="getOrderContain">
+						<div v-for="(item,index) in orderList" @click.stop="getOrderContain(index)">
 							{{item.cacheTime}}
 						</div>
 					</div>
 				</div>
 				<div class="Checkout col-lg-12 col-md-12">
-                    <i-button @click="">清空购物车</i-button>
+                    <i-button class="emptyShopping" @click="emptyShoppingCard">清空购物车</i-button>
 					<div v-for="(item,index) in shopping" class="col-lg-12 col-md-12 shopCStyle">
 						<div class="col-lg-7 col-md-7 text-left shopCStyle">{{item.typeName}}</div>
 						<div class="col-lg-5 col-md-5 text-right shopCStyle">{{item.payNum}}</div>
@@ -1359,10 +1359,6 @@
     var dogIdToken ="";
     // 20110013
     var ws = new WebSocket("ws://127.0.0.1:12880");
-    var destroy =[
-        {"no":1,"name":"2017-09-04 12:44:30","name1":108,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108},
-        {"no":1,"name":"2017-09-04 12:44:30","name1":107,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108}
-    ];
     var vm = new Vue({
         el: '#app',
         data:{
@@ -1532,31 +1528,7 @@
             treeShow:false,
             givingShow:false,
             balanceData:[],
-            refundData:[{
-                balanceType:"代币",
-                balance:"2000",
-                balance1:"1600",
-                balance2:"400",
-                balance3:"1600",
-                balance4:"1000",
-                balance5:"500"
-            },{
-                balanceType:"积分",
-                balance:"200000",
-                balance1:"200000",
-                balance2:"0",
-                balance3:"0",
-                balance4:"0",
-                balance5:"0"
-            },{
-                balanceType:"合计",
-                balance:"",
-                balance1:"",
-                balance2:"",
-                balance3:"",
-                balance4:"1000",
-                balance5:"500"
-            }],
+            getMealValue:0,
             exchangeRate:[],
             amountTotal1:0,
             amountTotal2:0,
@@ -1756,6 +1728,12 @@
                 console.log(this.shopping);
                 var cashChange = this.inputCash - payNum*1;
                 this.cashChange = cashChange.toFixed(2);
+            },
+            getMealValue:function(){
+                if(this.getMealValue == 2){
+                    this.getMeal();
+                    this.getMealValue = 0
+                }
             }
         },
         methods: {
@@ -1837,11 +1815,6 @@
 								case "11":
 								    if(that.msgEleven === "0"){
                                         that.dataObj =receivedMsg.dataObj;
-                                        $('#checkoutModal').modal('show');
-                                        that.inputCashFocus = true;
-                                        that.registerCheckOut = true;
-                                        that.shopCheckOut = false;
-                                        that.cardCheckOut = false;
                                         that.registerFnc();
 									}else if(that.msgEleven === "1"){
                                         that.dataObj =receivedMsg.dataObj;
@@ -1893,7 +1866,6 @@
                         eval(inputValue +"="+inputVl);
                         console.log(eval(inputValue +"="+inputVl));
 					}
-
 				});
                 $('#formNum1 div .remove').click(function() {
                     var inputV_ = eval(inputValue);
@@ -2016,8 +1988,8 @@
 				var that =this;
 				that.inputCash = "";
 				that.cashChange = "";
-				console.log(that.shopData== "");
-                if(that.shopData == ""){
+				console.log(that.shopData== []);
+                if(that.shopData == []){
                     that.msg = "购物车是空的，亲！";
                     $('#myModal').modal('show');
 				}else {
@@ -2036,26 +2008,26 @@
                     var buyDetails =JSON.stringify(that.buyDetails);
                     that.loading = true;
                     if(that.updateOrder){
-                        if(that.icCardId == ""){
-                            var customerType = "0"
-                            var icCardId = "0"
-                        }else{
-                            var customerType = "2"
-                            var icCardId = that.icCardId
-                        }
-                        var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
-                        axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
-                            console.log(res.data);
-                            that.msgPrompt(res.data);
-                            that.loading = false;
-                            if (res.data.result_code === '1') {
-                                $('#checkoutModal').modal('show');
-                                that.getDiscountRuleList(payCount)
-                                that.inputCashFocus = true;
-                            }
-                        }).catch(function (err) {
-                            console.log(err);
-                        });
+                        // if(that.icCardId == ""){
+                        //     var customerType = "0"
+                        //     var icCardId = "0"
+                        // }else{
+                        //     var customerType = "2"
+                        //     var icCardId = that.icCardId
+                        // }
+                        // var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        // axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//更新订单
+                        //     console.log(res.data);
+                        //     that.msgPrompt(res.data);
+                        //     that.loading = false;
+                        //     if (res.data.result_code === '1') {
+                        //         $('#checkoutModal').modal('show');
+                        //         that.getDiscountRuleList(payCount);
+                        //         that.inputCashFocus = true;
+                        //     }
+                        // }).catch(function (err) {
+                        //     console.log(err);
+                        // });
 					}else {
                         if(that.icCardId == ""){
                             var customerType = "0"
@@ -2083,10 +2055,17 @@
 //          获取满减规则信息
             getDiscountRuleList:function(foodPrice){
                 var that = this;
-                var obj={userToken:that.userToken,customerType:that.customerType,icCardId:that.icCardId,foodPrice:foodPrice};
+                if(that.icCardId == ""){
+                    var customerType = "0"
+                    var icCardId = "0"
+                }else{
+                    var customerType = "2"
+                    var icCardId = that.icCardId
+                }
+                var obj={userToken:that.userToken,customerType:customerType,icCardId:icCardId,foodPrice:foodPrice};
                 axios.post('/XCCloud/discount?action=getDiscountRuleList', obj).then(function (res) {	//创建订单
                     console.log(res.data);
-                    // that.msgPrompt(res.data);
+                    that.msgPrompt(res.data);
                     that.loading = false;
                     if (res.data.result_code === '1') {
                         // 
@@ -2096,12 +2075,11 @@
                 });
 
             },
-            // /XCCloud/discount?action=getDiscountRuleList
 //			挂单
             cancelled:function () {
                 var that =this;
-                console.log(that.shopData== "");
-                if(that.shopData == ""){
+                console.log(that.shopData== []);
+                if(that.shopData == []){
                     that.msg = "购物车是空的，亲！";
                     $('#myModal').modal('show');
                 }else {
@@ -2114,47 +2092,45 @@
                             payCount = parseFloat(that.buyDetails[i].payNum) + payCount
                         }
                     }
-                    console.log(foodCount);
-                    console.log(payCount);
                     that.payCount = payCount;
                     var buyDetails =JSON.stringify(that.buyDetails);
                     that.loading = true;
                     if(that.updateOrder){
-                        if(that.icCardId == ""){
-                            var customerType = "0"
-                            var icCardId = "0"
-                        }else{
-                            var customerType = "2"
-                            var icCardId = that.icCardId
-                        }
-                        var addOrderJson={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
-                        
-                        axios.post('/xccloud/order?action=addOrder', addOrderJson).then(function (res) {	//创建订单
-                            console.log(res.data);
-                            that.msgPrompt(res.data);
-                            if (res.data.result_code === '1') {
-                                var orderFlwId = res.data.result_data.orderFlwId;
-                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:customerType};
-                                console.log(obj);
-                                axios.post('/xccloud/order?action=addOrderToCache', obj).then(function (res) {	//挂起订单
-                                    console.log(res.data);
-                                    that.msgPrompt(res.data);
-                                    that.loading = false;
-                                    if (res.data.result_code === '1') {
-                                        that.updateOrder = false;
-                                        that.msg = "挂单成功！";
-                                        $('#myModal').modal('show');
-                                        setTimeout(function () {
-                                            $('#myModal').modal('hide');
-                                        }, 1500);
-                                    }
-                                }).catch(function (err) {
-                                    console.log(err);
-                                });
-                            }
-                        }).catch(function (err) {
-                            console.log(err);
-                        });
+                        // if(that.icCardId == ""){
+                        //     var customerType = "0"
+                        //     var icCardId = "0"
+                        // }else{
+                        //     var customerType = "2"
+                        //     var icCardId = that.icCardId
+                        // }
+                        // var updateOrder={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        // console.log(updateOrder)
+                        // axios.post('/xccloud/order?action=addOrder', updateOrder).then(function (res) {	//更新订单
+                        //     console.log(res.data);
+                        //     that.msgPrompt(res.data);
+                        //     if (res.data.result_code === '1') {
+                        //         var orderFlwId = res.data.result_data.orderFlwId;
+                        //         var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:customerType};
+                        //         console.log(obj);
+                        //         axios.post('/xccloud/order?action=addOrderToCache', obj).then(function (res) {	//挂起订单
+                        //             console.log(res.data);
+                        //             that.msgPrompt(res.data);
+                        //             that.loading = false;
+                        //             if (res.data.result_code === '1') {
+                        //                 that.updateOrder = false;
+                        //                 that.msg = "挂单成功！";
+                        //                 $('#myModal').modal('show');
+                        //                 setTimeout(function () {
+                        //                     $('#myModal').modal('hide');
+                        //                 }, 1500);
+                        //             }
+                        //         }).catch(function (err) {
+                        //             console.log(err);
+                        //         });
+                        //     }
+                        // }).catch(function (err) {
+                        //     console.log(err);
+                        // });
                     }else {
                         if(that.icCardId == ""){
                             var customerType = "0"
@@ -2164,13 +2140,14 @@
                             var icCardId = that.icCardId
                         }
                         var addOrderJson={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        console.log(addOrderJson)
                         axios.post('/xccloud/order?action=addOrder', addOrderJson).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
                             that.loading = false;
                             if (res.data.result_code === '1') {
                                 var orderFlwId = res.data.result_data.orderFlwId;
-                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:customerType};
+                                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:icCardId,orderFlwId:orderFlwId,customerType:customerType};
                                 console.log(obj);
                                 axios.post('/xccloud/order?action=addOrderToCache', obj).then(function (res) {	//挂起订单
                                     console.log(res.data);
@@ -2195,6 +2172,10 @@
 
                 }
             },
+//          清空购物车
+            emptyShoppingCard:function(){
+                this.shopData = [];
+            },
 //			获取挂单列表
             getCacheOrder:function () {
                 var that =this;
@@ -2216,7 +2197,25 @@
 				}
             },
 //			获取套餐订单
-            getOrderContain:function () {
+            getOrderContain:function (index) {
+                var that = this;
+                console.log(index);
+                console.log(that.orderList);
+                if(!that.loading){
+                    that.loading = true;
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderFlwId:that.orderList[index].flwOrderId};
+                    console.log(obj);
+                    axios.post('/xccloud/order?action=getOrderContain', obj).then(function (res) {	//获取订单
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            that.orderList = res.data.result_data;
+                            that.orderIf = !that.orderIf;
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
             },
 //			结账输入
             sumPrice:function () {
@@ -2387,6 +2386,11 @@
                             }];
                         var registerMemberJson =JSON.stringify(registerMEmber);
                         that.registerCheckOutData ={flwOrderId:res.data.result_data.orderFlwId,registerMemberJson:registerMemberJson}
+                        $('#checkoutModal').modal('show');
+                        that.inputCashFocus = true;
+                        that.registerCheckOut = true;
+                        that.shopCheckOut = false;
+                        that.cardCheckOut = false;
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -2428,7 +2432,6 @@
                     console.log(err);
                 })
             },
-
 //			会员操作
             operationFnc:function () {
                 var that = this;
@@ -3000,6 +3003,7 @@
                             console.log(that.sallData)
                             that.sallData.optionList1 = saleTitle;
                             that.sallData.selectValue1 = saleTitle[0].foodTypeId;
+                            that.getMealValue++;
                         }
                     }).catch(function (err) {
                         console.log(err);
@@ -3011,13 +3015,15 @@
                         if (res.data.result_code === '1') {
                             that.sallData.optionList2 = res.data.result_data;
                             that.sallData.selectValue2 = that.sallData.optionList2[0].id;
+                            that.getMealValue++;
                         }
                     }).catch(function (err) {
                         console.log(err);
                     });
-                    setTimeout(function () {
-                        that.getMeal();
-                    }, 1300);
+
+                    // setTimeout(function () {
+                    //     that.getMeal();
+                    // }, 1300);
                     // that.$nextTick(function () {
                         
                     // })
@@ -3101,14 +3107,12 @@
                     var inputValue2 =that.sallData.inputValue2
                 }
                 if(inputValue1 < inputValue2){
-                    
                     var minPrice =inputValue1
                     var maxPrice =inputValue2
                 }else{
                     var minPrice =inputValue2
                     var maxPrice =inputValue1
                 }
-
 				var priceLimit ={ category:that.sallData.selectValue1, balanceIndex:that.sallData.selectValue2, minPrice:minPrice, maxPrice:maxPrice};
                 var priceLimitStr = JSON.stringify(priceLimit);
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:memberLevelId,foodTypeStr:that.saleTitle[that.sallData.indexPrev].foodTypeId,priceLimit:priceLimitStr};

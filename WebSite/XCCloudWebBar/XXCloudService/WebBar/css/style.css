@@ -60,7 +60,7 @@ body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;
 /*会员信息*/
 .shopCart ul{min-height: 40em;}
 .shopCart ul li span{font-size: 1em;margin-top: 0.5em;text-align: center;}
-.Checkout{position: absolute;left: 0;bottom: 0.2em;z-index: 3;color: #555555;}
+.Checkout{position: absolute;left: 0;bottom: 0.2em;z-index: 3;color: #555555;text-align: center;}
 .CheckoutBtn button{margin: 1em 0.5em;color: #fff;font-size: 1.2em;width: 40%;}
 /*.CountH{background: rgba(0,0,0,0.1):DXImageTransform.Microsoft.gradient(startColorstr=#10000000,endColorstr=#10000000);border-color: #f0f0f0;}*/
 .CheckoutBtn .btn-danger{background-color: #f82806;border: 1px solid #f82806;}

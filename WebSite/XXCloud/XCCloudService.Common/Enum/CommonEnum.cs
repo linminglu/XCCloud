@@ -1693,6 +1693,17 @@ namespace XCCloudService.Common.Enum
         H5_APP = 5
     }
 
+    /// <summary>
+    /// 订单回调操作
+    /// </summary>
+    public enum OrderHandleEnum
+    {
+        充值 = 0,
+        门票 = 1,
+        散客投币 = 2,
+        会员投币 = 3
+    }
+
 
     public enum AuditOrderType
     {

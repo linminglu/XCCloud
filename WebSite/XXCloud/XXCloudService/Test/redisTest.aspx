@@ -41,6 +41,14 @@
         <asp:Button ID="Button8" runat="server" OnClick="Button8_Click" Text="Redis过期时间连续写入测试" />
 
     </div>
+        <hr />
+    <div>
+
+        OrderId:<asp:TextBox ID="txtOrderId" runat="server"></asp:TextBox>
+        RuleId:<asp:TextBox ID="txtRuleId" runat="server"></asp:TextBox>
+        <asp:Button ID="Button9" runat="server" Text="远程投币" OnClick="Button9_Click" />
+
+    </div>
     </form>
 </body>
 </html>

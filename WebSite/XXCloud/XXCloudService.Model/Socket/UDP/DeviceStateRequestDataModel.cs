@@ -45,4 +45,25 @@ namespace XCCloudService.Model.Socket.UDP
         [DataMember(Name = "signkey", Order = 4)]
         public string SignKey { set; get; }
     }
+
+    public class DeviceStateDataModel
+    {
+        public string token { get; set; }
+        public string signkey { get; set; }
+        public List<DeviceListStateModel> deviceList { get; set; }
+    }
+
+    public class DeviceListStateModel
+    {
+        public string mcuid { get; set; }
+        public string status { get; set; }
+    }
+
+    public class DeviceStateCacheModel
+    {
+        public string Token { get; set; }
+        public string MCUID { get; set; }
+        public string State { get; set; }
+        public string SignKey { get; set; }
+    }
 }

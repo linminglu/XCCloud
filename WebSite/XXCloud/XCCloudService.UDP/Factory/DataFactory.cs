@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,7 @@ using XCCloudService.Base;
 using XCCloudService.Business.Common;
 using XCCloudService.Business.XCGame;
 using XCCloudService.Business.XCGameMana;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.Common;
@@ -290,6 +292,24 @@ namespace XCCloudService.SocketService.UDP.Factory
             string responseJson = JsonHelper.DataContractJsonSerializer(responseModel);
             obj = new DeviceStateOutParamsModel(responsePackages, responseModel, responseJson);
             requestDataObj = ((DeviceStateRequestDataModel)(requestDataModel));
+
+            try
+            {
+                DeviceStateDataModel deviceStateModel = JsonConvert.DeserializeObject<DeviceStateDataModel>(data);
+                if (deviceStateModel != null)
+                {
+                    foreach (var item in deviceStateModel.deviceList)
+                    {
+                        DeviceStateCacheModel model = new DeviceStateCacheModel();
+                        model.Token = deviceStateModel.token;
+                        model.MCUID = item.mcuid;
+                        model.State = item.status;
+                        model.SignKey = deviceStateModel.signkey;
+                        RedisCacheHelper.HashSet<DeviceStateCacheModel>(CommonConfig.DeviceStateKey, model.MCUID, model);
+                    }
+                }
+            }
+            catch { }
         }
 
         /// <summary>
@@ -587,6 +607,45 @@ namespace XCCloudService.SocketService.UDP.Factory
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程设备控制指令), "远程设备控制指令", radarModel.Token, requestJson);
             return true;
         }
+        #endregion
+
+        #region "向雷达发送投币数据包"
+
+        /// <summary>
+        /// 向雷达发送投币数据包
+        /// </summary>
+        /// <param name="controlModel">出币请求模式</param>
+        /// <param name="errMsg">错误信息</param>
+        /// <returns></returns>
+        public static bool SendCoinInDataToRadar(RemoteDeviceControlRequestDataModel controlModel, out string errMsg)
+        {
+            errMsg = string.Empty;
+            string ip = string.Empty;
+            string radarToken = controlModel.Token;
+            int port = 0;
+            if (!DataFactory.GetRadarClient(radarToken, out ip, out port))
+            {
+                errMsg = "未能获取雷达端地址";
+                return false;
+            }
+            //向雷达发送数据
+            RemoteDeviceControlRequestDataModel radarModel = controlModel;
+            SignKeyHelper.SetSignKey(radarModel, controlModel.StorePassword);
+            //对象序列化为字节数组
+            byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(radarModel);
+            //生成发送数据包
+            byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程设备控制指令, dataByteArr);
+            //按sn序号，保存发送数据包
+            UDPSocketAnswerModel answerModel = new UDPSocketAnswerModel(ip, port, requestPackages, controlModel.OrderId, System.DateTime.Now, "", "", "", controlModel.MCUID, 1, controlModel.SN);
+            UDPSocketAnswerBusiness.SetAnswer(answerModel);
+            //服务端发送数据
+            XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+            //记录日志
+            string requestJson = JsonHelper.DataContractJsonSerializer(radarModel);
+            //UDPLogHelper.SaveUDPSendDeviceControlLog(controlModel.StoreId, controlModel.Mobile, controlModel.MCUId, controlModel.OrderId, controlModel.Segment, controlModel.SN, controlModel.Coins, int.Parse(controlModel.Action), requestJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程设备控制指令), "远程设备控制指令", radarModel.Token, requestJson);
+            return true;
+        }
 
         /// <summary>
         /// 通过雷达token获取雷达客户端信息
@@ -612,7 +671,6 @@ namespace XCCloudService.SocketService.UDP.Factory
         }
 
         #endregion
-
 
         #region "向雷达发送门店账目查询指令"
 

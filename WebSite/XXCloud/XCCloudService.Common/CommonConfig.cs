@@ -122,5 +122,10 @@ namespace XCCloudService.Common
         /// UPD订单号与sn缓存KEY
         /// </summary>
         public static string UdpOrderSNCache = "UPD_ORDERID_SN";
+
+        /// <summary>
+        /// 设备缓存key
+        /// </summary>
+        public static string DeviceStateKey = "DeviceStateRedisKey";
     }
 }

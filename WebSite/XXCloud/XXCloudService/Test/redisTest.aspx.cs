@@ -10,10 +10,12 @@ using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
+using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin;
 using XCCloudService.Model.XCCloud;
 using XCCloudService.OrderPayCallback.Common;
+using XXCloudService.Utility;
 
 namespace XXCloudService.Test
 {
@@ -149,6 +151,21 @@ namespace XXCloudService.Test
             catch(Exception ex)
             {
                 Response.Write(ex.Message);
+            }
+        }
+
+        protected void Button9_Click(object sender, EventArgs e)
+        {
+            string errMsg = "";
+            Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == txtOrderId.Text.Trim()).FirstOrDefault();
+            Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ID == order.CardID).FirstOrDefault();
+            Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.ID == order.StoreID).FirstOrDefault();
+            Flw_GameAPP_Rule_Entry gameRule = Flw_GameAPP_Rule_EntryService.I.GetModels(t => t.ID == txtRuleId.Text.Trim()).FirstOrDefault();
+            Base_DeviceInfo device = Base_DeviceInfoService.I.GetModels(t => t.ID == gameRule.DeviceID).FirstOrDefault();
+            //请求雷达投币
+            if (!IConUtiltiy.RemoteDeviceCoinIn(XCGameManaDeviceStoreType.Store, DevieControlTypeEnum.投币, card.ICCardID, order.ID, device.MCUID, store.Password, "1", gameRule.RuleID.ToString(), "1", out errMsg))
+            {
+                Response.Write(errMsg);
             }
         }
     }

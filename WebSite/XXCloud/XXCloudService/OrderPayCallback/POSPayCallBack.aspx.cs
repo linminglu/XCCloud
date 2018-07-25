@@ -21,6 +21,7 @@ using XCCloudService.Model.XCCloud;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.Pay.PPosPay;
+using XXCloudService.Utility;
 
 namespace XXCloudService.PayChannel
 {
@@ -121,8 +122,25 @@ namespace XXCloudService.PayChannel
                         Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == out_trade_no).FirstOrDefault();
                         if (order != null && order.OrderStatus == 1)
                         {
+                            OrderHandleEnum handle;
+                            string coinRuleId = string.Empty;
                             //云平台订单处理                        
-                            orderBusiness.OrderPay(out_trade_no, payAmount, callback.OfficeId, SelttleType.StarPos, payment, out errMsg);
+                            bool ret = orderBusiness.H5OrderPay(out_trade_no, payAmount, callback.OfficeId, SelttleType.StarPos, payment, out handle, out coinRuleId, out errMsg);
+                            if(ret)
+                            {
+                                if(handle == OrderHandleEnum.散客投币)
+                                {
+                                    Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ID == order.CardID).FirstOrDefault();
+                                    Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.ID == order.StoreID).FirstOrDefault();
+                                    Flw_GameAPP_Rule_Entry gameRule = Flw_GameAPP_Rule_EntryService.I.GetModels(t => t.ID == coinRuleId).FirstOrDefault();
+                                    Base_DeviceInfo device = Base_DeviceInfoService.I.GetModels(t => t.ID == gameRule.DeviceID).FirstOrDefault();
+                                    //请求雷达投币
+                                    if (!IConUtiltiy.RemoteDeviceCoinIn(XCGameManaDeviceStoreType.Store, DevieControlTypeEnum.投币, card.ICCardID, order.ID,  device.MCUID, store.Password, "1", gameRule.RuleID.ToString(), "1", out errMsg))
+                                    {
+                                        PayLogHelper.WritePayLog(errMsg);
+                                    }
+                                }
+                            }
                         }
                     }
                     else //扫码支付

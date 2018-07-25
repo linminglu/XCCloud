@@ -1061,6 +1061,8 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 if (!dicParas.Get("gameId").Validintnozero("游戏机ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.GetArray("gameAppRules").Validarray("散客扫码规则", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 
                 var gameId = dicParas.Get("gameId").Toint();
                 var gameAppRules = dicParas.GetArray("gameAppRules");

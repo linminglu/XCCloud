@@ -160,8 +160,10 @@ namespace XCCloudService.Business.XCCloud
         /// <param name="selttleType">结算类型</param>
         /// <param name="selttleType">支付方式</param>
         /// <returns></returns>
-        public bool H5OrderPay(string orderId, decimal amount, string channelOrderNo, SelttleType selttleType, PaymentChannel payment, out string errMsg)
+        public bool H5OrderPay(string orderId, decimal amount, string channelOrderNo, SelttleType selttleType, PaymentChannel payment, out OrderHandleEnum handle, out string coinRuleId, out string errMsg)
         {
+            handle = OrderHandleEnum.充值;
+            coinRuleId = string.Empty;
             errMsg = string.Empty;
             try
             {
@@ -174,7 +176,7 @@ namespace XCCloudService.Business.XCCloud
 
                 if (order.OrderStatus == 2 || order.OrderStatus == 3)
                 {
-                    return true;
+                    return false;
                 }
 
                 string StoreID = order.StoreID;
@@ -189,7 +191,7 @@ namespace XCCloudService.Business.XCCloud
                 order.RealPay = amount;
                 order.OrderNumber = channelOrderNo;
 
-                List<OrderDetailSaleModel> orderDetailSaleList = new List<OrderDetailSaleModel>();
+                Flw_Order_Detail orderDetail = null;
 
                 if (payAmount == amount)
                 {
@@ -261,11 +263,8 @@ namespace XCCloudService.Business.XCCloud
                     #endregion
                     order.PayFee = payFee;
 
-                    //订单详情中的foodSaleId集合
-                    orderDetailSaleList = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == orderId).GroupBy(t => t.FoodFlwID).Select(t => new OrderDetailSaleModel
-                    {
-                        FoodSaleId = t.Key
-                    }).ToList();
+                    //订单详情
+                    orderDetail = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == orderId).FirstOrDefault();
                 }
                 else
                 {
@@ -288,89 +287,92 @@ namespace XCCloudService.Business.XCCloud
                         return false;
                     }
 
-                    if (orderDetailSaleList.Count > 0)
+                    if (orderDetail != null)
                     {
-                        foreach (var item in orderDetailSaleList)
+                        Flw_Food_Sale sale = Flw_Food_SaleService.I.GetModels(t => t.ID == orderDetail.FoodFlwID).FirstOrDefault();
+                        if (sale != null)
                         {
-                            Flw_Food_Sale sale = Flw_Food_SaleService.I.GetModels(t => t.ID == item.FoodSaleId).FirstOrDefault();
-                            if (sale != null)
+                            switch (sale.SingleType)
                             {
-                                switch (sale.SingleType)
-                                {
-                                    case 0://套餐
-                                        int foodId = sale.FoodID.Toint(0);
-                                        var foodDetail = Data_Food_DetialService.I.GetModels(t => t.FoodID == foodId).ToList();
-                                        foreach (var detail in foodDetail)
+                                case 0://套餐
+                                    int foodId = sale.FoodID.Toint(0);
+                                    var foodDetail = Data_Food_DetialService.I.GetModels(t => t.FoodID == foodId).ToList();
+                                    foreach (var detail in foodDetail)
+                                    {
+                                        if (detail.OperateType == 1)
                                         {
-                                            if (detail.OperateType == 1)
+                                            switch (detail.FoodType)
                                             {
-                                                switch (detail.FoodType)
-                                                {
-                                                    case 0://余额
-                                                        var balance = Data_Card_BalanceService.I.GetModels(t => t.CardIndex == order.CardID && t.BalanceIndex == detail.ContainID).FirstOrDefault();
-                                                        int? quantity = sale.SaleCount * detail.ContainCount;
-                                                        balance.Balance += quantity;
-                                                        if(!Data_Card_BalanceService.I.Update(balance))
-                                                        {
-                                                            return false;
-                                                        }
+                                                case 0://余额
+                                                    var balance = Data_Card_BalanceService.I.GetModels(t => t.CardIndex == order.CardID && t.BalanceIndex == detail.ContainID).FirstOrDefault();
+                                                    int? quantity = sale.SaleCount * detail.ContainCount;
+                                                    balance.Balance += quantity;
+                                                    if (!Data_Card_BalanceService.I.Update(balance))
+                                                    {
+                                                        return false;
+                                                    }
 
-                                                        var balanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.CardIndex == order.CardID && t.BalanceIndex == detail.ContainID).FirstOrDefault();
+                                                    var balanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.CardIndex == order.CardID && t.BalanceIndex == detail.ContainID).FirstOrDefault();
 
-                                                        //记录余额变化流水
-                                                        Flw_MemberData fmd = new Flw_MemberData();
-                                                        fmd.ID = RedisCacheHelper.CreateCloudSerialNo(order.StoreID);
-                                                        fmd.MerchID = order.MerchID;
-                                                        fmd.StoreID = order.StoreID;
-                                                        fmd.MemberID = order.MemberID;
-                                                        fmd.MemberName = member.UserName;
-                                                        fmd.CardIndex = memberCard.ID;
-                                                        fmd.ICCardID = memberCard.ICCardID;
-                                                        fmd.MemberLevelName = level.MemberLevelName;
-                                                        fmd.ChannelType = (int)MemberDataChannelType.莘宸云;
-                                                        fmd.OperationType = (int)MemberDataOperationType.售币;
-                                                        fmd.OPTime = DateTime.Now;
-                                                        fmd.SourceType = 10;
-                                                        fmd.SourceID = order.ID;
-                                                        fmd.BalanceIndex = balance.BalanceIndex;
-                                                        fmd.ChangeValue = 0 + quantity;
-                                                        fmd.Balance = balance.Balance;
-                                                        fmd.FreeChangeValue = 0;
-                                                        fmd.FreeBalance = balanceFree == null ? 0 : balanceFree.Balance.Todecimal(0);
-                                                        fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
-                                                        fmd.Note = "充值套餐";
-                                                        fmd.ScheduleID = schedule.ID;
-                                                        fmd.WorkStation = "手机H5自助";
-                                                        fmd.CheckDate = schedule.CheckDate;
-                                                        if (!Flw_MemberDataService.I.Add(fmd))
+                                                    //记录余额变化流水
+                                                    Flw_MemberData fmd = new Flw_MemberData();
+                                                    fmd.ID = RedisCacheHelper.CreateCloudSerialNo(order.StoreID);
+                                                    fmd.MerchID = order.MerchID;
+                                                    fmd.StoreID = order.StoreID;
+                                                    fmd.MemberID = order.MemberID;
+                                                    fmd.MemberName = member.UserName;
+                                                    fmd.CardIndex = memberCard.ID;
+                                                    fmd.ICCardID = memberCard.ICCardID;
+                                                    fmd.MemberLevelName = level.MemberLevelName;
+                                                    fmd.ChannelType = (int)MemberDataChannelType.莘宸云;
+                                                    fmd.OperationType = (int)MemberDataOperationType.售币;
+                                                    fmd.OPTime = DateTime.Now;
+                                                    fmd.SourceType = 10;
+                                                    fmd.SourceID = order.ID;
+                                                    fmd.BalanceIndex = balance.BalanceIndex;
+                                                    fmd.ChangeValue = 0 + quantity;
+                                                    fmd.Balance = balance.Balance;
+                                                    fmd.FreeChangeValue = 0;
+                                                    fmd.FreeBalance = balanceFree == null ? 0 : balanceFree.Balance.Todecimal(0);
+                                                    fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                                                    fmd.Note = "充值套餐";
+                                                    fmd.ScheduleID = schedule.ID;
+                                                    fmd.WorkStation = "手机H5自助";
+                                                    fmd.CheckDate = schedule.CheckDate;
+                                                    if (!Flw_MemberDataService.I.Add(fmd))
+                                                    {
+                                                        return false;
+                                                    }
+                                                    break;
+                                                case 4:
+                                                    var couponList = Data_CouponListService.I.GetModels(t => t.CouponID == detail.ContainID && t.StoreID == order.StoreID && t.State == 2 && t.IsLock == 0 && t.JackpotID == 0);
+                                                    foreach (var coupon in couponList)
+                                                    {
+                                                        if (coupon.CheckVerifiction())
                                                         {
-                                                            return false;
-                                                        }
-                                                        break;
-                                                    case 4:
-                                                        var couponList = Data_CouponListService.I.GetModels(t => t.CouponID == detail.ContainID && t.StoreID == order.StoreID && t.State == 2 && t.IsLock == 0 && t.JackpotID == 0);
-                                                        foreach (var coupon in couponList)
-                                                        {
-                                                            if(coupon.CheckVerifiction())
+                                                            coupon.MemberID = member.ID;
+                                                            if (!Data_CouponListService.I.Update(coupon))
                                                             {
-                                                                coupon.MemberID = member.ID;
-                                                                if(!Data_CouponListService.I.Update(coupon))
-                                                                {
-                                                                    return false;
-                                                                }
-                                                                break;
+                                                                return false;
                                                             }
+                                                            break;
                                                         }
-                                                        break;
-                                                }
+                                                    }
+                                                    break;
                                             }
                                         }
-                                        break;
-                                    case 7:
-                                        Flw_GameAPP_Rule_Entry rule = Flw_GameAPP_Rule_EntryService.I.GetModels(t => t.ID == sale.FoodID).FirstOrDefault();
-                                        //远程投币
-                                        break;
-                                }
+                                    }
+                                    break;
+                                case 7:
+                                    //散客投币
+                                    handle = OrderHandleEnum.散客投币;
+                                    coinRuleId = sale.FoodID;
+                                    break;
+                                case 8:
+                                    //会员投币
+                                    handle = OrderHandleEnum.会员投币;
+                                    coinRuleId = sale.FoodID;
+                                    break;
                             }
                         }
                     }
@@ -518,10 +520,5 @@ namespace XCCloudService.Business.XCCloud
     {
         public decimal? ReturnFee { get; set; }
         public int? ReturnType { get; set; }
-    }
-
-    public class OrderDetailSaleModel
-    {
-        public string FoodSaleId { get; set; }
     }
 }

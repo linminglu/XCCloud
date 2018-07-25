@@ -296,7 +296,6 @@
     <Content Include="MobileWeb\accredit.html" />
     <Content Include="MobileWeb\billList.html" />
     <Content Include="MobileWeb\css\ydui.rem.css" />
-    <Content Include="MobileWeb\CurrencyOperation.html" />
     <Content Include="MobileWeb\entrance.html" />
     <Content Include="MobileWeb\games.html" />
     <Content Include="MobileWeb\home.html" />

@@ -23,6 +23,7 @@ using XCCloudWebBar.Model.CustomModel.XCCloud;
 using XCCloudWebBar.Model.CustomModel.XCCloud.Order;
 using XCCloudWebBar.Model.XCCloud;
 using XCCloudWebBar.Common.Extensions;
+using System.Text;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -329,125 +330,73 @@ namespace XXCloudService.Api.XCCloud
             string saleCoinType = dicParas.ContainsKey("saleCoinType") ? dicParas["saleCoinType"].ToString() : string.Empty;
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
 
-            string storedProcedure = "CreateOrder";
-            String[] Ary = new String[] { "数据0", "数据1", "数据2", "数据3", "数据4" };
-            List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
-            SqlMetaData[] MetaDataArr = new SqlMetaData[] {
-                    new SqlMetaData("foodId", SqlDbType.Int), 
-                    new SqlMetaData("category", SqlDbType.Int),  
-                    new SqlMetaData("foodCount", SqlDbType.Int),
-                    new SqlMetaData("payType", SqlDbType.Int),
-                    new SqlMetaData("payNum", SqlDbType.Decimal,18,2)
-            };
+            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID, true);
 
-            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID,true);
-
+            StringBuilder sb = new StringBuilder();
+            sb.Append("declare @Return int = 0;");
+            sb.Append(string.Format("declare @StoreId varchar(15) = '{0}';", userTokenDataModel.StoreID));
+            sb.Append(string.Format("declare @CustomerType int = {0};",customerType));
+            sb.Append(string.Format("declare @MemberLevelId int = {0};", memberLevelId));
+            sb.Append(string.Format("declare @Mobile varchar(11) = {0};", mobile));
+            sb.Append(string.Format("declare @ICCardId int = {0};", icCardId));
+            sb.Append(string.Format("declare @PayCount decimal(18,2) = {0};", payCount));
+            sb.Append(string.Format("declare @FreePay decimal(18,2) = {0};", freePay));
+            sb.Append(string.Format("declare @Deposit decimal(18,2) = {0};", deposit));
+            sb.Append(string.Format("declare @OpenFee decimal(18,2) = {0};", openFee));
+            sb.Append(string.Format("declare @UserID int = {0};", userTokenDataModel.CreateUserID));
+            sb.Append(string.Format("declare @WorkStation varchar(50) = '{0}';", workStation));
+            sb.Append(string.Format("declare @AuthorID int = {0};", authorId));
+            sb.Append(string.Format("declare @Note varchar(500) = '{0}';", note));
+            sb.Append(string.Format("declare @OrderSource int = {0};", orderSource));
+            sb.Append(string.Format("declare @SaleCoinType int = {0};", saleCoinType));
+            //sb.Append(string.Format("declare @OrderFlwId varchar(32) = '{0}';", ""));
+            sb.Append(string.Format("declare @FlwSeedIndex int = {0};", 0));
+            //sb.Append(string.Format("declare @ErrMsg varchar(200) = '{0}';", ""));
+            sb.Append("declare @FoodSaleDetailList [FoodSaleDetailListType];");
             for (int i = 0; i < buyDetailList.Count; i++)
             {
-                List<object> listParas = new List<object>();
-                listParas.Add(buyDetailList[i].FoodId);
-                listParas.Add(buyDetailList[i].Category); 
-                listParas.Add(buyDetailList[i].FoodCount);
-                listParas.Add(buyDetailList[i].PayType);
-                listParas.Add(buyDetailList[i].PayNum);
-
-                var record = new SqlDataRecord(MetaDataArr);
-                for (int j = 0; j < Ary.Length; j++)
-                {
-                    record.SetValue(j, listParas[j]);
-                }
-                listSqlDataRecord.Add(record);
+                sb.Append(string.Format("insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values({0},{1},{2},{3},{4});",
+                    buyDetailList[i].FoodId, buyDetailList[i].Category, buyDetailList[i].FoodCount, buyDetailList[i].PayType, buyDetailList[i].PayNum));
             }
+            sb.Append(string.Format("declare @FlwSeedId varchar(32) = {0};", flwSendId));
+            sb.Append("create table #TmpBarTableSync(TableName varchar(50),FlwId varchar(32),Status int);");
+            sb.Append("exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@FreePay,@OpenFee,@Deposit,@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@FlwSeedIndex output,@OrderFlwId output,@ErrMsg output;");
+            sb.Append("select * from #TmpBarTableSync;");
+            sb.Append("drop table #TmpBarTableSync;");
 
-            SqlParameter[] sqlParameter = new SqlParameter[20];
-            sqlParameter[0] = new SqlParameter("@FoodSaleDetailList", SqlDbType.Structured);
-            sqlParameter[0].Value = listSqlDataRecord;
+            SqlParameter[] sqlParameter = new SqlParameter[3];
 
-            sqlParameter[1] = new SqlParameter("@StoreID", SqlDbType.VarChar);
-            sqlParameter[1].Value = userTokenDataModel.StoreID;
+            sqlParameter[0] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+            sqlParameter[0].Direction = ParameterDirection.Output;
 
-            sqlParameter[2] = new SqlParameter("@ICCardID", SqlDbType.Int);
-            sqlParameter[2].Value = icCardId;
+            sqlParameter[1] = new SqlParameter("@OrderFlwID", SqlDbType.VarChar,32);
+            sqlParameter[1].Direction = ParameterDirection.Output;
 
-            sqlParameter[3] = new SqlParameter("@PayCount", SqlDbType.Decimal);
-            sqlParameter[3].Value = payCount;
+            sqlParameter[2] = new SqlParameter("@AddOrderResult", SqlDbType.Int);
+            sqlParameter[2].Direction = ParameterDirection.Output;
 
-            sqlParameter[4] = new SqlParameter("@FreePay", SqlDbType.Decimal);
-            sqlParameter[4].Value = freePay;
-
-            sqlParameter[5] = new SqlParameter("@Deposit", SqlDbType.Decimal);
-            sqlParameter[5].Value = deposit;
-
-            sqlParameter[6] = new SqlParameter("@OpenFee", SqlDbType.Decimal);
-            sqlParameter[6].Value = openFee;
-
-            sqlParameter[7] = new SqlParameter("@UserID", SqlDbType.Int);
-            sqlParameter[7].Value = userTokenModel.LogId;
-
-            sqlParameter[8] = new SqlParameter("@MemberLevelId", SqlDbType.Int);
-            sqlParameter[8].Value = memberLevelId;
-
-            sqlParameter[9] = new SqlParameter("@WorkStation", SqlDbType.VarChar);
-            sqlParameter[9].Value = workStation;
-
-            sqlParameter[10] = new SqlParameter("@AuthorID", SqlDbType.Int);
-            sqlParameter[10].Value = authorId;
-
-            sqlParameter[11] = new SqlParameter("@Note", SqlDbType.VarChar);
-            sqlParameter[11].Value = note;
-
-            sqlParameter[12] = new SqlParameter("@OrderSource", SqlDbType.Int);
-            sqlParameter[12].Value = orderSource;
-
-            sqlParameter[13] = new SqlParameter("@SaleCoinType", SqlDbType.Int);
-            sqlParameter[13].Value = saleCoinType;
-
-            sqlParameter[14] = new SqlParameter("@CustomerType", SqlDbType.Int);
-            sqlParameter[14].Value = customerType;
-
-            sqlParameter[15] = new SqlParameter("@Mobile", SqlDbType.VarChar);
-            sqlParameter[15].Value = mobile;
-
-            sqlParameter[16] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
-            sqlParameter[16].Direction = ParameterDirection.Output;
-
-            sqlParameter[17] = new SqlParameter("@FlwSeedId", SqlDbType.VarChar, 32);
-            sqlParameter[17].Value = flwSendId;
-
-            sqlParameter[18] = new SqlParameter("@OrderFlwID", SqlDbType.VarChar,32);
-            sqlParameter[18].Direction = ParameterDirection.Output;
-
-            sqlParameter[19] = new SqlParameter("@Return", SqlDbType.Int);
-            sqlParameter[19].Direction = ParameterDirection.ReturnValue;
-
-            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
-            if (sqlParameter[19].Value.ToString() == "1")
+            //System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
+            System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sb.ToString(), sqlParameter);
+            if (sqlParameter[2].Value.ToString() == "1")
             {
                 var obj = new {
-                    orderFlwId = sqlParameter[18].Value.ToString()
+                    orderFlwId = sqlParameter[1].Value.ToString()
                 };
-                NewOrderDataSync(sqlParameter[18].Value.ToString(), ds.Tables[0], ds.Tables[1]);
+                NewOrderDataSync(ds.Tables[0]);
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             else
             {
-                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[16].Value.ToString());
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[0].Value.ToString());
             }
         }
 
 
-        private void NewOrderDataSync(string flwOrderId, System.Data.DataTable dt1, System.Data.DataTable dt2)
+        private void NewOrderDataSync(System.Data.DataTable dt)
         {
-            XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Order", flwOrderId, 0);
-            for (int i = 0; i < dt1.Rows.Count; i++)
-            { 
-                XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Order_Detail", dt1.Rows[i][0].ToString(), 0);
-                XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Food_Sale", dt1.Rows[i][1].ToString(), 0);
-            }
-
-            for (int i = 0; i < dt2.Rows.Count; i++)
+            for (int i = 0; i < dt.Rows.Count; i++)
             {
-                XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Food_SaleDetail", dt2.Rows[i][0].ToString(), 0);
+                XCCloudService.SyncService.UDP.Client.StoreDataSync(dt.Rows[i][0].ToString(), dt.Rows[i][1].ToString(), int.Parse(dt.Rows[i][2].ToString()));
             }
         }
 

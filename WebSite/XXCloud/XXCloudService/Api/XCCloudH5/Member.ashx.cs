@@ -897,7 +897,7 @@ namespace XXCloudService.Api.XCCloudH5
                     foodSale.StoreID = store.ID;
                     foodSale.FlowType = 0;
                     foodSale.SingleType = 7;//散客投币
-                    foodSale.FoodID = coinRule.ID.ToString();
+                    foodSale.FoodID = gameRule.ID;
                     foodSale.SaleCount = 1;
                     foodSale.Point = 0;
                     foodSale.PointBalance = 0;
@@ -1138,7 +1138,7 @@ namespace XXCloudService.Api.XCCloudH5
                         }
                     }
 
-                    //string orderId = RedisCacheHelper.CreateCloudSerialNo(store.StoreID);
+                    string orderId = RedisCacheHelper.CreateCloudSerialNo(store.ID);
                     using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
                         decimal? remainBalnce1 = 0;
@@ -1200,12 +1200,12 @@ namespace XXCloudService.Api.XCCloudH5
                         fdd.RealTime = DateTime.Now;
                         fdd.MemberID = memberTokenModel.MemberId;
                         fdd.CreateStoreID = memberTokenModel.CurrentCardInfo.StoreId;
-                        fdd.MemberName = memberTokenModel.Info == null ? "散客" : memberTokenModel.Info.nickname ?? "散客";
+                        fdd.MemberName = memberTokenModel.Info == null ? "" : memberTokenModel.Info.nickname ?? "";
                         fdd.CardID = memberTokenModel.CurrentCardInfo.CardId;
                         fdd.BalanceIndex = coinRule.PushBalanceIndex1;
                         fdd.Coin = coinRule.PushCoin1;
                         fdd.RemainBalance = remainBalnce1 + remainBalnceFree1;
-                        fdd.OrderID = "";
+                        fdd.OrderID = orderId;
                         fdd.Note = coinNote;
                         fdd.CheckDate = schedule.CheckDate;
                         if (!Flw_DeviceDataService.I.Add(fdd))
@@ -1266,7 +1266,7 @@ namespace XXCloudService.Api.XCCloudH5
                             fdd.BalanceIndex = coinRule.PushBalanceIndex1;
                             fdd.Coin = coinRule.PushCoin2;
                             fdd.RemainBalance = remainBalnce2 + remainBalnceFree2; ;
-                            fdd.OrderID = "";
+                            fdd.OrderID = orderId;
                             fdd.Note = coinNote;
                             fdd.CheckDate = schedule.CheckDate;
                             if (!Flw_DeviceDataService.I.Add(fdd))
@@ -1323,6 +1323,77 @@ namespace XXCloudService.Api.XCCloudH5
                         if (!Flw_GameAPP_MemberRuleService.I.Add(gmr))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员投币记录失败");
+                        }
+
+                        Flw_Food_Sale foodSale = new Flw_Food_Sale();
+                        foodSale.ID = RedisCacheHelper.CreateCloudSerialNo(store.ID);
+                        foodSale.MerchID = store.MerchID;
+                        foodSale.StoreID = store.ID;
+                        foodSale.FlowType = 0;
+                        foodSale.SingleType = 8;//会员扫码投币
+                        foodSale.FoodID = gmr.ID;
+                        foodSale.SaleCount = 1;
+                        foodSale.Point = 0;
+                        foodSale.PointBalance = 0;
+                        foodSale.MemberLevelID = memberTokenModel.CurrentCardInfo.MemberLevelId;
+                        foodSale.Deposit = 0;
+                        foodSale.OpenFee = 0;
+                        foodSale.RenewFee = 0;
+                        foodSale.ChangeFee = 0;
+                        foodSale.ReissueFee = 0;
+                        foodSale.TotalMoney = 0;
+                        foodSale.Note = coinNote;
+                        foodSale.BuyFoodType = 1;
+                        foodSale.TaxFee = 0;
+                        foodSale.TaxTotal = 0;
+                        if (!Flw_Food_SaleService.I.Add(foodSale))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水失败");
+                        }
+
+                        Flw_Food_SaleDetail saleDetail = new Flw_Food_SaleDetail();
+                        saleDetail.ID = RedisCacheHelper.CreateCloudSerialNo(store.ID);
+                        saleDetail.MerchID = store.MerchID;
+                        saleDetail.FlwFoodID = foodSale.ID;
+                        saleDetail.ContainCount = 1;
+                        saleDetail.Status = 1;
+                        if (!Flw_Food_SaleDetailService.I.Add(saleDetail))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建销售流水明细失败");
+                        }
+
+                        Flw_Order order = new Flw_Order();
+                        order.ID = orderId;
+                        order.MerchID = store.MerchID;
+                        order.StoreID = device.StoreID;
+                        order.FoodCount = 1;
+                        order.GoodCount = 1;
+                        order.MemberID = memberTokenModel.MemberId;
+                        order.CardID = memberTokenModel.CurrentCardInfo.CardId;
+                        order.OrderSource = (int)OrderSource.H5_APP;
+                        order.CreateTime = DateTime.Now;
+                        order.PayCount = 0;
+                        order.FreePay = 0;
+                        order.OrderStatus = 2; //已支付
+                        order.CheckDate = schedule.CheckDate;
+                        order.Note = coinNote;
+
+                        bool ret = Flw_OrderService.I.Add(order);
+                        if (!ret)
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建订单失败");
+                        }
+
+                        //订单明细
+                        Flw_Order_Detail orderDetail = new Flw_Order_Detail();
+                        orderDetail.ID = RedisCacheHelper.CreateCloudSerialNo(store.ID);
+                        orderDetail.MerchID = store.MerchID;
+                        orderDetail.OrderFlwID = order.ID;
+                        orderDetail.FoodFlwID = foodSale.ID;
+                        orderDetail.GoodsCount = 1;
+                        if (!Flw_Order_DetailService.I.Add(orderDetail))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建订单明细失败");
                         }
 
                         ts.Complete();
@@ -1423,7 +1494,7 @@ namespace XXCloudService.Api.XCCloudH5
                     foodSale.ChangeFee = 0;
                     foodSale.ReissueFee = 0;
                     foodSale.TotalMoney = food.MemberPrice;
-                    foodSale.Note = food.FoodName + "购买";
+                    foodSale.Note = food.FoodName;
                     foodSale.BuyFoodType = 1;
                     foodSale.TaxFee = 0;
                     foodSale.TaxTotal = 0;
@@ -1457,7 +1528,7 @@ namespace XXCloudService.Api.XCCloudH5
                     order.FreePay = 0;
                     order.OrderStatus = 1; //待支付
                     order.CheckDate = schedule.CheckDate;
-                    order.Note = food.FoodName + "购买";
+                    order.Note = food.FoodName;
 
                     bool ret = Flw_OrderService.I.Add(order);
                     if (!ret)

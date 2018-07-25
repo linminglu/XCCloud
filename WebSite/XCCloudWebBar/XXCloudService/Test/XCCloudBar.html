@@ -147,20 +147,19 @@
 
         function do_addOrder() {
 
-            var buyDetail1 = { foodId: "1", category: 0, foodCount: "1", payType: "0", payNum: 0.5 }
-            var buyDetail2 = { foodId: "3", category: 0, foodCount: "2", payType: "0", payNum: 5.0 }
-            //var buyDetail3 = { foodId: "6", category: 0, foodCount: "1", payType: "98306", payNum: 100 }
-            //var buyDetail4 = { foodId: "4", category: 0, foodCount: "1", payType: "98307", payNum: 100 }
-            var buyDetail5 = { foodId: "1", category: 1, foodCount: "1", payType: "0", payNum: 20 }
-            var buyDetail6 = { foodId: "4", category: 2, foodCount: "1", payType: "0", payNum: 30 }
+            //insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+            //insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+            //insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+            //insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+
+            var buyDetail1 = { foodId: "169", category: 0, foodCount: "1", payType: "0", payNum: 9 }
+            var buyDetail2 = { foodId: "170", category: 0, foodCount: "2", payType: "0", payNum: 16 }
+            var buyDetail3 = { foodId: "171", category: 0, foodCount: "2", payType: "0", payNum: 16 }
 
             var buyDetails = new Array();
             buyDetails.push(buyDetail1);
             buyDetails.push(buyDetail2);
-            //buyDetails.push(buyDetail3);
-            //buyDetails.push(buyDetail4);
-            buyDetails.push(buyDetail5);
-            buyDetails.push(buyDetail6);
+            buyDetails.push(buyDetail3);
 
             var parasObj = {
                 buyDetails: JSON.stringify(buyDetails),
@@ -769,7 +768,7 @@
     <div title="Food" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Button_Food_1" type="button" value="getFoodType(获取套餐类别)" onclick="getFoodType()" />
         &nbsp;&nbsp;&nbsp;&nbsp; 
-        套餐类型：<input id="txtFoodListFoodTypeStr" type="text" value="0,1,2,3,4,5,6" /><input id="Button_Food_2" type="button" value="do_getFoodList(获取套餐列表)" onclick="do_getFoodList()" />
+        套餐类型：<input id="txtFoodListFoodTypeStr" type="text" value="673,674,675,679,698,699,700,-1,-2" /><input id="Button_Food_2" type="button" value="do_getFoodList(获取套餐列表)" onclick="do_getFoodList()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         客户类型:<select id="sel_CustomerType_do_GetFoodDetail"><option value="0">套餐</option><option value="1">门票</option><option value="2">商品</option></select>
         套餐Id：<input id="txt_do_GetFoodDetail" type="text" value="1" /><input id="Button_Food_3" type="button" value="do_GetFoodDetail(获取套餐明细)" onclick="do_GetFoodDetail()" />

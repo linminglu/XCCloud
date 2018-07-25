@@ -186,30 +186,31 @@ namespace RadarService.Command.Recv
                         if (机头.状态.在线状态)
                         {
                             if (isAlert)
-                                item.status = "故障";
+                                item.status ="3";// "故障";
                             else
                             {
                                 if (机头.状态.锁定机头)
-                                    item.status = "锁定";
+                                    item.status = "4";//"锁定";
                                 else
                                 {
                                     if (机头.状态.出币机或存币机正在数币)
-                                        item.status = "出币中";
+                                        item.status ="2";// "出币中";
                                     else
-                                        item.status = "在线";
+                                        item.status = "1";// "在线";
                                 }
                             }
                         }
                         else
                         {
-                            item.status = "离线";
+                            item.status = "0";// "离线";
                         }
                         changeList.Add(item);
 
                         Info.DeviceInfo.SetBufMCUIDDeviceInfo(MCUID, 机头);
                     }
                 }
-                HostServer.ChangeDeviceStatus(changeList);
+                if (changeList.Count > 0)
+                    HostServer.ChangeDeviceStatus(changeList);
             }
             catch
             {
@@ -243,7 +244,7 @@ namespace RadarService.Command.Recv
                     log.StoreID = PublicHelper.SystemDefiner.StoreID;
 
                     DataModel model = new DataModel();
-                    log.Verifiction = model.Verifiction(log,PublicHelper.SystemDefiner.AppSecret);
+                    log.Verifiction = model.Verifiction(log, PublicHelper.SystemDefiner.AppSecret);
                     model.Add(log);
                 }
             }

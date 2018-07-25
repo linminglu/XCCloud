@@ -8,9 +8,11 @@ using XCCloudService.Base;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.CacheService;
+using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
+using XCCloudService.Model.Socket.UDP;
 using XCCloudService.Model.WeiXin;
 using XCCloudService.Model.XCCloud;
 
@@ -51,6 +53,27 @@ namespace XXCloudService.Api.XCCloudH5
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备令牌无效");
                 }
+
+                DeviceStateRequestDataModel deviceStateModel = RedisCacheHelper.HashGet<DeviceStateRequestDataModel>(CommonConfig.DeviceStateKey, device.MCUID);
+                if (deviceStateModel != null)
+                {
+                    switch (deviceStateModel.Status)
+                    {
+                        case "0":
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该设备不在线");
+                        case "2":
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备正在出币中，请稍后再试");
+                        case "3":
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备故障，请扫描其他设备");
+                        case "4":
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备被锁定");
+                    }
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该设备不在线");
+                }
+
                 if (!string.IsNullOrEmpty(model.CurrStoreId) && model.CurrStoreId != device.StoreID)
                 {
                     //return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前门店与设备所属门店不符，请先选择门店");
@@ -205,7 +228,7 @@ namespace XXCloudService.Api.XCCloudH5
                         right.AllowOut = 1;
                         right.AllowExitCoin = 1;
                         right.AllowSaleCoin = 1;
-                        right.AllowSaveCoin = 1;
+                        right.AllowSaveCoin = level.AllowSaveCoin;
                         right.AllowFreeCoin = 1;
                         right.AllowRenew = 1;
                         if (!Data_Card_RightService.I.Add(right))

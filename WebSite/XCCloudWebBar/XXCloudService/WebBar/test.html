@@ -10,7 +10,11 @@
 	<button @click="handleSubmit">提交</button>
 	<ul>
 		<list v-for="(item,index) in testList" :key="index" :content="item" :index="index" @delete="handleDelete"></list>
-	</ul>
+    </ul>
+    <p style="white-space: normal;">
+        <a href="https://coupon.jd.com/ilink/couponActiveFront/front_index.action?key=3395313d768a4ce7be69930752345dad&roleId=8557900&to=https://sale.jd.com/act/0mNIlaXDEn.html" target="_blank" style="white-space: normal;">1111</a><br/>
+    </p>
+    
 </div>
 <script src="js/vue.js"></script>
 <script>
@@ -40,6 +44,7 @@
 ////            }
 ////        }
 //    };
+
     Vue.component('list', {
         props:["content","index"],
         template:"<li @click='handleClick'>{{content}}</li>",
@@ -53,18 +58,37 @@
         el: '#app',
         data: {
             inputValue:"",
+            inputValue0:0,
+            inputValue1:false,
             testList:[],
             code:""
         },
 		mounted:function () {
 			this.loading()
         },
+        watch:{
+            inputValue0:function(){
+                if(this.inputValue0 == 2){
+                    console.log(888)
+                    this.inputValue0 = 0
+                }
+            }
+        },
         methods: {
             loading:function () {
                 var that = this;
                 var lastTime,nextTime;
 				var lastCode,nextCode;
-				document.onkeypress = function(e) {
+                setTimeout(function () {
+                    console.log(111)
+                    that.inputValue0++;
+                }, 3000);
+                setTimeout(function () {
+                    console.log(110)
+                    that.inputValue0++;
+                }, 2000);
+                
+                document.onkeypress = function(e) {
 					nextCode = e.which;
 					nextTime = new Date().getTime();
 					if(lastCode == null && lastTime == null) {

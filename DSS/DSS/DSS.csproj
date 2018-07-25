@@ -194,10 +194,11 @@
     <Compile Include="Table\Flw_Food_Sale.cs" />
     <Compile Include="Table\Flw_Food_SaleDetail.cs" />
     <Compile Include="Table\Flw_Food_Sale_Pay.cs" />
+    <Compile Include="Table\Flw_GameAPP_MemberRule.cs" />
+    <Compile Include="Table\Flw_GameAPP_Rule_Entry.cs" />
     <Compile Include="Table\Flw_GameData_WinPrize.cs" />
     <Compile Include="Table\Flw_Game_Free.cs" />
     <Compile Include="Table\Flw_Game_Watch.cs" />
-    <Compile Include="Table\Flw_Game_WinPrize.cs" />
     <Compile Include="Table\Flw_Giveback.cs" />
     <Compile Include="Table\Flw_Good_Buyback.cs" />
     <Compile Include="Table\Flw_GroupVerity.cs" />

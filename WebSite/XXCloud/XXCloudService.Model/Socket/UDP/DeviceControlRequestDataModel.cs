@@ -95,4 +95,54 @@ namespace XCCloudService.Model.Socket.UDP
 
 
     }
+
+    [DataContract]
+    public class RemoteDeviceControlRequestDataModel
+    {
+        public RemoteDeviceControlRequestDataModel(string token, string mcuid, string iccardId, string action, string ruleType, string ruleId, string count, string orderId, string sn, string storePwd)
+        {
+            this.Token = token;
+            this.MCUID = mcuid;
+            this.ICCardId = iccardId;
+            this.Action = action;
+            this.RuleType = ruleType;
+            this.RuleId = ruleId;
+            this.Count = count;
+            this.OrderId = orderId;
+            this.SN = sn;
+            this.StorePassword = storePwd;
+        }
+
+        [DataMember(Name = "token", Order = 0)]
+        public string Token { get; set; }
+
+        [DataMember(Name = "mcuid", Order = 1)]
+        public string MCUID { get; set; }
+
+        [DataMember(Name = "iccardid", Order = 2)]
+        public string ICCardId { get; set; }
+
+        [DataMember(Name = "action", Order = 3)]
+        public string Action { get; set; }
+
+        [DataMember(Name = "ruletype", Order = 4)]
+        public string RuleType { get; set; }
+
+        [DataMember(Name = "ruleid", Order = 5)]
+        public string RuleId { get; set; }
+
+        [DataMember(Name = "count", Order = 6)]
+        public string Count { get; set; }
+
+        [DataMember(Name = "orderid", Order = 7)]
+        public string OrderId { get; set; }
+
+        [DataMember(Name = "sn", Order = 8)]
+        public string SN { get; set; }
+
+        [DataMember(Name = "signkey", Order = 9)]
+        public string SignKey { get; set; }
+
+        public string StorePassword { get; set; }
+    }
 }
