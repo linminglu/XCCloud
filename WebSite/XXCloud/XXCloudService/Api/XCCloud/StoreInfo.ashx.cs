@@ -14,6 +14,7 @@ using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.Business.Common;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -172,8 +173,18 @@ namespace XCCloudService.Api.XCCloud
                 sql = sql + sqlWhere;
 
                 var list = Base_StoreInfoService.I.SqlQuery<Base_StoreInfoListModel>(sql, parameters).ToList();
-                
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+                var linq = from a in list
+                           join b in UDPClientItemBusiness.ClientList.Where(w => w.HeatTime >= DateTime.Now.AddSeconds(0 - XCCloudService.Common.CommonConfig.RadarOffLineTimeLong)).GroupBy(g => g.StoreID).Select(o => new { StoreID = o.Key, HeatTime = o.Max(m => m.HeatTime) })
+                           on a.StoreID equals b.StoreID into b1
+                           from b in b1.DefaultIfEmpty()
+                           select new
+                           {
+                               a = a,
+                               StateStr = b != null ? "在线" : "离线",
+                               HeatTime = b != null ? b.HeatTime : (DateTime?)null
+                           }.AsFlatDictionary();
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {

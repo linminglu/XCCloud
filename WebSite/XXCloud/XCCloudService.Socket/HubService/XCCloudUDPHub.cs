@@ -30,13 +30,15 @@ namespace XCCloudService.SocketService.TCP.HubService
 
             public List<string> RadarTokenList { set; get; }
 
+            public List<string> MerchList { set; get; }
+
             public List<string> StoreList { set; get; }
 
             public List<string> SegmentList { set; get; }
         }
 
         public static List<XCCloudUDPHub.CurrentUser> ConnectedUsers = new List<XCCloudUDPHub.CurrentUser>();
-        public void Connect(string userID, string insStr)
+        public void Connect(string userID, string merchIdStr, string insStr)
         {
             var id = Context.ConnectionId;
 
@@ -51,14 +53,13 @@ namespace XCCloudService.SocketService.TCP.HubService
             bool isNewUser = false;
             XCCloudUDPHub.CurrentUser currentUser = null;
             UpdateUser(id, userID, out isNewUser, ref currentUser);
+            UpdateSettings(currentUser, merchIdStr, "", "", insStr);
             if (isNewUser)
             {
-                UpdateSettings(currentUser, "", "", insStr);
-                Clients.Caller.onConnected(id, userID, insStr);
+                Clients.Caller.onConnected(id, userID);
             }
             else
-            {
-                UpdateSettings(currentUser, "", "", insStr);
+            {                
                 Clients.Client(id).onExistUserConnected(id, userID);
             }
         }
@@ -117,11 +118,25 @@ namespace XCCloudService.SocketService.TCP.HubService
         }
 
 
-        private void UpdateSettings(XCCloudUDPHub.CurrentUser user, string storeIdStr, string segmentStr, string insStr)
+        private void UpdateSettings(XCCloudUDPHub.CurrentUser user, string merchIdStr, string storeIdStr, string segmentStr, string insStr)
         {
+            user.MerchList.Clear();
             user.StoreList.Clear();
             user.SegmentList.Clear();
             user.InsList.Clear();
+
+            if (!string.IsNullOrEmpty(merchIdStr))
+            {
+                string[] merchIdArr = Utils.SplitString(merchIdStr, ",");
+                for (int i = 0; i < merchIdArr.Length; i++)
+                {
+                    if (!string.IsNullOrEmpty(merchIdArr[i]))
+                    {
+                        user.MerchList.Add(merchIdArr[i]);
+                    }
+                }
+            }
+
             if (!string.IsNullOrEmpty(segmentStr))
             { 
                 string[] segmentArr = Utils.SplitString(segmentStr, ",");
@@ -169,6 +184,7 @@ namespace XCCloudService.SocketService.TCP.HubService
                 UserID = userID,
                 InsList = new List<int>(),
                 RadarTokenList = new List<string>(),
+                MerchList = new List<string>(),
                 StoreList = new List<string>(),
                 SegmentList = new List<string>()
             };
@@ -180,10 +196,30 @@ namespace XCCloudService.SocketService.TCP.HubService
         {
             string errMsg = string.Empty;
             string storeName = string.Empty;
-            
+
+            List<UDPClientItemBusiness.ClientItem> merchFilterClientList = null;
             List<UDPClientItemBusiness.ClientItem> storeFilterClientList = null;
             List<UDPClientItemBusiness.ClientItem> segmentFilterClientList = null;
-            
+
+            if (user.MerchList.Count > 0)
+            {
+                merchFilterClientList = new List<UDPClientItemBusiness.ClientItem>();
+                for (int i = 0; i < UDPClientItemBusiness.ClientList.Count; i++)
+                {
+                    for (int j = 0; j < user.MerchList.Count; j++)
+                    {
+                        if (UDPClientItemBusiness.ClientList[i].StoreID.StartsWith(user.MerchList[j]))
+                        {
+                            merchFilterClientList.Add(UDPClientItemBusiness.ClientList[i]);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                merchFilterClientList = UDPClientItemBusiness.ClientList;
+            }
+
             if (user.StoreList.Count > 0)
             {
                 storeFilterClientList = new List<UDPClientItemBusiness.ClientItem>();
@@ -200,7 +236,7 @@ namespace XCCloudService.SocketService.TCP.HubService
             }
             else
             {
-                storeFilterClientList = UDPClientItemBusiness.ClientList;
+                storeFilterClientList = merchFilterClientList;
             }
 
             if (user.SegmentList.Count > 0)
@@ -349,6 +385,10 @@ namespace XCCloudService.SocketService.TCP.HubService
                 {
                     foreach (var user in XCCloudUDPHub.ConnectedUsers)
                     {
+                        if (user.MerchList.Count > 0 && user.MerchList.Where(p => storeId.StartsWith(p)).Count() == 0)
+                        {
+                            return;
+                        }
                         if (user.StoreList.Count > 0 && user.StoreList.Where(p => p == storeId).Count() == 0)
                         {
                             return;
