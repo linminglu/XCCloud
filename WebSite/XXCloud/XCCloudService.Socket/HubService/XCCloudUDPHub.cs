@@ -363,7 +363,7 @@ namespace XCCloudService.SocketService.TCP.HubService
                             return;
                         }
 
-                        _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(storeId, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(240, storeId, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
 
                     }
                 }
