@@ -62,15 +62,17 @@ namespace XXCloudService.Api.XCCloudH5
                 Data_Member_Card card = null;
                 
                 //当前会员在该门店的可用卡集合
-                var cardIds = from a in Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID)
+                var queryCardIds = from a in Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID)
                             join b in Data_Member_Card_StoreService.I.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardID
                             select new
                             {
                                 CardId = a.ID
                             };
 
+                var cards = queryCardIds.ToList();
+
                 //没有卡就创建电子卡
-                if (cardIds.Count() == 0)
+                if (cards.Count == 0)
                 {
                     //获取默认电子卡开卡级别
                     Data_Parameters defaultMemberLevelId = Data_ParametersService.I.GetModels(t => t.StoreID == storeId && t.System == "cmbCardOpenLevel").FirstOrDefault();
@@ -235,7 +237,7 @@ namespace XXCloudService.Api.XCCloudH5
                     }
                     else
                     {
-                        string cardId = cardIds.FirstOrDefault().CardId;
+                        string cardId = cards.FirstOrDefault().CardId;
                         //默认卡
                         card = Data_Member_CardService.I.GetModels(t => t.ID == cardId).FirstOrDefault();
                     }

@@ -101,7 +101,7 @@ namespace RadarService.Command.Ask
                     sb.AppendFormat("序号：{0}\r\n", i);
                     sb.AppendFormat("流水号：{0}\r\n", SN);
 
-                    HostServer.BodySend(null, Send, data.commandType, CommandType.液晶卡头扩展信息下发应答指令, sb.ToString(), SN, head.机头短地址, remoteP);
+                    HostServer.BodySend(null, Send, data.commandType, CommandType.液晶卡头扩展信息下发应答指令, sb.ToString(), SN, head.机头短地址, remoteP, head.路由器段号);
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace RadarService.Command.Ask
                 sb.AppendFormat("序号：{0}\r\n", i);
                 sb.AppendFormat("流水号：{0}\r\n", SN);
 
-                HostServer.BodySend(null, Send, data.commandType, CommandType.液晶卡头扩展信息下发应答指令, sb.ToString(), SN, head.机头短地址, remoteP);
+                HostServer.BodySend(null, Send, data.commandType, CommandType.液晶卡头扩展信息下发应答指令, sb.ToString(), SN, head.机头短地址, remoteP, head.路由器段号);
             }
         }
 
@@ -216,7 +216,7 @@ namespace RadarService.Command.Ask
                 sb.AppendFormat("序号：{0}\r\n", i);
                 sb.AppendFormat("流水号：{0}\r\n", SN);
 
-                HostServer.BodySend(null, Send, data.commandType, CommandType.液晶卡头扩展信息下发应答指令, sb.ToString(), SN, head.机头短地址, remoteP);
+                HostServer.BodySend(null, Send, data.commandType, CommandType.液晶卡头扩展信息下发应答指令, sb.ToString(), SN, head.机头短地址, remoteP, head.路由器段号);
             }
         }
 

@@ -214,19 +214,27 @@ namespace XCCloudService.Test
 
         public void deviceControl(HttpContext context)
         {
-            string token = context.Request["token"];
+            string orderId = context.Request["orderId"];
+            string storeId = context.Request["storeId"];
+            string mobile = context.Request["mobile"];
+            string icCardId = context.Request["icCardId"];
+            string segment = context.Request["segment"];
             string mcuid = context.Request["mcuid"];
             string action = context.Request["action"];
-            string count = context.Request["count"];
             string sn = context.Request["sn"];
-            string orderId = context.Request["orderId"];
-            string signkey = context.Request["signkey"];
+            string password = context.Request["password"];
+            string ruleId = context.Request["ruleId"];
+            string ruleType = context.Request["ruleType"];
+            string errMsg = string.Empty;
 
-            //ClientService service = new ClientService();
-            //service.Connection();
-            //DeviceControlRequestDataModel dataModel = new DeviceControlRequestDataModel(token, mcuid, action, int.Parse(count), sn,orderId, signkey);
-            //byte[] data = DataFactory.CreateRequesProtocolData(RequestTransmiteEnum.远程设备控制指令, dataModel);
-            //service.Send(data);
+            ClientService service = new ClientService();
+            service.Connection();
+            DeviceControlRequestDataModel deviceControlModel =
+                new DeviceControlRequestDataModel(storeId, mobile, icCardId, segment, mcuid, action, 0, sn, orderId, password, 0, ruleId, ruleType);
+            if (!DataFactory.SendDataToRadar(deviceControlModel, out errMsg))
+            {
+                return;
+            }
         }
 
         private void webClientRegister(HttpContext context)

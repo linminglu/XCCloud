@@ -570,7 +570,7 @@ namespace XCCloudService.SocketService.UDP.Factory
             }
             //向雷达发送数据
             RadarRequestDataModel radarModel =
-                    new RadarRequestDataModel(radarToken, controlModel.MCUId, controlModel.Action, controlModel.Coins, controlModel.SN, controlModel.OrderId, controlModel.IcCardId, "", "");
+                    new RadarRequestDataModel(radarToken, controlModel.MCUId, controlModel.Action, controlModel.Coins, controlModel.SN, controlModel.OrderId, controlModel.IcCardId, "", "", controlModel.RuleType, controlModel.RuleId);
             SignKeyHelper.SetSignKey(radarModel, controlModel.StorePassword);
             //对象序列化为字节数组
             byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(radarModel);

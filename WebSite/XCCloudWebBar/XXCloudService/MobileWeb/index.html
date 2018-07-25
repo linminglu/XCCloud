@@ -124,7 +124,7 @@
         methods: {
             Load:function () {
                 var that =this;
-                // var deviceToken = "86A8AFBDB2E84B8E95BF52C052E8BA7C";
+                // var deviceToken = "A1493338DB3D4E4294F7351868DF5DC6";
                 // var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
                 var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
                 var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
@@ -310,18 +310,16 @@
                             var str = result.toString();
                             strSplit = str.split("/");
                             var strCode = strSplit[strSplit.length - 2];
-                            that.jumpFnc("86A8AFBDB2E84B8E95BF52C052E8BA7C");
-                            
-                            // if (strCode=="m"){
-                            //     var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
-                            //     that.jumpFnc(deviceToken);
-                            // }else {
-                            //     that.$dialog.toast({
-                            //         mes: "二维码错误！",
-                            //         timeout: 1500,
-                            //         icon: 'error'
-                            //     });
-                            // }
+                            if (strCode=="m"){
+                                var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
+                                that.jumpFnc(deviceToken);
+                            }else {
+                                that.$dialog.toast({
+                                    mes: "二维码错误！",
+                                    timeout: 1500,
+                                    icon: 'error'
+                                });
+                            }
                         }
                     });
                 } else if (/AlipayClient/.test(window.navigator.userAgent)) {
@@ -353,8 +351,8 @@
                         icon: 'error'
                     });
                 }
-
             },
+            
 //          扫码之后跳转函数
             jumpFnc:function (deviceToken) {
                 var that =this;
@@ -371,10 +369,10 @@
                                 window.location.href = "games.html";
                                 break;
                             case 2:
-                                window.location.href = "CurrencyOperation.html";
+                                window.location.href = "coinOperation.html";
                                 break;
                             case 3:
-                                window.location.href = "CurrencyOperation.html";
+                                window.location.href = "coinOperation.html";
                                 break;
                             default:
                                 break;

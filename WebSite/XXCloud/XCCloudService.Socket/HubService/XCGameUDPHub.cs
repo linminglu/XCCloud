@@ -61,34 +61,7 @@ namespace XCCloudService.SocketService.TCP.HubService
                 UpdateSettings(currentUser, storeIdStr, segmentStr, insStr);
                 Clients.Client(id).onExistUserConnected(id, userID);
             }
-        }
-
-        public void ConnectFromXCCloud(string userID, string insStr)
-        {
-            var id = Context.ConnectionId;
-
-            XCCloudUserTokenModel tokenModel = XCCloudUserTokenCache.GetModel(userID);
-            if (tokenModel == null)
-            {
-                var model = new { callType = "checkUserRole", result_code = 0, result_msg = "用户没有授权" };
-                Clients.Client(id).HubCall(model);
-                return;
-            }
-
-            bool isNewUser = false;
-            XCGameUDPMsgHub.CurrentUser currentUser = null;
-            UpdateUser(id, userID, out isNewUser, ref currentUser);
-            if (isNewUser)
-            {
-                UpdateSettings(currentUser, "", "", insStr);
-                Clients.Caller.onConnected(id, userID, insStr);
-            }
-            else
-            {
-                UpdateSettings(currentUser, "", "", insStr);
-                Clients.Client(id).onExistUserConnected(id, userID);
-            }
-        }
+        }        
 
         private void UpdateUser(string connectionId, string userId, out bool isNewUser, ref XCGameUDPMsgHub.CurrentUser currentUser)
         {
@@ -279,33 +252,7 @@ namespace XCCloudService.SocketService.TCP.HubService
             {
                 user.RadarTokenList.Add(segmentFilterClientList[i].gID);
             }
-        }
-
-        public void GetRadarListFromXCCloud(string userId)
-        {
-            string connectionId = Context.ConnectionId;
-
-            XCCloudUserTokenModel tokenModel = XCCloudUserTokenCache.GetModel(userId);
-            if (tokenModel == null)
-            {
-                var model = new { callType = "getRadarList", result_code = 0, result_msg = "用户没有授权" };
-                Clients.Client(connectionId).HubCall(model);
-                return;
-            }
-
-            bool isNewUser = false;
-            XCGameUDPMsgHub.CurrentUser currentUser = null;
-            UpdateUser(connectionId, userId, out isNewUser, ref currentUser);
-
-            string errMsg = string.Empty;
-            string storeName = string.Empty;
-
-            List<XCGameManaRadarMonitor> monitorList = null;
-            GetRadarList(currentUser, ref monitorList, 1);
-
-            var obj = new { callType = "getRadarList", result_code = 1, result_msg = "", result_data = monitorList };
-            Clients.Client(currentUser.ConnectionId).HubCall(obj);
-        }
+        }        
 
         public void GetRadarList(string userId)
         {

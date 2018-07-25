@@ -495,7 +495,6 @@
     <Content Include="WebBar\js\bootstrap-table-zh-CN.js" />
     <Content Include="WebBar\js\bootstrap-table.js" />
     <Content Include="WebBar\js\bootstrap.js" />
-    <Content Include="WebBar\js\bootstrap.min.css" />
     <Content Include="WebBar\js\bootstrap.min.js" />
     <Content Include="WebBar\js\hChart3D.js" />
     <Content Include="WebBar\js\heightCharts.js" />

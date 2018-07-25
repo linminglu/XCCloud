@@ -27,7 +27,7 @@ namespace RadarService.Command.Ask
                 sb.AppendFormat("机头地址：{0}\r\n", head.机头短地址);
                 sb.AppendFormat("操作：{0}\r\n", isLock);
                 IsSuccess = true;
-                HostServer.BodySend(null, Send, data.commandType, CommandType.机头锁定解锁指令应答, sb.ToString(), PublicHelper.SystemDefiner.雷达主发流水号, head.机头短地址, p);
+                HostServer.BodySend(null, Send, data.commandType, CommandType.机头锁定解锁指令应答, sb.ToString(), PublicHelper.SystemDefiner.雷达主发流水号, head.机头短地址, p, head.路由器段号);
             }
             catch(Exception ex)
             {

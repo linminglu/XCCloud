@@ -22,7 +22,7 @@
         var chatHub;
         $(function () {
             // Declare a proxy to reference the hub
-            chatHub = $.connection.XCGameUDPMsgHub;
+            chatHub = $.connection.XCCloudUDPHub;
             registerClientMethods(chatHub);
             // Start Hub
             $.connection.hub.start().done(function () {
@@ -39,7 +39,7 @@
         //注册客户端事件
         function registerEvents(chatHub) {
             var insStr = "240"; //监听指令：240 雷达上线
-            chatHub.server.connectFromXCCloud(userToken, insStr);
+            chatHub.server.connect(userToken, insStr);
         }
 
         //注册客户端方法
@@ -47,6 +47,7 @@
 
             chatHub.client.onConnected = function (id, userID) {
                 layer.msg("启动监听", "监听已启动..."); 
+                freshRadar();
             }
 
             chatHub.client.onUserDisconnected = function (id, userID) {
@@ -66,7 +67,7 @@
                 }
             }
 
-            chatHub.client.broadcastMessage = function (name, message) {
+            chatHub.client.broadcastMessage = function (storeId, message) {
                 
             }
 

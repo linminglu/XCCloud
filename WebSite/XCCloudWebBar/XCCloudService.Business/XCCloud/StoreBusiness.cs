@@ -11,11 +11,26 @@ using XCCloudWebBar.Model.CustomModel.XCCloud;
 using XCCloudWebBar.Model.WeiXin;
 using XCCloudWebBar.Model.XCCloud;
 using System.Data;
+using XCCloudWebBar.Common;
+using XCCloudService.CacheService.XCCloud;
 
 namespace XCCloudWebBar.Business.XCCloud
 {
     public class XCCloudStoreBusiness
     {
+        public static void GetStoreInfo()
+        {
+            string merchId = CommonConfig.MerchId;
+            string storeId = CommonConfig.StoreId;
+
+            XCCloudWebBar.BLL.IBLL.XCCloud.IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<XCCloudWebBar.BLL.IBLL.XCCloud.IBase_StoreInfoService>();
+            var model = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId) && p.MerchID.Equals(merchId)).ToList<Base_StoreInfo>()[0];
+            if (model != null)
+            {
+                StoreBusinessCache.storeInfo = model;
+            }
+        }
+
         public static bool IsEffectiveStore(string storeId)
         {
             XCCloudWebBar.BLL.IBLL.XCCloud.IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<XCCloudWebBar.BLL.IBLL.XCCloud.IBase_StoreInfoService>();

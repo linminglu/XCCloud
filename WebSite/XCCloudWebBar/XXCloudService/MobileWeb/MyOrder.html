@@ -148,7 +148,7 @@
             show4: false,
             today: "",
             allover:"",
-            mobileToken:'',
+            userThirdId:'',
             orderPage:'',
             orderData:""
         },
@@ -159,14 +159,13 @@
         methods: {
             Load: function () {
                 var that =this;
-                var mobileToken =  getStorage("mobileToken");//获取手机令牌
-                that.mobileToken = mobileToken;
-                console.log(mobileToken);
+                var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
+                that.userThirdId = userThirdId;
                 this.$dialog.loading.open('');
                 var obj={
                     sysId: sysId,
                     versionNo: versionNo,
-                    mobileToken: that.mobileToken,
+                    mobileToken: that.userThirdId,
                     pageIndex: "0",
                     storename: "",
                     startcoins: "",

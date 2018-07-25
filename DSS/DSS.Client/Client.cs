@@ -220,6 +220,7 @@ namespace DSS.Client
                                             CurToken = regist.Token;
                                             ConnectRecvTime = DateTime.Now;
                                             InitFlag = true;
+                                            SyncOffData();
                                             Console.WriteLine("注册成功，当前令牌：" + CurToken);
                                         }
                                         else

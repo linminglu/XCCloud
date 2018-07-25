@@ -83,7 +83,19 @@
     }
 
     function 远程设备控制指令() {
-        var data = { "token": "62fb63fcc33c246999246cb440e24b1b0", "mcuid": "20171014300001", "action": "1", "count": "200", "sn": "123", "signkey": "5431635431213654" };
+        var data = {
+            "orderId": "10001642011100120180629002563000",
+            "storeId": "100016360103001",
+            "mobile":"15618920033",
+            "icCardId": "10004145",
+            "segment":"001",
+            "mcuid": "20180521600001",
+            "action":"0",
+            "sn":"",
+            "password": "778852013145",
+            "ruleId":"21",
+            "ruleType": "2"
+        };
         var url = "/Test/SocketTest.ashx?method=deviceControl";
         common(url, data);
     }

@@ -10,7 +10,7 @@ namespace XCCloudService.Model.Socket.UDP
     [DataContract]
     public class DeviceControlRequestDataModel
     {
-        public DeviceControlRequestDataModel(string storeId, string mobile,string icCardId,string segment, string mcuid, string action, int count, string sn, string orderId, string storePassword,int foodId,string gameRuleId)
+        public DeviceControlRequestDataModel(string storeId, string mobile, string icCardId, string segment, string mcuid, string action, int count, string sn, string orderId, string storePassword, int foodId, string ruleId, string ruleType)
         {
             this.StoreId = storeId;
             this.Mobile = mobile;
@@ -23,7 +23,8 @@ namespace XCCloudService.Model.Socket.UDP
             this.StorePassword = storePassword;
             this.FoodId = foodId;
             this.IcCardId = icCardId;
-            this.GameRuleId = gameRuleId;
+            this.RuleId = ruleId;
+            this.RuleType = ruleType;
         }
 
         /// <summary>
@@ -87,6 +88,11 @@ namespace XCCloudService.Model.Socket.UDP
         public int FoodId { set; get; }
 
         [DataMember(Name = "ruleId", Order = 8)]
-        public string GameRuleId { set; get; }
+        public string RuleId { set; get; }
+
+        [DataMember(Name = "ruletype", Order = 9)]
+        public string RuleType { set; get; }
+
+
     }
 }

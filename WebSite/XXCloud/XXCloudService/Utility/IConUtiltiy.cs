@@ -27,7 +27,7 @@ namespace XXCloudService.Utility
                 {
                     orderId = System.Guid.NewGuid().ToString("N");
                 }
-                DeviceControlRequestDataModel deviceControlModel = new DeviceControlRequestDataModel(storeId, mobile, icCardId.ToString(), segment, mcuId, action, coins, sn, orderId, storePassword, foodId, ruleId);
+                DeviceControlRequestDataModel deviceControlModel = new DeviceControlRequestDataModel(storeId, mobile, icCardId.ToString(), segment, mcuId, action, coins, sn, orderId, storePassword, foodId, ruleId,"");
                 MPOrderBusiness.AddTCPAnswerOrder(orderId, mobile, coins, action, "", storeId);
                 IconOutLockBusiness.Add(mobile, coins);
                 if (!DataFactory.SendDataToRadar(deviceControlModel, out errMsg))

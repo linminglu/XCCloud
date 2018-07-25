@@ -418,7 +418,7 @@ namespace XCCloudService.Api.XCGame
             string errMsg = string.Empty;
 
             DeviceControlRequestDataModel deviceControlModel = 
-                new DeviceControlRequestDataModel(storeId, mobile, icCardId.ToString(), segment, mcuId, action, coins, sn, orderId, "778852013146", 0,"");
+                new DeviceControlRequestDataModel(storeId, mobile, icCardId.ToString(), segment, mcuId, action, coins, sn, orderId, "778852013146", 0,"","");
             MPOrderBusiness.AddTCPAnswerOrder(orderId, mobile, coins, action, "", storeId);
             IconOutLockBusiness.Add(mobile, coins);
             if (!DataFactory.SendDataToRadar(deviceControlModel, out errMsg))

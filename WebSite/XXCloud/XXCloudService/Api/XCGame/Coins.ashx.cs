@@ -91,7 +91,7 @@ namespace XCCloudService.Api.XCGame
                 string action = ((int)(DevieControlTypeEnum.存币)).ToString();
                 string sn = UDPSocketAnswerBusiness.GetSN();
                 string orderId = System.Guid.NewGuid().ToString("N");
-                DeviceControlRequestDataModel deviceControlModel = new DeviceControlRequestDataModel(deviceModel.StoreId, mobileTokenModel.Mobile, memberTokenModel.ICCardId, menlist.segment, menlist.MCUID, action, 0, sn, orderId, storePassword, 0,"");
+                DeviceControlRequestDataModel deviceControlModel = new DeviceControlRequestDataModel(deviceModel.StoreId, mobileTokenModel.Mobile, memberTokenModel.ICCardId, menlist.segment, menlist.MCUID, action, 0, sn, orderId, storePassword, 0,"","");
                 MPOrderBusiness.AddTCPAnswerOrder(orderId, mobileTokenModel.Mobile, 0, action, memberTokenModel.ICCardId, deviceModel.StoreId);
                 IconOutLockBusiness.AddByNoTimeLimit(mobileTokenModel.Mobile);
                 if (!DataFactory.SendDataToRadar(deviceControlModel, out errMsg))

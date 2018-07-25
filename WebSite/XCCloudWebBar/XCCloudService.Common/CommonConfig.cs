@@ -86,6 +86,26 @@ namespace XCCloudWebBar.Common
         public static string MovieFileHost = System.Configuration.ConfigurationManager.AppSettings["MovieFileHost"];
 
         /// <summary>
+        /// 数据同步服务IP
+        /// </summary>
+        public static string DataSyncServerIP = System.Configuration.ConfigurationManager.AppSettings["DataSyncServerIP"];
+
+        /// <summary>
+        /// 数据同步服务端口
+        /// </summary>
+        public static string DataSyncServerPort = System.Configuration.ConfigurationManager.AppSettings["DataSyncServerPort"];
+
+        /// <summary>
+        /// 机构ID
+        /// </summary>
+        public static string MerchId = System.Configuration.ConfigurationManager.AppSettings["MerchId"];
+
+        /// <summary>
+        /// 门店ID
+        /// </summary>
+        public static string StoreId = System.Configuration.ConfigurationManager.AppSettings["StoreId"];
+
+        /// <summary>
         /// 莘拍档H5支付宝支付回调
         /// </summary>
         public static string PayTitle

@@ -727,15 +727,15 @@
         }
 
         function do_getFoodDetailPayNum() {
-            var foodSaleDetailList1 = { foodId:1,category:0,foodCount:1,payType:0,payNum: 100,realPayNum:100};
-            var foodSaleDetailList2 = { foodId:3,category:0,foodCount:2,payType:0,payNum: 100,realPayNum:100};
+            var foodSaleDetailList1 = { foodId: 1, category: 0, foodCount: 1, payType: 98321, payNum: 100, realPayNum: 100 };
+            var foodSaleDetailList2 = { foodId: 3, category: 0, foodCount: 2, payType: 98308, payNum: 100, realPayNum: 100 };
             
             var foodSaleDetailListArray = new Array();
             foodSaleDetailListArray.push(foodSaleDetailList1);
             foodSaleDetailListArray.push(foodSaleDetailList2);
 
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "icCardId": "10004143", "buyDetailsJson": JSON.stringify(foodSaleDetailListArray) };
-            var url = "/XCCloud/Foods?action=getFoodDetailPayNum";
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "icCardId": "10004145", "buyDetailsJson": JSON.stringify(foodSaleDetailListArray) };
+            var url = "/XCCloud/Foods?action=getFoodDetailRealPayNum";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }

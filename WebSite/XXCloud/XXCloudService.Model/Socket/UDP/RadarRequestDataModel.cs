@@ -10,7 +10,7 @@ namespace XCCloudService.Model.Socket.UDP
     [DataContract]
     public class RadarRequestDataModel
     {
-        public RadarRequestDataModel(string token, string mcuid, string action, int count, string sn, string orderId,string icCardId,string signkey,string storeId)
+        public RadarRequestDataModel(string token, string mcuid, string action, int count, string sn, string orderId,string icCardId,string signkey,string storeId,string ruleType,string ruleId)
         {
             this.Token = token;
             this.MCUId = mcuid;
@@ -21,6 +21,8 @@ namespace XCCloudService.Model.Socket.UDP
             this.ICCardId = icCardId;
             this.SignKey = signkey;
             this.StoreId = storeId;
+            this.ruleType = ruleType;
+            this.ruleId = ruleId;
         }
 
         /// <summary>
@@ -67,6 +69,14 @@ namespace XCCloudService.Model.Socket.UDP
         /// </summary>
         [DataMember(Name = "iccardid", Order = 7)]
         public string ICCardId { set; get; }
+
+
+        [DataMember(Name = "ruletype", Order = 8)]
+        public string ruleType { set; get; }
+
+
+        [DataMember(Name = "ruleid", Order = 9)]
+        public string ruleId { set; get; }
 
         /// <summary>
         /// 订单号

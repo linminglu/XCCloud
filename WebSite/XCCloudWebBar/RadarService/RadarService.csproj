@@ -55,6 +55,7 @@
     <Compile Include="CommandType.cs" />
     <Compile Include="Command\Ask\AskIC卡模式会员余额查询.cs" />
     <Compile Include="Command\Ask\AskIC卡模式进出币数据.cs" />
+    <Compile Include="Command\Ask\Ask云端扫码投币数据.cs" />
     <Compile Include="Command\Ask\Ask机头卡片报警指令.cs" />
     <Compile Include="Command\Ask\Ask机头地址修改.cs" />
     <Compile Include="Command\Ask\Ask机头锁定解锁指令.cs" />

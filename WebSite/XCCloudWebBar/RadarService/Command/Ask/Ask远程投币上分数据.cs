@@ -36,7 +36,7 @@ namespace RadarService.Command.Ask
                     sb.AppendFormat("流水号：{0}\r\n", PushSN);
                     Console.WriteLine(sb.ToString());
 
-                    HostServer.BodySend(null, Send, data.commandType, CommandType.远程投币上分指令应答, sb.ToString(), PushSN, head.机头短地址, p);
+                    HostServer.BodySend(null, Send, data.commandType, CommandType.远程投币上分指令应答, sb.ToString(), PushSN, head.机头短地址, p, head.路由器段号);
 
                     LogHelper.LogHelper.WritePush(Send, head.路由器段号, head.机头短地址, pushType, Coins.ToString(), PushSN.ToString());
                     IsSuccess = true;

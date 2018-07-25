@@ -739,7 +739,7 @@ namespace XXCloudService.Api
                 }
                 #endregion
 
-                PayLogHelper.WriteEvent(result.orderNo, "新大陆支付");
+                //PayLogHelper.WriteEvent(result.orderNo, "新大陆支付");
 
                 PposPubSigPay model = new PposPubSigPay();
                 model.appId = result.apiAppid;

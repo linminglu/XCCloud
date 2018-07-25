@@ -26,7 +26,7 @@ namespace RadarService.Command.Ask
                 sb.AppendFormat("机头地址：{0}\r\n", head.机头短地址);
                 Console.WriteLine(sb.ToString());
 
-                HostServer.BodySend(null, Send, data.commandType, CommandType.远程被动退分解锁指令应答, sb.ToString(), PublicHelper.SystemDefiner.雷达主发流水号, head.机头短地址, p);
+                HostServer.BodySend(null, Send, data.commandType, CommandType.远程被动退分解锁指令应答, sb.ToString(), PublicHelper.SystemDefiner.雷达主发流水号, head.机头短地址, p, head.路由器段号);
             }
             catch
             {

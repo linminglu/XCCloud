@@ -67,6 +67,8 @@ namespace RadarService.Notify
             public string mcuid { get; set; }
             public string iccardid { get; set; }
             public string action { get; set; }
+            public string ruletype { get; set; }
+            public string ruleid { get; set; }
             public string count { get; set; }
             public string zkzy { get; set; }
             public string orderid { get; set; }

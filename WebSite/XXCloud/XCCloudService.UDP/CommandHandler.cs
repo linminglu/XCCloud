@@ -48,6 +48,7 @@ namespace XCCloudService.SocketService.UDP
             //UDPLogHelper.SaveRadarRegisterLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, parmasModel.StoreId, parmasModel.Segment, parmasModel.Token, bRegister, requestDataJson, parmasModel.ResponseJson, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + parmasModel.ResponseJson + "]";
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessageByRadarRegister("雷达注册授权", item.StoreID, item.Segment, message, System.DateTime.Now);
+            XCCloudUDPHub.SignalrServerToClient.BroadcastMessageByRadarRegister("雷达注册授权", item.StoreID, item.Segment, message, System.DateTime.Now);
         }
 
         public static void DeviceStateChange(string requestDataJson, UDPClientItemBusiness.ClientItem item)

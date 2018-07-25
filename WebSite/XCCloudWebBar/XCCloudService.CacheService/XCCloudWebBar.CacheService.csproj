@@ -62,6 +62,7 @@
     <Compile Include="WorkFlowCache.cs" />
     <Compile Include="UDPSocketCommonQueryAnswerCache.cs" />
     <Compile Include="XCCloudMD5KeyCache.cs" />
+    <Compile Include="XCCloud\StoreBusinessCache.cs" />
     <Compile Include="XCGameManaAdminUserTokenCache.cs" />
     <Compile Include="XCManaDogTokenCache.cs" />
     <Compile Include="XCManaUserHelperTokenCache.cs" />

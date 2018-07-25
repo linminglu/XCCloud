@@ -10,6 +10,7 @@ using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
+using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.CustomModel.XCGameManager;
 
 namespace XCCloudService.SocketService.TCP.HubService
@@ -39,7 +40,7 @@ namespace XCCloudService.SocketService.TCP.HubService
         {
             var id = Context.ConnectionId;
 
-            XCGameManaAdminUserTokenModel tokenModel = XCGameManaAdminUserTokenBusiness.GetTokenModel(userID);
+            XCCloudUserTokenModel tokenModel = XCCloudUserTokenCache.GetModel(userID);
             if (tokenModel == null)
             {
                 var model = new { callType = "checkUserRole", result_code = 0, result_msg = "用户没有授权" };
@@ -52,12 +53,12 @@ namespace XCCloudService.SocketService.TCP.HubService
             UpdateUser(id, userID, out isNewUser, ref currentUser);
             if (isNewUser)
             {
-                UpdateSettings(currentUser, storeIdStr, segmentStr, insStr);
-                Clients.Caller.onConnected(id, userID, url);
+                UpdateSettings(currentUser, "", "", insStr);
+                Clients.Caller.onConnected(id, userID, insStr);
             }
             else
             {
-                UpdateSettings(currentUser, storeIdStr, segmentStr, insStr);
+                UpdateSettings(currentUser, "", "", insStr);
                 Clients.Client(id).onExistUserConnected(id, userID);
             }
         }
@@ -179,7 +180,7 @@ namespace XCCloudService.SocketService.TCP.HubService
         {
             string errMsg = string.Empty;
             string storeName = string.Empty;
-            StoreBusiness storeBusiness = new StoreBusiness();
+            
             List<UDPClientItemBusiness.ClientItem> storeFilterClientList = null;
             List<UDPClientItemBusiness.ClientItem> segmentFilterClientList = null;
             
@@ -223,6 +224,7 @@ namespace XCCloudService.SocketService.TCP.HubService
 
             if (type == 1)
             {
+                StoreBusiness storeBusiness = new StoreBusiness();
                 monitorList = new List<XCGameManaRadarMonitor>();
                 for (int i = 0; i < segmentFilterClientList.Count; i++)
                 {
@@ -257,7 +259,7 @@ namespace XCCloudService.SocketService.TCP.HubService
         {
             string connectionId = Context.ConnectionId;
 
-            XCGameManaAdminUserTokenModel tokenModel = XCGameManaAdminUserTokenBusiness.GetTokenModel(userId);
+            XCCloudUserTokenModel tokenModel = XCCloudUserTokenCache.GetModel(userId);
             if (tokenModel == null)
             {
                 var model = new { callType = "getRadarList", result_code = 0, result_msg = "用户没有授权" };
@@ -361,7 +363,7 @@ namespace XCCloudService.SocketService.TCP.HubService
                             return;
                         }
 
-                        _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(name, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(storeId, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
 
                     }
                 }

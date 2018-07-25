@@ -109,6 +109,7 @@
     <Compile Include="XCCloud\WorkFlowBusiness.cs" />
     <Compile Include="XCCloud\WorkStationBusiness.cs" />
     <Compile Include="XCCloud\XCCloudMD5KeyBusiness.cs" />
+    <Compile Include="XCCloud\XCCloudSyncService.cs" />
     <Compile Include="XCCloud\XCCloudUnionIDBusiness.cs" />
     <Compile Include="XCGameManaLog\UDPDBBusiness.cs" />
     <Compile Include="XCGameMana\DataOrderQueryBusiness.cs" />
@@ -139,6 +140,10 @@
     <ProjectReference Include="..\XCCloudService.Common\XCCloudWebBar.Common.csproj">
       <Project>{adce73d3-04ff-4d98-846f-c8026a3b6396}</Project>
       <Name>XCCloudWebBar.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XCCloudService.SyncService.UDP\XCCloudWebBar.SyncService.UDP.csproj">
+      <Project>{4d95f991-25d8-4a2e-99e0-a0a2e9eea2a3}</Project>
+      <Name>XCCloudWebBar.SyncService.UDP</Name>
     </ProjectReference>
     <ProjectReference Include="..\XXCloudService.BLL\XCCloudWebBar.BLL.csproj">
       <Project>{bcbc3ea2-3c42-4d5f-842a-45e614bbadce}</Project>

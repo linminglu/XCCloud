@@ -23,7 +23,7 @@ namespace RadarService.Command.Ask
                 sb.AppendFormat("指令类别：{0}\r\n", CommandType.设置路由器地址);
                 sb.AppendFormat("路由器地址：{0}\r\n", routeAddress);
 
-                HostServer.BodySend(null, Send, data.commandType, CommandType.设置路由器地址应答, sb.ToString(), 0, "FF", p);
+                HostServer.BodySend(null, Send, data.commandType, CommandType.设置路由器地址应答, sb.ToString(), 0, "FF", p, routeAddress);
             }
             catch
             {

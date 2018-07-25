@@ -159,7 +159,7 @@ body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;
 .memberText h4{line-height: 40px;font-size: 0.8em;}
 .readCard{background-color: #b196fd;color: #fefefe;}
 input.btnSendCode{line-height: 0;}
-.footer { position:fixed; bottom:0; left:0; width:100%; height:50px;z-index: 9;padding-left: 2em;border-top: 1px solid #999;background-color: #f9f9f9;line-height: 50px;cursor: pointer;}
+.footer { position:fixed; bottom:0; left:0; width:100%; height:50px;z-index: 9;padding-left: 2em;background-color: #fff;line-height: 50px;cursor: pointer;}
 .footerList{font-size: 1.1em;line-height: 1em;}
 .footerList h3{font-size: 1.3em;margin-top:0.8em;line-height:2em;border-bottom: 1px solid #dca7a7;font-weight: 600;}
 .footerList li{padding: 0.5em 0;padding-left: 3em;border-bottom: 1px dashed #00F7DE;}
@@ -263,11 +263,13 @@ input.btnSendCode{line-height: 0;}
 .salesLi{width: 25em;height: 10em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.5em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
 .saleDetails{width: 50%;margin-left: 40%;}
 .salesLi img{width: 8em;height: 8em;}
-.memberDetails{width: 320px;position: fixed;right: 50px;bottom: 80px;}
+.memberDetails{width: 320px;position: fixed;right: 50px;bottom: 80px;background-color: #fff;}
 .memberDetails .input-group{width: 100%;margin: 0.5em 1.2em;}
 .memberDetails .table{width: 100%;margin: 0.5em 1em;}
 @media (min-width: 1024px) and (max-width: 1400px) {
 	.navLeftS{display: none;}
+	.ivu-menu-horizontal .ivu-menu-item, .ivu-menu-horizontal .ivu-menu-submenu{padding: 0 10px;}
+	.ivu-menu-item{font-size: 12px;}
 }
 @media (min-width: 768px) and (max-width: 1200px) {
 	.marg1200{margin-top: 1em;}

@@ -410,6 +410,7 @@
     <Content Include="Api\XCCloudH5\Member.ashx" />
     <Content Include="Api\XCCloudH5\Amusement.ashx" />
     <Content Include="Api\XCCloud\Schedule.ashx" />
+    <Content Include="Api\XCCloud\DataSync.ashx" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="radarLogin.html" />
     <Content Include="Report\DownloadTemplate.aspx" />
@@ -1059,6 +1060,9 @@
     </Compile>
     <Compile Include="Api\XCCloudH5\Member.ashx.cs">
       <DependentUpon>Member.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\DataSync.ashx.cs">
+      <DependentUpon>DataSync.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\FoodType.ashx.cs">
       <DependentUpon>FoodType.ashx</DependentUpon>
@@ -1819,6 +1823,10 @@
     <ProjectReference Include="..\XCCloudService.Socket\XCCloudWebBar.SocketService.TCP.csproj">
       <Project>{1201063a-0f56-4cfd-abe7-be685df27477}</Project>
       <Name>XCCloudWebBar.SocketService.TCP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XCCloudService.SyncService.UDP\XCCloudWebBar.SyncService.UDP.csproj">
+      <Project>{4d95f991-25d8-4a2e-99e0-a0a2e9eea2a3}</Project>
+      <Name>XCCloudWebBar.SyncService.UDP</Name>
     </ProjectReference>
     <ProjectReference Include="..\XCCloudService.UDP\XCCloudWebBar.SocketService.UDP.csproj">
       <Project>{dbf6e89c-b2e9-4310-8f22-b18edd95668d}</Project>

@@ -165,12 +165,21 @@ namespace RadarService
             client.Close();
         }
 
-        public void SendData(byte[] data, EndPoint p)
+        public void SendData(byte[] data, EndPoint p, string segment)
         {
             try
             {
                 Console.WriteLine("发送：" + Coding.ConvertData.BytesToString(data));
                 client.SendTo(data, p);
+
+                RadarService.HostServer.RadarDataItem item = new RadarService.HostServer.RadarDataItem();
+                item.CreateTime = DateTime.Now;
+                item.DataBytes = new byte[data.Length];
+                Array.Copy(data, item.DataBytes, data.Length);
+                item.DataDir = 1;
+                item.Segment = segment;
+                HostServer.DataWriteQueue.Enqueue(item);
+
                 发送字节计数 += data.Length;
             }
             catch (Exception ex)

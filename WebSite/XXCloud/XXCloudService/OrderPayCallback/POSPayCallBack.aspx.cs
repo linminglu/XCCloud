@@ -100,6 +100,15 @@ namespace XXCloudService.PayChannel
                     string out_trade_no = callback.ChannelId; //商户单号
                     decimal payAmount = Convert.ToDecimal(callback.TxnAmt);//交易金额
 
+                    string payChannel = callback.PayChannel;
+                    PaymentChannel payment = PaymentChannel.WXPAY;
+                    if (payChannel == "1")
+                    {
+                        payment = PaymentChannel.ALIPAY;
+                    }
+
+                    string errMsg = string.Empty;
+
                     Flw_OrderBusiness orderBusiness = new Flw_OrderBusiness();
 
                     if (callback.TxnCode.Trim() == "L005") //退款
@@ -107,17 +116,17 @@ namespace XXCloudService.PayChannel
                         //订单退款                     
                         orderBusiness.OrderRefundPay(out_trade_no, payAmount);
                     }
-                    else  //扫码支付、公众号支付
+                    else if (callback.TxnCode.Trim() == "N007")  //公众号支付
                     {                       
-                        string payChannel = callback.PayChannel;
-                        PaymentChannel payment = PaymentChannel.WXPAY;
-                        if (payChannel == "1")
+                        Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == out_trade_no).FirstOrDefault();
+                        if (order != null && order.OrderStatus == 1)
                         {
-                            payment = PaymentChannel.ALIPAY;
+                            //云平台订单处理                        
+                            orderBusiness.OrderPay(out_trade_no, payAmount, callback.OfficeId, SelttleType.StarPos, payment, out errMsg);
                         }
-
-                        string errMsg = string.Empty;
-
+                    }
+                    else //扫码支付
+                    {
                         Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == out_trade_no).FirstOrDefault();
                         if (order != null && order.OrderStatus == 1)
                         {

@@ -426,7 +426,7 @@ namespace XXCloudService.Api.XCCloud
                 var obj = new {
                     orderFlwId = sqlParameter[18].Value.ToString()
                 };
-
+                XCCloudService.SyncService.UDP.Client.StoreDataSync("Flw_Order", sqlParameter[18].Value.ToString(), 0);
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             else

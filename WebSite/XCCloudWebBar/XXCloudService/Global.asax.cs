@@ -11,6 +11,8 @@ using XCCloudWebBar.Common;
 using XCCloudWebBar.Business.XCGame;
 using XCCloudWebBar.Utility;
 using XCCloudWebBar.Model.CustomModel.XCCloud;
+using XCCloudService.SyncService.UDP;
+using XCCloudService.Business.XCCloud;
 
 namespace XCCloudWebBar
 {
@@ -20,6 +22,7 @@ namespace XCCloudWebBar
         {
             ApplicationStart.Init();
             UDPServer.Init();
+            XCCloudSyncService.Init();
         }
 
         void Application_End(object sender, EventArgs e)

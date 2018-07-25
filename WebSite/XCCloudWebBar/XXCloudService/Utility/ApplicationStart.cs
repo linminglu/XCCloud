@@ -41,7 +41,8 @@ namespace XCCloudWebBar.Utility
                 //XCGameManaDeviceInit();
                 XCCloudManaUserInit();//redis
                 FilterMobileInit();
-                //XinchenPayInit(); 
+                //XinchenPayInit();
+                XCCloudStoreInit();
             }
             catch(Exception e)
             {
@@ -53,6 +54,11 @@ namespace XCCloudWebBar.Utility
         {
             //TokenDataModel tokenDataModel = new TokenDataModel("S0100022", "778852013145", "lijunjie");
             //XCCloudUserTokenBusiness.SetUserToken("3", (int)RoleType.StoreUser, tokenDataModel);
+        }
+
+        public static void XCCloudStoreInit()
+        {
+            XCCloudStoreBusiness.GetStoreInfo();
         }
 
         public static void XCGameManaDeviceInit()

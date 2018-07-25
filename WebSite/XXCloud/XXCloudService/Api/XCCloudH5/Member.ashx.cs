@@ -148,7 +148,7 @@ namespace XXCloudService.Api.XCCloudH5
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
                 }
-
+                
                 MemberTokenModel model = MemberTokenCache.GetModel(token);
 
                 if (model == null)
@@ -156,13 +156,19 @@ namespace XXCloudService.Api.XCCloudH5
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
                 }
 
+                if(string.IsNullOrEmpty(storeId))
+                {
+                    storeId = model.CurrStoreId;
+                }
+
+
                 Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.ID == storeId).FirstOrDefault();
                 if(store != null && model.CurrStoreId != store.ID)
                 {
                     model.CurrStoreId = store.ID;
                 }
 
-                if (!string.IsNullOrEmpty(model.CurrStoreId) && !string.IsNullOrEmpty(model.MemberId))
+                if (model.CurrentCardInfo == null)
                 {
                     Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.MemberID == model.MemberId).OrderByDescending(t => t.UpdateTime).FirstOrDefault();
                     if (card != null)
@@ -381,7 +387,7 @@ namespace XXCloudService.Api.XCCloudH5
 
                 //短信验证码校验
                 string code = RedisCacheHelper.StringGet(mobile);
-                if(!code.Equals(smsCode, StringComparison.OrdinalIgnoreCase))
+                if(string.IsNullOrEmpty(code) || !code.Equals(smsCode, StringComparison.OrdinalIgnoreCase))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验证码错误");
                 }
@@ -541,6 +547,7 @@ namespace XXCloudService.Api.XCCloudH5
                     BalanceFree = t.BalanceFree
                 }).ToList();
                 model.CurrentCardInfo = mc;
+                model.CurrStoreId = card.LastStore;
                 //更新缓存
                 MemberTokenCache.AddToken(token, model);
 
@@ -870,6 +877,20 @@ namespace XXCloudService.Api.XCCloudH5
                 string orderId = RedisCacheHelper.CreateCloudSerialNo(store.ID);
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
+                    //记录扫码规则
+                    Flw_GameAPP_Rule_Entry gameRule = new Flw_GameAPP_Rule_Entry();
+                    gameRule.ID = RedisCacheHelper.CreateCloudSerialNo(store.ID);
+                    gameRule.RuleID = coinRule.ID;
+                    gameRule.MerchID = store.MerchID;
+                    gameRule.StoreID = store.ID;
+                    gameRule.GameID = coinRule.GameID;
+                    gameRule.PayCount = PayCount;
+                    gameRule.PlayCount = coinRule.PlayCount;
+                    if (!Flw_GameAPP_Rule_EntryService.I.Add(gameRule))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "生成扫码记录失败");
+                    }
+
                     Flw_Food_Sale foodSale = new Flw_Food_Sale();
                     foodSale.ID = RedisCacheHelper.CreateCloudSerialNo(store.ID);
                     foodSale.MerchID = store.MerchID;
@@ -1033,7 +1054,7 @@ namespace XXCloudService.Api.XCCloudH5
 
                 string cardId = memberTokenModel.CurrentCardInfo.CardId;
                 //卡余额
-                List<CardBalance> memberBalanceList = MemberBusiness.GetMemberBalanceAndExchangeRate(store.ID, cardId).Select(t => new CardBalance
+                List<CardBalance> memberBalanceList = MemberBusiness.GetMemberBalanceAndExchangeRate(store.ID, memberTokenModel.CurrentCardInfo.ICCardId).Select(t => new CardBalance
                 {
                     BalanceIndex = t.BalanceIndex,
                     BalanceName = t.TypeName,
@@ -1049,182 +1070,124 @@ namespace XXCloudService.Api.XCCloudH5
 
                 //会员扫码
                 Data_GameAPP_MemberRule coinRule = Data_GameAPP_MemberRuleService.I.GetModels(t => t.ID == currCoinRuleId).FirstOrDefault();
-                if (coinRule.PushCoin1 > 0)
+                if (coinRule != null)
                 {
-                    CardBalance currBalance = memberBalanceList.FirstOrDefault(t => t.BalanceIndex == coinRule.PushBalanceIndex1);
-                    if (currBalance.TotalQuantity < coinRule.PushCoin1)
+                    if (coinRule.PushCoin1 > 0)
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}余额不足，请充值", currBalance.BalanceName));
-                    }
-                    Dict_BalanceType dic = Dict_BalanceTypeService.I.GetModels(t => t.ID == coinRule.PushBalanceIndex1).FirstOrDefault();
-                    coinNote = string.Format("扫码投币-{0}{1}", coinRule.PushCoin1, dic.TypeName);
-
-                    balance1 = Convert.ToDecimal(coinRule.PushCoin1 * currBalance.Balance / (currBalance.Balance + currBalance.BalanceFree));
-
-                    Dict_BalanceType bt = Dict_BalanceTypeService.I.GetModels(t => t.ID == coinRule.PushBalanceIndex1).FirstOrDefault();
-                    if (bt.AddingType == 0)
-                    {
-                        //小数不保留
-                        balance1 = Convert.ToDecimal((int)balance1);
-                        balanceFree1 = Convert.ToDecimal(coinRule.PushCoin1 - (int)balance1);
-                    }
-                    else if (bt.AddingType == 1)
-                    {
-                        //保留全部，只要有小数就进位
-                        if (((int)(balance1 * 100)) % 100 > 0)
-                            balance1 = Convert.ToDecimal(((int)balance1) + 1);
-                        balanceFree1 = Convert.ToDecimal(coinRule.PushCoin1 - (int)balance1);
-                    }
-                    else
-                    {
-                        balance1 = Decimal.Round(balance1, bt.DecimalNumber.Value, MidpointRounding.AwayFromZero);
-                        balanceFree1 = Decimal.Round(balanceFree1, bt.DecimalNumber.Value, MidpointRounding.AwayFromZero);
-                    }
-                }
-                if (coinRule.PushCoin2 > 0)
-                {
-                    CardBalance currBalance = memberBalanceList.FirstOrDefault(t => t.BalanceIndex == coinRule.PushBalanceIndex2);
-                    if (currBalance.TotalQuantity < coinRule.PushCoin2)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}余额不足，请充值", currBalance.BalanceName));
-                    }
-                    Dict_BalanceType dic = Dict_BalanceTypeService.I.GetModels(t => t.ID == coinRule.PushBalanceIndex2).FirstOrDefault();
-                    coinNote += string.Format("+{0}{1}", coinRule.PushCoin2, dic.TypeName);
-
-                    balance2 = Convert.ToDecimal(coinRule.PushCoin2 * currBalance.Balance / (currBalance.Balance + currBalance.BalanceFree));
-
-                    Dict_BalanceType bt = Dict_BalanceTypeService.I.GetModels(t => t.ID == coinRule.PushBalanceIndex1).FirstOrDefault();
-                    if (bt.AddingType == 0)
-                    {
-                        //小数不保留
-                        balance2 = Convert.ToDecimal((int)balance2);
-                        balanceFree2 = Convert.ToDecimal(coinRule.PushCoin1 - (int)balance2);
-                    }
-                    else if (bt.AddingType == 1)
-                    {
-                        //保留全部，只要有小数就进位
-                        if (((int)(balance2 * 100)) % 100 > 0)
-                            balance2 = Convert.ToDecimal(((int)balance2) + 1);
-                        balanceFree2 = Convert.ToDecimal(coinRule.PushCoin1 - (int)balance2);
-                    }
-                    else
-                    {
-                        balance2 = Decimal.Round(balance2, bt.DecimalNumber.Value, MidpointRounding.AwayFromZero);
-                        balanceFree2 = Decimal.Round(balanceFree2, bt.DecimalNumber.Value, MidpointRounding.AwayFromZero);
-                    }
-                }
-
-                //string orderId = RedisCacheHelper.CreateCloudSerialNo(store.StoreID);
-                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
-                {
-                    decimal? remainBalnce1 = 0;
-                    decimal? remainBalnceFree1 = 0;
-                    decimal? remainBalnce2 = 0;
-                    decimal? remainBalnceFree2 = 0;
-                    //扣减余额
-                    if (balance1 > 0)
-                    {
-                        Data_Card_Balance dcb = Data_Card_BalanceService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex1 && t.CardIndex == cardId).FirstOrDefault();
-                        dcb.Balance -= balance1;
-                        if (!Data_Card_BalanceService.I.Update(dcb))
+                        Dict_BalanceType dic = Dict_BalanceTypeService.I.GetModels(t => t.ID == coinRule.PushBalanceIndex1).FirstOrDefault();
+                        CardBalance currBalance = memberBalanceList.FirstOrDefault(t => t.BalanceIndex == coinRule.PushBalanceIndex1);
+                        if (currBalance == null || currBalance.TotalQuantity < coinRule.PushCoin1)
                         {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
-                        }
-                        remainBalnce1 = dcb.Balance;
-                    }
-                    if (balanceFree1 > 0)
-                    {
-                        Data_Card_Balance_Free dcbf = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex1 && t.CardIndex == cardId).FirstOrDefault();
-                        dcbf.Balance -= balanceFree1;
-                        if (!Data_Card_Balance_FreeService.I.Update(dcbf))
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}余额不足，请充值", dic.TypeName));
+                        }                        
+                        coinNote = string.Format("扫码投币-{0}{1}", coinRule.PushCoin1, dic.TypeName);
+
+                        balance1 = Convert.ToDecimal(coinRule.PushCoin1 * currBalance.Balance / (currBalance.Balance + currBalance.BalanceFree));
+
+                        Dict_BalanceType bt = Dict_BalanceTypeService.I.GetModels(t => t.ID == coinRule.PushBalanceIndex1).FirstOrDefault();
+                        if (bt.AddingType == 0)
                         {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                            //小数不保留
+                            balance1 = Convert.ToDecimal((int)balance1);
+                            balanceFree1 = Convert.ToDecimal(coinRule.PushCoin1 - (int)balance1);
                         }
-                        remainBalnceFree1 = dcbf.Balance;
-                    }
-                    if (balance2 > 0)
-                    {
-                        Data_Card_Balance dcb = Data_Card_BalanceService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex2 && t.CardIndex == cardId).FirstOrDefault();
-                        dcb.Balance -= balance2;
-                        if (!Data_Card_BalanceService.I.Update(dcb))
+                        else if (bt.AddingType == 1)
                         {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                            //保留全部，只要有小数就进位
+                            if (((int)(balance1 * 100)) % 100 > 0)
+                                balance1 = Convert.ToDecimal(((int)balance1) + 1);
+                            balanceFree1 = Convert.ToDecimal(coinRule.PushCoin1 - (int)balance1);
                         }
-                        remainBalnce2 = dcb.Balance;
-                    }
-                    if (balanceFree2 > 0)
-                    {
-                        Data_Card_Balance_Free dcbf = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex2 && t.CardIndex == cardId).FirstOrDefault();
-                        dcbf.Balance -= balanceFree2;
-                        if (!Data_Card_Balance_FreeService.I.Update(dcbf))
+                        else
                         {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                            balance1 = Decimal.Round(balance1, bt.DecimalNumber.Value, MidpointRounding.AwayFromZero);
+                            balanceFree1 = Decimal.Round(balanceFree1, bt.DecimalNumber.Value, MidpointRounding.AwayFromZero);
                         }
-                        remainBalnceFree2 = dcbf.Balance;
+                    }
+                    if (coinRule.PushCoin2 > 0)
+                    {
+                        Dict_BalanceType dic = Dict_BalanceTypeService.I.GetModels(t => t.ID == coinRule.PushBalanceIndex2).FirstOrDefault();
+                        CardBalance currBalance = memberBalanceList.FirstOrDefault(t => t.BalanceIndex == coinRule.PushBalanceIndex2);
+                        if (currBalance == null || currBalance.TotalQuantity < coinRule.PushCoin2)
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}余额不足，请充值", dic.TypeName));
+                        }
+                        
+                        coinNote += string.Format("+{0}{1}", coinRule.PushCoin2, dic.TypeName);
+
+                        balance2 = Convert.ToDecimal(coinRule.PushCoin2 * currBalance.Balance / (currBalance.Balance + currBalance.BalanceFree));
+
+                        Dict_BalanceType bt = Dict_BalanceTypeService.I.GetModels(t => t.ID == coinRule.PushBalanceIndex1).FirstOrDefault();
+                        if (bt.AddingType == 0)
+                        {
+                            //小数不保留
+                            balance2 = Convert.ToDecimal((int)balance2);
+                            balanceFree2 = Convert.ToDecimal(coinRule.PushCoin1 - (int)balance2);
+                        }
+                        else if (bt.AddingType == 1)
+                        {
+                            //保留全部，只要有小数就进位
+                            if (((int)(balance2 * 100)) % 100 > 0)
+                                balance2 = Convert.ToDecimal(((int)balance2) + 1);
+                            balanceFree2 = Convert.ToDecimal(coinRule.PushCoin1 - (int)balance2);
+                        }
+                        else
+                        {
+                            balance2 = Decimal.Round(balance2, bt.DecimalNumber.Value, MidpointRounding.AwayFromZero);
+                            balanceFree2 = Decimal.Round(balanceFree2, bt.DecimalNumber.Value, MidpointRounding.AwayFromZero);
+                        }
                     }
 
-                    Flw_DeviceData fdd = new Flw_DeviceData();
-                    fdd.ID = RedisCacheHelper.CreateStoreSerialNo(store.ID);
-                    fdd.MerchID = store.MerchID;
-                    fdd.StoreID = store.ID;
-                    fdd.DeviceID = device.ID;
-                    fdd.GameIndexID = game.ID;
-                    fdd.SiteName = "";
-                    fdd.SN = 0;
-                    fdd.BusinessType = 3;
-                    fdd.State = 1;
-                    fdd.RealTime = DateTime.Now;
-                    fdd.MemberID = memberTokenModel.MemberId;
-                    fdd.CreateStoreID = memberTokenModel.CurrentCardInfo.StoreId;
-                    fdd.MemberName = memberTokenModel.Info == null ? "散客" : memberTokenModel.Info.nickname ?? "散客";
-                    fdd.CardID = memberTokenModel.CurrentCardInfo.CardId;
-                    fdd.BalanceIndex = coinRule.PushBalanceIndex1;
-                    fdd.Coin = coinRule.PushCoin1;
-                    fdd.RemainBalance = remainBalnce1 + remainBalnceFree1;
-                    fdd.OrderID = "";
-                    fdd.Note = coinNote;
-                    fdd.CheckDate = schedule.CheckDate;
-                    if (!Flw_DeviceDataService.I.Add(fdd))
+                    //string orderId = RedisCacheHelper.CreateCloudSerialNo(store.StoreID);
+                    using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建投币记录失败");
-                    }
+                        decimal? remainBalnce1 = 0;
+                        decimal? remainBalnceFree1 = 0;
+                        decimal? remainBalnce2 = 0;
+                        decimal? remainBalnceFree2 = 0;
+                        //扣减余额
+                        if (balance1 > 0)
+                        {
+                            Data_Card_Balance dcb = Data_Card_BalanceService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex1 && t.CardIndex == cardId).FirstOrDefault();
+                            dcb.Balance -= balance1;
+                            if (!Data_Card_BalanceService.I.Update(dcb))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                            }
+                            remainBalnce1 = dcb.Balance;
+                        }
+                        if (balanceFree1 > 0)
+                        {
+                            Data_Card_Balance_Free dcbf = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex1 && t.CardIndex == cardId).FirstOrDefault();
+                            dcbf.Balance -= balanceFree1;
+                            if (!Data_Card_Balance_FreeService.I.Update(dcbf))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                            }
+                            remainBalnceFree1 = dcbf.Balance;
+                        }
+                        if (balance2 > 0)
+                        {
+                            Data_Card_Balance dcb = Data_Card_BalanceService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex2 && t.CardIndex == cardId).FirstOrDefault();
+                            dcb.Balance -= balance2;
+                            if (!Data_Card_BalanceService.I.Update(dcb))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                            }
+                            remainBalnce2 = dcb.Balance;
+                        }
+                        if (balanceFree2 > 0)
+                        {
+                            Data_Card_Balance_Free dcbf = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex2 && t.CardIndex == cardId).FirstOrDefault();
+                            dcbf.Balance -= balanceFree2;
+                            if (!Data_Card_Balance_FreeService.I.Update(dcbf))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                            }
+                            remainBalnceFree2 = dcbf.Balance;
+                        }
 
-                    //记录余额变化流水
-                    Flw_MemberData fmd = new Flw_MemberData();
-                    fmd.ID = RedisCacheHelper.CreateStoreSerialNo(store.ID);
-                    fmd.MerchID = store.MerchID;
-                    fmd.StoreID = store.ID;
-                    fmd.MemberID = memberTokenModel.MemberId;
-                    fmd.MemberName = memberTokenModel.Info == null ? "散客" : memberTokenModel.Info.nickname ?? "散客";
-                    fmd.CardIndex = cardId;
-                    fmd.ICCardID = memberTokenModel.CurrentCardInfo.ICCardId;
-                    fmd.MemberLevelName = memberTokenModel.CurrentCardInfo.MemberLevelName ?? "";
-                    fmd.ChannelType = (int)MemberDataChannelType.吧台;
-                    fmd.OperationType = (int)MemberDataOperationType.投币;
-                    fmd.OPTime = DateTime.Now;
-                    fmd.SourceType = 0;
-                    fmd.SourceID = fdd.ID;
-                    fmd.BalanceIndex = coinRule.PushBalanceIndex1;
-                    fmd.ChangeValue = 0 - balance1;
-                    fmd.Balance = remainBalnce1;
-                    fmd.FreeChangeValue = 0 - balanceFree1;
-                    fmd.FreeBalance = remainBalnceFree1;
-                    fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
-                    fmd.Note = coinNote;
-                    fmd.UserID = 0;
-                    fmd.DeviceID = device.ID;
-                    fmd.ScheduleID = schedule.ID;
-                    fmd.AuthorID = 0;
-                    fmd.WorkStation = "";
-                    fmd.CheckDate = schedule.CheckDate;
-                    if (!Flw_MemberDataService.I.Add(fmd))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
-                    }
-
-                    if (balance2 > 0 || balanceFree2 > 0)
-                    {
-                        fdd = new Flw_DeviceData();
+                        Flw_DeviceData fdd = new Flw_DeviceData();
                         fdd.ID = RedisCacheHelper.CreateStoreSerialNo(store.ID);
                         fdd.MerchID = store.MerchID;
                         fdd.StoreID = store.ID;
@@ -1240,8 +1203,8 @@ namespace XXCloudService.Api.XCCloudH5
                         fdd.MemberName = memberTokenModel.Info == null ? "散客" : memberTokenModel.Info.nickname ?? "散客";
                         fdd.CardID = memberTokenModel.CurrentCardInfo.CardId;
                         fdd.BalanceIndex = coinRule.PushBalanceIndex1;
-                        fdd.Coin = coinRule.PushCoin2;
-                        fdd.RemainBalance = remainBalnce2 + remainBalnceFree2; ;
+                        fdd.Coin = coinRule.PushCoin1;
+                        fdd.RemainBalance = remainBalnce1 + remainBalnceFree1;
                         fdd.OrderID = "";
                         fdd.Note = coinNote;
                         fdd.CheckDate = schedule.CheckDate;
@@ -1251,7 +1214,7 @@ namespace XXCloudService.Api.XCCloudH5
                         }
 
                         //记录余额变化流水
-                        fmd = new Flw_MemberData();
+                        Flw_MemberData fmd = new Flw_MemberData();
                         fmd.ID = RedisCacheHelper.CreateStoreSerialNo(store.ID);
                         fmd.MerchID = store.MerchID;
                         fmd.StoreID = store.ID;
@@ -1265,11 +1228,11 @@ namespace XXCloudService.Api.XCCloudH5
                         fmd.OPTime = DateTime.Now;
                         fmd.SourceType = 0;
                         fmd.SourceID = fdd.ID;
-                        fmd.BalanceIndex = coinRule.PushBalanceIndex2;
-                        fmd.ChangeValue = 0 - balance2;
-                        fmd.Balance = remainBalnce2;
-                        fmd.FreeChangeValue = 0 - balanceFree2;
-                        fmd.FreeBalance = remainBalnceFree2;
+                        fmd.BalanceIndex = coinRule.PushBalanceIndex1;
+                        fmd.ChangeValue = 0 - balance1;
+                        fmd.Balance = remainBalnce1;
+                        fmd.FreeChangeValue = 0 - balanceFree1;
+                        fmd.FreeBalance = remainBalnceFree1;
                         fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
                         fmd.Note = coinNote;
                         fmd.UserID = 0;
@@ -1282,9 +1245,92 @@ namespace XXCloudService.Api.XCCloudH5
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
                         }
-                    }
 
-                    ts.Complete();
+                        if (balance2 > 0 || balanceFree2 > 0)
+                        {
+                            fdd = new Flw_DeviceData();
+                            fdd.ID = RedisCacheHelper.CreateStoreSerialNo(store.ID);
+                            fdd.MerchID = store.MerchID;
+                            fdd.StoreID = store.ID;
+                            fdd.DeviceID = device.ID;
+                            fdd.GameIndexID = game.ID;
+                            fdd.SiteName = "";
+                            fdd.SN = 0;
+                            fdd.BusinessType = 3;
+                            fdd.State = 1;
+                            fdd.RealTime = DateTime.Now;
+                            fdd.MemberID = memberTokenModel.MemberId;
+                            fdd.CreateStoreID = memberTokenModel.CurrentCardInfo.StoreId;
+                            fdd.MemberName = memberTokenModel.Info == null ? "散客" : memberTokenModel.Info.nickname ?? "散客";
+                            fdd.CardID = memberTokenModel.CurrentCardInfo.CardId;
+                            fdd.BalanceIndex = coinRule.PushBalanceIndex1;
+                            fdd.Coin = coinRule.PushCoin2;
+                            fdd.RemainBalance = remainBalnce2 + remainBalnceFree2; ;
+                            fdd.OrderID = "";
+                            fdd.Note = coinNote;
+                            fdd.CheckDate = schedule.CheckDate;
+                            if (!Flw_DeviceDataService.I.Add(fdd))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建投币记录失败");
+                            }
+
+                            //记录余额变化流水
+                            fmd = new Flw_MemberData();
+                            fmd.ID = RedisCacheHelper.CreateStoreSerialNo(store.ID);
+                            fmd.MerchID = store.MerchID;
+                            fmd.StoreID = store.ID;
+                            fmd.MemberID = memberTokenModel.MemberId;
+                            fmd.MemberName = memberTokenModel.Info == null ? "散客" : memberTokenModel.Info.nickname ?? "散客";
+                            fmd.CardIndex = cardId;
+                            fmd.ICCardID = memberTokenModel.CurrentCardInfo.ICCardId;
+                            fmd.MemberLevelName = memberTokenModel.CurrentCardInfo.MemberLevelName ?? "";
+                            fmd.ChannelType = (int)MemberDataChannelType.吧台;
+                            fmd.OperationType = (int)MemberDataOperationType.投币;
+                            fmd.OPTime = DateTime.Now;
+                            fmd.SourceType = 0;
+                            fmd.SourceID = fdd.ID;
+                            fmd.BalanceIndex = coinRule.PushBalanceIndex2;
+                            fmd.ChangeValue = 0 - balance2;
+                            fmd.Balance = remainBalnce2;
+                            fmd.FreeChangeValue = 0 - balanceFree2;
+                            fmd.FreeBalance = remainBalnceFree2;
+                            fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                            fmd.Note = coinNote;
+                            fmd.UserID = 0;
+                            fmd.DeviceID = device.ID;
+                            fmd.ScheduleID = schedule.ID;
+                            fmd.AuthorID = 0;
+                            fmd.WorkStation = "";
+                            fmd.CheckDate = schedule.CheckDate;
+                            if (!Flw_MemberDataService.I.Add(fmd))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                            }
+                        }
+
+                        Flw_GameAPP_MemberRule gmr = new Flw_GameAPP_MemberRule();
+                        gmr.ID = RedisCacheHelper.CreateCloudSerialNo(store.ID);
+                        gmr.RuleID = coinRule.ID;
+                        gmr.MerchID = store.MerchID;
+                        gmr.StoreID = store.ID;
+                        gmr.GameID = coinRule.GameID;
+                        gmr.MemberLevelID = memberTokenModel.CurrentCardInfo.MemberLevelId;
+                        gmr.PushBalanceIndex1 = coinRule.PushBalanceIndex1;
+                        gmr.PushCoin1 = coinRule.PushCoin1;
+                        gmr.PushBalanceIndex2 = coinRule.PushBalanceIndex2;
+                        gmr.PushCoin2 = coinRule.PushCoin2;
+                        gmr.PlayCount = coinRule.PlayCount;
+                        if (!Flw_GameAPP_MemberRuleService.I.Add(gmr))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员投币记录失败");
+                        }
+
+                        ts.Complete();
+                    }
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "投币规则无效");
                 }
 
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");

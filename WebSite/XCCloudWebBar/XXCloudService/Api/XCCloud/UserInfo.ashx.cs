@@ -208,17 +208,17 @@ namespace XCCloudWebBar.Api.XCCloud
 
                     if (string.IsNullOrEmpty(loginName))
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.F, "", Result_Code.T, "用户名不能为空");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户名不能为空");
                     }
 
                     if (string.IsNullOrEmpty(password))
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.F, "", Result_Code.T, "密码不能为空");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "密码不能为空");
                     }
 
                     if (string.IsNullOrEmpty(workStation))
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.F, "", Result_Code.T, "工作站信息不完整");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "工作站信息不完整");
                     }
 
                     //验证用户信息

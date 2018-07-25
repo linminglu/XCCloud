@@ -150,6 +150,242 @@ namespace XCCloudService.Business.XCCloud
         } 
         #endregion
 
+        #region H5订单支付成功处理
+        /// <summary>
+        /// H5订单支付成功处理
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <param name="amount">实际支付金额</param>
+        /// <param name="channelOrderNo">支付渠道订单号</param>
+        /// <param name="selttleType">结算类型</param>
+        /// <param name="selttleType">支付方式</param>
+        /// <returns></returns>
+        public bool H5OrderPay(string orderId, decimal amount, string channelOrderNo, SelttleType selttleType, PaymentChannel payment, out string errMsg)
+        {
+            errMsg = string.Empty;
+            try
+            {
+                Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == orderId).FirstOrDefault();
+                if (order == null)
+                {
+                    errMsg = "查询订单失败";
+                    return false;
+                }
+
+                if (order.OrderStatus == 2 || order.OrderStatus == 3)
+                {
+                    return true;
+                }
+
+                string StoreID = order.StoreID;
+                decimal PayCount = order.PayCount.HasValue ? order.PayCount.Value : 0; //应付金额
+                decimal FreePay = order.FreePay.HasValue ? order.FreePay.Value : 0;   //减免金额
+                decimal payAmount = PayCount - FreePay; //实际应支付金额
+
+                DateTime now = DateTime.Now;
+
+                order.PayTime = now;
+                order.PayType = (int)payment;
+                order.RealPay = amount;
+                order.OrderNumber = channelOrderNo;
+
+                List<OrderDetailSaleModel> orderDetailSaleList = new List<OrderDetailSaleModel>();
+
+                if (payAmount == amount)
+                {
+                    if (order.CreateTime.Value.AddMinutes(1) < now)
+                    {
+                        order.OrderStatus = (int)OrderState.Alarm;
+                        order.Note += " 支付超时";
+                        errMsg = "支付超时";
+                        Flw_OrderService.I.Update(order);
+                        return false;
+                    }
+
+                    order.OrderStatus = (int)OrderState.AlreadyPaid;
+
+                    decimal? fee = 0;
+                    #region 计算手续费
+                    if (selttleType == SelttleType.StarPos)
+                    {
+                        var QuerySettleFee = from a in Base_StoreInfoService.N.GetModels(t => t.ID == StoreID)
+                                             join b in Base_SettlePPOSService.N.GetModels() on a.SettleID equals b.ID
+                                             select new
+                                             {
+                                                 StoreId = a.ID,
+                                                 SettleFee = b.SettleFee
+                                             };
+                        var settleFee = QuerySettleFee.FirstOrDefault();
+                        if (settleFee != null)
+                        {
+                            fee = settleFee.SettleFee;
+                        }
+                    }
+                    else if (selttleType == SelttleType.LcswPay)
+                    {
+                        var QuerySettleFee = from a in Base_StoreInfoService.N.GetModels(t => t.ID == StoreID)
+                                             join b in Base_SettleLCPayService.N.GetModels() on a.SettleID equals b.ID
+                                             select new
+                                             {
+                                                 StoreId = a.ID,
+                                                 SettleFee = b.SettleFee
+                                             };
+                        var settleFee = QuerySettleFee.FirstOrDefault();
+                        if (settleFee != null)
+                        {
+                            fee = settleFee.SettleFee;
+                        }
+                    }
+                    else
+                    {
+                        var QuerySettleFee = from a in Base_StoreInfoService.N.GetModels(t => t.ID == StoreID)
+                                             join b in Base_SettleOrgService.N.GetModels() on a.SettleID equals b.ID
+                                             select new
+                                             {
+                                                 StoreId = a.ID,
+                                                 SettleFee = b.SettleFee
+                                             };
+                        var settleFee = QuerySettleFee.FirstOrDefault();
+                        if (settleFee != null)
+                        {
+                            fee = settleFee.SettleFee;
+                        }
+                    }
+
+                    decimal payFee = 0m;
+                    if (fee > 0)
+                    {
+                        payFee = Math.Round((decimal)(payAmount * fee), 2, MidpointRounding.AwayFromZero);
+                        if (payFee < 0.01m) payFee = 0.01m; //最小单位为0.01元
+                    } 
+                    #endregion
+                    order.PayFee = payFee;
+
+                    //订单详情中的foodSaleId集合
+                    orderDetailSaleList = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == orderId).GroupBy(t => t.FoodFlwID).Select(t => new OrderDetailSaleModel
+                    {
+                        FoodSaleId = t.Key
+                    }).ToList();
+                }
+                else
+                {
+                    errMsg = "支付金额异常";
+                    //支付异常
+                    order.OrderStatus = (int)OrderState.Alarm;
+                }
+
+                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == order.MemberID).FirstOrDefault();
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.ID == order.CardID).FirstOrDefault();
+                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.ID == memberCard.MemberLevelID).FirstOrDefault();
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == order.StoreID && t.State == 1).FirstOrDefault();
+
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    if (!Flw_OrderService.I.Update(order))
+                    {
+                        errMsg = "订单更新失败";
+                        return false;
+                    }
+
+                    if (orderDetailSaleList.Count > 0)
+                    {
+                        foreach (var item in orderDetailSaleList)
+                        {
+                            Flw_Food_Sale sale = Flw_Food_SaleService.I.GetModels(t => t.ID == item.FoodSaleId).FirstOrDefault();
+                            if (sale != null)
+                            {
+                                switch (sale.SingleType)
+                                {
+                                    case 0://套餐
+                                        int foodId = sale.FoodID.Toint(0);
+                                        var foodDetail = Data_Food_DetialService.I.GetModels(t => t.FoodID == foodId).ToList();
+                                        foreach (var detail in foodDetail)
+                                        {
+                                            if (detail.OperateType == 1)
+                                            {
+                                                switch (detail.FoodType)
+                                                {
+                                                    case 0://余额
+                                                        var balance = Data_Card_BalanceService.I.GetModels(t => t.CardIndex == order.CardID && t.BalanceIndex == detail.ContainID).FirstOrDefault();
+                                                        int? quantity = sale.SaleCount * detail.ContainCount;
+                                                        balance.Balance += quantity;
+                                                        if(!Data_Card_BalanceService.I.Update(balance))
+                                                        {
+                                                            return false;
+                                                        }
+
+                                                        var balanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.CardIndex == order.CardID && t.BalanceIndex == detail.ContainID).FirstOrDefault();
+
+                                                        //记录余额变化流水
+                                                        Flw_MemberData fmd = new Flw_MemberData();
+                                                        fmd.ID = RedisCacheHelper.CreateCloudSerialNo(order.StoreID);
+                                                        fmd.MerchID = order.MerchID;
+                                                        fmd.StoreID = order.StoreID;
+                                                        fmd.MemberID = order.MemberID;
+                                                        fmd.MemberName = member.UserName;
+                                                        fmd.CardIndex = memberCard.ID;
+                                                        fmd.ICCardID = memberCard.ICCardID;
+                                                        fmd.MemberLevelName = level.MemberLevelName;
+                                                        fmd.ChannelType = (int)MemberDataChannelType.莘宸云;
+                                                        fmd.OperationType = (int)MemberDataOperationType.售币;
+                                                        fmd.OPTime = DateTime.Now;
+                                                        fmd.SourceType = 10;
+                                                        fmd.SourceID = order.ID;
+                                                        fmd.BalanceIndex = balance.BalanceIndex;
+                                                        fmd.ChangeValue = 0 + quantity;
+                                                        fmd.Balance = balance.Balance;
+                                                        fmd.FreeChangeValue = 0;
+                                                        fmd.FreeBalance = balanceFree == null ? 0 : balanceFree.Balance.Todecimal(0);
+                                                        fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                                                        fmd.Note = "充值套餐";
+                                                        fmd.ScheduleID = schedule.ID;
+                                                        fmd.WorkStation = "手机H5自助";
+                                                        fmd.CheckDate = schedule.CheckDate;
+                                                        if (!Flw_MemberDataService.I.Add(fmd))
+                                                        {
+                                                            return false;
+                                                        }
+                                                        break;
+                                                    case 4:
+                                                        var couponList = Data_CouponListService.I.GetModels(t => t.CouponID == detail.ContainID && t.StoreID == order.StoreID && t.State == 2 && t.IsLock == 0 && t.JackpotID == 0);
+                                                        foreach (var coupon in couponList)
+                                                        {
+                                                            if(coupon.CheckVerifiction())
+                                                            {
+                                                                coupon.MemberID = member.ID;
+                                                                if(!Data_CouponListService.I.Update(coupon))
+                                                                {
+                                                                    return false;
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case 7:
+                                        Flw_GameAPP_Rule_Entry rule = Flw_GameAPP_Rule_EntryService.I.GetModels(t => t.ID == sale.FoodID).FirstOrDefault();
+                                        //远程投币
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    ts.Complete();
+                }
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
         #region 订单退款处理
         /// <summary>
         /// 订单退款处理
@@ -282,5 +518,10 @@ namespace XCCloudService.Business.XCCloud
     {
         public decimal? ReturnFee { get; set; }
         public int? ReturnType { get; set; }
+    }
+
+    public class OrderDetailSaleModel
+    {
+        public string FoodSaleId { get; set; }
     }
 }

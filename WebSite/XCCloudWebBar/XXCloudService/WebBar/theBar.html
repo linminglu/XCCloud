@@ -21,6 +21,7 @@
 </head>
 <body>
 <div id="app" v-cloak>
+ 
 	<div class="container-fluid boxShadow">
 		<!--导航-->
 		<div class="navbar-collapse collapse">
@@ -835,6 +836,7 @@
 					</div>
 				</div>
 				<div class="Checkout col-lg-12 col-md-12">
+                    <i-button @click="">清空购物车</i-button>
 					<div v-for="(item,index) in shopping" class="col-lg-12 col-md-12 shopCStyle">
 						<div class="col-lg-7 col-md-7 text-left shopCStyle">{{item.typeName}}</div>
 						<div class="col-lg-5 col-md-5 text-right shopCStyle">{{item.payNum}}</div>
@@ -963,7 +965,7 @@
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon addonWidth">证件号码：</span>
-													<input   class="form-control" v-model="memberInfo.IDCardNo"/>
+													<input class="form-control" v-model="memberInfo.IDCardNo"/>
 													<div class="input-group-btn">
 														<button type="button" class="btn btn-default readCard" :disabled="loading" @click="readIDCard('1')">读取</button>
 													</div>
@@ -1212,7 +1214,8 @@
                             </div>
                             <div class="input-group col-lg-3 col-md-6">
                                 <span class="input-group-addon addonWidth">生日：</span>
-                                <input    class="form-control" v-model="memberForm.birthday" readonly/>
+                                <date-picker type="date" placeholder="Select date"  @on-change="birthdayChoose"></date-picker>
+                                <!-- <input class="form-control" v-model="memberForm.birthday"/> -->
                             </div>
                             <div class="input-group col-lg-2 col-md-6">
                                 <span class="input-group-addon addonWidth">性别：</span>
@@ -1223,16 +1226,16 @@
                             </div>
                         </div>
                         <div class="McText col-lg-12">
-                            <div class="input-group col-lg-5 col-md-6">
+                            <div class="input-group col-lg-6 col-md-12">
                                 <span class="input-group-addon addonWidth">验证码：</span>
                                 <input   class="form-control" v-model="memberForm.mobileCode"/>
                                 <div class="input-group-btn">
                                     <input class="form-control btnSendCode readCard" type="button" v-model="memberForm.codeBtn" @click="sendCode" :disabled="memberForm.disabled"/>
                                 </div>
                             </div>
-                            <div class="input-group col-lg-7 col-md-12">
+                            <div class="input-group col-lg-6 col-md-12">
                                 <span class="input-group-addon addonWidth">证件号码：</span>
-                                <input  class="form-control" v-model="memberForm.IdNumber" readonly/>
+                                <input  class="form-control" v-model="memberForm.IdNumber"/>
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default readCard" :disabled="loading" @click="readIDCard('2')">读取</button>
                                 </div>
@@ -1373,6 +1376,7 @@
                 storeName:"",
                 userToken:""
             },
+            workStation: "",
             salesIS: true,
             screeningTitle: false,
             shopData:[],
@@ -1758,7 +1762,10 @@
             Initialize:function () {
                 var that =this;
                 var userData = getStorage("userData");      	//获取userToken
-                console.log(userData)
+                var workStation = getStorage("workStation");      	//获取userToken
+                that.workStation = workStation
+
+                console.log(workStation)
                 that.userToken = userData.userToken;
                 that.userData = userData;
                 that.salesAll();
@@ -1910,7 +1917,7 @@
                 // $('#fastModal').modal('show');
                 this.onFocus = false;
                 
-                var obj={userToken:that.userToken,type:"4", workStation:"lijunjie"};
+                var obj={userToken:that.userToken,type:"4", workStation:that.workStation};
                 console.log(obj);
                 axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
                     console.log(res.data);
@@ -1939,6 +1946,7 @@
                     var icCardId = that.icCardId
                 }
                 var getQuickFood={userToken:that.userToken,icCardId:icCardId,mobile:""};
+                console.log(getQuickFood)
                 axios.post('/xccloud/foods?action=getQuickFood', getQuickFood).then(function (res) {	//获取会员等级
                     console.log(res.data);
                     that.msgPrompt(res.data);
@@ -1986,7 +1994,7 @@
                     var foodCount =parseFloat(that.inputAmount/that.fastAmount);
                     var buyDetails = [{foodId:that.fastSellData.foodId,category:'0',foodCount:foodCount,payType:"0",payNum:that.inputMoney}];
                     buyDetails =JSON.stringify(buyDetails)
-                    var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:that.inputMoney,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:saleCoinType};
+                    var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:that.inputMoney,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:saleCoinType};
                     console.log(obj)
                     $('#fastModal').modal('hide');
                     axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
@@ -2035,7 +2043,7 @@
                             var customerType = "2"
                             var icCardId = that.icCardId
                         }
-                        var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
                         axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
@@ -2056,7 +2064,7 @@
                             var customerType = "2"
                             var icCardId = that.icCardId
                         }
-                        var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        var obj={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
                         axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
@@ -2119,7 +2127,7 @@
                             var customerType = "2"
                             var icCardId = that.icCardId
                         }
-                        var addOrderJson={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        var addOrderJson={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
                         
                         axios.post('/xccloud/order?action=addOrder', addOrderJson).then(function (res) {	//创建订单
                             console.log(res.data);
@@ -2155,7 +2163,7 @@
                             var customerType = "2"
                             var icCardId = that.icCardId
                         }
-                        var addOrderJson={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        var addOrderJson={userToken:that.userToken,buyDetails:buyDetails,customerType:customerType,memberLevelId:that.memberLevelId,icCardId:icCardId,mobile:"",payCount:payCount,deposit:"0",openFee:"0",freePay:"0",scheduleId:1,workStation:that.workStation,note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
                         axios.post('/xccloud/order?action=addOrder', addOrderJson).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
@@ -2329,11 +2337,7 @@
 				var that = this;
 				var registerData = that.membershipData[that.memberForm.foodSelectedIndex];
                 console.log(registerData);
-                if(that.icCardId == ""){
-                    var icCardId = "0"
-                }else{
-                    var icCardId = that.icCardId
-                }
+                console.log(that.dataObj);
                 var buyDetail = [{foodId:registerData.foodId,category:"0",foodCount:"1",payType:"0",payNum:registerData.foodPrice}];
                 var buyDetails =JSON.stringify(buyDetail);
                 // openFee = openFee.toFixed(2);
@@ -2345,11 +2349,11 @@
                     customerType: "1",
                     mobile: "",
                     memberLevelId: registerData.memberLevelId,
-                    icCardId: icCardId,
+                    icCardId: that.dataObj.icCardId,
                     payCount: 1*registerData.foodPrice+1*registerData.openFee+1*registerData.deposit,
                     deposit: registerData.deposit,
                     openFee: registerData.openFee,
-                    workStation: "lijunjie",
+                    workStation: that.workStation,
                     authorId: "0",
                     note: "",
                     orderSource: "0",
@@ -2881,6 +2885,11 @@
                     this.billing.dataTime = e;
                 }
             },
+//          入会生日选择
+            birthdayChoose:function(e){
+                console.log(e);
+                that.memberForm.birthday = e
+            },
 //          余额流水分页按钮
             billingChangepage:function(index){
                 var that = this;
@@ -3008,7 +3017,7 @@
                     });
                     setTimeout(function () {
                         that.getMeal();
-                    }, 1000);
+                    }, 1300);
                     // that.$nextTick(function () {
                         
                     // })
@@ -3099,10 +3108,7 @@
                     var minPrice =inputValue2
                     var maxPrice =inputValue1
                 }
-                console.log(that.saleTitle)
-                console.log(that.saleTitle[that.sallData.indexPrev])
-                console.log(that.sallData.indexPrev)
-                console.log(that.saleTitle[that.sallData.indexPrev].foodTypeId)
+
 				var priceLimit ={ category:that.sallData.selectValue1, balanceIndex:that.sallData.selectValue2, minPrice:minPrice, maxPrice:maxPrice};
                 var priceLimitStr = JSON.stringify(priceLimit);
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:memberLevelId,foodTypeStr:that.saleTitle[that.sallData.indexPrev].foodTypeId,priceLimit:priceLimitStr};
@@ -3290,6 +3296,8 @@
                 that.sallData.indexPrev = index;
                 switch(index){
                     case 0:
+                        that.sallData.optionList1 = that.saleTitle;
+                        that.sallData.selectValue1 = that.saleTitle[0].foodTypeId;
                         that.screeningTitle = true;
                         break;
                     case 1:
@@ -3556,7 +3564,7 @@
 //			补币
             saveManual:function () {
                 var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:that.workStation};
                 console.log(obj);
                 that.loading = true;
                 axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
@@ -3630,7 +3638,7 @@
 //			提币
 			currency:function () {
                 var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:that.workStation};
                 console.log(obj);
                 that.loading = true;
                 axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
@@ -3853,7 +3861,7 @@
                     allowDevice:false,
                     repairType:"1"
                 }
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:that.workStation};
                 console.log(obj);
                 that.loading = true;
                 axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {

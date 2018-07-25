@@ -26,7 +26,7 @@ namespace XXCloudService.Api.XCCloud
     {
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object getFoodDetailPayNum(Dictionary<string, object> dicParas)
+        public object getFoodDetailRealPayNum(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
             TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
@@ -34,7 +34,7 @@ namespace XXCloudService.Api.XCCloud
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string buyDetailsJson = dicParas.ContainsKey("buyDetailsJson") ? dicParas["buyDetailsJson"].ToString() : string.Empty;
 
-            string sql = "GetFoodDetailPayNum";
+            string sql = "GetFoodDetailRealPayNum";
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("@MerchId", SqlDbType.VarChar,15);
             parameters[0].Value = userTokenDataModel.MerchID;
@@ -81,17 +81,23 @@ namespace XXCloudService.Api.XCCloud
             parameters[3] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
             parameters[3].Direction = ParameterDirection.Output;
 
+            List<object> list = new List<object>();
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
-            var obj = new {
-                foodId = ds.Tables[0].Rows[0]["FoodId"].ToString(),
-                category = ds.Tables[0].Rows[0]["Category"].ToString(),
-                foodCount = ds.Tables[0].Rows[0]["FoodCount"].ToString(),
-                payType = ds.Tables[0].Rows[0]["PayType"].ToString(),
-                payNum = ds.Tables[0].Rows[0]["PayNum"].ToString(),
-                realPayNum = ds.Tables[0].Rows[0]["RealPayNum"].ToString()
-            };
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                var obj = new
+                {
+                    foodId = ds.Tables[0].Rows[0]["FoodId"].ToString(),
+                    category = ds.Tables[0].Rows[0]["Category"].ToString(),
+                    foodCount = ds.Tables[0].Rows[0]["FoodCount"].ToString(),
+                    payType = ds.Tables[0].Rows[0]["PayType"].ToString(),
+                    payNum = ds.Tables[0].Rows[0]["PayNum"].ToString(),
+                    realPayNum = ds.Tables[0].Rows[0]["RealPayNum"].ToString()
+                };
+                list.Add(obj);
+            }
 
-            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
         }
 
 

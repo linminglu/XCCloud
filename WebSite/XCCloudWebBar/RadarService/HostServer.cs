@@ -70,12 +70,34 @@ namespace RadarService
         DSS.Client.Client dsClient = null;
         class RouteData
         {
+            public string Segment { get; set; }
             public string Token { get; set; }
             public EndPoint RemotePoint { get; set; }
             public byte[] RecvData { get; set; }
         }
         string CloudServerIP = "";
         int CloudServerPort = 0;
+
+        public class RadarDataItem
+        {
+            /// <summary>
+            /// 路由器段号
+            /// </summary>
+            public string Segment { get; set; }
+            /// <summary>
+            /// 数据流内容
+            /// </summary>
+            public byte[] DataBytes { get; set; }
+            /// <summary>
+            /// 创建时间
+            /// </summary>
+            public DateTime CreateTime { get; set; }
+            /// <summary>
+            /// 数据方向
+            /// </summary>
+            public int DataDir { get; set; }
+        }
+        public static Queue<RadarDataItem> DataWriteQueue = new Queue<RadarDataItem>();
 
         public delegate void 雷达数据显示(string ShowText);
         public event 雷达数据显示 OnRadarDataShow;
@@ -420,7 +442,7 @@ namespace RadarService
             FrameData data = new FrameData();
             data.routeAddress = "FFFF";
             byte[] Senddata = Coding.ConvertData.GetFrameDataBytes(data, sendRe.ToArray(), CommandType.设置机头长地址);
-            udp.SendData(Senddata, Converstring2Endpoint(route.RemotePoint));
+            udp.SendData(Senddata, Converstring2Endpoint(route.RemotePoint), route.Segment);
             return true;
         }
 
@@ -456,7 +478,7 @@ namespace RadarService
             }
 
             byte[] Send = Coding.ConvertData.GetFrameDataBytes(data, dataList.ToArray(), CommandType.路由器时间控制);
-            udp.SendData(Send, Converstring2Endpoint(item.RemotePoint));
+            udp.SendData(Send, Converstring2Endpoint(item.RemotePoint), item.Segment);
             return true;
         }
         #endregion
@@ -476,6 +498,7 @@ namespace RadarService
         /// </summary>
         class FrameBody
         {
+            public string Segment = "";
             //发送数据结构
             public object sendObj = null;
             //数据类容
@@ -519,7 +542,7 @@ namespace RadarService
         /// <param name="data">数据包</param>
         /// <param name="sendType">主动发送类别</param>
         /// <param name="askType">期待应答类别</param>
-        public static void BodySend(object sendObj, byte[] data, CommandType sendType, CommandType askType, string SendShowString, int SN, string headAddress, EndPoint p)
+        public static void BodySend(object sendObj, byte[] data, CommandType sendType, CommandType askType, string SendShowString, int SN, string headAddress, EndPoint p, string segment)
         {
             headAddress = headAddress.ToLower();
             FrameBody f = new FrameBody()
@@ -530,33 +553,14 @@ namespace RadarService
                 SendType = sendType,
                 SendShow = SendShowString,
                 SN = SN,
-                remoteP = p
+                remoteP = p,
+                Segment = segment
             };
             if (!BodySendBUF.ContainsKey(headAddress))
             {
                 BodySendBUF.Add(headAddress, new List<FrameBody>());
             }
             BodySendBUF[headAddress].Add(f);
-        }
-
-        /// <summary>
-        /// 主动发送数据压栈
-        /// </summary>
-        /// <param name="data">数据包</param>
-        /// <param name="sendType">主动发送类别</param>
-        /// <param name="askType">期待应答类别</param>
-        public static void BodySendEx(object sendObj, byte[] data, CommandType sendType, CommandType askType, string SendShowString)
-        {
-            FrameBody f = new FrameBody()
-            {
-                sendObj = sendObj,
-                AskType = askType,
-                data = data,
-                SendType = sendType,
-                SendShow = SendShowString
-            };
-
-            BodySendQueue.Enqueue(f);
         }
 
         static object ClearBodyItem(CommandType cType, object data, int SN, string headAddress)
@@ -633,7 +637,7 @@ namespace RadarService
                                 goto continueline;
                             }
 
-                            udp.SendData(f.data, f.remoteP);
+                            udp.SendData(f.data, f.remoteP, f.Segment);
                             f.SendCount++;
                             f.SendTime = DateTime.Now;
 
@@ -752,8 +756,14 @@ namespace RadarService
                         Console.WriteLine("莘宸服务器接收【" + info + "】");
                         RouteStatusItem route = GetRadarStatusBySegment(head.路由器段号);
                         if (route == null) return;
-                        Command.Ask.Ask远程投币上分数据 a = new Command.Ask.Ask远程投币上分数据(head, Convert.ToInt32(contorl.count), info, SystemDefiner.雷达主发流水号, (zkzyvalue == 1), Converstring2Endpoint(route.RemotePoint));
-
+                        if (contorl.action == "2")
+                        {
+                            Command.Ask.Ask云端扫码投币数据 a = new Command.Ask.Ask云端扫码投币数据(head, Convert.ToInt32(contorl.ruletype), Convert.ToInt32(contorl.ruleid), Convert.ToInt32(contorl.count), contorl.orderid, (zkzyvalue == 1), PublicHelper.SystemDefiner.雷达主发流水号, Converstring2Endpoint(route.RemotePoint));
+                        }
+                        else
+                        {
+                            Command.Ask.Ask远程投币上分数据 a = new Command.Ask.Ask远程投币上分数据(head, Convert.ToInt32(contorl.count), info, PublicHelper.SystemDefiner.雷达主发流水号, false, Converstring2Endpoint(route.RemotePoint));
+                        }
                         List<JsonObject.StatusItem> changeList = new List<JsonObject.StatusItem>();
                         JsonObject.StatusItem item = new JsonObject.StatusItem();
                         item.mcuid = head.设备序列号;
@@ -791,12 +801,21 @@ namespace RadarService
             RouteStatusItem route = GetRadarStatusByToken(code);
             if (route != null)
             {
+                RadarDataItem item = new RadarDataItem();
+                item.CreateTime = DateTime.Now;
+                item.DataBytes = new byte[recvData.Length];
+                Array.Copy(recvData, item.DataBytes, recvData.Length);
+                item.DataDir = 0;
+                item.Segment = route.Segment;
+                DataWriteQueue.Enqueue(item);
+
                 route.RemotePoint = ConverEndpoint2string(p);
                 route.Online = true;
                 route.UpdateTime = DateTime.Now;
                 UpdateRadarStatus(code, route);
 
                 RouteData r = new RouteData();
+                r.Segment = route.Segment;
                 r.RecvData = recvData;
                 r.RemotePoint = p;
                 r.Token = code;
@@ -813,6 +832,12 @@ namespace RadarService
                     {
                         RouteData route = RecvList.Dequeue();
                         ProcessCommad(route);
+                    }
+                    if (DataWriteQueue.Count > 0)
+                    {
+                        RadarDataItem item = DataWriteQueue.Dequeue();
+                        DataAccess ac = new DataAccess();
+                        ac.RadarDataLog(PublicHelper.SystemDefiner.MerchID, PublicHelper.SystemDefiner.StoreID, item.Segment, item.DataDir, item.DataBytes, item.CreateTime);
                     }
                     Thread.Sleep(5);
                 }
@@ -842,24 +867,24 @@ namespace RadarService
                     case CommandType.机头网络状态报告:
                         {
                             Command.Recv.Recv机头网络状态报告 function = new Command.Recv.Recv机头网络状态报告(f);
-                            udp.SendData(function.SendData, route.RemotePoint);
+                            udp.SendData(function.SendData, route.RemotePoint, route.Segment);
 
                             //if (f.routeAddress == ListenRouteAddress && CommandTypeList.Exists((CommandType type) => type == CommandType.机头网络状态报告 || type == CommandType.机头网络状态报告应答))
                             //{
-                                StringBuilder sb = new StringBuilder();
-                                sb.Append("=============================================\r\n");
-                                sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  收到数据\r\n", processTime);
-                                sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);
-                                sb.AppendFormat("指令类别：{0}\r\n", f.commandType);
-                                RadarDataShow(sb.ToString());
-                                function.SendDate = DateTime.Now;
-                                sb = new StringBuilder();
-                                sb.Append("=============================================\r\n");
-                                sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  发送数据\r\n", function.SendDate);
-                                sb.Append(Coding.ConvertData.BytesToString(function.SendData) + Environment.NewLine);
-                                sb.AppendFormat("指令类别：{0}\r\n", function.RecvData.commandType);
-                                sb.AppendFormat("路由器地址：{0}\r\n", function.RecvData.routeAddress);
-                                RadarDataShow(sb.ToString());
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append("=============================================\r\n");
+                            sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  收到数据\r\n", processTime);
+                            sb.Append(Coding.ConvertData.BytesToString(f.recvData) + Environment.NewLine);
+                            sb.AppendFormat("指令类别：{0}\r\n", f.commandType);
+                            RadarDataShow(sb.ToString());
+                            function.SendDate = DateTime.Now;
+                            sb = new StringBuilder();
+                            sb.Append("=============================================\r\n");
+                            sb.AppendFormat("{0:yyyy-MM-dd HH:mm:ss.fff}  发送数据\r\n", function.SendDate);
+                            sb.Append(Coding.ConvertData.BytesToString(function.SendData) + Environment.NewLine);
+                            sb.AppendFormat("指令类别：{0}\r\n", function.RecvData.commandType);
+                            sb.AppendFormat("路由器地址：{0}\r\n", function.RecvData.routeAddress);
+                            RadarDataShow(sb.ToString());
                             //}
                         }
                         break;
@@ -895,7 +920,7 @@ namespace RadarService
                             RadarDataShow(function.GetRecvData(processTime));
                             if (function.SendData != null)
                             {
-                                udp.SendData(function.SendData, route.RemotePoint);
+                                udp.SendData(function.SendData, route.RemotePoint, route.Segment);
                                 function.SendDataTime = DateTime.Now;
                                 RadarDataShow(function.GetSendData());
                             }
@@ -907,7 +932,7 @@ namespace RadarService
                             RadarDataShow(function.GetRecvData(processTime));
                             if (function.SendData != null)
                             {
-                                udp.SendData(function.SendData, route.RemotePoint);
+                                udp.SendData(function.SendData, route.RemotePoint, route.Segment);
                                 function.SendDataTime = DateTime.Now;
                                 RadarDataShow(function.GetSendData());
                             }
@@ -930,7 +955,7 @@ namespace RadarService
                     case CommandType.液晶卡头扩展信息请求指令:
                         {
                             Command.Recv.Recv液晶卡头扩展信息请求指令 function = new Command.Recv.Recv液晶卡头扩展信息请求指令(f, processTime);
-                            udp.SendData(function.SendData, route.RemotePoint);
+                            udp.SendData(function.SendData, route.RemotePoint, route.Segment);
                             function.SendDataTime = DateTime.Now;
                             Console.WriteLine(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetSendData());
@@ -945,7 +970,7 @@ namespace RadarService
                     case CommandType.液晶卡头读卡指令:
                         {
                             Command.Recv.Recv液晶卡头读卡指令 function = new Command.Recv.Recv液晶卡头读卡指令(f, processTime);
-                            udp.SendData(function.SendData, route.RemotePoint);
+                            udp.SendData(function.SendData, route.RemotePoint, route.Segment);
                             function.SendDataTime = DateTime.Now;
                             Console.WriteLine(function.GetRecvData(processTime));
                             Console.WriteLine(function.GetSendData());
@@ -957,7 +982,7 @@ namespace RadarService
                     case CommandType.液晶卡头退币指令:
                         {
                             Command.Recv.Recv液晶卡头进出币指令 function = new Command.Recv.Recv液晶卡头进出币指令(f, processTime);
-                            udp.SendData(function.SendData, route.RemotePoint);
+                            udp.SendData(function.SendData, route.RemotePoint, route.Segment);
                             function.SendDataTime = DateTime.Now;
                             LogHelper.LogHelper.WriteSNLog("接收", function.机头地址, f.routeAddress, function.流水号.ToString(), f.recvData.ToArray());
                             LogHelper.LogHelper.WriteSNLog("发送", function.机头地址, f.routeAddress, function.流水号.ToString(), function.SendData);
@@ -970,7 +995,7 @@ namespace RadarService
                     case CommandType.IC卡模式会员余额查询:
                         {
                             Command.Recv.RecvIC卡模式会员余额查询 function = new Command.Recv.RecvIC卡模式会员余额查询(f, processTime);
-                            udp.SendData(function.SendData, route.RemotePoint);
+                            udp.SendData(function.SendData, route.RemotePoint, route.Segment);
                             function.SendDataTime = DateTime.Now;
                             LogHelper.LogHelper.WriteSNLog("接收", function.机头地址, f.routeAddress, function.流水号.ToString(), f.recvData.ToArray());
                             LogHelper.LogHelper.WriteSNLog("发送", function.机头地址, f.routeAddress, function.流水号.ToString(), function.SendData);
@@ -984,7 +1009,7 @@ namespace RadarService
                     case CommandType.IC卡模式投币数据:
                         {
                             Command.Recv.RecvIC卡模式进出币数据 function = new Command.Recv.RecvIC卡模式进出币数据(f, processTime, route.RemotePoint);
-                            udp.SendData(function.SendData, route.RemotePoint);
+                            udp.SendData(function.SendData, route.RemotePoint, route.Segment);
                             function.SendDataTime = DateTime.Now;
                             LogHelper.LogHelper.WriteSNLog("接收", function.机头地址, f.routeAddress, function.流水号.ToString(), f.recvData.ToArray());
                             LogHelper.LogHelper.WriteSNLog("发送", function.机头地址, f.routeAddress, function.流水号.ToString(), function.SendData);
@@ -1009,7 +1034,7 @@ namespace RadarService
                     case CommandType.机头卡片报警指令:
                         {
                             Command.Recv.Recv机头卡片报警指令 function = new Command.Recv.Recv机头卡片报警指令(f, processTime);
-                            udp.SendData(function.SendData, route.RemotePoint);
+                            udp.SendData(function.SendData, route.RemotePoint, route.Segment);
                             function.SendDataTime = DateTime.Now;
                             LogHelper.LogHelper.WriteSNLog("接收", function.机头地址, f.routeAddress, function.流水号.ToString(), f.recvData.ToArray());
                             LogHelper.LogHelper.WriteSNLog("发送", function.机头地址, f.routeAddress, function.流水号.ToString(), function.SendData);

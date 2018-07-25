@@ -5,12 +5,12 @@
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
-declare @MerchId varchar(15) = '100025'
+declare @MerchId varchar(15) = '100016'
 declare @ErrMsg varchar(200) = ''
 declare @FoodSaleDetailListExtType as FoodSaleDetailListExtType
-insert into @FoodSaleDetailListExtType(FoodId,Category,FoodCount,PayType,PayNum,RealPayNum) values(6,0,1,98306,100,100)
+insert into @FoodSaleDetailListExtType(FoodId,Category,FoodCount,PayType,PayNum,RealPayNum) values(6,0,1,98321,100,100)
 insert into @FoodSaleDetailListExtType(FoodId,Category,FoodCount,PayType,PayNum,RealPayNum) values(4,0,1,98308,100,100)
-exec GetFoodDetailPayNum @FoodSaleDetailListExtType,@MerchId,10004143,@ErrMsg output
+exec GetFoodDetailPayNum @FoodSaleDetailListExtType,@MerchId,10004145,@ErrMsg output
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 

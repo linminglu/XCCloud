@@ -186,7 +186,7 @@
                     alert("您的浏览器不支持 WebSocket!");
                 }
             },
-//          登录
+//          登录    
             login:function(){
                 var that = this;
                 if(that.username == "" || that.password == ""){
@@ -210,6 +210,7 @@
                             var userData =res.data.result_data;
                             setStorage('userData',userData);
                             window.location.href='theBar.html';
+                            setStorage('workStation',that.workStation);
                         }
                     }).catch(function (err) {
                         console.log(err);

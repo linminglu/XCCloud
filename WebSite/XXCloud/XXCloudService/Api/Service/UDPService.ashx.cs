@@ -200,7 +200,7 @@ namespace XXCloudService.Api.Service
 
             string sn = UDPSocketAnswerBusiness.GetSN();
             string orderId = System.Guid.NewGuid().ToString("N");
-            DeviceControlRequestDataModel deviceControlModel = new DeviceControlRequestDataModel(item.StoreID, memberlist.Mobile, icCardId, item.Segment, mcuid, action, int.Parse(coins), sn, orderId, storeCacheModel.StorePassword, 0, "");
+            DeviceControlRequestDataModel deviceControlModel = new DeviceControlRequestDataModel(item.StoreID, memberlist.Mobile, icCardId, item.Segment, mcuid, action, int.Parse(coins), sn, orderId, storeCacheModel.StorePassword, 0, "","");
             MPOrderBusiness.AddTCPAnswerOrder(orderId, memberlist.Mobile, int.Parse(coins), action, icCardId, item.StoreID);
 
             if (!DataFactory.SendDataToRadar(deviceControlModel, out errMsg))
