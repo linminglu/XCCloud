@@ -21,6 +21,7 @@ using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XCCloudService.SocketService.UDP.Factory;
 using XXCloudService.Api.XCCloud.Common;
+using XXCloudService.Utility;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -1085,6 +1086,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string merchSecret = (userTokenKeyModel.DataModel as TokenDataModel).MerchSecret;
+                string storePassword = (userTokenKeyModel.DataModel as TokenDataModel).StorePassword;
 
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
@@ -1125,6 +1127,11 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "操作失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
+                //发送指令
+                var devieControlType = iState == 1 ? DevieControlTypeEnum.远程锁定 : DevieControlTypeEnum.远程解锁;
+                if(!IConUtiltiy.RemoteDeviceLock(devieControlType, data_DeviceInfo.MCUID, storePassword, "1", "0", "0", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

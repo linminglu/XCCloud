@@ -94,5 +94,39 @@ namespace XXCloudService.Utility
                 return false;
             }
         }
+
+        /// <summary>
+        /// 远程锁定（解锁）
+        /// </summary>
+        /// <returns></returns>
+        public static bool RemoteDeviceLock(DevieControlTypeEnum deviceControlType, string mcuId, string storePassword, string count, string ruleId, string ruleType, out string errMsg)
+        {
+            errMsg = string.Empty;
+            DeviceStateCacheModel deviceStateModel = RedisCacheHelper.HashGet<DeviceStateCacheModel>(CommonConfig.DeviceStateKey, mcuId);
+            //验证雷达是否上线
+            if (deviceStateModel == null)
+            {
+                errMsg = "雷达未上线";
+                return false;
+            }
+            if (deviceStateModel.State == "0")
+            {
+                errMsg = "设备不在线";
+                return false;
+            }
+
+            string action = ((int)(deviceControlType)).ToString();
+            string sn = UDPSocketAnswerBusiness.GetSN();
+            string orderId = System.Guid.NewGuid().ToString("N");
+            RemoteDeviceControlRequestDataModel deviceControlModel = new RemoteDeviceControlRequestDataModel(deviceStateModel.Token, mcuId, "", action, ruleType, ruleId, count, orderId, sn);               
+            if (!DataFactory.SendCoinInDataToRadar(deviceControlModel, storePassword, out errMsg))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

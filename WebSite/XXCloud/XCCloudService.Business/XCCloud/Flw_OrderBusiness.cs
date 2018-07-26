@@ -337,7 +337,7 @@ namespace XCCloudService.Business.XCCloud
                                                     fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
                                                     fmd.Note = "充值套餐";
                                                     fmd.ScheduleID = schedule.ID;
-                                                    fmd.WorkStation = "手机H5自助";
+                                                    fmd.WorkStation = "手机自助";
                                                     fmd.CheckDate = schedule.CheckDate;
                                                     if (!Flw_MemberDataService.I.Add(fmd))
                                                     {

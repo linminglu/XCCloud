@@ -124,6 +124,8 @@ namespace XXCloudService.Api.XCCloud
                            {
                                ID = a.ID,
                                CouponName = a.CouponName,
+                               CouponType = a.CouponType,
+                               CouponValue = a.CouponValue,
                                EndDate = a.EndDate
                            };
 

@@ -116,7 +116,7 @@ namespace XXCloudService.WeiXin
                                 errMsg = "您所访问的门店已到期";
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
-                            var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret };
+                            var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StorePassword = base_StoreInfoModel.Password };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);                            
                             tag = base_StoreInfoModel.StoreTag;
                             isSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
@@ -141,7 +141,7 @@ namespace XXCloudService.WeiXin
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
                             var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                            var dataModel = new TokenDataModel { MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                            var dataModel = new TokenDataModel { MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID, StorePassword = string.Empty };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                             tag = base_MerchantInfoModel.MerchTag;
                             isSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;

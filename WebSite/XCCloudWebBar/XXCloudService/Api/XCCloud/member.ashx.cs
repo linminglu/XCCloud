@@ -1634,7 +1634,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -1753,7 +1753,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     mic.WorkStation = workStation;
                     mic.UserID = userId;
                     mic.CheckDate = schedule.CheckDate;
-                    if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                    if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                     }
@@ -1846,7 +1846,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     mic.WorkStation = workStation;
                     mic.UserID = userId;
                     mic.CheckDate = schedule.CheckDate;
-                    if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                    if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                     }
@@ -1944,7 +1944,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -1966,7 +1966,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -1988,7 +1988,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -2016,7 +2016,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -2038,7 +2038,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -2060,7 +2060,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -2082,7 +2082,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -2104,7 +2104,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -2126,7 +2126,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -2148,7 +2148,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -2627,6 +2627,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 }
                                 //源余额减少
                                 cardBalance.Balance = cardBalance.Balance - item.ExchangeQty;
+                                cardBalance.UpdateTime = DateTime.Now;
                                 if (!Data_Card_BalanceService.I.Update(cardBalance))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
@@ -2749,6 +2750,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         //剩余储值金余额
                         decimal remainMoney = targetBalance.Balance.Value - backTotal;
                         targetBalance.Balance = remainMoney;
+                        targetBalance.UpdateTime = DateTime.Now;
                         if (remainMoney < 0 || !Data_Card_BalanceService.I.Update(targetBalance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
@@ -2831,6 +2833,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 if (cardBalance.Balance > 0)
                                 {
                                     cardBalance.Balance = 0;
+                                    cardBalance.UpdateTime = DateTime.Now;
                                     if (!Data_Card_BalanceService.I.Update(cardBalance))
                                     {
                                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}清零失败", item.TypeName));
@@ -2852,6 +2855,7 @@ namespace XCCloudWebBar.Api.XCCloud
                                 if (cardBalance.Balance > 0)
                                 {
                                     cardBalance.Balance = 0;
+                                    cardBalance.UpdateTime = DateTime.Now;
                                     if (!Data_Card_BalanceService.I.Update(cardBalance))
                                     {
                                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}清零失败", item.TypeName));
@@ -3730,6 +3734,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 {
                     //源余额减少
                     sourceBalance.Balance -= iExchangeQty;
+                    sourceBalance.UpdateTime = DateTime.Now;
                     if (!Data_Card_BalanceService.I.Update(sourceBalance))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，扣除余额不成功");
@@ -3828,6 +3833,7 @@ namespace XCCloudWebBar.Api.XCCloud
 
                     //目标余额增加
                     targetBalance.Balance += exchangeVal;
+                    targetBalance.UpdateTime = DateTime.Now;
                     if (!Data_Card_BalanceService.I.Update(targetBalance))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，增加余额不成功");
@@ -3847,7 +3853,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     mic.WorkStation = workStation;
                     mic.UserID = userId;
                     mic.CheckDate = schedule.CheckDate;
-                    if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                    if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                     }
@@ -3865,7 +3871,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     mic.WorkStation = workStation;
                     mic.UserID = userId;
                     mic.CheckDate = schedule.CheckDate;
-                    if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                    if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                     }
@@ -4050,6 +4056,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         {
                             //存入卡中 -- 补币的余额
                             balance.Balance += quantity;
+                            balance.UpdateTime = DateTime.Now;
                             if (!Data_Card_BalanceService.I.Update(balance))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
@@ -4102,7 +4109,7 @@ namespace XCCloudWebBar.Api.XCCloud
                             mic.WorkStation = workStation;
                             mic.UserID = userId;
                             mic.CheckDate = schedule.CheckDate;
-                            if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                            if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                             }
@@ -4311,6 +4318,11 @@ namespace XCCloudWebBar.Api.XCCloud
                 }
 
                 int deviceId = strDeviceId.Toint(0);
+                //Base_DeviceInfo device = Base_DeviceInfoService.I.GetModels(t => t.ID == deviceId).FirstOrDefault();
+                //if(device != null)
+                //{
+
+                //}
 
                 decimal quantity;
                 int balanceIndex;
@@ -4393,8 +4405,9 @@ namespace XCCloudWebBar.Api.XCCloud
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额异常，无法提币");
                     }
+                    var targetBalance = targetBalanceIds.FirstOrDefault();
 
-                    string targetBalanceId = targetBalanceIds.FirstOrDefault().BalanceId;
+                    string targetBalanceId = targetBalance.BalanceId;
                     //余额实体
                     Data_Card_Balance balance = Data_Card_BalanceService.I.GetModels(t => t.ID == targetBalanceId).FirstOrDefault();
                     if(quantity > balance.Balance)
@@ -4414,6 +4427,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
                         balance.Balance -= quantity;
+                        balance.UpdateTime = DateTime.Now;
                         if (!Data_Card_BalanceService.I.Update(balance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
@@ -4426,14 +4440,14 @@ namespace XCCloudWebBar.Api.XCCloud
                         mic.StoreID = storeId;
                         mic.MemberID = memberCard.MemberID;
                         mic.CardID = memberCard.ID;
-                        mic.ModifyFied = targetBalanceId + "提币";
+                        mic.ModifyFied = targetBalance.BalanceName + "提币";
                         mic.OldContext = (balance.Balance + quantity).ToString();
                         mic.NewContext = balance.Balance.ToString();
                         mic.ModifyTime = DateTime.Now;
                         mic.WorkStation = workStation;
                         mic.UserID = userId;
                         mic.CheckDate = schedule.CheckDate;
-                        if (!Flw_MemberInfo_ChangeService.I.Update(mic))
+                        if (!Flw_MemberInfo_ChangeService.I.Add(mic))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
                         }
@@ -4518,6 +4532,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     }
                     quantity = fdd.Coin.Value;
                     balanceIndex = fdd.BalanceIndex.Value;
+                    fdd.DeviceID = deviceId;
                     fdd.State = 1;
                     if(!Flw_DeviceDataService.I.Update(fdd))
                     {
@@ -5449,6 +5464,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         Data_Card_Balance toBalance = Data_Card_BalanceService.I.GetModels(t => t.ID == tb.BalanceId).FirstOrDefault();
                         //正价余额转入
                         toBalance.Balance += fromBalance.Balance;
+                        toBalance.UpdateTime = DateTime.Now;
                         if (!Data_Card_BalanceService.I.Update(toBalance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转入卡余额失败");
@@ -5456,6 +5472,7 @@ namespace XCCloudWebBar.Api.XCCloud
                         changeValue = fromBalance.Balance.Todecimal(0);
                         //转出卡清零，正价余额转出
                         fromBalance.Balance = 0;
+                        fromBalance.UpdateTime = DateTime.Now;
                         if (!Data_Card_BalanceService.I.Update(fromBalance))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新转出卡余额失败");

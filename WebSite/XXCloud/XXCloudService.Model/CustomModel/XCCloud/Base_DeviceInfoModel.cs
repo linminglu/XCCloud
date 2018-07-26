@@ -45,6 +45,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         }
         public string DeviceName { get; set; }
 
+        public string DeviceState { get; set; }
+
         public string DeviceCategoryName { get; set; }
 
         public int DeviceType { get; set; }

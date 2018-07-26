@@ -131,7 +131,8 @@ namespace XXCloudService.Api.XCCloud
                            select new
                            {
                                ID = a.ID,
-                               GoodName = a.GoodName
+                               GoodName = a.GoodName,
+                               Price = a.Price
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);

@@ -626,13 +626,13 @@ namespace XXCloudService.Api.XCCloud
             string newFlwOrderId = dicParas.ContainsKey("newFlwOrderId") ? dicParas["newFlwOrderId"].ToString() : string.Empty;
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
-            string disticntRuleId = dicParas.ContainsKey("disticntRuleId") ? dicParas["disticntRuleId"].ToString() : string.Empty;
+            string distinctRuleId = dicParas.ContainsKey("distinctRuleId") ? dicParas["distinctRuleId"].ToString() : string.Empty;
             string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
-            string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
+            //string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
             string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
             string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
             string openFee = dicParas.ContainsKey("openFee") ? dicParas["openFee"].ToString() : string.Empty;
-            string feePay = dicParas.ContainsKey("feePay") ? dicParas["feePay"].ToString() : string.Empty;
+            string freePay = dicParas.ContainsKey("freePay") ? dicParas["freePay"].ToString() : string.Empty;
             string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
             string orderSource = dicParas.ContainsKey("orderSource") ? dicParas["orderSource"].ToString() : string.Empty;
             string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
@@ -656,16 +656,16 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[2].Value = userTokenDataModel.StoreID;
             sqlParameter[3] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar,32);
             sqlParameter[3].Value = flwOrderId;
-            sqlParameter[4] = new SqlParameter("@NewFlwOrderId", SqlDbType.VarChar,32);
-            sqlParameter[4].Value = newFlwOrderId;
+            sqlParameter[4] = new SqlParameter("@NewFlwSaleId", SqlDbType.VarChar, 32);
+            sqlParameter[4].Value = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID, true);
             sqlParameter[5] = new SqlParameter("@Mobile", SqlDbType.VarChar,11);
             sqlParameter[5].Value = mobile;
-            sqlParameter[6] = new SqlParameter("@DisticntRuleId", SqlDbType.Int);
-            sqlParameter[6].Value = disticntRuleId;
+            sqlParameter[6] = new SqlParameter("@DistinctRuleId", SqlDbType.Int);
+            sqlParameter[6].Value = distinctRuleId;
             sqlParameter[7] = new SqlParameter("@PayCount", SqlDbType.Decimal);
             sqlParameter[7].Value = payCount;
-            sqlParameter[8] = new SqlParameter("@FeePay", SqlDbType.Decimal);
-            sqlParameter[8].Value = feePay;
+            sqlParameter[8] = new SqlParameter("@FreePay", SqlDbType.Decimal);
+            sqlParameter[8].Value = freePay;
             sqlParameter[9] = new SqlParameter("@UserId", SqlDbType.Int);
             sqlParameter[9].Value = userTokenDataModel.CreateUserID;
             sqlParameter[10] = new SqlParameter("@WorkStation", SqlDbType.VarChar,50);
@@ -679,27 +679,26 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[14] = new SqlParameter("@SaleCoinType", SqlDbType.Int);
             sqlParameter[14].Value = saleCoinType;
             sqlParameter[15] = new SqlParameter("@NewFlwOrderId", SqlDbType.VarChar,32);
-            sqlParameter[15].Value = newFlwOrderId;
+            sqlParameter[15].Direction = ParameterDirection.Output;
             sqlParameter[16] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
             sqlParameter[16].Direction = ParameterDirection.Output;
             sqlParameter[17] = new SqlParameter("@Return", SqlDbType.Int);
-            sqlParameter[17].Direction = ParameterDirection.Output;
+            sqlParameter[17].Direction = ParameterDirection.ReturnValue;
 
-            XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
-            //System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
 
-            if (sqlParameter[18].Value.ToString() == "1")
+            if (sqlParameter[17].Value.ToString() == "1")
             {
                 var obj = new
                 {
                     orderFlwId = sqlParameter[17].Value.ToString()
                 };
-                //NewOrderDataSync(ds.Tables[0]);
+                NewOrderDataSync(ds.Tables[0]);
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             else
             {
-                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[15].Value.ToString());
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[16].Value.ToString());
             }
 
             if (string.IsNullOrEmpty(flwOrderId))
@@ -714,12 +713,11 @@ namespace XXCloudService.Api.XCCloud
         {
             errMsg = string.Empty;
             string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
-            //string newFlwOrderId = dicParas.ContainsKey("newFlwOrderId") ? dicParas["newFlwOrderId"].ToString() : string.Empty;
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
-            string disticntRuleId = dicParas.ContainsKey("disticntRuleId") ? dicParas["disticntRuleId"].ToString() : string.Empty;
+            string distinctRuleId = dicParas.ContainsKey("distinctRuleId") ? dicParas["distinctRuleId"].ToString() : string.Empty;
             string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
-            string feePay = dicParas.ContainsKey("feePay") ? dicParas["feePay"].ToString() : string.Empty;
+            string freePay = dicParas.ContainsKey("freePay") ? dicParas["freePay"].ToString() : string.Empty;
             string userId = dicParas.ContainsKey("userId") ? dicParas["userId"].ToString() : string.Empty;
             string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
             string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
@@ -747,13 +745,7 @@ namespace XXCloudService.Api.XCCloud
                 return false;
             }
 
-            if (string.IsNullOrEmpty(icCardId))
-            {
-                errMsg = "订单来源无效";
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(disticntRuleId))
+            if (string.IsNullOrEmpty(distinctRuleId))
             {
                 errMsg = "满减规则无效";
                 return false;
@@ -765,9 +757,9 @@ namespace XXCloudService.Api.XCCloud
                 return false;
             }
 
-            if (string.IsNullOrEmpty(feePay))
+            if (string.IsNullOrEmpty(freePay))
             {
-                errMsg = "订单来源无效";
+                errMsg = "免费金额无效";
                 return false;
             }
 
@@ -838,7 +830,6 @@ namespace XXCloudService.Api.XCCloud
         {
             string errMsg = string.Empty;
             string registerMemberJson = dicParas.ContainsKey("registerMemberJson") ? dicParas["registerMemberJson"].ToString() : string.Empty;
-            //string flwSeedId = dicParas.ContainsKey("flwSeedId") ? dicParas["flwSeedId"].ToString() : string.Empty;
             string workStationId = dicParas.ContainsKey("workStationId") ? dicParas["workStationId"].ToString() : string.Empty;
             string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;

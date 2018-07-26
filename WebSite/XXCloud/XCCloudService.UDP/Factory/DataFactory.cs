@@ -589,8 +589,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 return false;
             }
             //向雷达发送数据
-            RadarRequestDataModel radarModel =
-                    new RadarRequestDataModel(radarToken, controlModel.MCUId, controlModel.Action, controlModel.Coins, controlModel.SN, controlModel.OrderId, controlModel.IcCardId, "", "", controlModel.RuleType, controlModel.RuleId);
+            RadarRequestDataModel radarModel = new RadarRequestDataModel(radarToken, controlModel.MCUId, controlModel.Action, controlModel.Coins, controlModel.SN, controlModel.OrderId, controlModel.IcCardId, "", "", controlModel.RuleType, controlModel.RuleId);
             SignKeyHelper.SetSignKey(radarModel, controlModel.StorePassword);
             //对象序列化为字节数组
             byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(radarModel);
@@ -1390,6 +1389,46 @@ namespace XCCloudService.SocketService.UDP.Factory
             byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(dataModel);
             //生成发送数据包
             byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.卡头解绑同步请求, dataByteArr);
+
+            //服务端发送数据
+            XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+
+            return true;
+        }
+
+        #endregion
+
+
+        #region "吧台条码支付请求"
+
+        public static bool barPay(string sn, string storeId,string storePassword,string orderId, string authCode, out string errMsg)
+        {
+            errMsg = string.Empty;
+            string radarToken = string.Empty;
+            //验证雷达是否上线(获取雷达token)
+            if (!XCGameRadarDeviceTokenBusiness.GetRouteDeviceToken(storeId, out radarToken))
+            {
+                errMsg = "雷达未上线";
+                return false;
+            }
+            string ip = string.Empty;
+            int port = 0;
+            if (!DataFactory.GetRadarClient(radarToken, out ip, out port))
+            {
+                errMsg = "未能获取雷达端地址";
+                return false;
+            }
+
+            UDPSocketCommonQueryAnswerModel answerModel = new UDPSocketCommonQueryAnswerModel(sn, storeId, storePassword, 0, null, radarToken);
+            UDPSocketCommonQueryAnswerBusiness.AddAnswer(sn, answerModel);
+
+            BarPayInsRequestModel dataModel = new BarPayInsRequestModel(orderId,authCode,sn);
+            SignKeyHelper.SetSignKey(dataModel, storePassword);
+
+            //对象序列化为字节数组
+            byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(dataModel);
+            //生成发送数据包
+            byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.门店条码支付请求, dataByteArr);
 
             //服务端发送数据
             XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);

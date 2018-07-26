@@ -74,7 +74,7 @@ namespace XXCloudService.Api.XCCloud
                     return false;
                 }
 
-                var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret };                
+                var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StorePassword = base_StoreInfoModel.Password };                
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.Tag = base_StoreInfoModel.StoreTag;
                 userLogResponseModel.MerchID = merchId;
@@ -101,7 +101,7 @@ namespace XXCloudService.Api.XCCloud
                     return false;
                 }
                 var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                var dataModel = new TokenDataModel { MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                var dataModel = new TokenDataModel { MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID, StorePassword = string.Empty };
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.Tag = base_MerchantInfoModel.MerchTag;
                 userLogResponseModel.MerchID = merchId;
@@ -201,7 +201,7 @@ namespace XXCloudService.Api.XCCloud
                     }
                     var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     tag = base_MerchantInfoModel.MerchTag;
-                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID, StorePassword = string.Empty };
                     userTokenKeyModel.DataModel = TokenDataModel;
                     merchName = base_MerchantInfoModel.MerchName;
                     merchAccount = base_MerchantInfoModel.MerchAccount;
@@ -229,7 +229,7 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                     tag = base_StoreInfoModel.StoreTag;
-                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret };
+                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), StoreID = storeId, MerchID = merchId, MerchSecret = base_MerchantInfoModel.MerchSecret, StorePassword = base_StoreInfoModel.Password };
                     userTokenKeyModel.DataModel = TokenDataModel;
                     merchName = base_MerchantInfoModel.MerchName;
                     merchAccount = base_MerchantInfoModel.MerchAccount;

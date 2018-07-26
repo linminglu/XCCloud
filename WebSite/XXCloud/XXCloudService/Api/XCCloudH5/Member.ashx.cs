@@ -671,82 +671,221 @@ namespace XXCloudService.Api.XCCloudH5
         #endregion
 
         #region 微信H5提币
-        ///// <summary>
-        ///// 微信H5提币
-        ///// </summary>
-        ///// <param name="dicParas"></param>
-        ///// <returns></returns>
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
-        //public object wechatOutCoin(Dictionary<string, object> dicParas)
-        //{
-        //    try
-        //    {
-        //        string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
-        //        string qty = dicParas.ContainsKey("qty") ? dicParas["qty"].ToString().Trim() : string.Empty;
-        //        string pwd = dicParas.ContainsKey("pwd") ? dicParas["pwd"].ToString().Trim() : string.Empty;
+        /// <summary>
+        /// 微信H5提币
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object wechatOutCoin(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
+                string qty = dicParas.ContainsKey("qty") ? dicParas["qty"].ToString().Trim() : string.Empty;
+                string pwd = dicParas.ContainsKey("pwd") ? dicParas["pwd"].ToString().Trim() : string.Empty;
 
-        //        if (string.IsNullOrEmpty(token))
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
-        //        }
+                if (string.IsNullOrEmpty(token))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
+                }
 
-        //        MemberTokenModel model = MemberTokenCache.GetModel(token);
+                int quantity = qty.Toint(0);
+                if(quantity == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "提币数量无效");
+                }
 
-        //        if (model == null)
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
-        //        }
-        //        if (string.IsNullOrEmpty(model.CurrStoreId))
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请先选择附近门店");
-        //        }
-        //        int memberLevelId = 0;
-        //        if (model.CurrentCardInfo != null)
-        //        {
-        //            memberLevelId = model.CurrentCardInfo.MemberLevelId;
-        //        }
-        //        else
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请先选择会员卡或绑定会员卡");
-        //        }
+                MemberTokenModel model = MemberTokenCache.GetModel(token);
 
-        //        //当前会员卡
-        //        Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.ID == model.CurrentCardInfo.CardId).FirstOrDefault();
-        //        if (memberCard == null)
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡无效");    
-        //        }
-        //        if (memberCard.CardType == 1)
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该会员卡没有提币权限");
-        //        }
+                if (model == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
+                }
+                if (string.IsNullOrEmpty(model.CurrStoreId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请先选择附近门店");
+                }
 
-        //        //判断消费密码
-        //        if (memberCard.CardPassword != pwd)
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡密码错误");
-        //        }
+                Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.ID == model.CurrStoreId).FirstOrDefault();
+                if(store == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前所属门店无效");
+                }
 
-        //        Data_MemberLevel levelModel = Data_MemberLevelService.I.GetModels(m => m.ID == memberLevelId).FirstOrDefault();
-        //        if (levelModel == null || levelModel.AllowGetCoin == 0)
-        //        {
-        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该会员卡没有提币权限");
-        //        }
+                int memberLevelId = 0;
+                if (model.CurrentCardInfo != null)
+                {
+                    memberLevelId = model.CurrentCardInfo.MemberLevelId;
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请先绑定会员卡");
+                }
 
-        //        //查询余额类别映射为代币的、判断提币数量是否大于代币余额数量
-                
+                //当前会员卡
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.ID == model.CurrentCardInfo.CardId).FirstOrDefault();
+                if (memberCard == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡无效");
+                }
+                if (memberCard.CardType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该会员卡没有提币权限");
+                }
 
-        //        //Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.StoreID == model.CurrStoreId).FirstOrDefault();
+                //判断消费密码
+                if (memberCard.CardPassword != pwd)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡密码错误");
+                }
 
-        //        //List<FoodInfoViewModel> foodList = XCCloudStoreBusiness.GetFoodInfoList(store.MerchID, store.StoreID, memberLevelId);
+                Data_MemberLevel levelModel = Data_MemberLevelService.I.GetModels(m => m.ID == memberLevelId).FirstOrDefault();
+                if (levelModel == null || levelModel.AllowGetCoin == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡没有提币权限");
+                }
 
-        //        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, null);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw e;
-        //    }
-        //}
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == store.ID && t.State == 1).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空");
+                }
+
+                //查询余额类别映射为代币的、判断提币数量是否大于代币余额数量
+                var queryBalance = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == memberCard.ID)
+                                   join b in Dict_BalanceTypeService.N.GetModels(t => t.MerchID == store.MerchID && t.State == 1 && t.MappingType == 1) on a.BalanceIndex equals b.ID
+                                   select new
+                                   {
+                                       BalanceId = a.ID,
+                                       BalanceIndex = a.BalanceIndex,
+                                       Balance = a.Balance,
+                                       BalanceName = b.TypeName
+                                   };
+
+                var balanceList = queryBalance.ToList();
+
+                string outCoinCode = string.Empty;
+                foreach (var item in balanceList)
+                {
+                    if(item.Balance >= quantity)
+                    {
+                        using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                        {
+                            Data_Card_Balance balance = Data_Card_BalanceService.I.GetModels(t => t.ID == item.BalanceId).FirstOrDefault();
+                            balance.Balance -= quantity;
+                            balance.UpdateTime = DateTime.Now;
+                            if (!Data_Card_BalanceService.I.Update(balance))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新会员卡余额失败");
+                            }
+
+                            //会员信息变更记录,提币余额变化
+                            Flw_MemberInfo_Change mic = new Flw_MemberInfo_Change();
+                            mic.ID = RedisCacheHelper.CreateStoreSerialNo(store.ID);
+                            mic.MerchID = store.MerchID;
+                            mic.StoreID = store.ID;
+                            mic.MemberID = memberCard.MemberID;
+                            mic.CardID = memberCard.ID;
+                            mic.ModifyFied = item.BalanceName + "提币";
+                            mic.OldContext = (balance.Balance + quantity).ToString();
+                            mic.NewContext = balance.Balance.ToString();
+                            mic.ModifyTime = DateTime.Now;
+                            mic.WorkStation = "手机自助";
+                            //mic.UserID = userId;
+                            mic.CheckDate = schedule.CheckDate;
+                            if (!Flw_MemberInfo_ChangeService.I.Add(mic))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建会员信息修改记录失败");
+                            }
+
+                            outCoinCode = RedisCacheHelper.CreateStoreSerialNo(store.ID);
+
+                            Flw_DeviceData fdd = new Flw_DeviceData();
+                            fdd.ID = outCoinCode;
+                            fdd.MerchID = store.MerchID;
+                            fdd.StoreID = store.ID;
+                            fdd.DeviceID = 0;
+                            fdd.GameIndexID = 0;
+                            fdd.SiteName = "";
+                            fdd.SN = 0;
+                            fdd.BusinessType = 2;
+                            fdd.State = 0;
+                            fdd.RealTime = DateTime.Now;
+                            fdd.MemberID = memberCard.MemberID;
+                            fdd.CreateStoreID = memberCard.StoreID;
+                            fdd.MemberName = memberCard.CardName;
+                            fdd.CardID = memberCard.ID;
+                            fdd.BalanceIndex = item.BalanceIndex;
+                            fdd.Coin = quantity;
+                            fdd.RemainBalance = balance.Balance;
+                            fdd.OrderID = "";
+                            fdd.Note = "H5提币";
+                            fdd.CheckDate = schedule.CheckDate;
+                            if (!Flw_DeviceDataService.I.Add(fdd))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建提币记录失败");
+                            }
+
+                            Data_Card_Balance_Free balanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == item.BalanceIndex && t.CardIndex == memberCard.ID).FirstOrDefault();
+
+                            //记录余额变化流水
+                            Flw_MemberData fmd = new Flw_MemberData();
+                            fmd.ID = RedisCacheHelper.CreateStoreSerialNo(store.ID);
+                            fmd.MerchID = store.MerchID;
+                            fmd.StoreID = store.ID;
+                            fmd.MemberID = model.MemberId;
+                            fmd.MemberName = model.Info.nickname;
+                            fmd.CardIndex = memberCard.ID;
+                            fmd.ICCardID = memberCard.ICCardID;
+                            fmd.MemberLevelName = levelModel.MemberLevelName;
+                            fmd.ChannelType = (int)MemberDataChannelType.吧台;
+                            fmd.OperationType = (int)MemberDataOperationType.提币;
+                            fmd.OPTime = DateTime.Now;
+                            fmd.SourceType = 0;
+                            fmd.SourceID = fdd.ID;
+                            fmd.BalanceIndex = balance.BalanceIndex;
+                            fmd.ChangeValue = 0 - quantity;
+                            fmd.Balance = balance.Balance;
+                            fmd.FreeChangeValue = 0;
+                            fmd.FreeBalance = balanceFree == null ? 0 : balanceFree.Balance.Todecimal(0);
+                            fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                            fmd.Note = "H5提币";
+                            //fmd.UserID = userId;
+                            //fmd.DeviceID = 0;
+                            fmd.ScheduleID = schedule.ID;
+                            fmd.AuthorID = 0;
+                            fmd.WorkStation = "手机自助";
+                            fmd.CheckDate = schedule.CheckDate;
+                            if (!Flw_MemberDataService.I.Add(fmd))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                            }
+
+                            ts.Complete();
+                        }
+                        break;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(outCoinCode))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "提币失败，余额不择");
+                }
+
+                var result = new
+                {
+                    OutCoinCode = outCoinCode,
+                    Quantity = quantity
+                };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
         #endregion
 
         #region 获取充值套餐
@@ -1152,6 +1291,7 @@ namespace XXCloudService.Api.XCCloudH5
                         {
                             Data_Card_Balance dcb = Data_Card_BalanceService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex1 && t.CardIndex == cardId).FirstOrDefault();
                             dcb.Balance -= balance1;
+                            dcb.UpdateTime = DateTime.Now;
                             if (!Data_Card_BalanceService.I.Update(dcb))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
@@ -1162,6 +1302,7 @@ namespace XXCloudService.Api.XCCloudH5
                         {
                             Data_Card_Balance_Free dcbf = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex1 && t.CardIndex == cardId).FirstOrDefault();
                             dcbf.Balance -= balanceFree1;
+                            dcbf.UpdateTime = DateTime.Now;
                             if (!Data_Card_Balance_FreeService.I.Update(dcbf))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
@@ -1172,6 +1313,7 @@ namespace XXCloudService.Api.XCCloudH5
                         {
                             Data_Card_Balance dcb = Data_Card_BalanceService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex2 && t.CardIndex == cardId).FirstOrDefault();
                             dcb.Balance -= balance2;
+                            dcb.UpdateTime = DateTime.Now;
                             if (!Data_Card_BalanceService.I.Update(dcb))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
@@ -1182,6 +1324,7 @@ namespace XXCloudService.Api.XCCloudH5
                         {
                             Data_Card_Balance_Free dcbf = Data_Card_Balance_FreeService.I.GetModels(t => t.BalanceIndex == coinRule.PushBalanceIndex2 && t.CardIndex == cardId).FirstOrDefault();
                             dcbf.Balance -= balanceFree2;
+                            dcbf.UpdateTime = DateTime.Now;
                             if (!Data_Card_Balance_FreeService.I.Update(dcbf))
                             {
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");

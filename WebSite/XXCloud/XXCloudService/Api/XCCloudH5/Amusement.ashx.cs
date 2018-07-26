@@ -55,23 +55,10 @@ namespace XXCloudService.Api.XCCloudH5
                 }
 
                 DeviceStateCacheModel deviceStateModel = RedisCacheHelper.HashGet<DeviceStateCacheModel>(CommonConfig.DeviceStateKey, device.MCUID);
+                string deviceState = "0";
                 if (deviceStateModel != null)
                 {
-                    switch (deviceStateModel.State)
-                    {
-                        case "0":
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该设备不在线");
-                        case "2":
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备正在出币中，请稍后再试");
-                        case "3":
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备故障，请扫描其他设备");
-                        case "4":
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备被锁定");
-                    }
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该设备不在线");
+                    deviceState = deviceStateModel.State;
                 }
 
                 if (!string.IsNullOrEmpty(model.CurrStoreId) && model.CurrStoreId != device.StoreID)
@@ -287,12 +274,18 @@ namespace XXCloudService.Api.XCCloudH5
                 MemberTokenCache.AddToken(token, model);
 
                 GameCoinInfoModel gameInfo = new GameCoinInfoModel();
+                gameInfo.DeviceState = deviceState;
                 gameInfo.DeviceType = device.type.Value;
 
                 //卡头
                 if (device.type == 0)
                 {
                     Data_GameInfo game = Data_GameInfoService.I.GetModels(t => t.ID == device.GameIndexID).FirstOrDefault();
+                    if (game == null)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "游戏机不存在");
+                    }
+
                     Dict_System dict = Dict_SystemService.I.GetModels(t => t.ID == game.GameType).FirstOrDefault();
                     //博彩机
                     if (game.AllowElecOut == 1 && game.LotteryMode == 0)

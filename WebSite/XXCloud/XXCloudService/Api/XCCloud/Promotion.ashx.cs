@@ -326,7 +326,7 @@ namespace XXCloudService.Api.XCCloud
                         
                         if (!containCount.Validint("内容数量", out errMsg)) 
                             return false;
-                        if (!weightValue.Validdecimal("权重价值", out errMsg)) 
+                        if (!weightValue.Validdecimal("权重价值", out errMsg))
                             return false;
 
                         if (foodDetailType == (int)FoodDetailType.Ticket)

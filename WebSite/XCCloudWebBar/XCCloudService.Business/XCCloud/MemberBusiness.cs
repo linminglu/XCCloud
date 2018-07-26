@@ -150,6 +150,7 @@ namespace XCCloudWebBar.Business.XCCloud
                 if (balance != null)
                 {
                     balance.Balance += currFreeDetail.Quantity;
+                    balance.UpdateTime = DateTime.Now;
                     if (!Data_Card_BalanceService.I.Update(balance))
                     {
                         return false;

@@ -769,7 +769,21 @@
         'elem': '#storeListTable',
         'cols': [
             {type: 'checkbox'}
-            , {field: 'StoreID', title: '门店编号', align: 'center', sort: true} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+            , {field: 'StoreID', title: '门店编号', align: 'center', sort: true}
+            , {field: 'StateStr', title: '状态', templet:function (d) {
+                    if(d.StateStr=='离线'){
+                        return '<img src="images/outLine.png">'
+                    }else {
+                        return '<img src="images/online.png">'
+                    }
+                }}
+            , {field: 'HeatTime', title: '心跳时间',templet:function (d) {
+                    if(d.HeatTime==null){
+                        return ''
+                    }else {
+                        return  d.HeatTime
+                    }
+                }}
             , {field: 'MerchID', title: '归属商户', sort: true}
             , {field: 'StoreName', title: '门头', align: 'center'}
             , {field: 'Password', title: '消费密码', align: 'center'} //单元格内容水平居中
@@ -1175,34 +1189,6 @@
 
     });
 
-    //模糊查询
-    function searchBy(pagename, processname) {
-        var filedData = [];
-        var url = '/Query?action=init';
-        var obj = {
-            "sysId": "0",
-            "versionNo": "0.0.0.1",
-            'pagename': pagename,
-            'processname': processname,
-            "token": token,
-            "signkey": "1f626576304bf5d95b72ece2222e42c3"
-        };
-        var parasJson = JSON.stringify(obj);
-        $.ajax({
-            type: "post",
-            url: url,
-            contentType: "application/json; charset=utf-8",
-            data: parasJson,
-            async: false,
-            success: function (data) {
-                data = JSON.parse(data);
-                if (data.result_code == '1') {
-                    filedData = data.result_data;
-                }
-            }
-        });
-        console.log(filedData);
-    }
 
     function modifyStore() {
         var storeId = $('#storeIdModify').val();

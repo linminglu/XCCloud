@@ -2208,6 +2208,7 @@
                     axios.post('/xccloud/order?action=getOrderContain', obj).then(function (res) {	//获取订单
                         console.log(res.data);
                         that.msgPrompt(res.data);
+                        that.loading = false;
                         if (res.data.result_code === '1') {
                             that.orderList = res.data.result_data;
                             that.orderIf = !that.orderIf;

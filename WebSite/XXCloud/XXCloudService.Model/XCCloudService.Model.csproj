@@ -158,6 +158,7 @@
     <Compile Include="CustomModel\XCGame\XCGameUserTokenModel.cs" />
     <Compile Include="CustomModel\XCGame\XCGameMemberTokenModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Socket\UDP\BarPayInsRequestModel.cs" />
     <Compile Include="Socket\UDP\CattleMemberCardQueryRequestDataModel.cs" />
     <Compile Include="Socket\UDP\CattleMemberCardQueryResultNotifyRequestModel.cs" />
     <Compile Include="Socket\UDP\ComonSuccessResponseModel.cs" />
