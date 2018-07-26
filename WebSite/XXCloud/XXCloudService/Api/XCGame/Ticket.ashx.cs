@@ -77,7 +77,7 @@ namespace XXCloudService.Api.XCGame
             resultModel.Note = ((TicketType?)flw_ProjectTicket_EntryModel.TicketType).GetDescription() + "名称：" + flw_ProjectTicket_EntryModel.TicketName + ", " +
                 "分摊方式：" + ((DivideType?)flw_ProjectTicket_EntryModel.DivideType).GetDescription() + ", " +
                 "允许离场时间（分钟）：" + ((flw_ProjectTicket_EntryModel.AllowExitTimes ?? 0) == 0 ? "不计" : flw_ProjectTicket_EntryModel.AllowExitTimes.ToString());
-            resultModel.Note = resultModel.Note + "。" + Environment.NewLine;
+            resultModel.Note = resultModel.Note + "；" + Environment.NewLine;
 
             //有效时间
             var validDateStr = string.Empty;
@@ -90,24 +90,24 @@ namespace XXCloudService.Api.XCGame
                 validDateStr = Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.VaildStartDate, "yyyy-MM-dd") + " ~ " + Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.VaildEndDate, "yyyy-MM-dd");
                 validDateStr = "有效期" + (validDateStr.Trim() == " ~ " ? string.Empty : validDateStr);               
             }
-            resultModel.Note = resultModel.Note + "。" + validDateStr + Environment.NewLine;
+            resultModel.Note = resultModel.Note + validDateStr + "；" + Environment.NewLine;
 
             //有效时段
-            var validPeriodStr = "生效时段：";
+            var validPeriodStr = string.Empty;
             if (flw_ProjectTicket_EntryModel.WeekType == (int)TimeType.Custom)
-                validPeriodStr = getWeekName(flw_ProjectTicket_EntryModel.Week);
+                validPeriodStr = validPeriodStr + getWeekName(flw_ProjectTicket_EntryModel.Week);
             else
-                validPeriodStr = ((TimeType?)flw_ProjectTicket_EntryModel.WeekType).GetDescription();
+                validPeriodStr = validPeriodStr + ((TimeType?)flw_ProjectTicket_EntryModel.WeekType).GetDescription();
             var periodLimitStr = Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.StartTime) + " ~ " + Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.EndTime);
             periodLimitStr = periodLimitStr.Trim() == " ~ " ? string.Empty : periodLimitStr;
             validPeriodStr = validPeriodStr + " " + periodLimitStr;
-            resultModel.Note = resultModel.Note + validPeriodStr + "。" + Environment.NewLine;
+            resultModel.Note = resultModel.Note + "有效时段：" + validPeriodStr + "；" + Environment.NewLine;
 
             //不可用日期
-            var noDateStr = "不可用日期：";
+            var noDateStr = string.Empty;
             noDateStr = Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.NoStartDate, "yyyy-MM-dd") + " ~ " + Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.NoEndDate, "yyyy-MM-dd");
             noDateStr = noDateStr.Trim() == " ~ " ? string.Empty : noDateStr;
-            resultModel.Note = resultModel.Note + noDateStr + "。" + Environment.NewLine;
+            resultModel.Note = resultModel.Note + "不可用日期：" + noDateStr + "；" + Environment.NewLine;
 
             //陪同票
             if (!flw_ProjectTicket_EntryModel.AccompanyCash.IsNull())
@@ -118,7 +118,7 @@ namespace XXCloudService.Api.XCGame
                     accompanyStr = accompanyStr + ", 扣除" + Dict_BalanceTypeService.I.GetModels(p => p.ID == flw_ProjectTicket_EntryModel.BalanceIndex).Select(o => o.TypeName).FirstOrDefault() +
                         (flw_ProjectTicket_EntryModel.BalanceValue ?? 0) + Dict_BalanceTypeService.I.GetModels(p => p.ID == flw_ProjectTicket_EntryModel.BalanceIndex).Select(o => o.Unit).FirstOrDefault();
                 }
-                resultModel.Note = resultModel.Note + accompanyStr + "。" + Environment.NewLine;
+                resultModel.Note = resultModel.Note + accompanyStr + "；" + Environment.NewLine;
             }
 
             //退货信息
@@ -129,7 +129,7 @@ namespace XXCloudService.Api.XCGame
                         + Math.Round(flw_ProjectTicket_EntryModel.ExitTicketValue ?? 0M, 2, MidpointRounding.AwayFromZero)
                         + (flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Money ? "元" :
                            flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Percent ? "%" : string.Empty) + "计";
-                resultModel.Note = resultModel.Note + exitLimitStr + "。" + Environment.NewLine;
+                resultModel.Note = resultModel.Note + exitLimitStr + "；" + Environment.NewLine;
             }
 
             //使用限制
@@ -137,7 +137,7 @@ namespace XXCloudService.Api.XCGame
             {
                 var restrictStr = "每" + flw_ProjectTicket_EntryModel.RestrictPreiodValue + ((RestrictPeriodType?)flw_ProjectTicket_EntryModel.RestrictPeriodType).GetDescription()
                     + "限制使用" + (flw_ProjectTicket_EntryModel.RestrctCount ?? 0) + "次，次数" + (flw_ProjectTicket_EntryModel.RestrictShareCount != 1 ? "不" : "") + "共享";
-                resultModel.Note = resultModel.Note + restrictStr + "。" + Environment.NewLine;
+                resultModel.Note = resultModel.Note + restrictStr + "；" + Environment.NewLine;
             }
 
             //绑定项目
@@ -152,7 +152,7 @@ namespace XXCloudService.Api.XCGame
                 var projectTicketBindStr = "绑定项目" + (flw_ProjectTicket_BindModel.AllowShareCount == 1 ? "（次数共享）" : "") + "：" + Environment.NewLine;
                 foreach (var model in flw_ProjectTicket_Bind)
                 {
-                    projectTicketBindStr = projectTicketBindStr + model.ProjectName + "，类别：" + model.ProjectTypeName + "，次数：" + model.BuyCount + "，权重：" + model.WeightValue + Environment.NewLine;
+                    projectTicketBindStr = projectTicketBindStr + model.ProjectName + "【类别】" + model.ProjectTypeName + "【次数】" + model.BuyCount + "【权重】" + model.WeightValue;
                 }
                 resultModel.Note = resultModel.Note + projectTicketBindStr;
             }
