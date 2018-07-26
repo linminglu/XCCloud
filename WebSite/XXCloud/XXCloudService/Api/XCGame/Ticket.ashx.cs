@@ -135,14 +135,28 @@ namespace XXCloudService.Api.XCGame
             //使用限制
             if (flw_ProjectTicket_EntryModel.TicketType == (int)TicketType.Period && flw_ProjectTicket_EntryModel.AllowRestrict == 1)
             {
-                var restrictStr = "销售" + flw_ProjectTicket_EntryModel.ExitPeriodValue + ((FreqType?)flw_ProjectTicket_EntryModel.ExitPeriodType).GetDescription()
-                        + "后不可退票，退票手续费" + ((ExitTicketType?)flw_ProjectTicket_EntryModel.ExitTicketType).GetDescription()
-                        + Math.Round(flw_ProjectTicket_EntryModel.ExitTicketValue ?? 0M, 2, MidpointRounding.AwayFromZero)
-                        + (flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Money ? "元" :
-                           flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Percent ? "%" : string.Empty) + "计";
+                var restrictStr = "每" + flw_ProjectTicket_EntryModel.RestrictPreiodValue + ((RestrictPeriodType?)flw_ProjectTicket_EntryModel.RestrictPeriodType).GetDescription()
+                    + "限制使用" + (flw_ProjectTicket_EntryModel.RestrctCount ?? 0) + "次，次数" + (flw_ProjectTicket_EntryModel.RestrictShareCount != 1 ? "不" : "") + "共享";
                 resultModel.Note = resultModel.Note + restrictStr + "。" + Environment.NewLine;
             }
 
+            //绑定项目
+            var flw_ProjectTicket_Bind = from a in flw_ProjectTicket_BindService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                                         join b in Data_ProjectInfoService.N.GetModels() on a.ProjectID equals b.ID
+                                         join c in Dict_SystemService.N.GetModels() on b.ProjectType equals c.ID into c1
+                                         from c in c1.DefaultIfEmpty()
+                                         select new { b.ProjectName, a.AllowShareCount, a.BuyCount, a.WeightValue, ProjectTypeName = c != null ? c.DictKey : string.Empty };
+            if (flw_ProjectTicket_Bind.Count() > 0)
+            {
+                var flw_ProjectTicket_BindModel = flw_ProjectTicket_Bind.First();
+                var projectTicketBindStr = "绑定项目" + (flw_ProjectTicket_BindModel.AllowShareCount == 1 ? "（次数共享）" : "") + "：" + Environment.NewLine;
+                foreach (var model in flw_ProjectTicket_Bind)
+                {
+                    projectTicketBindStr = projectTicketBindStr + model.ProjectName + "，类别：" + model.ProjectTypeName + "，次数：" + model.BuyCount + "，权重：" + model.WeightValue + Environment.NewLine;
+                }
+                resultModel.Note = resultModel.Note + projectTicketBindStr;
+            }
+            
             #endregion
 
             var expiredTime = (DateTime?)null; //过期时间
