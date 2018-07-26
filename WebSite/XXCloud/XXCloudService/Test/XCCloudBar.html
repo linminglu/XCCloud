@@ -57,10 +57,16 @@
     <script type="text/javascript">
 
         function do_userlogin() {
+            //var parasObj = {
+            //    "sysId": "0", "versionNo": "0.0.0.1", "storeId": $("#txtStoreId").val(), "loginName": "lijunjie100016", "password": "123456",
+            //    "workStation": "lijunjie100016", "dogId": "22222222"
+            //};
+
             var parasObj = {
-                "sysId": "0", "versionNo": "0.0.0.1", "storeId": $("#txtStoreId").val(), "loginName": "lijunjie100016", "password": "123456",
-                "workStation": "lijunjie100016", "dogId": "22222222"
+                "sysId": "0", "versionNo": "0.0.0.1", "storeId": $("#txtStoreId").val(), "loginName": "lijunjie", "password": "123456",
+                "workStation": "tietou1", "dogId": "22222222"
             };
+
             var url = "/XCCloud/userinfo?action=barLogin";
             var parasJson = JSON.stringify(parasObj);
             $.ajax({

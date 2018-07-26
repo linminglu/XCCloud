@@ -72,7 +72,7 @@
             , {field: 'Note', title: '备注', align: 'center'}
         ]
     };
-    xc.getInitData(parm);
+    // xc.getInitData(parm);
     layui.use(['form','layer','table','laydate'],function () {
         let form=layui.form;
         let layer=layui.layer;
@@ -88,11 +88,42 @@
             'layer': layer,
             'searchBtn': 'searchBtn',
             'reSearchBtn':'reSearchBtn',
+            'needIcCard':'needIcCard',
             'xc':xc,
             'laydate':laydate,
             'parm':parm,
             'type':''
         })
+        table.render({
+            elem: parm.elem
+            , data: []
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [parm.cols]
+            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+            , limit: 10
+            , total: parm.total
+            , done: function () {
+                if (this.total) {
+                    let _col = this.cols[0];
+                    let _data = this.data;
+                    var intHtml = '<tr style="background-color: #93D1FF">';
+                    intHtml += '<td style="text-align:center;">合计:' + this.data.length + '条</td>';
+                    for (let i = 1; i < _col.length; i++) {
+                        if (_col[i].total) {
+                            let index = _col[i].field;
+                            let count = 0;
+                            for (let j in _data) {
+                                count += parseInt(_data[j][index])
+                            }
+                            intHtml += '<td style="color: red;font-weight: bold;text-align:center;">' + count + '</td>'
+                        } else {
+                            intHtml += '<td></td>'
+                        }
+                    }
+                    $(".layui-table-body.layui-table-main tbody").append(intHtml);
+                }
+            }
+        });
     })
 </script>
 <script type="text/html" id="_ICCard"></script>

@@ -358,15 +358,6 @@ namespace XXCloudService.Api.XCCloud
                                     var projcetType = dicPar.Get("projcetType").Toint();
                                     var projcetId = dicPar.Get("projcetId").Toint();
 
-                                    ////离场时间大于0时，门票绑定的游乐项目的校验顺序必须开启，即必须绑定一进一出设备
-                                    //if (allowExitTimes > 0 && !Data_ProjectInfoService.I.Any(a => a.ID == projcetId && a.State == 1 && a.AdjOrder == 1)
-                                    //    && !(Data_Project_BindDeviceService.I.Any(a=>a.ProjectID == projcetId && a.WorkType == (int)ProjectBindDeviceWorkType.Entry)
-                                    //            && Data_Project_BindDeviceService.I.Any(a => a.ProjectID == projcetId && a.WorkType == (int)ProjectBindDeviceWorkType.Exit)))
-                                    //{
-                                    //    errMsg = "离场时间大于0时，门票绑定的游乐项目的校验顺序必须开启，即必须绑定一进一出设备";
-                                    //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    //}
-
                                     var bindModel = new Data_ProjectTicket_Bind();
                                     bindModel.MerchID = merchId;
                                     bindModel.StoreID = dicPar.Get("storeId");
@@ -568,6 +559,65 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
+
+        #region 门票销售情况分析
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryProjectTicketSellInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (                                
+                                SELECT distinct
+                                    a.ID, a.Barcode, e.TicketName, o.ID AS OrderID, o.CreateTime, fs.TotalMoney, fs.SaleCount, fs.RealMoney, fs.FreeMoney,                                     
+                                    a.TicketType, a.State, a.FirstUseTime, cd.ICCardID, o.OrderSource, o.CheckDate, o.WorkStation, u.LogName, o.Note                                    
+                                FROM
+                                	Flw_Project_TicketInfo a
+                                INNER JOIN Flw_Order_Detail od ON a.FoodSaleID=od.FoodFlwID
+                                INNER JOIN Flw_Order o ON od.OrderFlwID=o.ID                                
+                                INNER JOIN Flw_ProjectTicket_Entry e ON e.ProjectCode=a.Barcode
+                                INNER JOIN Data_Member_Card cd ON a.CardID=cd.ID
+                                INNER JOIN Flw_Food_Sale fs ON a.FoodSaleID=fs.ID
+                                LEFT JOIN Base_UserInfo u ON o.UserID=u.ID                                
+                                WHERE a.MerchID='" + merchId + "' AND o.StoreID='" + storeId + @"'                                
+                                ) a WHERE 1=1";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_Project_TicketInfoList>(sql, parameters).ToList();
+                foreach (var model in list)
+                {
+                    var effactTime = (DateTime?)null;
+                    var expiredTime = (DateTime?)null;
+                    if (!getEndTime(model.Barcode, out effactTime, out expiredTime, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    model.EffactTime = effactTime;
+                    model.ExpiredTime = expiredTime;
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        #endregion
 
     }
 }

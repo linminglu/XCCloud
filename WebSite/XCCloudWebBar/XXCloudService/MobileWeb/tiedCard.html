@@ -15,40 +15,48 @@
         [v-cloak] {
             display: none;
         }
+        input{padding-left: 0.1rem;}
+        .itemIcon{font-size: 0.34rem!important;}
     </style>
 </head>
 <body>
 <div id="app" v-cloak>
+    <yd-navbar title="莘拍档">
+        <router-link to="index.html" slot="left">
+            <yd-navbar-back-icon @click.native="goBack">返回</yd-navbar-back-icon>
+        </router-link>
+    </yd-navbar>
     <yd-cell-group>
-        <yd-cell-item>
+        <yd-cell-item arrow>
             <img class="itemImg" slot="icon" src="images/member.png">
-            <input slot="right" type="number" placeholder="会员卡号码" v-model="icCardId" v-on:blur="inputCardId" oninput="if(value.length>15)value=value.slice(0,15)">
+            <input slot="right" type="number" placeholder="请输入会员卡卡号" v-model="icCardId" v-on:blur="inputCardId" oninput="if(value.length>15)value=value.slice(0,15)">
+            <span slot="right" @click="inputCardId">查询</span>
         </yd-cell-item>
     </yd-cell-group>
-    <yd-cell-group>
+    <yd-cell-group v-if="mobileIf">
         <yd-cell-item>
             <img class="itemImg" slot="icon" src="images/account.png">
-            <input slot="right" type="number" placeholder="请输入手机号" v-model="mobile" v-on:blur="inputPrompt" oninput="if(value.length>11)value=value.slice(0,11)">
+            <input slot="right" type="text" placeholder="手机号" v-model="mobile" readonly>
         </yd-cell-item>
     </yd-cell-group>
-    <!--<yd-cell-group>-->
-        <!--<yd-cell-item>-->
-            <!--<img class="itemImg" slot="icon" src="images/IdCard.png">-->
-            <!--<input slot="right" type="number" placeholder="身份证号" v-model="IdCard" v-on:blur="inputIdCard" oninput="if(value.length>18)value=value.slice(0,18)">-->
-        <!--</yd-cell-item>-->
-    <!--</yd-cell-group>-->
-    <!--<yd-cell-group>-->
-        <!--<yd-cell-item>-->
-            <!--<yd-icon slot="icon" name="phone3" size=".45rem"></yd-icon>-->
-            <!--<input type="text" slot="right" placeholder="请输入短信验证码" v-model="smsCode">-->
-            <!--<yd-sendcode slot="right"-->
-                         <!--v-model="start"-->
-                         <!--second="30"-->
-                         <!--@click.native="sendCode"-->
-                         <!--type="warning"-->
-            <!--&gt;</yd-sendcode>-->
-        <!--</yd-cell-item>-->
-    <!--</yd-cell-group>-->
+    <yd-cell-group>
+        <yd-cell-item>
+            <yd-icon name="phone2" slot="icon" class="itemIcon"></yd-icon>
+            <input slot="right" type="number" placeholder="请输入手机号">
+        </yd-cell-item>
+    </yd-cell-group>
+    <yd-cell-group>
+        <yd-cell-item>
+            <yd-icon slot="icon" name="phone3" size=".45rem"></yd-icon>
+            <input type="text" slot="right" placeholder="请输入短信验证码" v-model="smsCode">
+            <yd-sendcode slot="right"
+                         v-model="start"
+                         second="30"
+                         @click.native="sendCode"
+                         type="warning"
+            ></yd-sendcode>
+        </yd-cell-item>
+    </yd-cell-group>
     <yd-button size="large" type="primary" @click.native="tiedCard">绑定</yd-button>
 </div>
 
@@ -61,14 +69,17 @@
 <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
     var sysId = 0; //调用方应用Id
-    var versionNo= "0.89"; //版本号
+    var versionNo= "0.01"; //版本号
     var htmlfnc = new Vue({
         el: '#app',
         data:{
             icCardId:"28801810",
-            userThirdId : "oNWocwSC_GFO8n_8mtZ0iV9tL0WI",
+            userThirdId : "",
             mobile:"",
-            smsCode:""
+            mobileNO:"",
+            smsCode:"",
+            start:false,
+            mobileIf:false
         },
         mounted: function () {
             this.Load();
@@ -82,26 +93,71 @@
 //          卡号输入
             inputCardId:function () {
                 var that = this;
+                this.$dialog.loading.open('');
                 var obj={sysId: sysId,versionNo: versionNo, token:that.userThirdId,icCardId:that.icCardId};
-                axios.post('/XCCloudH5/Member?action=VerifyCard', obj).then(function (res) {
+                axios.post('/XCCloudH5/Member?action=getCardMobile', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
                     console.log(res.data);
                     JSON.stringify(res.data);
                     if (res.data.result_code === '1') {
-
+                        that.mobile = res.data.result_data.Mobile;
+                        that.mobileIf = true;
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
                     console.log(err);
                 })
             },
-            inputPrompt:function () {
+//          返回
+            goBack:function () {
+                window.location.href = "index.html";
+            },
+//          发送手机验证码
+            sendCode() {
+                var that = this;
+                this.$dialog.loading.open('发送中...');
+                setTimeout(() => {
+                    this.start = true;
+                    this.$dialog.loading.close();
+                    var verifyMobile = {sysId: sysId,versionNo: versionNo, token:that.userThirdId,icCardId:that.icCardId,mobile:that.mobileNO};
+                    axios.post('/XCCloudH5/Member?action=getSMSCode', verifyMobile).then(function (res) {
+                        that.$dialog.loading.close();
+                        that.msgPrompt(res.data);
+                        console.log(res.data);
+                        if (res.data.result_code === '1') {
+                            var obj={sysId: sysId,versionNo: versionNo, mobile:that.mobileNO};
+                            axios.post('/XCCloudH5/Member?action=getSMSCode', obj).then(function (res) {
+                                that.$dialog.loading.close();
+                                that.msgPrompt(res.data);
+                                console.log(res.data);
+                                JSON.stringify(res.data);
+                                if (res.data.result_code === '1') {
+                                    that.$dialog.toast({
+                                        mes: '已发送',
+                                        icon: 'success',
+                                        timeout: 1500
+                                    });
+                                }
+                            }).catch(function (err) {
+                                that.$dialog.loading.close();
+                                console.log(err);
+                            })
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                    // /XCCloudH5/Member?action=verifyMobile
+                    
+                    
 
+                }, 1000);
             },
 //          绑定卡
             tiedCard:function () {
                 var that = this;
+                this.$dialog.loading.open('');
                 var obj={sysId: sysId,versionNo: versionNo, token:that.userThirdId,icCardId:that.icCardId,mobile:that.mobile,smsCode:that.smsCode};
                 axios.post('/XCCloudH5/Member?action=BindCard', obj).then(function (res) {
                     that.$dialog.loading.close();
@@ -109,7 +165,11 @@
                     console.log(res.data);
                     JSON.stringify(res.data);
                     if (res.data.result_code === '1') {
-
+                        that.$dialog.toast({
+                            mes: '绑定成功！',
+                            icon: 'success',
+                            timeout: 1500
+                        });
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();

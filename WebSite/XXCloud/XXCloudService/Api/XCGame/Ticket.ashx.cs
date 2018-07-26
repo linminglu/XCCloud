@@ -30,7 +30,7 @@ namespace XXCloudService.Api.XCGame
     /// Ticket 的摘要说明
     /// </summary>
     public class Ticket : ApiBase
-    {
+    {        
         //检查门票使用信息
         private bool checkTicketInfo(string barCode, int projectId, out TicketModel resultModel, out string errMsg)
         {
@@ -64,83 +64,90 @@ namespace XXCloudService.Api.XCGame
                                    EndTime = string.Empty,
                                    Note = string.Empty
                                }).FirstOrDefault();
+
             //获取门票购买详情
             var flw_Project_TicketInfoModel = flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
             //获取门票规则实体
             var flw_ProjectTicket_EntryModel = flw_ProjectTicket_EntryService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
-            //计算生效时间, 核销时间, 有效时间, 过期时间                
-            var saleTime = flw_Project_TicketInfoModel.SaleTime; //购买时间
-            if (saleTime == null)
+            #region 产生使用说明
+
+            //产生使用说明
+            resultModel.Note = ((TicketType?)flw_ProjectTicket_EntryModel.TicketType).GetDescription() + "名称：" + flw_ProjectTicket_EntryModel.TicketName + ", " +
+                "分摊方式：" + ((DivideType?)flw_ProjectTicket_EntryModel.DivideType).GetDescription() + ", " +
+                "允许离场时间（分钟）：" + ((flw_ProjectTicket_EntryModel.AllowExitTimes ?? 0) == 0 ? "不计" : flw_ProjectTicket_EntryModel.AllowExitTimes.ToString());
+            resultModel.Note = resultModel.Note + "。" + Environment.NewLine;
+
+            //有效时间
+            var validDateStr = string.Empty;
+            if (flw_ProjectTicket_EntryModel.EffactType == (int)EffactType.Period)
+                validDateStr = "销售后" + ((flw_ProjectTicket_EntryModel.EffactPeriodValue ?? 0) == 0 ? "当" : 
+                    Convert.ToString(flw_ProjectTicket_EntryModel.EffactPeriodValue)) + ((FreqType?)flw_ProjectTicket_EntryModel.EffactPeriodType).GetDescription()
+                    + "生效，有效期" + (flw_ProjectTicket_EntryModel.VaildPeriodValue ?? 0) + ((FreqType?)flw_ProjectTicket_EntryModel.VaildPeriodType).GetDescription();
+            else if (flw_ProjectTicket_EntryModel.EffactType == (int)EffactType.Date)
             {
-                errMsg = "门票售卖时间不能为空";
-                return false;
+                validDateStr = Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.VaildStartDate, "yyyy-MM-dd") + " ~ " + Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.VaildEndDate, "yyyy-MM-dd");
+                validDateStr = "有效期" + (validDateStr.Trim() == " ~ " ? string.Empty : validDateStr);               
             }
+            resultModel.Note = resultModel.Note + "。" + validDateStr + Environment.NewLine;
+
+            //有效时段
+            var validPeriodStr = "生效时段：";
+            if (flw_ProjectTicket_EntryModel.WeekType == (int)TimeType.Custom)
+                validPeriodStr = getWeekName(flw_ProjectTicket_EntryModel.Week);
+            else
+                validPeriodStr = ((TimeType?)flw_ProjectTicket_EntryModel.WeekType).GetDescription();
+            var periodLimitStr = Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.StartTime) + " ~ " + Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.EndTime);
+            periodLimitStr = periodLimitStr.Trim() == " ~ " ? string.Empty : periodLimitStr;
+            validPeriodStr = validPeriodStr + " " + periodLimitStr;
+            resultModel.Note = resultModel.Note + validPeriodStr + "。" + Environment.NewLine;
+
+            //不可用日期
+            var noDateStr = "不可用日期：";
+            noDateStr = Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.NoStartDate, "yyyy-MM-dd") + " ~ " + Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.NoEndDate, "yyyy-MM-dd");
+            noDateStr = noDateStr.Trim() == " ~ " ? string.Empty : noDateStr;
+            resultModel.Note = resultModel.Note + noDateStr + "。" + Environment.NewLine;
+
+            //陪同票
+            if (!flw_ProjectTicket_EntryModel.AccompanyCash.IsNull())
+            {
+                var accompanyStr = "陪同票价" + flw_ProjectTicket_EntryModel.AccompanyCash + "元";
+                if (!flw_ProjectTicket_EntryModel.BalanceIndex.IsNull())
+                {
+                    accompanyStr = accompanyStr + ", 扣除" + Dict_BalanceTypeService.I.GetModels(p => p.ID == flw_ProjectTicket_EntryModel.BalanceIndex).Select(o => o.TypeName).FirstOrDefault() +
+                        (flw_ProjectTicket_EntryModel.BalanceValue ?? 0) + Dict_BalanceTypeService.I.GetModels(p => p.ID == flw_ProjectTicket_EntryModel.BalanceIndex).Select(o => o.Unit).FirstOrDefault();
+                }
+                resultModel.Note = resultModel.Note + accompanyStr + "。" + Environment.NewLine;
+            }
+
+            //退货信息
+            if (flw_ProjectTicket_EntryModel.AllowExitTicket == 1 && (flw_ProjectTicket_EntryModel.ExitPeriodValue ?? 0) > 0)
+            {
+                var exitLimitStr = "销售" + flw_ProjectTicket_EntryModel.ExitPeriodValue + ((FreqType?)flw_ProjectTicket_EntryModel.ExitPeriodType).GetDescription()
+                        + "后不可退票，退票手续费" + ((ExitTicketType?)flw_ProjectTicket_EntryModel.ExitTicketType).GetDescription()
+                        + Math.Round(flw_ProjectTicket_EntryModel.ExitTicketValue ?? 0M, 2, MidpointRounding.AwayFromZero)
+                        + (flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Money ? "元" :
+                           flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Percent ? "%" : string.Empty) + "计";
+                resultModel.Note = resultModel.Note + exitLimitStr + "。" + Environment.NewLine;
+            }
+
+            //使用限制
+            if (flw_ProjectTicket_EntryModel.TicketType == (int)TicketType.Period && flw_ProjectTicket_EntryModel.AllowRestrict == 1)
+            {
+                var restrictStr = "销售" + flw_ProjectTicket_EntryModel.ExitPeriodValue + ((FreqType?)flw_ProjectTicket_EntryModel.ExitPeriodType).GetDescription()
+                        + "后不可退票，退票手续费" + ((ExitTicketType?)flw_ProjectTicket_EntryModel.ExitTicketType).GetDescription()
+                        + Math.Round(flw_ProjectTicket_EntryModel.ExitTicketValue ?? 0M, 2, MidpointRounding.AwayFromZero)
+                        + (flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Money ? "元" :
+                           flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Percent ? "%" : string.Empty) + "计";
+                resultModel.Note = resultModel.Note + restrictStr + "。" + Environment.NewLine;
+            }
+
+            #endregion
 
             var expiredTime = (DateTime?)null; //过期时间
-            var effactTime = saleTime; //生效时间
-            var writeOffDays = flw_Project_TicketInfoModel.WriteOffDays ?? 0; //核销天数
-            var firstUseTime = flw_Project_TicketInfoModel.FirstUseTime; //首次使用时间
-            var writeOffTime = (DateTime?)null; //核销时间
-            var validTime = (DateTime?)null; //有效时间
-            if (firstUseTime != null && firstUseTime.Value.ToString("yyyy-MM-dd") != "1900-01-01")
-            {
-                writeOffTime = firstUseTime.Value.AddDays(writeOffDays);
-            }
-            else
-            {
-                if (flw_ProjectTicket_EntryModel.ActiveBar == 1) //需要吧台激活
-                {
-                    errMsg = "门票需要吧台激活";
-                    return false;
-                }
-            }
-
-            var effactType = flw_ProjectTicket_EntryModel.EffactType;
-            if (effactType == (int)EffactType.Period) //有效时长
-            {
-                var effactPeriodType = flw_ProjectTicket_EntryModel.EffactPeriodType;
-                var effactPeriodValue = flw_ProjectTicket_EntryModel.EffactPeriodValue ?? 0;
-                var vaildPeriodType = flw_ProjectTicket_EntryModel.VaildPeriodType;
-                var vaildPeriodValue = flw_ProjectTicket_EntryModel.VaildPeriodValue ?? 0;
-                switch (effactPeriodType)
-                {
-                    case (int)FreqType.Day: effactTime = saleTime.Value.AddDays(effactPeriodValue); break;
-                    case (int)FreqType.Week: effactTime = saleTime.Value.AddDays(effactPeriodValue * 7); break;
-                    case (int)FreqType.Month: effactTime = saleTime.Value.AddDays(effactPeriodValue * 30); break;
-                    case (int)FreqType.Season: effactTime = saleTime.Value.AddDays(effactPeriodValue * 90); break;
-                    case (int)FreqType.Year: effactTime = saleTime.Value.AddDays(effactPeriodValue * 365); break;
-                    default: errMsg = "该门票生效周期值不正确"; return false;
-                }
-                switch (vaildPeriodType)
-                {
-                    case (int)FreqType.Day: validTime = saleTime.Value.AddDays(vaildPeriodValue); break;
-                    case (int)FreqType.Week: validTime = saleTime.Value.AddDays(vaildPeriodValue * 7); break;
-                    case (int)FreqType.Month: validTime = saleTime.Value.AddDays(vaildPeriodValue * 30); break;
-                    case (int)FreqType.Season: validTime = saleTime.Value.AddDays(vaildPeriodValue * 90); break;
-                    case (int)FreqType.Year: validTime = saleTime.Value.AddDays(vaildPeriodValue * 365); break;
-                    default: errMsg = "该门票有效周期值不正确"; return false; 
-                }
-            }
-            else if (effactType == (int)EffactType.Date)//指定日期
-            {
-                var vaildEndDate = flw_ProjectTicket_EntryModel.VaildEndDate;
-                validTime = vaildEndDate;
-            }
-            else
-            {
-                errMsg = "该门票生效方式值不正确";
-                return false;
-            }
-
-            expiredTime = (writeOffTime != null && writeOffTime < validTime) ? writeOffTime : validTime;
-            if (expiredTime == null)
-            {
-                errMsg = "该门票过期时间不能为空"; 
-                return false;
-            }
-
+            var effactTime = (DateTime?)null; //生效时间
+            if (!getEndTime(barCode, out effactTime, out expiredTime, out errMsg)) return false;
             resultModel.EndTime = expiredTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
 
             //锁定或退票
@@ -264,6 +271,8 @@ namespace XXCloudService.Api.XCGame
             {
                 string errMsg = string.Empty;
                 XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                var storeId = userTokenModel.StoreId;
+                //var storeId = "100016360103001";
                 string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
                 var projectId = dicParas.ContainsKey("projectId") ? dicParas["projectId"].Toint() : (int?)null;
 
@@ -280,7 +289,7 @@ namespace XXCloudService.Api.XCGame
                 //验证是否有效门店
                 StoreCacheModel storeModel = null;
                 StoreBusiness storeBusiness = new StoreBusiness();
-                if (!storeBusiness.IsEffectiveStore(userTokenModel.StoreId, ref storeModel, out errMsg))
+                if (!storeBusiness.IsEffectiveStore(storeId, ref storeModel, out errMsg))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
@@ -291,6 +300,8 @@ namespace XXCloudService.Api.XCGame
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
+
+                //LogHelper.SaveLog(Utils.DataContractJsonSerializer(resultModel));
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultModel);
                 //}

@@ -169,6 +169,19 @@
         common2(url, parasJson);
     }
 
+    function do_barPay() {
+        var data = {
+            "token": "62fb63fcc33c246999246cb440e24b1b0",
+            "action": "1",
+            "result": "成功",
+            "orderid": "20171010500001",
+            "sn": "123",
+            "signkey": "5431635431213654"
+        };
+        var url = "/Test/SocketTest.ashx?method=radarNotify";
+        common(url, data);
+    }
+
 </script>
 </head>
 <body>

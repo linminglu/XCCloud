@@ -15,12 +15,13 @@
         .index-change{border-bottom: 0.02rem solid #eeeeee; color: #ff3030;margin-right: 0.1rem;}
         .cardIcon{width: 0.4rem;height: 0.4rem;margin-right: 0.1rem;}
         .iconRight{justify-content:flex-end;margin-top: 0.1rem;margin-right: 0.6rem;color: #ff3030;margin-bottom: 0.1rem;}
-        .vipCard{display:flex;flex-direction: row;padding-left:1rem;border-radius: 10px;position: relative;width: 100%;height: 1.5rem;background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);}
+        .vipCard{display:flex;flex-direction: row;padding-left:1rem;border-radius: 10px;position: relative;width: 100%;height: 1.8rem;background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);}
         .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.16rem;min-width: 1rem;max-width: 1rem;margin-right: 0.2rem;}
         .section_cont{font-size:0.26rem;color:#666;line-height: 0.4rem;}
-        .stored{font-size: 0.36rem;font-weight: 700;color: #666;margin-top: 0.08rem;}
-        .MemberLevel{margin-left: 0.3rem;margin-top: 0.1rem;font-size: 0.3rem;font-weight: 700;color: #ffb400;}
-        .ICCard{color: goldenrod;margin-top: 0.1rem;}
+        .stored{font-size: 0.3rem;font-weight: 700;color: #666;margin-top: 0.08rem;}
+        .MemberLevel{margin-top: 0.15rem;font-size: 0.3rem;font-weight: 700;color: #ffb400;}
+        .sectionTitle{font-size: 0.24rem;color: #999999;display: inline-block;padding: 0 0.1rem;font-weight: normal;}
+        .ICCard{color: rgb(32, 26, 10);margin-top: 0.15rem;}
         .addCard{width: 5rem;height: 1.5rem;margin: 0.1rem auto;text-align: center;}
         .addCard img{width: 1rem;height: 1rem;}
         .addCard p{margin-top: 0.1rem;font-size: 0.26rem;line-height: 0.3rem;}
@@ -48,9 +49,9 @@
                 <div class="vipCard" v-if="tiedCard">
                     <!--<img class="section_image" slot="img" src="images/vipCard.png">-->
                     <div class="section_cont">
-                        <p class='stored'>开卡门店</p>
-                        <p class="MemberLevel">{{MemberLevelName}}</p>
-                        <p class="ICCard">{{ICCardId}}</p>
+                        <p class='stored'><span class="sectionTitle">开卡门店：</span> {{StoreName}}</p>
+                        <p class="MemberLevel"><span class="sectionTitle">会员等级：</span>{{MemberLevelName}}</p>
+                        <p class="ICCard"><span class="sectionTitle">会员卡号：</span>{{ICCardId}}</p>
                     </div>
                 </div>
                 <div class="addCard" v-if="!tiedCard" @click="mineCard">
@@ -59,7 +60,7 @@
                 </div>
                 <yd-grids-group :rows="3">
                     <yd-grids-item v-for="item in cardBalanceList" v-if="tiedCard">
-                        <span slot="text">{{item.BalanceName}}：</span>
+                        <span slot="text">{{item.BalanceName}}</span>
                         <span slot="text" class="spanSty">{{item.Quantity}}</span>
                     </yd-grids-item>
                 </yd-grids-group>
@@ -79,16 +80,7 @@
             </yd-grids-group>
         </yd-layout>
         <yd-backtop></yd-backtop>
-        <!--<yd-button size="large" type="primary" @click.native="jumpFnc">扫码</yd-button>-->
-        <!--<yd-navbar title="莘拍档">-->
-            <!--<router-link to="h" slot="left">-->
-                <!--<yd-navbar-back-icon>返回</yd-navbar-back-icon>-->
-            <!--</router-link>-->
-            <!--<router-link to="#" slot="right">-->
-                <!--<yd-navbar-next-icon></yd-navbar-next-icon>-->
-            <!--</router-link>-->
-        <!--</yd-navbar>-->
-        <!--微信头部颜色393a3f{{【】}}-->
+        
     </div>
 <script src="js/jquery-1.8.3-min.js"></script>
 <!-- 引入 Vue -->
@@ -114,6 +106,7 @@
             nickname : "",
             CurrentCardInfo : "",
             MemberId : "",
+            StoreName : "",
             MemberLevelName : "",
             ICCardId : "",
             cardBalanceList : null,
@@ -131,12 +124,13 @@
         methods: {
             Load:function () {
                 var that =this;
-//                var deviceToken = "86A8AFBDB2E84B8E95BF52C052E8BA7C";
-//                var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
-                var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
+                var deviceToken = "A1493338DB3D4E4294F7351868DF5DC6";
+                var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
+                setStorage("userThirdId",userThirdId);
+                setStorage("deviceNo",deviceToken);
+                var ifScanCode = getStorage("ifScanCode")||"";        //是否是扫码进入
                 var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
                 var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
-                alert(deviceToken);
                 that.userThirdId = userThirdId;
                 that.deviceToken = deviceToken;
                 if(ifScanCode == "1"){
@@ -159,8 +153,8 @@
                     if (/MicroMessenger/.test(window.navigator.userAgent)){
                         var coordinates = getStorage("coordinates")||"";
                         if(coordinates == ""){
-                            this.$dialog.loading.open('');
-                            this.signatureNew();
+                            that.$dialog.loading.open('');
+                            that.signatureNew();
                         }else {
                             wx.config({
                                 debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -186,8 +180,14 @@
                         that.CurrentCardInfo =res.data.result_data.CurrentCardInfo;
                         if(that.CurrentCardInfo != null){
                             that.MemberLevelName = res.data.result_data.CurrentCardInfo.MemberLevelName;
+                            that.StoreName = res.data.result_data.CurrentCardInfo.StoreName;
                             var ICCardId = res.data.result_data.CurrentCardInfo.ICCardId;
-                            ICCardId = ICCardId.substring(0,6)+"****"+ICCardId.substring(ICCardId.length-6);
+                            var len = ICCardId.length-3-4;
+                            var xing = '';
+                            for (var i=0;i<len;i++) {
+                                xing+='*';
+                            }
+                            ICCardId = ICCardId.substring(0,3)+xing+ICCardId.substring(ICCardId.length-4);
                             that.ICCardId = ICCardId;
                             that.cardBalanceList =res.data.result_data.CurrentCardInfo.CardBalanceList;
                         }else {
@@ -267,7 +267,7 @@
             playFnc:function (index) {
                 var that = this;
                 console.log(index);
-                if(that.CurrentCardInfo != null || index == 1){
+                if(that.CurrentCardInfo != null || index == 1 || index == 2){
                     switch (index){
                         case 0:
                             window.location.href = "MyOrder.html";
@@ -279,7 +279,7 @@
                             window.location.href = "home.html";
                             break;
                         case 3:
-                            this.$dialog.toast({
+                            that.$dialog.toast({
                                 mes: "功能暂未开放",
                                 timeout: 1500,
                                 icon: 'error'
@@ -316,7 +316,7 @@
                                 var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
                                 that.jumpFnc(deviceToken);
                             }else {
-                                this.$dialog.toast({
+                                that.$dialog.toast({
                                     mes: "二维码错误！",
                                     timeout: 1500,
                                     icon: 'error'
@@ -338,7 +338,7 @@
                             var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
                             that.jumpFnc(deviceToken);
                         }else {
-                            this.$dialog.toast({
+                            that.$dialog.toast({
                                 mes: "二维码错误！",
                                 timeout: 1500,
                                 icon: 'error'
@@ -353,13 +353,13 @@
                         icon: 'error'
                     });
                 }
-
             },
+            
 //          扫码之后跳转函数
             jumpFnc:function (deviceToken) {
                 var that =this;
                 this.$dialog.loading.open('');
-                var obj={sysId: sysId, versionNo: versionNo,token:that.userThirdId, deviceToken:that.deviceToken};
+                var obj={sysId: sysId, versionNo: versionNo,token:that.userThirdId, deviceToken:deviceToken};
                 axios.post('/XCCloudH5/Amusement?action=getDeviceInfo', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
@@ -371,10 +371,10 @@
                                 window.location.href = "games.html";
                                 break;
                             case 2:
-                                window.location.href = "CurrencyOperation.html";
+                                window.location.href = "coinOperation.html";
                                 break;
                             case 3:
-                                window.location.href = "CurrencyOperation.html";
+                                window.location.href = "coinOperation.html";
                                 break;
                             default:
                                 break;
@@ -403,10 +403,10 @@
                 if(that.CurrentCardInfo != null || index == 1){
                     switch (index){
                         case 0:
-//                            window.location.href = "MyOrder.html";
+                           window.location.href = "mall.html";
                             break;
                         case 1:
-                            this.$dialog.toast({
+                            that.$dialog.toast({
                                 mes: "请使用扫一扫，在购币机上购币",
                                 timeout: 1500,
                                 icon: 'error'

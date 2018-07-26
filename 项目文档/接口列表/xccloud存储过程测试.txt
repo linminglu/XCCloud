@@ -860,18 +860,23 @@ declare @Note varchar(500) = ''
 declare @OrderSource int = 0
 declare @SaleCoinType int = 1
 declare @OrderFlwId varchar(32) = 0
+declare @FlwSeedIndex int = 0
 declare @ErrMsg varchar(200) = ''
 declare @FoodSaleDetailList [FoodSaleDetailListType]
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
-declare @FlwSeedId varchar(29) = '100025420106001' + '20180517' + '322222'
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180712' + '356987'
+create table #TmpBarTableSync(TableName varchar(50),FlwId varchar(32),Status int)
 exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@FreePay,@OpenFee,@Deposit,
-@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@OrderFlwId output,@ErrMsg output
+@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@FlwSeedIndex output,@OrderFlwId output,@ErrMsg output
 print @Return 
 print @ErrMsg
 print @OrderFlwId
+print @FlwSeedIndex
+select * from #TmpBarTableSync
+drop table #TmpBarTableSync
 
 
 
@@ -956,12 +961,11 @@ exec DeleteOrderDetail '100025420106001','10002542010600120180517100010001'
 --散客订单更新
 declare @Return int
 declare @NewFlwOrderId varchar(32) = ''
-declare @FlwOrderId varchar(32) = '10002542010600120180517100010001'
+declare @FlwOrderId varchar(32) = '10002542010600120180712356987000'
 declare @StoreId varchar(15) = '100025420106001'
-declare @FlwSaleId varchar(29) = '100025420106001' + '20180521' + '000010'
-declare @NewFlwSaleId varchar(29) = ''
+declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180521' + '032113'
 declare @Mobile varchar(11) = '15618920033'
-declare @PayCount decimal(18,2) = 50 + 5.5
+declare @PayCount decimal(18,2) = 50 + 5.5 - 30
 declare @FeePay decimal(18,2) = 23.20 + 25.00
 declare @RealPay decimal(18,2) = @PayCount - @FeePay
 declare @Deposit decimal(18,2) = 0.0
@@ -978,15 +982,16 @@ declare @FoodSaleDetailList [FoodSaleDetailListType]
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+--insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
 
 declare @CouponsList [CouponsListType]
 insert @CouponsList(CouponId,CouponCode) values(12,'d79847caf5304d4188df251bd8c8d63d')
 insert @CouponsList(CouponId,CouponCode) values(13,'e867895b7da8482d8e46fe449ce163dc')
 
 exec @Return = UpdateOrder @FoodSaleDetailList,@CouponsList,@StoreId,@FlwOrderId,
-@NewFlwSaleId,@Mobile,@DisticntRuleID,@PayCount,@RealPay,@FeePay,@UserID,
+@NewFlwSaleId,@Mobile,@DisticntRuleID,@PayCount,@FeePay,@UserID,
 @WorkStation,@Note,@OrderSource,@AuthorID,@SaleCoinType,@NewFlwOrderId output,@ErrMsg output
+
 
 print '@Return:' + cast(@Return as varchar)
 print '@ErrMsg:' + cast(@ErrMsg as varchar)

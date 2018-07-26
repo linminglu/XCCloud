@@ -120,7 +120,7 @@
             layer.open({
                 title:'新增'+'<span style="font-size: 14px">计时票</span> ',
                 type:2,
-                area:['1100px','650px'],
+                area:['1103px','650px'],
                 content:'ticketsIframe.html'
             });
             xc.setStorage('ticketSet',JSON.stringify({'way':'add','name':'month','id':''}))
@@ -128,7 +128,7 @@
         });
         //删除按钮
         $('#delBtn').on('click', function () {
-            let checkStatus = table.checkStatus('groupTickets'); //test即为基础参数id对应的值
+            let checkStatus = table.checkStatus('timesTickets'); //test即为基础参数id对应的值
             let len = checkStatus.data.length;
             if (len == 1) {
                 // let ids = '';
@@ -166,7 +166,7 @@
         });
         //编辑按钮
         $('#editBtn').on('click', function () {
-            let checkStatus = table.checkStatus('groupTickets'); //test即为基础参数id对应的值
+            let checkStatus = table.checkStatus('timesTickets'); //test即为基础参数id对应的值
             let len = checkStatus.data.length;
             if (len == 1) {
 

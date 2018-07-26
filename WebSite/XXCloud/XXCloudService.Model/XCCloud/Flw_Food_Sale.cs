@@ -30,6 +30,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> ChangeFee { get; set; }
         public Nullable<decimal> ReissueFee { get; set; }
         public Nullable<decimal> TotalMoney { get; set; }
+        public Nullable<decimal> RealMoney { get; set; }
+        public Nullable<decimal> FreeMoney { get; set; }
         public Nullable<int> BuyFoodType { get; set; }
         public Nullable<decimal> TaxFee { get; set; }
         public Nullable<decimal> TaxTotal { get; set; }

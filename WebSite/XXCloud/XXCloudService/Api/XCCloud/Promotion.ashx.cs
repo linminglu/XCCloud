@@ -26,17 +26,7 @@ namespace XXCloudService.Api.XCCloud
     public class Promotion : ApiBase
     {
         private string merchId;
-        private string merchSecret;
-
-        private bool isEveryDay(string weekDays)
-        {
-            return !string.IsNullOrEmpty(weekDays) && weekDays.Contains("1") && weekDays.Contains("2") && weekDays.Contains("3") && weekDays.Contains("4") && weekDays.Contains("5") && weekDays.Contains("6") && weekDays.Contains("7");
-        }
-
-        private string getWeekName(string weekDays)
-        {
-            return isEveryDay(weekDays) ? "每天" : (!string.IsNullOrEmpty(weekDays) ? weekDays.Replace("1", "周一").Replace("2", "周二").Replace("3", "周三").Replace("4", "周四").Replace("5", "周五").Replace("6", "周六").Replace("7", "周日") : string.Empty);
-        }
+        private string merchSecret;        
 
         private string getTimeName(TimeSpan? startTime, TimeSpan? endTime)
         {
@@ -934,6 +924,7 @@ namespace XXCloudService.Api.XCCloud
                                ID = a.ID,
                                Barcode = a.Barcode,
                                GoodName = a.GoodName,
+                               Price = a.Price,
                                GoodTypeStr = b != null ? b.DictKey : string.Empty
                            };
 
@@ -969,7 +960,8 @@ namespace XXCloudService.Api.XCCloud
                            select new
                            {
                                ID = a.ID,
-                               TicketName = a.TicketName
+                               TicketName = a.TicketName,
+                               Price = a.Price
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);

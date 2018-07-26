@@ -32,7 +32,17 @@ namespace XCCloudService.Base
         protected bool isSignKeyReturn = false;
         protected int defaultPageSize = int.Parse(System.Configuration.ConfigurationManager.AppSettings["defaultPageSize"].ToString());
         protected string sysId = string.Empty;
-        protected string versionNo = string.Empty;  
+        protected string versionNo = string.Empty;
+
+        protected bool isEveryDay(string weekDays)
+        {
+            return !string.IsNullOrEmpty(weekDays) && weekDays.Contains("1") && weekDays.Contains("2") && weekDays.Contains("3") && weekDays.Contains("4") && weekDays.Contains("5") && weekDays.Contains("6") && weekDays.Contains("7");
+        }
+
+        protected string getWeekName(string weekDays)
+        {
+            return isEveryDay(weekDays) ? "每天" : (!string.IsNullOrEmpty(weekDays) ? weekDays.Replace("1", "周一").Replace("2", "周二").Replace("3", "周三").Replace("4", "周四").Replace("5", "周五").Replace("6", "周六").Replace("7", "周日").Replace("|", "、") : string.Empty);
+        }
 
         //获取当前周数
         protected string Week()
@@ -234,6 +244,93 @@ namespace XCCloudService.Base
                 errMsg = e.Message;
                 return false;
             }            
+        }
+
+        protected bool getEndTime(string barCode, out DateTime? effactTime, out DateTime? expiredTime, out string errMsg)
+        {
+            errMsg = string.Empty;
+            expiredTime = (DateTime?)null; //过期时间
+            effactTime = (DateTime?)null; //生效时间
+            var flw_Project_TicketInfoService = Flw_Project_TicketInfoService.I;
+            var flw_ProjectTicket_EntryService = Flw_ProjectTicket_EntryService.I;
+
+            //获取门票购买详情
+            var flw_Project_TicketInfoModel = flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            //获取门票规则实体
+            var flw_ProjectTicket_EntryModel = flw_ProjectTicket_EntryService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            //计算生效时间, 核销时间, 有效时间, 过期时间                
+            var saleTime = flw_Project_TicketInfoModel.SaleTime; //购买时间
+            if (saleTime == null)
+            {
+                errMsg = "门票售卖时间不能为空";
+                return false;
+            }
+
+            effactTime = saleTime;
+            var writeOffDays = flw_Project_TicketInfoModel.WriteOffDays ?? 0; //核销天数
+            var firstUseTime = flw_Project_TicketInfoModel.FirstUseTime; //首次使用时间
+            var writeOffTime = (DateTime?)null; //核销时间
+            var validTime = (DateTime?)null; //有效时间
+            if (firstUseTime != null && firstUseTime.Value.ToString("yyyy-MM-dd") != "1900-01-01")
+            {
+                writeOffTime = firstUseTime.Value.AddDays(writeOffDays);
+            }
+            else
+            {
+                if (flw_ProjectTicket_EntryModel.ActiveBar == 1) //需要吧台激活
+                {
+                    errMsg = "门票需要吧台激活";
+                    return false;
+                }
+            }
+
+            var effactType = flw_ProjectTicket_EntryModel.EffactType;
+            if (effactType == (int)EffactType.Period) //有效时长
+            {
+                var effactPeriodType = flw_ProjectTicket_EntryModel.EffactPeriodType;
+                var effactPeriodValue = flw_ProjectTicket_EntryModel.EffactPeriodValue ?? 0;
+                var vaildPeriodType = flw_ProjectTicket_EntryModel.VaildPeriodType;
+                var vaildPeriodValue = flw_ProjectTicket_EntryModel.VaildPeriodValue ?? 0;
+                switch (effactPeriodType)
+                {
+                    case (int)FreqType.Day: effactTime = saleTime.Value.AddDays(effactPeriodValue); break;
+                    case (int)FreqType.Week: effactTime = saleTime.Value.AddDays(effactPeriodValue * 7); break;
+                    case (int)FreqType.Month: effactTime = saleTime.Value.AddDays(effactPeriodValue * 30); break;
+                    case (int)FreqType.Season: effactTime = saleTime.Value.AddDays(effactPeriodValue * 90); break;
+                    case (int)FreqType.Year: effactTime = saleTime.Value.AddDays(effactPeriodValue * 365); break;
+                    default: errMsg = "该门票生效周期值不正确"; return false;
+                }
+                switch (vaildPeriodType)
+                {
+                    case (int)FreqType.Day: validTime = saleTime.Value.AddDays(vaildPeriodValue); break;
+                    case (int)FreqType.Week: validTime = saleTime.Value.AddDays(vaildPeriodValue * 7); break;
+                    case (int)FreqType.Month: validTime = saleTime.Value.AddDays(vaildPeriodValue * 30); break;
+                    case (int)FreqType.Season: validTime = saleTime.Value.AddDays(vaildPeriodValue * 90); break;
+                    case (int)FreqType.Year: validTime = saleTime.Value.AddDays(vaildPeriodValue * 365); break;
+                    default: errMsg = "该门票有效周期值不正确"; return false;
+                }
+            }
+            else if (effactType == (int)EffactType.Date)//指定日期
+            {
+                var vaildEndDate = flw_ProjectTicket_EntryModel.VaildEndDate;
+                validTime = vaildEndDate;
+            }
+            else
+            {
+                errMsg = "该门票生效方式值不正确";
+                return false;
+            }
+
+            expiredTime = (writeOffTime != null && writeOffTime < validTime) ? writeOffTime : validTime;
+            if (expiredTime == null)
+            {
+                errMsg = "该门票过期时间不能为空";
+                return false;
+            }
+
+            return true;
         }
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll")]

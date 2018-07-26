@@ -779,6 +779,18 @@ namespace RadarService
                         if (route == null) return;
                         Command.Ask.Ask远程被动退分解锁指令 function = new Command.Ask.Ask远程被动退分解锁指令(head, Converstring2Endpoint(route.RemotePoint));
                     }
+                    else if (contorl.action == "4")
+                    {
+                        Console.WriteLine("莘宸服务器接收【远程锁定】");
+                        string errmsg="";
+                        远程锁定与解锁指令(head.设备序列号, true, out errmsg);
+                    }
+                    else if (contorl.action == "5")
+                    {
+                        Console.WriteLine("莘宸服务器接收【远程解锁】");
+                        string errmsg = "";
+                        远程锁定与解锁指令(head.设备序列号, false, out errmsg);
+                    }
                     else
                     {
                         xcClient.AskControl(contorl.sn, "0", "未知操作");

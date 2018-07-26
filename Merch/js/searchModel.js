@@ -16,8 +16,17 @@ var seachModel = function (options) {
     let types=options.active==null?'1':'0';
     let d = [];
     let _domStr1 = "";  //结构字符串
+
     let _domStr2 = "";  //结构字符串
 
+    if(options.needIcCard!=null){
+        _domStr2+=' <div class="layui-inline">' +
+            '<label class="layui-form-label">会员卡号</label>' +
+            '<div class="layui-input-inline">' +
+            '<input type="text" class="layui-input"  id="needIcCard">' +
+            '</div>' +
+            '</div>'
+    }
     let templateDetails = [];//保存模板条件
     let conditions = [];//查询条件
 
@@ -387,6 +396,8 @@ var seachModel = function (options) {
             options.callback
         }else {
             parm.obj.conditions=conditions;
+            console.log($('#'+options.needIcCard))
+            parm.obj.icCardId=$('#needIcCard').val();
             if(types==1){
                 xc.getInitData(parm);
             }else {

@@ -358,6 +358,56 @@ namespace XXCloudService.Api.XCCloudH5
         }
         #endregion
 
+        #region 验证手机号码
+        /// <summary>
+        /// 验证卡并返回手机号码
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object verifyMobile(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
+                string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString().Trim() : "";
+                string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString().Trim() : "";
+                if (string.IsNullOrEmpty(token))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
+                }
+
+                //判断是否为主卡
+                Data_Member_Card currCard = Data_Member_CardService.I.GetModels(t => t.ICCardID == icCardId).FirstOrDefault();
+                if (currCard == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
+                if (currCard.CardType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前卡片为附属卡，不能绑定");
+                }
+
+                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == currCard.MemberID).FirstOrDefault();
+                if (member == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
+
+                if(member.Mobile == mobile)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                }
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "手机号码与会员卡预留的号码不一致");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
         #region 绑定实体卡
         /// <summary>
         /// 绑定实体卡

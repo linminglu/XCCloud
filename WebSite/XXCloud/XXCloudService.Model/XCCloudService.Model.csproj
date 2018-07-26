@@ -80,6 +80,7 @@
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_ExitModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_LevelChangeModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_BalanceChargeModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_Project_TicketInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberLotteryModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberPointModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberExchangeModel.cs" />
@@ -158,6 +159,9 @@
     <Compile Include="CustomModel\XCGame\XCGameUserTokenModel.cs" />
     <Compile Include="CustomModel\XCGame\XCGameMemberTokenModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Socket\UDP\BarPayInsRequestModel2.cs" />
+    <Compile Include="Socket\UDP\BarPayInsResponseModel2.cs" />
+    <Compile Include="Socket\UDP\BarPayInsResponseModel.cs" />
     <Compile Include="Socket\UDP\BarPayInsRequestModel.cs" />
     <Compile Include="Socket\UDP\CattleMemberCardQueryRequestDataModel.cs" />
     <Compile Include="Socket\UDP\CattleMemberCardQueryResultNotifyRequestModel.cs" />

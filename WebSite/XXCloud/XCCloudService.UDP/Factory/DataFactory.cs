@@ -103,8 +103,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 case TransmiteEnum.远程设备控制指令: CreateDeviceControlResponseProtocolData(TransmiteEnum.远程设备控制指令响应, requestData, ref requestObj, ref outObj); break;
                 case TransmiteEnum.远程门店账目查询指令: CreateStoreQueryResponseProtocolData(TransmiteEnum.远程门店账目查询指令响应, requestData, ref requestObj, ref outObj); break;
                 case TransmiteEnum.远程门店账目应答通知指令: CreateStoreQueryResultNotifyResponseProtocolData(TransmiteEnum.远程门店账目应答通知指令响应, requestData, packId, ref requestObj, ref outObj); break;
-                case TransmiteEnum.门店条码支付请求:  break;
-                //case TransmiteEnum.远程门店会员卡数据请求响应: CreateMemberQueryResultNotifyResponseProtocolData(TransmiteEnum.远程门店会员卡数据请求响应, requestData, packId, ref requestObj, ref outObj); break;
+                case TransmiteEnum.门店条码支付应答请求: CreateStoreQueryResultNotifyResponseProtocolData(TransmiteEnum.门店条码支付应答响应, requestData, packId, ref requestObj, ref outObj); break;
                 default: break;
             }
         }
@@ -1401,7 +1400,7 @@ namespace XCCloudService.SocketService.UDP.Factory
 
         #region "吧台条码支付请求"
 
-        public static bool barPay(string sn, string storeId,string storePassword,string orderId, string authCode, out string errMsg)
+        public static bool SendBarPay(string sn, string storeId,string storePassword,string orderId, string authCode, out string errMsg)
         {
             errMsg = string.Empty;
             string radarToken = string.Empty;
@@ -1428,7 +1427,7 @@ namespace XCCloudService.SocketService.UDP.Factory
             //对象序列化为字节数组
             byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(dataModel);
             //生成发送数据包
-            byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.门店条码支付请求, dataByteArr);
+            byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.门店条码支付请求请求, dataByteArr);
 
             //服务端发送数据
             XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);

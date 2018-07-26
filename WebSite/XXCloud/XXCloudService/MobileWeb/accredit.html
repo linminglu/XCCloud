@@ -13,11 +13,14 @@
         .qrcode img{width: 5rem;height: 5rem;}
         .qrcode p{color: #ff3030;margin-top: 0.5rem;font-size: 0.25rem;}
         .qrcode a{color: #1E90FF;font-size: 0.3rem;border-bottom: 0.01rem solid #1E90FF;line-height: 0.4rem;padding-bottom: 0.1rem;}
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
 <div id="app">
-    <div v-if="qrcodeShow" class="qrcode">
+    <div v-if="qrcodeShow" class="qrcode" v-cloak>
         <img src="images/qrcode.jpg">
         <p>点击长按关注公众号，您将获得更好的体验！</p>
         <p><a href="/index.html">无情跳过</a></p>
@@ -38,7 +41,7 @@
         el: '#app',
         data:{
             userThirdId:"",
-            qrcodeShow:true
+            qrcodeShow:false
         },
         mounted: function () {
             this.Load()
@@ -49,8 +52,9 @@
                 var isReg = getQueryString("isReg");
                 var isSubscribe = getQueryString("isSubscribe");
                 if(isSubscribe == 1){
-                    that.qrcodeShow =false;
                     window.location.href = "index.html"
+                }else{
+                    that.qrcodeShow =false;
                 }
                 setStorage("isReg",isReg);
                 if (/MicroMessenger/.test(window.navigator.userAgent)) {

@@ -385,6 +385,13 @@
         common(url, parasJson);
     }
 
+    function do_xcgame_getTicketInfo() {
+        var parasObj = { "barCode": "AAA6E181F5BD41F983B13069284EA8FA", "projectId": 51, "sysId": "0", "versionNo": "0.0.0.1" };
+        var url = "/xcgame/ticket?action=getTicketInfo";
+        var parasJson = JSON.stringify(parasObj);
+        common(url, parasJson);
+    }
+
     </script>
 
 </head>
@@ -440,7 +447,8 @@
         <input type="button" value="do_xccloud_queryprojectbinddevice" onclick="do_xccloud_queryprojectbinddevice()" />  
         <input type="button" value="do_xccloud_saveprojectbinddevice" onclick="do_xccloud_saveprojectbinddevice()" /> 
         <div>莘助手注册登录验证</div>
-        <input type="button" value="do_xcgamemana_getRegisterSMSCode" onclick="do_xcgamemana_getRegisterSMSCode()" />     
+        <input type="button" value="do_xcgamemana_getRegisterSMSCode" onclick="do_xcgamemana_getRegisterSMSCode()" />    
+        <input type="button" value="do_xcgame_getTicketInfo" onclick="do_xcgame_getTicketInfo()" />    
         <div>会员资料</div>
         <input type="button" value="do_xccloud_querymemberinfo" onclick="do_xccloud_querymemberinfo()" /> 
         <input type="button" value="do_xccloud_querymemberentryinfo" onclick="do_xccloud_querymemberentryinfo()" />                      

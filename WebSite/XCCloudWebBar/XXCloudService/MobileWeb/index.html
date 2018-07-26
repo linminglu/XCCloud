@@ -124,9 +124,11 @@
         methods: {
             Load:function () {
                 var that =this;
-                // var deviceToken = "A1493338DB3D4E4294F7351868DF5DC6";
-                // var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
-                var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
+                var deviceToken = "A1493338DB3D4E4294F7351868DF5DC6";
+                var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
+                setStorage("userThirdId",userThirdId);
+                setStorage("deviceNo",deviceToken);
+                var ifScanCode = getStorage("ifScanCode")||"";        //是否是扫码进入
                 var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
                 var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
                 that.userThirdId = userThirdId;

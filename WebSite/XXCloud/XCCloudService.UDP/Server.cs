@@ -273,46 +273,52 @@ namespace XCCloudService.SocketService.UDP
                                 case TransmiteEnum.卡头解绑同步响应:
                                     CommandHandler.CardHeadResetInsNotify(data, item);
                                     break;
-                                case TransmiteEnum.门店条码支付请求:
-                                    {
-                                        string sn = "", secret = "";
-                                        CommandHandler.ScanPayRequest(data, item, out sn, out secret);
-                                        if (!AskSNList.ContainsKey(sn))
-                                        {
-                                            AskItem ai = new AskItem();
-                                            ai.Secret = secret;
-                                            ai.RemotePoint = item.remotePoint;
-                                            AskSNList.Add(sn, ai);
-                                        }
-                                        else
-                                        {
-                                            AskSNList[sn].RemotePoint = item.remotePoint;
-                                            AskSNList[sn].Secret = secret;
-                                        }
-                                        ScanPayRequestModel scanpay = JsonHelper.DataContractJsonDeserializer<ScanPayRequestModel>(data);
-
-                                        OrderCacheModel order = new OrderCacheModel();
-                                        order.OrderId = scanpay.OrderID;
-                                        order.SN = scanpay.SN;
-                                        //order.CreateTime = DateTime.Now;
-                                        RedisCacheHelper.HashSet<OrderCacheModel>(CommonConfig.UdpOrderSNCache, scanpay.OrderID, order);
-
-                                        PayOrderHelper payHelper = new PayOrderHelper();
-                                        string errMsg = string.Empty;
-                                        bool ret = payHelper.BarcodePay(scanpay.OrderID, scanpay.AuthCode, out errMsg);
-                                        if(ret)
-                                        {
-                                            AskScanPayResult("1", errMsg, sn);
-                                        }
-                                        else
-                                        {
-                                            AskScanPayResult("0", errMsg, sn);
-                                        }
-
-                                        //string strResult = Convert.ToInt32(ret).ToString();
-                                        //AskScanPayResult(strResult, errMsg, sn);
-                                    }
+                                case TransmiteEnum.门店条码支付请求响应:
+                                    CommandHandler.BarPayInsNotify(data, item);
                                     break;
+                                case TransmiteEnum.门店条码支付应答请求:
+                                    CommandHandler.BarPayInsNotify2(data, item);
+                                    break;
+                                //case TransmiteEnum.门店条码支付请求:
+                                //    {
+                                //        string sn = "", secret = "";
+                                //        CommandHandler.ScanPayRequest(data, item, out sn, out secret);
+                                //        if (!AskSNList.ContainsKey(sn))
+                                //        {
+                                //            AskItem ai = new AskItem();
+                                //            ai.Secret = secret;
+                                //            ai.RemotePoint = item.remotePoint;
+                                //            AskSNList.Add(sn, ai);
+                                //        }
+                                //        else
+                                //        {
+                                //            AskSNList[sn].RemotePoint = item.remotePoint;
+                                //            AskSNList[sn].Secret = secret;
+                                //        }
+                                //        ScanPayRequestModel scanpay = JsonHelper.DataContractJsonDeserializer<ScanPayRequestModel>(data);
+
+                                //        OrderCacheModel order = new OrderCacheModel();
+                                //        order.OrderId = scanpay.OrderID;
+                                //        order.SN = scanpay.SN;
+                                //        //order.CreateTime = DateTime.Now;
+                                //        RedisCacheHelper.HashSet<OrderCacheModel>(CommonConfig.UdpOrderSNCache, scanpay.OrderID, order);
+
+                                //        PayOrderHelper payHelper = new PayOrderHelper();
+                                //        string errMsg = string.Empty;
+                                //        bool ret = payHelper.BarcodePay(scanpay.OrderID, scanpay.AuthCode, out errMsg);
+                                //        if(ret)
+                                //        {
+                                //            AskScanPayResult("1", errMsg, sn);
+                                //        }
+                                //        else
+                                //        {
+                                //            AskScanPayResult("0", errMsg, sn);
+                                //        }
+
+                                //        //string strResult = Convert.ToInt32(ret).ToString();
+                                //        //AskScanPayResult(strResult, errMsg, sn);
+                                //    }
+                                //    break;
                                 //case TransmiteEnum.远程门店账目应答通知指令:
                                 //    CommandHandler.StoreQueryNotify(data, item, packId, packNum);
                                 //    break;

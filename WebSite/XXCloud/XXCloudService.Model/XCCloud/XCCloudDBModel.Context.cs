@@ -188,10 +188,8 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_CouponUse> Flw_CouponUse { get; set; }
         public virtual DbSet<Flw_Food_Exit_Pay> Flw_Food_Exit_Pay { get; set; }
         public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
-        public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
-        public virtual DbSet<Flw_MemberCard_Change> Flw_MemberCard_Change { get; set; }
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
         public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
         public virtual DbSet<Flw_MemberInfo_Change> Flw_MemberInfo_Change { get; set; }
@@ -207,5 +205,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_GameAPP_Rule_Entry> Flw_GameAPP_Rule_Entry { get; set; }
         public virtual DbSet<Log_Operation> Log_Operation { get; set; }
         public virtual DbSet<Flw_GameData_WinPrize> Flw_GameData_WinPrize { get; set; }
+        public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
+        public virtual DbSet<Flw_MemberCard_Change> Flw_MemberCard_Change { get; set; }
     }
 }

@@ -22,6 +22,14 @@ namespace XCCloudService.Model.CustomModel.Common
         }
 
 
+        public UDPSocketStoreQueryAnswerModel(string sn, string storeId, string storePassword, object result)
+        {
+            this.SN = sn;
+            this.StoreId = storeId;
+            this.StorePassword = StorePassword;
+            this.Result = result;
+        }
+
         public string StoreId { set; get; }
 
         public string SN { get; set; }
@@ -31,6 +39,8 @@ namespace XCCloudService.Model.CustomModel.Common
         public object Result { set; get; }
 
         public DateTime CreateTime { set; get; }
+
+        public string StorePassword { set; get; }
 
         public string RadarToken { set; get; }
     }

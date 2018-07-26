@@ -28,7 +28,8 @@ namespace XCCloudService.SocketService.UDP
         游戏机游乐项目属性修改请求 = 0x60,
         数据变更同步请求 = 0x61,
         卡头解绑同步请求 = 0x62,
-        门店条码支付应答 = 0x63,
+        门店条码支付请求请求 = 0x33,
+        门店条码支付应答请求 = 0x64,
 
         雷达注册授权响应 = 0x90,
         设备状态变更通知响应 = 0x80,
@@ -51,7 +52,8 @@ namespace XCCloudService.SocketService.UDP
         游戏机游乐项目属性修改响应 = 0x30,
         数据变更同步响应 = 0x31,
         卡头解绑同步响应 = 0x32,
-        门店条码支付请求 = 0x33,
+        门店条码支付请求响应 = 0x63,
+        门店条码支付应答响应 = 0x34
     }
 
     public enum UDPRecordType

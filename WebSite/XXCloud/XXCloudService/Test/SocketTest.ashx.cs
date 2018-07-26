@@ -265,6 +265,14 @@ namespace XCCloudService.Test
             service.Send(data);
         }
 
+        public void do_barPay(HttpContext context)
+        {
+            //string token = context.Request["token"] ?? "";
+            //string mcuid = context.Request["mcuid"] ?? "";
+            //string status = context.Request["status"] ?? "";
+            //string signkey = context.Request["signkey"] ?? "";
+        }
+
         public bool IsReusable
         {
             get

@@ -108,6 +108,7 @@
                     versionNo: versionNo,
                     token: that.userThirdId
                 };
+                this.$dialog.loading.open('');
                 axios.post('/XCCloudH5/Member?action=getCardList', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
@@ -144,6 +145,7 @@
 //          选择卡
             chooseCard:function (index) {
                 var that = this;
+                this.$dialog.loading.open('');
                 var obj={
                     sysId: sysId,
                     versionNo: versionNo,

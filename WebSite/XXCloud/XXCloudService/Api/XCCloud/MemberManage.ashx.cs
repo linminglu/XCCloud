@@ -375,7 +375,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
-                                WHERE a.MerchID='" + merchId + "' AND (cd1.StoreID='" + storeId + "' OR cd2.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND (cd1.StoreID='" + storeId + "' OR cd2.StoreID='" + storeId + @"')) a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if(!iCCardId.IsNull())
@@ -436,7 +436,7 @@ namespace XXCloudService.Api.XCCloud
                                     INNER JOIN Flw_Food_Sale_Pay b ON a.ID=b.FlwFoodID
                                     LEFT JOIN Dict_BalanceType c ON b.BalanceIndex=c.ID
                                 ) e ON a.FoodSaleID=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -492,7 +492,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -550,7 +550,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
                                 LEFT JOIN Data_MemberLevel e ON a.OldMemberLevelID=e.ID
                                 LEFT JOIN Data_MemberLevel f ON a.NewMemberLevleID=f.ID
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -606,7 +606,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo c ON a.StoreID=c.ID
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID                                
-                                WHERE a.OperateType=0 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.OperateType=0 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -664,7 +664,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -726,7 +726,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON fsp.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -917,7 +917,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
                                 WHERE bt.MappingType=3 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
-                            ) a
+                            ) a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -1092,7 +1092,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
                                 WHERE bt.MappingType=2 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"'
-                            ) a
+                            ) a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -1151,7 +1151,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.OpUserID=u.ID
                                 LEFT JOIN Dict_BalanceType e1 ON a.SourceBalanceIndex=e1.ID   
                                 LEFT JOIN Dict_BalanceType e2 ON a.TargetBalanceIndex=e2.ID                             
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -1211,7 +1211,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID                                                                
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -1270,7 +1270,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduldID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON bc.SourceBalanceIndex=e.ID                                                                
-                                WHERE a.OperateType=1 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.OperateType=1 AND a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -1329,7 +1329,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Flw_Schedule d ON a.ScheduleID=d.ID
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Dict_BalanceType e ON a.TransferBalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND (cd1.StoreID='" + storeId + "' OR cd2.StoreID='" + storeId + @"')) a
+                                WHERE a.MerchID='" + merchId + "' AND (cd1.StoreID='" + storeId + "' OR cd2.StoreID='" + storeId + @"')) a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())
@@ -1386,7 +1386,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.UserID=u.ID
                                 LEFT JOIN Base_UserInfo u2 ON a.AuthorID=u2.ID
                                 --LEFT JOIN Dict_BalanceType e ON a.BalanceIndex=e.ID
-                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a
+                                WHERE a.MerchID='" + merchId + "' AND cd.StoreID='" + storeId + @"') a WHERE 1=1
                             ";
                 sql = sql + sqlWhere;
                 if (!iCCardId.IsNull())

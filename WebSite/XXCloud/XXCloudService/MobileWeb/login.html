@@ -14,11 +14,11 @@
             height: 100%;
             width: 100%;
         }
-        .itemImg{width: 0.45rem;height: 0.8rem;}
+        .itemImg{width: 0.45rem;}
         .codeDiv{width: 4rem;display: flex;flex-direction: row;}
         .codeImg{width: 1.4rem;height: 0.6rem;margin-top: 0.1rem;}
         .codeText{line-height: 0.8rem;margin-left: 0.2rem;}
-        .margin1{line-height: 0.3rem;}
+        .yd-cell-icon img{margin-top:0.13rem;}
         .prompt{color: #666666;margin-top: 0.1rem;text-align: center;}
         [v-cloak] {
             display: none;
@@ -27,6 +27,7 @@
 </head>
 <body>
 <div id="app" v-cloak>
+    
     <yd-navbar title="莘拍档">
         <router-link to="index.html" slot="left">
             <yd-navbar-back-icon @click.native="goBack">返回</yd-navbar-back-icon>
@@ -48,13 +49,12 @@
     <yd-cell-group>
         <yd-cell-item>
             <img class="itemImg" slot="icon" src="images/IdCard.png">
-            <yd-input slot="right" type="number" placeholder="身份证号" v-model="IdCard" :on-blur="inputIdCard" :disabled="IdCardReadOnly"></yd-input>
-            <!-- oninput="if(value.length>11)value=value.slice(0,11)" -->
+            <yd-input slot="right" type="text" placeholder="身份证号" v-model="IdCard" :on-blur="inputIdCard" :disabled="IdCardReadOnly"></yd-input>
         </yd-cell-item>
     </yd-cell-group>
     <yd-cell-group>
         <yd-cell-item arrow>
-            <img class="itemImg" slot="icon" src="images/Gender.png">
+            <img class="itemImg" slot="icon" src="images/gender.png">
             <span slot="left">性别：</span>
             <select slot="right" v-model="gender" :disabled="genderReadOnly">
                 <option value="">请选择性别</option>
@@ -90,7 +90,6 @@
         },
         created:function(){
             var that =this;
-//            var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
             var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
             that.userThirdId = userThirdId;
             var obj={"sysId": sysId,"versionNo": versionNo,token:that.userThirdId};

@@ -668,5 +668,52 @@ namespace XCCloudService.SocketService.UDP
             pay.付款码 = scanpay.AuthCode;
             CallBackEvent.ScanPayRequest(pay);
         }
+
+        public static void BarPayInsNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
+        {
+            string routeDeivceToken = string.Empty;
+            string password = string.Empty;
+            string errMsg = string.Empty;
+
+            BarPayInsResponseModel requestDataModel = JsonHelper.DataContractJsonDeserializer<BarPayInsResponseModel>(requestDataJson);
+            UDPSocketStoreQueryAnswerModel answerModel = UDPSocketStoreQueryAnswerBusiness.GetAnswerModel(requestDataModel.SN);
+            //验证MD5
+            if (!SignKeyHelper.CheckSignKey(requestDataModel, answerModel.StorePassword))
+            {
+                errMsg = "签名不正确";
+                return;
+            }
+
+            answerModel.Status = 1;
+        }
+
+        public static void BarPayInsNotify2(string requestDataJson, UDPClientItemBusiness.ClientItem item)
+        {
+            string routeDeivceToken = string.Empty;
+            string password = string.Empty;
+            string errMsg = string.Empty;
+
+            object outModel = null;
+            object requestModel = null;
+            int packId = 0;
+            //
+            BarPayInsRequestModel2 requestDataModel = JsonHelper.DataContractJsonDeserializer<BarPayInsRequestModel2>(requestDataJson);
+            UDPSocketStoreQueryAnswerModel answerModel = UDPSocketStoreQueryAnswerBusiness.GetAnswerModel(requestDataModel.SN);
+
+            //验证MD5
+            if (!SignKeyHelper.CheckSignKey(requestDataModel, answerModel.StorePassword))
+            {
+                errMsg = "签名不正确";
+                return;
+            }
+
+            DataFactory.CreateResponseProtocolData(TransmiteEnum.门店条码支付应答请求, requestDataJson, ref requestModel, ref outModel, packId);
+            StoreQueryResultNotifyRequestModel rnrModel = (StoreQueryResultNotifyRequestModel)(requestModel);
+            StoreQueryNotifyOutParamsModel responseOutModel = (StoreQueryNotifyOutParamsModel)outModel;
+            Send(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, ((StoreQueryNotifyOutParamsModel)outModel).ResponsePackages);
+
+            answerModel.Status = 2;
+            answerModel.Result = requestDataModel;
+        }
     }
 }

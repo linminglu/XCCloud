@@ -424,7 +424,7 @@
         let laydate=layui.laydate;
 
         if(ticketSet.name=='times'){
-            $('input[name="BusinessType"]').val('门票');
+            $('input[name="BusinessType"]').val('次票');
             BusinessType=0;
             $('select[name="DivideType"]').html('<option selected value="1">一次性分摊</option>' +
                 '<option value="2">按次分摊</option>');
@@ -433,7 +433,7 @@
         }else if(ticketSet.name=='month'){
             $('.bindTimesBox').addClass('layui-hide');
             $('#useReason').removeClass('layui-hide');
-            $('input[name="BusinessType"]').val('门票');
+            $('input[name="BusinessType"]').val('期限票');
             BusinessType=0;
             $('select[name="DivideType"]').html(' <option selected value="3">按天分摊</option>');
             form.render('select','DivideType');
@@ -441,7 +441,7 @@
             form.render('select','DivideType')
         }else if(ticketSet.name=='group'){
             $('#groupStart').removeClass('layui-hide');
-            $('input[name="BusinessType"]').val('门票');
+            $('input[name="BusinessType"]').val('团体票');
             BusinessType=0;
             $('select[name="DivideType"]').html(' <option selected value="3">按天分摊</option>');
             form.render('select','DivideType');
@@ -1173,7 +1173,7 @@
                             });
                             //  业务类型
                             if(arr.BusinessType==0){
-                                $('#BusinessType').val('门票')
+                                // $('#BusinessType').val('门票')
                             }else if(arr.BusinessType==1){
                                 $('#BusinessType').val('限时任玩')
                             }else if(arr.BusinessType==2){

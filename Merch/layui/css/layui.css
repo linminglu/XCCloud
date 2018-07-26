@@ -173,16 +173,12 @@ a cite {
 }
 
 @font-face {
-    font-family:layui-icon;src:url(../font/iconfont.eot?v=226_rc2);
+    font-family:layui-icon;
+    src:url(../font/iconfont.eot?v=226_rc2);
     src:url(../font/iconfont.eot?v=226_rc2#iefix) format('embedded-opentype'),
     url(../font/iconfont.svg?v=226_rc2#iconfont) format('svg'),
-    url(../font/iconfont.woff?v=230) format('woff'),
+    url(../font/iconfont.woff?v=226_rc2) format('woff'),
     url(../font/iconfont.ttf?v=226_rc2) format('truetype')
-    /*font-family:layui-icon;src:url(../font/iconfont.eot?v=226_rc2);*/
-    /*src:url(../font/iconfont.eot?v=226_rc2#iefix) format('embedded-opentype'),*/
-    /*url(../font/iconfont.svg?v=226_rc2#iconfont) format('svg'),*/
-    /*url(../font/iconfont.woff?v=230) format('woff'),*/
-    /*url(../font/iconfont.ttf?v=226_rc2) format('truetype')*/
 }
 
 .layui-icon {
@@ -2366,7 +2362,7 @@ a cite {
 
 .layui-form-radio {
     line-height: 28px;
-    margin: 6px 10px 0 0;
+    margin: 6px 0px 0 0;
     padding-right: 10px;
     cursor: pointer;
     font-size: 0
@@ -4503,4 +4499,12 @@ body .layui-util-face .layui-layer-content {
 
 .lay-bit .layui-input-inline  .layui-form-radio{
     margin-left: 10px;
+}
+.mustFull{
+    border:1px solid #ff9090;
+    background-color: #fff3f3;
+}
+.mustFull:hover{
+    border:1px solid #ff9090;
+
 }
