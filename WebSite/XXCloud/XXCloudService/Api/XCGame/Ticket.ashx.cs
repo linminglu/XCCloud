@@ -74,10 +74,10 @@ namespace XXCloudService.Api.XCGame
             #region 产生使用说明
 
             //产生使用说明
-            resultModel.Note = ((TicketType?)flw_ProjectTicket_EntryModel.TicketType).GetDescription() + "名称：" + flw_ProjectTicket_EntryModel.TicketName + ", " +
-                "分摊方式：" + ((DivideType?)flw_ProjectTicket_EntryModel.DivideType).GetDescription() + ", " +
-                "允许离场时间（分钟）：" + ((flw_ProjectTicket_EntryModel.AllowExitTimes ?? 0) == 0 ? "不计" : flw_ProjectTicket_EntryModel.AllowExitTimes.ToString());
-            resultModel.Note = resultModel.Note + "；" + Environment.NewLine;
+            resultModel.Note = "门票类型：" + ((TicketType?)flw_ProjectTicket_EntryModel.TicketType).GetDescription() + Environment.NewLine +
+                                "分摊方式：" + ((DivideType?)flw_ProjectTicket_EntryModel.DivideType).GetDescription() + Environment.NewLine +
+                                "允许离场时间（分钟）：" + ((flw_ProjectTicket_EntryModel.AllowExitTimes ?? 0) == 0 ? "不计" : flw_ProjectTicket_EntryModel.AllowExitTimes.ToString());
+            resultModel.Note = resultModel.Note + Environment.NewLine;
 
             //有效时间
             var validDateStr = string.Empty;
@@ -90,7 +90,7 @@ namespace XXCloudService.Api.XCGame
                 validDateStr = Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.VaildStartDate, "yyyy-MM-dd") + " ~ " + Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.VaildEndDate, "yyyy-MM-dd");
                 validDateStr = "有效期" + (validDateStr.Trim() == " ~ " ? string.Empty : validDateStr);               
             }
-            resultModel.Note = resultModel.Note + validDateStr + "；" + Environment.NewLine;
+            resultModel.Note = resultModel.Note + validDateStr  + Environment.NewLine;
 
             //有效时段
             var validPeriodStr = string.Empty;
@@ -101,13 +101,13 @@ namespace XXCloudService.Api.XCGame
             var periodLimitStr = Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.StartTime) + " ~ " + Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.EndTime);
             periodLimitStr = periodLimitStr.Trim() == " ~ " ? string.Empty : periodLimitStr;
             validPeriodStr = validPeriodStr + " " + periodLimitStr;
-            resultModel.Note = resultModel.Note + "有效时段：" + validPeriodStr + "；" + Environment.NewLine;
+            resultModel.Note = resultModel.Note + "有效时段：" + validPeriodStr  + Environment.NewLine;
 
             //不可用日期
             var noDateStr = string.Empty;
             noDateStr = Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.NoStartDate, "yyyy-MM-dd") + " ~ " + Utils.ConvertFromDatetime(flw_ProjectTicket_EntryModel.NoEndDate, "yyyy-MM-dd");
             noDateStr = noDateStr.Trim() == " ~ " ? string.Empty : noDateStr;
-            resultModel.Note = resultModel.Note + "不可用日期：" + noDateStr + "；" + Environment.NewLine;
+            resultModel.Note = resultModel.Note + "不可用日期：" + noDateStr  + Environment.NewLine;
 
             //陪同票
             if (!flw_ProjectTicket_EntryModel.AccompanyCash.IsNull())
@@ -118,7 +118,7 @@ namespace XXCloudService.Api.XCGame
                     accompanyStr = accompanyStr + ", 扣除" + Dict_BalanceTypeService.I.GetModels(p => p.ID == flw_ProjectTicket_EntryModel.BalanceIndex).Select(o => o.TypeName).FirstOrDefault() +
                         (flw_ProjectTicket_EntryModel.BalanceValue ?? 0) + Dict_BalanceTypeService.I.GetModels(p => p.ID == flw_ProjectTicket_EntryModel.BalanceIndex).Select(o => o.Unit).FirstOrDefault();
                 }
-                resultModel.Note = resultModel.Note + accompanyStr + "；" + Environment.NewLine;
+                resultModel.Note = resultModel.Note + accompanyStr  + Environment.NewLine;
             }
 
             //退货信息
@@ -129,33 +129,43 @@ namespace XXCloudService.Api.XCGame
                         + Math.Round(flw_ProjectTicket_EntryModel.ExitTicketValue ?? 0M, 2, MidpointRounding.AwayFromZero)
                         + (flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Money ? "元" :
                            flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Percent ? "%" : string.Empty) + "计";
-                resultModel.Note = resultModel.Note + exitLimitStr + "；" + Environment.NewLine;
+                resultModel.Note = resultModel.Note + exitLimitStr  + Environment.NewLine;
             }
 
             //使用限制
             if (flw_ProjectTicket_EntryModel.TicketType == (int)TicketType.Period && flw_ProjectTicket_EntryModel.AllowRestrict == 1)
             {
                 var restrictStr = "每" + flw_ProjectTicket_EntryModel.RestrictPreiodValue + ((RestrictPeriodType?)flw_ProjectTicket_EntryModel.RestrictPeriodType).GetDescription()
-                    + "限制使用" + (flw_ProjectTicket_EntryModel.RestrctCount ?? 0) + "次，次数" + (flw_ProjectTicket_EntryModel.RestrictShareCount != 1 ? "不" : "") + "共享";
-                resultModel.Note = resultModel.Note + restrictStr + "；" + Environment.NewLine;
+                        + "限制使用" + (flw_ProjectTicket_EntryModel.RestrctCount ?? 0) + "次，次数" + (flw_ProjectTicket_EntryModel.RestrictShareCount != 1 ? "不" : "") + "共享";
+                resultModel.Note = resultModel.Note + restrictStr  + Environment.NewLine;
             }
 
             //绑定项目
-            var flw_ProjectTicket_Bind = from a in flw_ProjectTicket_BindService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
-                                         join b in Data_ProjectInfoService.N.GetModels() on a.ProjectID equals b.ID
-                                         join c in Dict_SystemService.N.GetModels() on b.ProjectType equals c.ID into c1
-                                         from c in c1.DefaultIfEmpty()
-                                         select new { b.ProjectName, a.AllowShareCount, a.BuyCount, a.WeightValue, ProjectTypeName = c != null ? c.DictKey : string.Empty };
-            if (flw_ProjectTicket_Bind.Count() > 0)
+            if (flw_ProjectTicket_EntryModel.TicketType != (int)TicketType.Period)
             {
-                var flw_ProjectTicket_BindModel = flw_ProjectTicket_Bind.First();
-                var projectTicketBindStr = "绑定项目" + (flw_ProjectTicket_BindModel.AllowShareCount == 1 ? "（次数共享）" : "") + "：" + Environment.NewLine;
-                foreach (var model in flw_ProjectTicket_Bind)
+                var flw_ProjectTicket_Bind = from a in flw_ProjectTicket_BindService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                                             join b in Data_ProjectInfoService.N.GetModels() on a.ProjectID equals b.ID
+                                             join c in Dict_SystemService.N.GetModels() on b.ProjectType equals c.ID into c1
+                                             from c in c1.DefaultIfEmpty()
+                                             select new { b.ProjectName, a.AllowShareCount, a.BuyCount, a.WeightValue, ProjectTypeName = c != null ? c.DictKey : string.Empty };
+                if (flw_ProjectTicket_Bind.Count() > 0)
                 {
-                    projectTicketBindStr = projectTicketBindStr + model.ProjectName + "【类别】" + model.ProjectTypeName + "【次数】" + model.BuyCount + "【权重】" + model.WeightValue;
+                    var projectTicketBindStr = "游玩次数：";
+                    var flw_ProjectTicket_BindModel = flw_ProjectTicket_Bind.First();
+                    if (flw_ProjectTicket_BindModel.AllowShareCount == 1)
+                    {
+                        projectTicketBindStr = projectTicketBindStr + flw_ProjectTicket_BindModel.BuyCount + "次，次数共享";
+                    }
+                    else
+                    {
+                        foreach (var model in flw_ProjectTicket_Bind)
+                        {
+                            projectTicketBindStr = projectTicketBindStr + model.ProjectName + "，" + model.BuyCount + "次；";
+                        }
+                    }                    
+                    resultModel.Note = resultModel.Note + projectTicketBindStr;
                 }
-                resultModel.Note = resultModel.Note + projectTicketBindStr;
-            }
+            }                       
             
             #endregion
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>门票销售情况分析</title>
+    <title>中奖记录</title>
     <link rel="stylesheet" href="../layui/css/layui.css">
     <link rel="stylesheet" href="../css/myxc.css">
 </head>
@@ -34,7 +34,7 @@
             </blockquote>
         </div>
         <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
-            <table class="layui-hide" lay-filter="ticketSellTable" id="ticketSellTable"></table>
+            <table class="layui-hide" lay-filter="winningRecordTable" id="winningRecordTable"></table>
         </div>
     </div>
 </div>
@@ -49,43 +49,33 @@
     let Id = '';
     let indexLayer;
     //初始化table
-    let parm = {
-        'obj': {'conditions':[],'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
-        'url': '/XCCloud/ProjectTicket?action=QueryProjectTicketSellInfo',
-        'elem': '#ticketSellTable',
-        'cols': [
-            // {field: 'Barcode', title: '销售单号', align: 'center', sort: true,templet:'#_ICCard'}
-             {field: 'TicketName', title: '门票名称', align: 'center'}
-            , {field: 'OrderID', title: '销售单号', align: 'center'}
-            , {field: 'CreateTime', title: '销售时间', align: 'center',templet:'#_cardType'}
-            , {field: 'TotalMoney', title: '原价', align: 'center',templet:'#_deposit'}
-            , {field: 'SaleCount', title: '数量', align: 'center'}
-            , {field: 'RealMoney', title: '实付金额', align: 'center'}
-            , {field: 'FreeMoney', title: '优惠金额', align: 'center'}
-            , {field: 'TicketTypeStr', title: '门票类别', align: 'center'}
-            , {field: 'ICCardID', title: '会员卡号', align: 'center'}
-            , {field: 'OrderSourceStr', title: '渠道', align: 'center'}
-            , {field: 'CheckDate', title: '营业日期', align: 'center'}
-            , {field: 'WorkStation', title: '工作站', align: 'center'}
-            , {field: 'LogName', title: '操作员', align: 'center'}
-            , {field: 'StateStr', title: '状态', align: 'center'}
-            , {field: 'FirstUseTime', title: '激活时间', align: 'center'}
-            , {field: 'EffactTime', title: '生效时间', align: 'center'}
-            , {field: 'ExpiredTime', title: '过期时间', align: 'center'}
-            , {field: 'Note', title: '备注', align: 'center'}
-        ]
-    };
-    xc.getInitData(parm);
+
     layui.use(['form','layer','table','laydate'],function () {
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
         let laydate=layui.laydate;
-        seachModel({
-            'elem1': 'tantion',
+
+        let parm = {
+            'obj': {'conditions':[],'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+            'url': '/XCCloud/DeviceInfo?action=QueryGameDataWinPrize',
+            'elem': '#winningRecordTable',
+            'cols': [
+                {field: 'WinTime', title: '出奖时间', align: 'center'}
+                , {field: 'GameID', title: '游戏机编号', align: 'center'}
+                , {field: 'GameName', title: '游戏机名', align: 'center'}
+                , {field: 'GameSiteName', title: '位置编号', align: 'center'}
+                , {field: 'MemberName', title: '会员', align: 'center'}
+                , {field: 'IntervalTimes', title: '中奖间隔局数', align: 'center'}
+                , {field: 'GoodPrice', title: '中奖价值', align: 'center'}
+                , {field: 'WinRate', title: '中奖率', align: 'center'}
+            ]
+        };
+        xc.getInitData(parm);
+        let options={ 'elem1': 'tantion',
             'elem2': 'serchMode',
-            'pagename': 'projectTicketSellSearch',
-            'processname': 'projectTicketSellSearch',
+            'pagename': 'winPrizeSearch',
+            'processname': 'winPrizeSearch',
             'token': token,
             'form': form,
             'layer': layer,
@@ -94,11 +84,9 @@
             'xc':xc,
             'laydate':laydate,
             'parm':parm,
-            'type':''
-        })
+            'type':''};
+        seachModel(options);
+
     })
 </script>
-<script type="text/html" id="_ICCard"></script>
-<script type="text/html" id="assigned"></script>
-<script type="text/html" id="_deposit"></script>
 </html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>游戏机码表数据</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/myxc.css">
+</head>
+<body>
+<div class="layui-row reportPage">
+    <div class="row-box">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md8 layui-col-sm6 layui-col-xs6 layui-col-lg9" id="form1">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">
+                                营业日期
+                            </label>
+                            <div class="layui-input-inline">
+                                <select name="" id="timeType">
+                                    <option value="0">本日</option>
+                                    <option value="1">本周</option>
+                                    <option value="2">本月</option>
+                                    <option value="3">自定义</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="startTime">
+                            </div>
+                            <div class="layui-form-mid">至</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="endTime">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4 layui-col-sm6 layui-col-xs6 layui-col-lg3">
+
+                    <button type="button" class="layui-btn layui-btn-normal " i18n-content="查询模板"
+                            id="searchBtn">查询
+                    </button>
+                    <button type="button" class="layui-btn layui-btn-normal " i18n-content="查询模板"
+                            id="reSearchBtn">重置
+                    </button>
+                </div>
+
+            </blockquote>
+        </div>
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <table class="layui-hide" lay-filter="ticketUseTable" id="ticketUseTable"></table>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../js/jquery-1.8.3-min.js"></script>
+<script src="../layui/layui.js"></script>
+<script src="../js/storeSystem.js"></script>
+<script src="../js/searchModel.js"></script>
+<script>
+    let xc = xcActionSystem.prototype;
+    let token = xc.getStorage('token');
+    let Id = '';
+    let indexLayer;
+    //初始化table
+
+    layui.use(['form','layer','table','laydate'],function () {
+        let form=layui.form;
+        let layer=layui.layer;
+        let table=layui.table;
+        let laydate=layui.laydate;
+
+        let parm = {
+            'obj': {'conditions':[],'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+            'url': '/XCCloud/ProjectTicket?action=QueryProjectTicketUseInfo',
+            'elem': '#ticketUseTable',
+            'cols': [
+                {field: 'CheckDate', title: '营业日期', align: 'center'}
+                , {field: 'ProjectName', title: '项目', align: 'center'}
+                , {field: 'AreaName', title: '区域', align: 'center',templet:'#_cardType'}
+                , {field: 'TicketName', title: '门票', align: 'center',templet:'#_deposit'}
+                , {field: 'TicketTypeStr', title: '门票类型', align: 'center'}
+                , {field: 'MemeberName', title: '会员', align: 'center'}
+                , {field: 'BuyCount', title: '购买数量', align: 'center'}
+                , {field: 'RemainCount', title: '剩余数量', align: 'center'}
+                , {field: 'InOrOutStateStr', title: '出入闸', align: 'center'}
+                , {field: 'InTime', title: '入场时间', align: 'center'}
+                , {field: 'InInfo', title: '入场信息', align: 'center'}
+                , {field: 'OutTime', title: '出场时间', align: 'center'}
+                , {field: 'OutInfo', title: '出场信息', align: 'center'}
+                , {field: 'IsReentry', title: '再次入闸', align: 'center'}
+                , {field: 'PlayTime', title: '游玩时间', align: 'center'}
+                , {field: 'LogTypeStr', title: '验票方式', align: 'center'}
+                , {field: 'BalanceIndexStr', title: '扣除余额类别', align: 'center'}
+                , {field: 'Total', title: '扣除数量', align: 'center'}
+            ]
+        };
+        xc.getInitData(parm);
+        let options={ 'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'projectTicketUseSearch',
+            'processname': 'projectTicketUseSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'reSearchBtn':'reSearchBtn',
+            'xc':xc,
+            'laydate':laydate,
+            'parm':parm,
+            'type':''};
+        seachModel(options);
+    })
+</script>
+<script type="text/html" id="_ICCard"></script>
+<script type="text/html" id="assigned"></script>
+<script type="text/html" id="_deposit"></script>
+</html>

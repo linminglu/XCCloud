@@ -75,12 +75,15 @@
     <Compile Include="CustomModel\XCCloud\Base_FoodType.cs" />
     <Compile Include="CustomModel\XCCloud\Base_DeviceInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_FoodTypeListModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_Game_WatchModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_ExitMoneyModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_FreeModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_ExitModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_LevelChangeModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberCard_BalanceChargeModel.cs" />
-    <Compile Include="CustomModel\XCCloud\Flw_Project_TicketInfoModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_GameData_WinPrizeModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_ProjectTicket_UseInfoModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Flw_ProjectTicket_SellInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberLotteryModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberPointModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_MemberExchangeModel.cs" />

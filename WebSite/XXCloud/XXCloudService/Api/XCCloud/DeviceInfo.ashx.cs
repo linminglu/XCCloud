@@ -2204,6 +2204,47 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryGameDataWinPrize(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (                                
+                                SELECT distinct
+                                    a.ID, a.WinTime, b.GameID, b.GameName, a.GameSiteName, m.UserName AS MemberName, a.IntervalTimes, a.GoodPrice, convert(numeric(10,6), 1/convert(numeric,a.IntervalTimes)) AS WinRate
+                                FROM
+                                	Flw_GameData_WinPrize a
+                                LEFT JOIN Data_GameInfo b ON a.GameIndex=b.ID                             
+                                LEFT JOIN Base_MemberInfo m ON a.MemberID=m.ID                          
+                                WHERE a.PrizeType=0 AND a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"'                                
+                                ) a WHERE 1=1";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_GameData_WinPrizeList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
         
     }
 }

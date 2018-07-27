@@ -8,7 +8,7 @@ using XCCloudService.Common;
 
 namespace XCCloudService.Model.CustomModel.XCCloud
 {
-    public class Flw_Project_TicketInfoList
+    public class Flw_ProjectTicket_SellInfoList
     {
         public string ID { get; set; }
         public string Barcode { get; set; }

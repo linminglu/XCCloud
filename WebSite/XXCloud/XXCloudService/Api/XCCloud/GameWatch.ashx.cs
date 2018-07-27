@@ -6,9 +6,11 @@ using System.Linq;
 using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.CommonBLL;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.Common;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
+using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
@@ -114,6 +116,50 @@ namespace XXCloudService.Api.XCCloud
             else
             {
                 return new ResponseModel(Return_Code.T, "", Result_Code.F, parameters[15].Value.ToString());
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryGameWatch(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (                                
+                                SELECT distinct
+                                    a.ID, b.GameName, c.DeviceName, c.SiteName, u.LogName, a.CreateTime, 
+                                    a.InCoin, a.InCoinError, a.InCoin2, a.InCoinError2, a.PrizeCount, a.PrizeError, 
+                                    a.GoodPrice, a.OutCoin, a.OutCoinError, a.OutLottery, a.OutLotteryError, a.Winner, a.WinnerError
+                                FROM
+                                	Flw_Game_Watch a
+                                LEFT JOIN Data_GameInfo b ON a.GameIndex=b.ID                             
+                                LEFT JOIN Base_DeviceInfo c ON a.HeadIndex=c.ID
+                                LEFT JOIN Base_UserInfo u ON a.UserID=u.ID                                 
+                                WHERE a.MerchID='" + merchId + "' AND a.StoreID='" + storeId + @"'                                
+                                ) a WHERE 1=1";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_Game_WatchList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
     }

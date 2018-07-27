@@ -598,7 +598,7 @@ namespace XXCloudService.Api.XCCloud
                 sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID";
 
-                var list = Data_GameInfoService.I.SqlQuery<Flw_Project_TicketInfoList>(sql, parameters).ToList();
+                var list = Data_GameInfoService.I.SqlQuery<Flw_ProjectTicket_SellInfoList>(sql, parameters).ToList();
                 foreach (var model in list)
                 {
                     var effactTime = (DateTime?)null;
@@ -609,6 +609,59 @@ namespace XXCloudService.Api.XCCloud
                     model.ExpiredTime = expiredTime;
                 }
 
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryProjectTicketUseInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                string sql = @"SELECT a.* from (                                
+                                SELECT distinct
+                                    c.ID, a.Barcode, p.ProjectName, ga.AreaName, e.TicketName, a.TicketType, m.UserName AS MemberName, b.BuyCount, b.RemainCount,
+                                    (case when c.OutTime is null then '入' else '出' end) AS InOrOutStateStr, c.InTime, d1.SiteName AS InSiteName, d1.DeviceName AS InDeviceName, d1.type AS Intype,
+                                    c.OutTime, d2.SiteName AS OutSiteName, d2.DeviceName AS OutDeviceName, d2.type AS Outtype, (case when ISNULL(c.OutMinuteTotal,0) > 0 and c.OutMinuteTotal <= e.AllowExitTimes then '是' else '否' end) AS IsReentry,
+                                    (case when c.OutTime is not null  and c.InTime is not null then DATEDIFF(mi,c.InTime,c.OutTime) else null end) AS PlayTime, 
+                                    l.LogType, bt.TypeName AS BalanceIndexStr, l.Total                                                          
+                                FROM
+                                	Flw_Project_TicketInfo a
+                                INNER JOIN Flw_ProjectTicket_Bind b ON a.Barcode=b.ProjectCode
+                                INNER JOIN Data_ProjectInfo p ON b.ProjectID=p.ID
+                                INNER JOIN Data_GroupArea ga ON p.AreaType=ga.ID
+                                INNER JOIN Flw_Project_TicketUse c ON a.Barcode=c.ProjectTicketCode 
+                                INNER JOIN Flw_ProjectTicket_Entry e ON e.ProjectCode=a.Barcode 
+                                INNER JOIN Flw_Project_TicketDeviceLog l ON c.ID=l.TicketUseID and c.InDeviceID=l.DeviceID
+                                LEFT JOIN Dict_BalanceType bt ON l.BalanceIndex=bt.ID                                   
+                                LEFT JOIN Base_MemberInfo m ON a.MemberID=m.ID  
+                                LEFT JOIN Base_DeviceInfo d1 ON c.InDeviceID=d1.ID 
+                                LEFT JOIN Base_DeviceInfo d2 ON c.OutDeviceID=d2.ID                           
+                                WHERE a.MerchID='" + merchId + "' AND c.StoreID='" + storeId + @"'                                
+                                ) a WHERE 1=1";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Flw_ProjectTicket_UseInfoList>(sql, parameters).ToList();
+                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)

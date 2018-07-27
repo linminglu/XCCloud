@@ -1028,6 +1028,21 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 中奖类别
+    /// </summary>
+    public enum PrizeType
+    {
+        [Description("实物娃娃礼品")]
+        Good = 0,
+        [Description("实物彩票")]
+        Lottery = 1,
+        [Description("实物币")]
+        Coin = 2,
+        [Description("储值余额")]
+        Money = 3        
+    }
+
+    /// <summary>
     /// 设备类型
     /// </summary>
     public enum DeviceType : int
