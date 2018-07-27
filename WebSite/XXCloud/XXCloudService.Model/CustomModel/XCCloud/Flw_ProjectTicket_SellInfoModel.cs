@@ -20,7 +20,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public decimal? RealMoney { get; set; }
         public decimal? FreeMoney { get; set; }
         public int? TicketType { get; set; }
-        public string TicketTypeStr { get { return TicketType == 0 ? "主票" : TicketType == 1 ? "陪同票" : string.Empty; } set { } }
+        public string TicketTypeStr { get { return ((TicketType?)TicketType).GetDescription(); } set { } }
         public string ICCardID { get; set; }
         public int? OrderSource { get; set; }
         public string OrderSourceStr { get { return ((OrderSource?)OrderSource).GetDescription(); } set { } }

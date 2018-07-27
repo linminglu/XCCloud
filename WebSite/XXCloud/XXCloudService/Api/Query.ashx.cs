@@ -74,9 +74,7 @@ namespace XCCloudService.Api
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
 
-                string errMsg = string.Empty;                
-                if (!dicParas.GetArray("templateDetails").Validarray("模板条件列表", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                string errMsg = string.Empty;
                 if (!dicParas.Get("pageName").Nonempty("查询页名", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("processName").Nonempty("查询模块名", out errMsg))
@@ -85,22 +83,22 @@ namespace XCCloudService.Api
                 var userId = userTokenKeyModel.LogId.Toint(0);
                 var pageName = dicParas.Get("pageName");
                 var processName = dicParas.Get("processName");   
-                var templateDetails = dicParas.GetArray("templateDetails");                
+                var templateDetails = dicParas.GetArray("templateDetails");
 
-                //开启EF事务
-                var search_TemplateService = Search_TemplateService.I;
-                var search_Template_DetailService = Search_Template_DetailService.I;
-                using (TransactionScope ts = new TransactionScope())
+                if (templateDetails != null && templateDetails.Count() > 0)
                 {
-                    try
+                    //开启EF事务
+                    var search_TemplateService = Search_TemplateService.I;
+                    var search_Template_DetailService = Search_Template_DetailService.I;
+                    using (TransactionScope ts = new TransactionScope())
                     {
-                        if (templateDetails != null && templateDetails.Count() >= 0)
+                        try
                         {
                             foreach (IDictionary<string, object> el in templateDetails)
                             {
                                 if (el != null)
                                 {
-                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);                                    
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
                                     if (!dicPara.Get("fieldName").Nonempty("查询字段名", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPara.Get("title").Nonempty("查询标题", out errMsg))
@@ -142,7 +140,7 @@ namespace XCCloudService.Api
                                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                             }
                                         }
-                                        
+
                                         tempId = search_TemplateModel.ID;
                                     }
 
@@ -183,21 +181,21 @@ namespace XCCloudService.Api
                                 errMsg = "保存查询模板详细信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }                        
 
-                        ts.Complete();                        
+                            ts.Complete();
+                        }
+                        catch (DbEntityValidationException e)
+                        {
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                        }
+                        catch (Exception ex)
+                        {
+                            errMsg = ex.Message;
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
                     }
-                    catch (DbEntityValidationException e)
-                    {
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
-                    }
-                    catch (Exception ex)
-                    {
-                        errMsg = ex.Message;
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
-
+                }  
+               
                 List<InitModel> listInitModel = null;
                 List<Dict_SystemModel> listDict_SystemModel = null;
                 QueryBLL.GetInit(pageName, processName, userId, ref listInitModel, ref listDict_SystemModel);

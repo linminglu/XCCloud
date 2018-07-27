@@ -584,7 +584,7 @@ namespace XXCloudService.Api.XCCloud
                 string sql = @"SELECT a.* from (                                
                                 SELECT distinct
                                     a.ID, a.Barcode, e.TicketName, o.ID AS OrderID, o.CreateTime, fs.TotalMoney, fs.SaleCount, fs.RealMoney, fs.FreeMoney,                                     
-                                    a.TicketType, a.State, a.FirstUseTime, cd.ICCardID, o.OrderSource, o.CheckDate, o.WorkStation, u.LogName, o.Note                                    
+                                    e.TicketType, a.State, a.FirstUseTime, cd.ICCardID, o.OrderSource, o.CheckDate, o.WorkStation, u.LogName, o.Note                                    
                                 FROM
                                 	Flw_Project_TicketInfo a
                                 INNER JOIN Flw_Order_Detail od ON a.FoodSaleID=od.FoodFlwID
@@ -638,9 +638,9 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"SELECT a.* from (                                
                                 SELECT distinct
-                                    c.ID, a.Barcode, p.ProjectName, ga.AreaName, e.TicketName, a.TicketType, m.UserName AS MemberName, b.BuyCount, b.RemainCount,
+                                    c.ID, a.Barcode, p.ProjectName, ga.AreaName, e.TicketName, e.TicketType, m.UserName AS MemberName, b.BuyCount, b.RemainCount,
                                     (case when c.OutTime is null then '入' else '出' end) AS InOrOutStateStr, c.InTime, d1.SiteName AS InSiteName, d1.DeviceName AS InDeviceName, d1.type AS Intype,
-                                    c.OutTime, d2.SiteName AS OutSiteName, d2.DeviceName AS OutDeviceName, d2.type AS Outtype, (case when ISNULL(c.OutMinuteTotal,0) > 0 and c.OutMinuteTotal <= e.AllowExitTimes then '是' else '否' end) AS IsReentry,
+                                    c.OutTime, d2.SiteName AS OutSiteName, d2.DeviceName AS OutDeviceName, d2.type AS Outtype, (case when ISNULL(c.OutMinuteTotal,0) > 0 and c.OutMinuteTotal <= e.AllowExitTimes then 1 else 0 end) AS IsReentry,
                                     (case when c.OutTime is not null  and c.InTime is not null then DATEDIFF(mi,c.InTime,c.OutTime) else null end) AS PlayTime, 
                                     l.LogType, bt.TypeName AS BalanceIndexStr, l.Total                                                          
                                 FROM

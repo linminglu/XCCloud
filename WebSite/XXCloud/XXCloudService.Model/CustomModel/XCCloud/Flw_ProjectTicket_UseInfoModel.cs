@@ -17,8 +17,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string AreaName { get; set; }
         public string TicketName { get; set; }
         public int? TicketType { get; set; }
-        public string TicketTypeStr { get { return TicketType == 0 ? "主票" : TicketType == 1 ? "陪同票" : string.Empty; } set { } }
-        public string MemeberName { get; set; }
+        public string TicketTypeStr { get { return ((TicketType?)TicketType).GetDescription(); } set { } }
+        public string MemberName { get; set; }
         public int? BuyCount { get; set; }
         public int? RemainCount { get; set; }
         public string InOrOutStateStr { get; set; }
@@ -32,7 +32,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string OutDeviceName { get; set; }
         public int? Outtype { get; set; }
         public string OutInfo { get { return OutSiteName + "+" + OutDeviceName + "+" + ((DeviceType?)Outtype).GetDescription(); } set { } }
-        public string IsReentry { get; set; }
+        public int? IsReentry { get; set; }
         public int? PlayTime { get; set; }
         public int? LogType { get; set; }
         public string LogTypeStr { get { return ((TicketDeviceLogType?)LogType).GetDescription(); } set { } }

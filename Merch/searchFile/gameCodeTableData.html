@@ -58,17 +58,27 @@
 
         let parm = {
             'obj': {'conditions':[],'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
-            'url': '/XCCloud/ProjectTicket?action=QueryProjectTicketUseInfo',
+            'url': '/XCCloud/GameWatch?action=QueryGameWatch',
             'elem': '#gameCodeTable',
             'cols': [
-                {field: 'CheckDate', title: '出奖时间', align: 'center'}
-                , {field: 'ProjectName', title: '游戏机编号', align: 'center'}
-                , {field: 'AreaName', title: '游戏机名', align: 'center'}
-                , {field: 'TicketName', title: '位置编号', align: 'center'}
-                , {field: 'TicketTypeStr', title: '会员', align: 'center'}
-                , {field: 'MemeberName', title: '中奖间隔局数', align: 'center'}
-                , {field: 'BuyCount', title: '中奖价值', align: 'center'}
-                , {field: 'RemainCount', title: '中奖率', align: 'center'}
+                {field: 'GameName', title: '游戏机', align: 'center'}
+                , {field: 'DeviceName', title: '设备名', align: 'center'}
+                , {field: 'SiteName', title: '机位', align: 'center'}
+                , {field: 'LogName', title: '操作员', align: 'center'}
+                , {field: 'CreateTime', title: '抄帐时间', align: 'center'}
+                , {field: 'InCoin', title: '投币码表', align: 'center'}
+                , {field: 'InCoinError', title: '投币误差', align: 'center'}
+                , {field: 'InCoin2', title: '上分码表', align: 'center'}
+                , {field: 'InCoinError2', title: '上分误差', align: 'center'}
+                , {field: 'PrizeCount', title: '中奖码表', align: 'center'}
+                , {field: 'PrizeError', title: '中奖误差', align: 'center'}
+                , {field: 'GoodPrice', title: '中奖率', align: 'center'}
+                , {field: 'OutCoin', title: '出币码表', align: 'center'}
+                , {field: 'OutCoinError', title: '出币误差', align: 'center'}
+                , {field: 'OutLottery', title: '出票码表', align: 'center'}
+                , {field: 'OutLotteryError', title: '出票误差', align: 'center'}
+                , {field: 'Winner', title: '盈利码表', align: 'center'}
+                , {field: 'WinnerError', title: '盈利码表误差', align: 'center'}
             ]
         };
         xc.getInitData(parm);
