@@ -110,9 +110,9 @@ namespace XXCloudService.Api.XCGame
             resultModel.Note = resultModel.Note + "不可用日期：" + noDateStr  + Environment.NewLine;
 
             //陪同票
-            if (!flw_ProjectTicket_EntryModel.AccompanyCash.IsNull())
+            if (flw_ProjectTicket_EntryModel.AccompanyCash > 0 || (flw_ProjectTicket_EntryModel.BalanceIndex ?? 0) > 0)
             {
-                var accompanyStr = "陪同票价" + flw_ProjectTicket_EntryModel.AccompanyCash + "元";
+                var accompanyStr = "陪同票价" + (flw_ProjectTicket_EntryModel.AccompanyCash ?? 0) + "元";
                 if (!flw_ProjectTicket_EntryModel.BalanceIndex.IsNull())
                 {
                     accompanyStr = accompanyStr + ", 扣除" + Dict_BalanceTypeService.I.GetModels(p => p.ID == flw_ProjectTicket_EntryModel.BalanceIndex).Select(o => o.TypeName).FirstOrDefault() +
@@ -122,9 +122,9 @@ namespace XXCloudService.Api.XCGame
             }
 
             //退货信息
-            if (flw_ProjectTicket_EntryModel.AllowExitTicket == 1 && (flw_ProjectTicket_EntryModel.ExitPeriodValue ?? 0) > 0)
+            if (flw_ProjectTicket_EntryModel.AllowExitTicket == 1)
             {
-                var exitLimitStr = "销售" + flw_ProjectTicket_EntryModel.ExitPeriodValue + ((FreqType?)flw_ProjectTicket_EntryModel.ExitPeriodType).GetDescription()
+                var exitLimitStr = "销售" + (flw_ProjectTicket_EntryModel.ExitPeriodValue ?? 0) + ((FreqType?)flw_ProjectTicket_EntryModel.ExitPeriodType).GetDescription()
                         + "后不可退票，退票手续费" + ((ExitTicketType?)flw_ProjectTicket_EntryModel.ExitTicketType).GetDescription()
                         + Math.Round(flw_ProjectTicket_EntryModel.ExitTicketValue ?? 0M, 2, MidpointRounding.AwayFromZero)
                         + (flw_ProjectTicket_EntryModel.ExitTicketType == (int)ExitTicketType.Money ? "元" :
