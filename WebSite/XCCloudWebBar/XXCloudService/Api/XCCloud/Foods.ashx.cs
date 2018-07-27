@@ -26,6 +26,33 @@ namespace XXCloudService.Api.XCCloud
     {
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getRemainderCoins(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+            string sql = "GetRemainderCoins";
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@MerchId", SqlDbType.VarChar, 15);
+            parameters[0].Value = userTokenDataModel.MerchID;
+
+            parameters[1] = new SqlParameter("@StoreId", SqlDbType.VarChar,15);
+            parameters[1].Value = userTokenDataModel.StoreID;
+
+            parameters[2] = new SqlParameter("@WorkStation", SqlDbType.VarChar,50);
+            parameters[2].Value = userTokenDataModel.WorkStation;
+
+            parameters[3] = new SqlParameter("@Return", SqlDbType.VarChar, 50);
+            parameters[3].Direction = ParameterDirection.ReturnValue;
+
+            XCCloudBLL.ExecuteStoredProcedureSentence(sql, parameters);
+            var obj = new { 
+                coins = decimal.Parse(parameters[3].Value.ToString()).ToString("0.00")
+            };
+            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);  
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object getFoodDetailRealPayNum(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);

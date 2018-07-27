@@ -61,9 +61,8 @@ namespace XXCloudService.Api.XCCloudH5
                     deviceState = deviceStateModel.State;
                 }
 
-                if (!string.IsNullOrEmpty(model.CurrStoreId) && model.CurrStoreId != device.StoreID)
+                if (model.CurrStoreId != device.StoreID)
                 {
-                    //return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前门店与设备所属门店不符，请先选择门店");
                     model.CurrStoreId = device.StoreID;
                 }
 
@@ -84,15 +83,17 @@ namespace XXCloudService.Api.XCCloudH5
                 //没有卡就创建电子卡
                 if (cards.Count == 0)
                 {
+                    #region 创建电子卡
+
                     //获取默认电子卡开卡级别
                     Data_Parameters defaultMemberLevelId = Data_ParametersService.I.GetModels(t => t.StoreID == storeId && t.System == "cmbCardOpenLevel").FirstOrDefault();
-                    if(defaultMemberLevelId == null)
+                    if (defaultMemberLevelId == null)
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "获取电子会员卡等级失败");
                     }
                     int defaultLevelId = defaultMemberLevelId.ParameterValue.Toint(0);
                     Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.ID == defaultLevelId).FirstOrDefault();
-                    if(level == null)
+                    if (level == null)
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "获取电子会员卡等级失败");
                     }
@@ -102,6 +103,7 @@ namespace XXCloudService.Api.XCCloudH5
                         card = new Data_Member_Card();
                         card.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                         card.MerchID = device.MerchID;
+                        card.StoreID = device.StoreID;
                         card.ICCardID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                         card.ParentCard = "0";
                         card.JoinChannel = 2;
@@ -122,6 +124,7 @@ namespace XXCloudService.Api.XCCloudH5
                         card.RepeatCode = new Random(Guid.NewGuid().GetHashCode()).Next(1, 256);
                         card.IsLock = 0;
                         card.CardStatus = 1;
+                        card.Note = "电子虚拟卡";
                         bool ret = Data_Member_CardService.I.Add(card);
                         if (!ret)
                         {
@@ -236,7 +239,8 @@ namespace XXCloudService.Api.XCCloudH5
                         }
 
                         ts.Complete();
-                    }
+                    } 
+                    #endregion
                 }
                 else
                 {

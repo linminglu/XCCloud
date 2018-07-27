@@ -8,7 +8,7 @@ namespace DSS.Table
 {
 public class Flw_Project_PlayTime
 {
-public int ID { get; set; }
+public int? ID { get; set; }
 public int? PID { get; set; }
 public string StoreID { get; set; }
 public int? CardID { get; set; }

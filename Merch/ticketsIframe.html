@@ -45,7 +45,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">业务类别</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="BusinessType" name="BusinessType" readonly>
+                                <input type="text" class="layui-input mustFull" id="BusinessType" name="BusinessType" readonly>
                             </div>
                         </div>
                         <div class="layui-inline allowExitBox">
@@ -67,7 +67,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">售价</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="Price" name="Price">
+                                <input type="text" class="layui-input mustFull" id="Price" name="Price">
                                 <span class="layui-unit">元</span>
                             </div>
                         </div>
@@ -151,7 +151,7 @@
                             </div>
                             <div class="layui-form-mid">生效,有效期</div>
                             <div class="layui-input-inline" style="width: 100px">
-                                <input type="text" class="layui-input" name="VaildPeriodValue">
+                                <input type="text" class="layui-input mustFull" name="VaildPeriodValue">
                             </div>
                             <div class="layui-input-inline" style="width: 100px">
                                 <select name="VaildPeriodType" id="VaildPeriodType" lay-filter="VaildPeriodType">
@@ -1152,7 +1152,7 @@
                                 'VaildPeriodValue':arr.VaildPeriodValue,
                                 'VaildPeriodType':arr.VaildPeriodType,
                                 'poriedType':arr.WeekType,
-
+                                'GroupStartupCount':arr.GroupStartupCount,
                                 'NoStartDate':arr.NoStartDate!=null?arr.NoStartDate.substring(0, 10):'',
                                 'NoEndDate':arr.NoEndDate!=null?arr.NoEndDate.substring(0, 10):'',
                                 'AccompanyCash':arr.AccompanyCash,

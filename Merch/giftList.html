@@ -75,13 +75,15 @@
 
 <!--新增商品弹窗-->
 <div id="addNewProduct" style="display: none;padding: 15px;height:550px;overflow-y: scroll">
-    <form action="" class="layui-form layui-form-pane">
+    <div class="layui-card layui-col-md12" style="border: 2px solid #eee;margin-bottom: 15px">
+        <div class="layui-card-body">
+            <form action="" class="layui-form layui-form-pane addNewProduct">
         <div class="layui-col-md8">
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">商品条码</label>
-                    <div class="layui-input-inline" style="width: 302px;">
-                        <input type="text" class="layui-input" id="Barcode" readonly>
+                    <div class="layui-input-inline" style="width:290px;">
+                        <input type="text" class="layui-input mustFull" id="Barcode" readonly>
                     </div>
                     <div class="layui-input-inline" style="width: 100px">
                         <button type="button" class="layui-btn layui-btn-normal" id="createBarcodeBtn">自动生成</button>
@@ -95,13 +97,13 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">商品名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="GoodName">
+                        <input type="text" class="layui-input mustFull" id="GoodName" required >
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">商品类别</label>
                     <div class="layui-input-inline">
-                        <select type="select" id="GoodType" lay-filter="GoodType" title="商品类别"></select>
+                        <select type="select" id="GoodType" lay-filter="GoodType" class="mustFull" title="商品类别"></select>
                     </div>
                 </div>
             </div>
@@ -123,7 +125,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">零售价格</label>
                 <div class="layui-input-block" style="width: 512px;">
-                    <input type="text" class="layui-input" id="Prices">
+                    <input type="text" class="layui-input mustFull" id="Prices" required lay-verify="required|number">
+                    <span class="layui-unit">元</span>
                 </div>
             </div>
         </div>
@@ -144,7 +147,7 @@
             </div>
         </div>
 
-        <div class="layui-col-md12 ">
+        <div class="layui-col-md12">
 
             <div class="layui-form-item">
                 <div class="layui-inline">
@@ -198,7 +201,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" style="width: 80px">销售</label>
                     <div class="layui-input-inline" style="width: 80px">
-                        <input type="text" class="layui-input" id="sold">
+                        <input type="text" class="layui-input" id="sold" required lay-verify="required|number">
                     </div>
                     <div class="layui-input-inline" style="width: 140px">
                         <select name="" id="time" lay-filter="time">
@@ -216,14 +219,14 @@
                         <input type="checkbox" id="money" lay-filter="money" lay-skin="primary">
                     </div>
                     <div class="layui-input-inline" style="width: 140px">
-                        <input type="text" id="setmoney" class="layui-input">
+                        <input type="text" id="setmoney" class="layui-input"  lay-verify="number">
                         <span class="layui-unit">元</span>
                     </div>
                     <div class="layui-input-inline" style="width: 40px">
                         <input type="checkbox" id="present" lay-filter="present" lay-skin="primary">
                     </div>
                     <div class="layui-input-inline" style="width: 140px">
-                        <input type="text" id="setpresent" class="layui-input">
+                        <input type="text" id="setpresent" class="layui-input" lay-verify="number">
                         <span class="layui-unit">%</span>
                     </div>
 
@@ -242,6 +245,8 @@
 
         </div>
     </form>
+        </div>
+    </div>
 </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
@@ -277,7 +282,9 @@
             {type:'checkbox'}
             ,{field: 'Barcode', title: '商品条码', align: 'center'}
             , {field: 'GoodTypeStr', title: '商品类别', align: 'center'} //width 支持：数字、百分比和不填写。
-            , {field: 'GoodName', title: '商品名称', align: 'center'}
+            , {field: 'GoodName', title: '商品名称', align: 'center',templet: function (d) {
+                    return '<a href="#" class="_ticketName" style="color: #1e9fff;text-decoration: underline" data-id="' + d.ID + '">' + d.GoodName + '</a>'
+                }}
             , {field: 'Source', title: '添加来源', align: 'center'}
             , {field: 'AllowStorage', title: '入库状态', align: 'center', templet: '#AllowStorage'}
             , {field: 'Price', title: '零售价格', align: 'center'}
@@ -413,19 +420,18 @@
             money = 0;
             present = 0;
             $('#createBarcodeBtn').removeClass('layui-hide');
+            $('#addNewProduct').find('input[type="checkbox"]').attr('checked', false);
             $('#Status').attr('disabled', true);
+            $('#demo2').html(' <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">')
             form.render();
-            // xc.setSelect('商品类别','GoodType');
-            xc.getGoogsTypeDic(merchId, '商品类别', 'GoodType', form, layer)
+            $('.addNewProduct')[0].reset();
+            xc.getGoogsTypeDic(merchId, '商品类别', 'GoodType', form, layer);
             xc.getBalanceTypeDic('', token, layer, form, 'balanceType');
             layer.open({
                 title: '新增商品',
-                area: '1030px',
+                area: '1050px',
                 type: 1,
-                content: $('#addNewProduct'),
-                cancel: function (index, layero) {
-                    location.href = 'giftList.html'
-                }
+                content: $('#addNewProduct')
             })
         });
         $('#save').on('click', () => {
@@ -643,7 +649,7 @@
                             AllowStorage = arr.AllowStorage;
                             ReturnFlag = arr.ReturnFlag;
                             AllowCreatePoint = arr.AllowCreatePoint;
-                            time = arr.TimeType;
+
                             if (arr.AllowCreatePoint == 1) {
                                 $('#AllowCreatePoint').attr({'checked': true})
                             } else {
@@ -654,6 +660,7 @@
                             } else {
                                 $('#ReturnFlag').attr({'checked': false})
                             }
+                            time = arr.TimeType;
                             if (arr.FeeType == 0) {
                                 money = 1;
                                 present = 0;
@@ -666,6 +673,8 @@
                                 $('#present').attr({'checked': true})
                             }
                             $('#time').find('option[value="' + arr.TimeType + '"]').prop({'selected': true});
+                            $('#sold').val(arr.ReturnTime);
+
                             $('#Barcode').val(arr.Barcode);
                             $('#Source').val(arr.Source);
                             $('#Prices').val(arr.Price);
@@ -673,10 +682,11 @@
                             xc.getGoogsTypeDic(merchId, '商品类别', 'GoodType', form, layer, arr.GoodType);
                             xc.getBalanceTypeDic('', token, layer, form, 'balanceType');
                             $('#GoodName').val(arr.GoodName);
-                            $('#sold').val(arr.ReturnTime);
+
                             $('#Note').val(arr.Note);
                             if (arr.GoodPhoteURL) {
-                                $('#demo2').append('<div style="display: inline-block;position: relative" class="imgBox">' +
+                                $('#demo2').html(' <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required"' +
+                                    'type="hidden">').append('<div style="display: inline-block;position: relative" class="imgBox">' +
                                     '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
                                     '<img src="' + arr.GoodPhoteURL + '" class="layui-upload-img_md" ' +
                                     'style="display: block;width: 300px;height: 170px"></div>');
@@ -686,13 +696,10 @@
                             }
                             form.render();
                             layer.open({
-                                title: '新增商品',
-                                area: '1030px',
+                                title: '修改'+'<span style="font-size: 14px;color: orange">商品:'+arr.GoodName+'</span>',
+                                area: '1050px',
                                 type: 1,
-                                content: $('#addNewProduct'),
-                                cancel: function (index, layero) {
-                                    location.href = 'giftList.html'
-                                }
+                                content: $('#addNewProduct')
                             })
                         } else {
                             layer.msg(data.result_msg || data.return_msg)
@@ -704,6 +711,104 @@
             } else {
                 layer.msg('请且勾选一条数据！')
             }
+        });
+        $('body').on('click', '._ticketName', function () {
+            let _id = $(this).attr('data-id')
+
+            Id=_id;
+            $('#Status').attr('disabled', false);
+            form.render();
+            let _obj = {'id': Id, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+            let url = '/XCCloud/GoodsInfo?action=GetGoodsInfo';
+            let parasJson = JSON.stringify(_obj);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.result_code == 1) {
+                        let arr = data.result_data;
+                        Status = 1;
+                        GoodType = arr.GoodType;
+                        id = arr.ID;
+                        balanceType = '';
+                        balanceTypeStr = '';
+                        priceArr = arr.goodInfoPrice;
+                        table.render({
+                            elem: '#priceTable'
+                            , height: '250px'
+                            , size: "sm"
+                            , data: priceArr
+                            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                            , cols: [[{field: 'BalanceIndexStr', title: '余额类别', align: 'center', width: 265}
+                                , {field: 'Count0', title: '兑换价格', align: 'center', width: 265}
+                                , {field: 'Count1', title: '回购价格', align: 'center', width: 270}
+                                , {fixed: 'right', title: '操作', width: 140, align: 'center', toolbar: '#barDemo2'}]]
+                        });
+                        AllowStorage = arr.AllowStorage;
+                        ReturnFlag = arr.ReturnFlag;
+                        AllowCreatePoint = arr.AllowCreatePoint;
+
+                        if (arr.AllowCreatePoint == 1) {
+                            $('#AllowCreatePoint').attr({'checked': true})
+                        } else {
+                            $('#AllowCreatePoint').attr({'checked': false})
+                        }
+                        if (arr.ReturnFlag == 1) {
+                            $('#ReturnFlag').attr({'checked': true})
+                        } else {
+                            $('#ReturnFlag').attr({'checked': false})
+                        }
+                        time = arr.TimeType;
+                        if (arr.FeeType == 0) {
+                            money = 1;
+                            present = 0;
+                            $('#setmoney').val(arr.ReturnFee);
+                            $('#money').attr({'checked': true})
+                        } else {
+                            money = 0;
+                            present = 1;
+                            $('#setpresent').val(arr.ReturnFee);
+                            $('#present').attr({'checked': true})
+                        }
+                        $('#time').find('option[value="' + arr.TimeType + '"]').prop({'selected': true});
+                        $('#sold').val(arr.ReturnTime);
+
+                        $('#Barcode').val(arr.Barcode);
+                        $('#Source').val(arr.Source);
+                        $('#Prices').val(arr.Price);
+                        $('#createBarcodeBtn').addClass('layui-hide');
+                        xc.getGoogsTypeDic(merchId, '商品类别', 'GoodType', form, layer, arr.GoodType);
+                        xc.getBalanceTypeDic('', token, layer, form, 'balanceType');
+                        $('#GoodName').val(arr.GoodName);
+
+                        $('#Note').val(arr.Note);
+                        if (arr.GoodPhoteURL) {
+                            $('#demo2').html(' <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required"' +
+                                'type="hidden">').append('<div style="display: inline-block;position: relative" class="imgBox">' +
+                                '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
+                                '<img src="' + arr.GoodPhoteURL + '" class="layui-upload-img_md" ' +
+                                'style="display: block;width: 300px;height: 170px"></div>');
+                            $('.imgBox button').click(function () {
+                                $(this).parent('div').remove();
+                            });
+                        }
+                        form.render();
+                        layer.open({
+                            title: '修改'+'<span style="font-size: 14px;color: orange">商品:'+$(this).text()+'</span>',
+                            area: '1050px',
+                            type: 1,
+                            content: $('#addNewProduct')
+                        })
+                    } else {
+                        layer.msg(data.result_msg || data.return_msg)
+                    }
+                }
+
+            })
         })
         $('#forbidBtn').click(function () {
             let checkStatus = table.checkStatus('productFileTable'); //test即为基础参数id对应的值

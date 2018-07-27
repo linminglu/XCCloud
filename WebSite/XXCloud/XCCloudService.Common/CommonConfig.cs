@@ -127,5 +127,9 @@ namespace XCCloudService.Common
         /// 设备缓存key
         /// </summary>
         public static string DeviceStateKey = "DeviceStateRedisKey";
+        /// <summary>
+        /// 门店UDP数据缓存
+        /// </summary>
+        public static string StoreCommandCache = "StoreCommandCache";
     }
 }

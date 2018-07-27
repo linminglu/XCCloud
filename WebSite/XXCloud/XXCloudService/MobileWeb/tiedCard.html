@@ -42,7 +42,7 @@
     <yd-cell-group>
         <yd-cell-item>
             <yd-icon name="phone2" slot="icon" class="itemIcon"></yd-icon>
-            <input slot="right" type="number" placeholder="请输入手机号">
+            <input slot="right" type="number" placeholder="请输入手机号" v-model="mobileNO">
         </yd-cell-item>
     </yd-cell-group>
     <yd-cell-group>
@@ -70,10 +70,11 @@
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.01"; //版本号
+    // 28801810
     var htmlfnc = new Vue({
         el: '#app',
         data:{
-            icCardId:"28801810",
+            icCardId:"",
             userThirdId : "",
             mobile:"",
             mobileNO:"",
@@ -121,7 +122,8 @@
                     this.start = true;
                     this.$dialog.loading.close();
                     var verifyMobile = {sysId: sysId,versionNo: versionNo, token:that.userThirdId,icCardId:that.icCardId,mobile:that.mobileNO};
-                    axios.post('/XCCloudH5/Member?action=getSMSCode', verifyMobile).then(function (res) {
+                    console.log(verifyMobile)
+                    axios.post('/XCCloudH5/Member?action=verifyMobile', verifyMobile).then(function (res) {
                         that.$dialog.loading.close();
                         that.msgPrompt(res.data);
                         console.log(res.data);
@@ -148,18 +150,15 @@
                         that.$dialog.loading.close();
                         console.log(err);
                     })
-                    // /XCCloudH5/Member?action=verifyMobile
-                    
-                    
-
                 }, 1000);
             },
 //          绑定卡
             tiedCard:function () {
                 var that = this;
                 this.$dialog.loading.open('');
-                var obj={sysId: sysId,versionNo: versionNo, token:that.userThirdId,icCardId:that.icCardId,mobile:that.mobile,smsCode:that.smsCode};
-                axios.post('/XCCloudH5/Member?action=BindCard', obj).then(function (res) {
+                var obj={sysId: sysId,versionNo: versionNo, token:that.userThirdId,icCardId:that.icCardId,mobile:that.mobileNO,smsCode:that.smsCode};
+                console.log(obj)
+                axios.post('/XCCloudH5/Member?action=bindCard', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
                     console.log(res.data);

@@ -4506,5 +4506,13 @@ body .layui-util-face .layui-layer-content {
 }
 .mustFull:hover{
     border:1px solid #ff9090;
-
+}
+. .layui-form-label{
+    font-size: 12px;!important;
+}
+.layui-form-item .layui-inline-last{
+    margin-right: 0;!important;
+}
+.layui-form-item .layui-inline-last .layui-input-inline{
+    margin-right: 0;!important;
 }

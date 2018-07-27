@@ -666,7 +666,10 @@ namespace XCCloudService.SocketService.UDP
             TransmiteObject.门店支付请求结构 pay = new TransmiteObject.门店支付请求结构();
             pay.订单编号 = scanpay.OrderID;
             pay.付款码 = scanpay.AuthCode;
+            //抛出支付请求事件
             CallBackEvent.ScanPayRequest(pay);
+            //缓存订单数据，已订单编号返回，用于订单支付应答寻找通讯链路
+            CacheService.RedisCacheHelper.HashSet<ScanPayRequestModel>("store_scanpay", scanpay.OrderID, scanpay);
         }
 
         public static void BarPayInsNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)

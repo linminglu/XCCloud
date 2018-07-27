@@ -64,7 +64,7 @@ namespace RadarService.Command.Ask
                     data.RealTime = DateTime.Now;
                     data.MemberID = member.会员编号;
                     data.MemberName = member.会员姓名;
-                    data.ICCardID = member.会员卡号;
+                    data.CardID = member.会员卡号;
                     data.Coin = Coins;
                     data.OrderID = data.ID;
                     data.Note = "投币 " + game.通用参数.游戏机名 + " | " + head.位置名称;

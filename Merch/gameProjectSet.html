@@ -49,77 +49,82 @@
   </div>
 <!--//弹窗层   -->
 <div class="model goodIsAll" style="padding: 15px;display: none" id="openModel"  >
-    <form class="layui-form layui-form-pane" lay-filter="formtest">
-            <div class="layui-form-item">
-                <label class="layui-form-label">游乐项目</label>
-                <div class="layui-input-block">
-                    <input type="text" class="layui-input" id="projectName1" name="projectName1">
+    <div class="layui-card layui-col-md12" style="border: 2px solid #eee;margin-bottom: 15px">
+        <div class="layui-card-body">
+            <form class="layui-form layui-form-pane" lay-filter="formtest">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="font-size: 10px">游乐项目</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input" id="projectName1" name="projectName1">
+                    </div>
                 </div>
-            </div>
-            <div class="layui-form-item">
+                <div class="layui-form-item">
                     <label class="layui-form-label">项目类型</label>
                     <div class="layui-input-block">
                         <select name="projectType" id="projectType" lay-filter="projectType"></select>
                     </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">区域</label>
-                    <div class="layui-input-inline">
-                        <select name="Area" id="Area" lay-filter="Area"></select>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">区域</label>
+                        <div class="layui-input-inline">
+                            <select name="Area" id="Area" lay-filter="Area"></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="margin-right: 0">
+                        <label class="layui-form-label">校验顺序</label>
+                        <div class="layui-input-inline" style="margin-right: 0">
+                            <input type="checkbox" id="AdjOrder" lay-filter="AdjOrder" lay-skin="switch" lay-text="开启|关闭">
+                        </div>
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">校验顺序</label>
-                    <div class="layui-input-inline">
-                        <input type="checkbox" id="AdjOrder" lay-filter="AdjOrder" lay-skin="switch" lay-text="开启|关闭">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="padding: 0;white-space: normal;">刷卡即扣时是否强制扣除余额</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" id="ForceUse" lay-filter="ForceUse" name="ForceUse" lay-skin="switch" lay-text="开启|关闭">
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="margin-right: 0">
+                        <label class="layui-form-label">入场锁定</label>
+                        <div class="layui-input-inline" style="margin-right: 0">
+                            <input type="checkbox" id="LockCard" lay-filter="LockCard" name="LockCard" lay-skin="switch" lay-text="开启|关闭">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label" style="padding: 0;white-space: normal;">刷卡即扣时是否强制扣除余额</label>
-                    <div class="layui-input-inline">
-                        <input type="checkbox" id="ForceUse" lay-filter="ForceUse" name="ForceUse" lay-skin="switch" lay-text="开启|关闭">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">扣费类型</label>
+                        <div class="layui-input-inline">
+                            <select name="chargeType" id="chargeType" lay-filter="chargeType">
+                                <option>-请选择-</option>
+                                <option value="0">按次收费</option>
+                                <option value="1">计时收费</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <button class="layui-btn layui-hide" type="button" id="setRuleBtn">请设置计次规则</button>
+                        </div>
+                        <div class="layui-form-mid" style="color: red">友情提醒：若选择计时收费，请设置收费规则。<br>网络支付功能请到集团后台中的《套餐设定》进行添加套餐。</div>
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">入场锁定</label>
-                    <div class="layui-input-inline">
-                        <input type="checkbox" id="LockCard" lay-filter="LockCard" name="LockCard" lay-skin="switch" lay-text="开启|关闭">
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">扣费类型</label>
-                    <div class="layui-input-inline">
-                        <select name="chargeType" id="chargeType" lay-filter="chargeType">
-                            <option>-请选择-</option>
-                            <option value="0">按次收费</option>
-                            <option value="1">计时收费</option>
-                        </select>
-                    </div>
-                    <div class="layui-input-inline">
-                        <button class="layui-btn layui-hide" type="button" id="setRuleBtn">请设置计次规则</button>
-                    </div>
-                    <div class="layui-form-mid" style="color: red">友情提醒：若选择计时收费，请设置收费规则。<br>网络支付功能请到集团后台中的《套餐设定》进行添加套餐。</div>
-                </div>
-            </div>
-            <!--<div class="layui-form-item mustBindBox layui-hide">-->
+                <!--<div class="layui-form-item mustBindBox layui-hide">-->
                 <!--<button type="button" class="layui-btn layui-btn-danger" id="mustBind">绑定设备</button>-->
-            <!--</div>-->
-            <div class="layui-form-item">
-                <label class="layui-form-label">备注</label>
-                <div class="layui-input-block">
-                    <input type="text" class="layui-input" id="Note" name="Note">
+                <!--</div>-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input" id="Note" name="Note">
+                    </div>
                 </div>
-            </div>
-            <div style="text-align: center;margin-bottom: 15px">
-                <button type="button" class="tosecond layui-btn-normal layui-btn" id="save">确定</button>
-            </div>
+                <div style="text-align: center;margin-bottom: 15px">
+                    <button type="button" class="tosecond layui-btn-normal layui-btn" id="save">确定</button>
+                </div>
 
-    </form>
+            </form>
+        </div>
+    </div>
+
 </div>
   <!--计时规则-->
   <div id="chargeModel" class="goodIsAll" style="padding: 15px;display: none;max-height: 550px;overflow-y: auto">
@@ -257,60 +262,66 @@
   </div>
   <!--计次规则-->
   <div id="timesModel" class="goodIsAll" style="padding: 15px;display: none;max-height: 550px;overflow-y: auto">
-      <form class="layui-form layui-form-pane" lay-filter="chargeTimes">
-           <div class="layui-form-item">
-              <div class="layui-inline">
-                  <label class="layui-form-label">第一按钮扣费类型</label>
-                  <div class="layui-input-inline">
-                      <select name="PushBalanceIndex1" id="PushBalanceIndex1" lay-filter="PushBalanceIndex1">
-                      </select>
+      <div class="layui-card layui-col-md12" style="border: 2px solid #eee;margin-bottom: 15px">
+          <div class="layui-card-body">
+          <form class="layui-form layui-form-pane" lay-filter="chargeTimes">
+               <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label" style="white-space: normal;padding: 0 20px">第一按钮扣费类型</label>
+                      <div class="layui-input-inline">
+                          <select name="PushBalanceIndex1" id="PushBalanceIndex1" lay-filter="PushBalanceIndex1">
+                          </select>
+                      </div>
                   </div>
-              </div>
-               <div class="layui-inline">
-                   <label class="layui-form-label">第一按钮 <span class="cutCoin1">扣币数</span></label>
-                   <div class="layui-input-inline">
-                       <input type="text" class="layui-input" name="PushCoin1">
+                   <div class="layui-inline layui-inline-last">
+                       <label class="layui-form-label" style="white-space: normal;padding: 0 20px">第一按钮 <span class="cutCoin1">扣币数</span></label>
+                       <div class="layui-input-inline">
+                           <input type="text" class="layui-input" name="PushCoin1">
+                       </div>
                    </div>
                </div>
-           </div>
-          <div class="layui-form-item">
-              <div class="layui-inline">
-                  <label class="layui-form-label">第二按钮扣费类型</label>
-                  <div class="layui-input-inline">
-                      <select name="PushBalanceIndex2" id="PushBalanceIndex2" lay-filter="PushBalanceIndex2">
-                      </select>
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label" style="white-space: normal;padding: 0 20px">第二按钮扣费类型</label>
+                      <div class="layui-input-inline">
+                          <select name="PushBalanceIndex2" id="PushBalanceIndex2" lay-filter="PushBalanceIndex2">
+                          </select>
+                      </div>
+                  </div>
+                  <div class="layui-inline layui-inline-last">
+                      <label class="layui-form-label" style="white-space: normal;padding: 0 20px">第二按钮<span class="cutCoin2">扣币数</span></label>
+                      <div class="layui-input-inline">
+                          <input type="text" class="layui-input" name="PushCoin2">
+                      </div>
                   </div>
               </div>
-              <div class="layui-inline">
-                  <label class="layui-form-label">第二按钮<span class="cutCoin2">扣币数</span></label>
-                  <div class="layui-input-inline">
-                      <input type="text" class="layui-input" name="PushCoin2">
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label">刷卡即扣</label>
+                      <div class="layui-input-inline">
+                         <input type="checkbox" name="ReadCat" checked id="ReadCat" lay-filter="ReadCat" lay-skin="switch" lay-text="开启|关闭"/>
+                      </div>
+                  </div>
+                  <div class="layui-inline layui-inline-last">
+                      <label class="layui-form-label">投币信号电平</label>
+                      <div class="layui-input-inline">
+                          <input type="checkbox" class="layui-input" checked name="PushLevel" lay-filter="PushLevel" lay-skin="switch" lay-text="高电平|低电平">
+                      </div>
                   </div>
               </div>
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label" style="white-space: normal;padding: 0 20px">散客扫码支付金额</label>
+                      <div class="layui-input-inline">
+                          <input type="text" class="layui-input" name="GuestPrice">
+                      </div>
+                  </div>
+              </div>
+          </form>
+          <div style="text-align:center;">
+              <button type="button" class="layui-btn" id="saveTimes">确定</button>
           </div>
-          <div class="layui-form-item">
-              <div class="layui-inline">
-                  <label class="layui-form-label">刷卡即扣</label>
-                  <div class="layui-input-inline">
-                     <input type="checkbox" name="ReadCat" checked id="ReadCat" lay-filter="ReadCat" lay-skin="switch" lay-text="开启|关闭"/>
-                  </div>
-              </div>
-              <div class="layui-inline">
-                  <label class="layui-form-label">投币信号电平</label>
-                  <div class="layui-input-inline">
-                      <input type="checkbox" class="layui-input" checked name="PushLevel" lay-filter="PushLevel" lay-skin="switch" lay-text="高电平|低电平">
-                  </div>
-              </div>
-              <div class="layui-inline">
-                  <label class="layui-form-label">散客扫码支付金额</label>
-                  <div class="layui-input-inline">
-                      <input type="text" class="layui-input" name="GuestPrice">
-                  </div>
-              </div>
           </div>
-      </form>
-      <div style="text-align:center;">
-          <button type="button" class="layui-btn" id="saveTimes">确定</button>
       </div>
   </div>
 <!--绑定设备列表-->
@@ -401,8 +412,10 @@
         'elem': '#ProjectList',
         'cols': [
              {type:'checkbox'}
-            ,{field: 'ID', title: '项目ID', align: 'center'}
-            , {field: 'ProjectName', title: '项目名称', align: 'center'}
+            // ,{field: 'ID', title: '项目ID', align: 'center'}
+            , {field: 'ProjectName', title: '项目名称', align: 'center', templet: function (d) {
+                    return '<a href="#" class="_ticketName" style="color:  #1e9fff;text-decoration: underline" data-id="' + d.ID + '">' + d.ProjectName + '</a>'
+                }}
             , {field: 'ProjectTypeStr', title: '项目类型', align: 'center'}
             , {field: 'AreaName', title: '区域', align: 'center'}
             , {field: 'ChargeType', title: '扣费类型', align: 'center',templet:'#charge'}
@@ -480,7 +493,7 @@
           layer.open({
               title:'新增',
               type:1,
-              area:'700px',
+              area:'689px',
               content:$('#openModel'),
               cancel:function () {
                   location.reload()
@@ -600,7 +613,7 @@
            index3=layer.open({
                title:'计次规则',
                type:1,
-               area:'800px',
+               area:'688px',
                content:$('#timesModel')
            })
        });
@@ -616,7 +629,7 @@
             index2=   layer.open({
                 title:'新增',
                 type:1,
-                area:'800px',
+                area:'688px',
                 content:$('#deviceModel')
             })
         });
@@ -773,7 +786,7 @@
                             index1=layer.open({
                                 title:'新增',
                                 type:1,
-                                area:'900px',
+                                area:'689px',
                                 content:$('#openModel')
                             })
                             form.render()
@@ -787,6 +800,97 @@
                 layer.msg('请且勾选一条数据！')
             }
         });
+        $('body').on('click', '._ticketName', function () {
+            let _id = $(this).attr('data-id')
+            id=_id;
+            let _obj={'id':_id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let url='/XCCloud/Project?action=GetProjectInfo';
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data)
+                    if (data.result_code == 1) {
+                        // addOrModi=false;
+                        let arr;
+                        arr=data.result_data;
+                        xc.getGroupAreaDic(0,token,layer,form,'Area',arr.AreaType);
+                        setPlayMenu(form,'projectType',arr.ProjectType);
+                        form.val('formtest',{
+                            'projectName1':arr.ProjectName,
+                            'chargeType':arr.ChargeType,
+                            'Note':arr.Note,
+                        });
+                        form.val('chargeTimes',{
+                            'PushBalanceIndex1':arr.PushBalanceIndex1,
+                            'PushBalanceIndex2':arr.PushBalanceIndex2
+                        });
+
+                        projectType=arr.ProjectType;
+                        Area=arr.AreaType;
+                        chargeType=arr.ChargeType;
+                        guestIndex=arr.GameIndex;
+                        // xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1);
+                        // xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2);
+                        PushBalanceIndex1=arr.PushBalanceIndex1;
+                        PushBalanceIndex2=arr.PushBalanceIndex2;
+                        ReadCat=arr.ReadCat;
+                        PushLevel=arr.PushLevel;
+                        $('input[name="GuestPrice"]').val(arr.GuestPrice);
+
+                        $('input[name="PushCoin1"]').val(arr.PushCoin1);
+
+                        $('input[name="PushCoin2"]').val(arr.PushCoin2);
+                        if(arr.AdjOrder==1){
+                            $('input[name="AdjOrder"]').attr({'checked':true})
+                        }else {
+                            $('input[name="AdjOrder"]').attr({'checked':false})
+                        }
+                        if(arr.ForceUse==1){
+                            $('input[name="ForceUse"]').attr({'checked':true})
+                        }else {
+                            $('input[name="ForceUse"]').attr({'checked':false})
+                        }
+                        if(arr.LockCard==1){
+                            $('input[name="LockCard"]').attr({'checked':true})
+                        }else {
+                            $('input[name="LockCard"]').attr({'checked':false})
+                        }
+
+                        if(arr.ReadCat==1){
+                            $('input[name="ReadCat"]').attr({'checked':true})
+                        }else {
+                            $('input[name="ReadCat"]').attr({'checked':false})
+                        }
+
+                        if(arr.PushLevel==1){
+                            $('input[name="PushLevel"]').attr({'checked':true})
+                        }else {
+                            $('input[name="PushLevel"]').attr({'checked':false})
+                        }
+                        if(arr.ChargeType==0){
+                            $('#setRuleBtn').removeClass('layui-hide');
+
+                        }else {
+                            $('#setRuleBtn').addClass('layui-hide')
+                        }
+                        index1=layer.open({
+                            title:'修改'+'<span style="font-size: 14px;color: orange">项目:'+$(this).text()+'</span>',
+                            type:1,
+                            area:'689px',
+                            content:$('#openModel')
+                        })
+                        form.render()
+                    } else {
+                        layer.msg(data.result_msg||data.return_msg);
+                    }
+                }
+            })
+        })
         //绑定按钮
         $('#bindBtn').on('click', function () {
             let checkStatus = table.checkStatus('ProjectList'); //test即为基础参数id对应的值

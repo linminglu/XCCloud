@@ -10,7 +10,7 @@ namespace RadarService.LogHelper
 {
     public class LogHelper
     {
-        public static string LogPath = "";
+        public static string LogPath = AppDomain.CurrentDomain.RelativeSearchPath;
         static string BytesToString(byte[] data)
         {
             StringBuilder sb = new StringBuilder();

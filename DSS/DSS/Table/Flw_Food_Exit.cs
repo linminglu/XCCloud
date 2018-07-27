@@ -12,7 +12,7 @@ public string ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public string OrderID { get; set; }
-public int? FoodID { get; set; }
+public string FoodID { get; set; }
 public string CardID { get; set; }
 public decimal? ExitFee { get; set; }
 public decimal? Tax { get; set; }

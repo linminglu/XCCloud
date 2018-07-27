@@ -242,7 +242,7 @@
                                                     <th>地址</th>
                                                     <th>状态</th>    
                                                     <th>更新时间</th>                            
-                                                    <th>操作</th>
+                                                    <%--<th>操作</th>--%>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -257,7 +257,7 @@
                                                     <td v-if="item.Online === true">在线</td>
                                                     <td v-else>离线</td>
                                                     <td>{{ item.UpdateTime }}</td>                                  
-                                                    <td class="PopupK" style="width: 120px;">
+<%--                                                    <td class="PopupK" style="width: 120px;">
                                                         <div class="task-config task-configChange dropdown-wrapper" style="width: 80px;">
                                                             <div class="am-dropdown tpl-task-list-dropdown tpl-task-list-dropdownChange dropdown-uler" data-am-dropdown>
                                                                 <a href="###" class="am-dropdown-toggle tpl-task-list-hover tpl-task-list-hoverChange"
@@ -279,7 +279,7 @@
                                                                 </ul>
                                                             </div>
                                                         </div>
-                                                    </td>
+                                                    </td>--%>
                                                 </tr>
                                             </tbody>
                                         </table>

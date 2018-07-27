@@ -11,6 +11,7 @@ using System.Data;
 using DSS;
 using System.Reflection;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace DSS.Server
 {
@@ -567,8 +568,9 @@ namespace DSS.Server
                     CloudDataSync(merchID, secret, tableName, idValue, action, writeBuf, sn);
                     return true;
                 }
-                catch 
+                catch(Exception e)
                 {
+                    Debug.WriteLine(e.Message);
                     return false;
                 }                
             };//声明异步方法实现方式
@@ -597,8 +599,9 @@ namespace DSS.Server
             object o = System.Activator.CreateInstance(t);
 
             model.CovertToDataModel(sql, ref o);
-            JavaScriptSerializer jss = new JavaScriptSerializer();
-            string jsonString = jss.Serialize(o);
+            //JavaScriptSerializer jss = new JavaScriptSerializer();            
+            //string jsonString = jss.Serialize(o);
+            string jsonString = JsonConvert.SerializeObject(o);
 
             ClientDataItem item = new ClientDataItem();
             item.IDValue = idValue;
@@ -686,8 +689,9 @@ namespace DSS.Server
                                     JsonObject json = new JsonObject();
                                     request.SignKey = json.GetSignKey(request, UserClientList[storeID].AppSecret);
 
-                                    JavaScriptSerializer jss = new JavaScriptSerializer();
-                                    string jsonString = jss.Serialize(request);
+                                    //JavaScriptSerializer jss = new JavaScriptSerializer();
+                                    //string jsonString = jss.Serialize(request);
+                                    string jsonString = JsonConvert.SerializeObject(request);
                                     SendData(Encoding.UTF8.GetBytes(jsonString), (byte)TransmiteEnum.云端数据变更同步请求, UserClientList[storeID].RemotePoint);
                                     UserClientList[storeID].data[i].IsProcess = true;
                                     UserClientList[storeID].data[i].SendTime = DateTime.Now;

@@ -37,5 +37,12 @@ namespace XCCloudService.Model.Socket.UDP
         /// </summary>
         [DataMember(Name = "authcode", Order = 4)]
         public string AuthCode { get; set; }
+        /// <summary>
+        /// 令牌
+        /// </summary>
+        [DataMember(Name = "token", Order = 4)]
+        public string  Token { get; set; }
+        public string IP { get; set; }
+        public int Port { get; set; }
     }
 }

@@ -64,7 +64,7 @@ namespace XXCloudService.Test
             PPosPayData.QueryOrder pay = new PPosPayData.QueryOrder();
             string error = string.Empty;
             pay.tradeNo = DateTime.Now.ToString("yyyyMMddHHmmssffff");
-            pay.qryNo = "2018042020110110002700000005";
+            pay.qryNo = this.TextBox4.Text.Trim();
             PPosPayApi ppos = new PPosPayApi();
             PPosPayData.QueryOrderACK result = ppos.QueryOrderPay(pay, out error);
             Response.Write(error);

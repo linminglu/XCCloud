@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -221,11 +222,11 @@ namespace DSS.Client
                                             ConnectRecvTime = DateTime.Now;
                                             InitFlag = true;
                                             SyncOffData();
-                                            Console.WriteLine("注册成功，当前令牌：" + CurToken);
+                                            Debug.WriteLine("注册成功，当前令牌：" + CurToken);
                                         }
                                         else
                                         {
-                                            Console.WriteLine("注册失败：签名错误");
+                                            Debug.WriteLine("注册失败：签名错误");
                                         }
                                     }
                                     break;
@@ -241,17 +242,17 @@ namespace DSS.Client
                                             //签名验证通过
                                             ConnectRecvTime = DateTime.Now;
                                             InitFlag = true;
-                                            Console.WriteLine("收到门店心跳");
+                                            Debug.WriteLine("收到门店心跳");
                                         }
                                         else
                                         {
-                                            Console.WriteLine("门店心跳：签名错误");
+                                            Debug.WriteLine("门店心跳：签名错误");
                                         }
                                     }
                                     break;
                                 case TransmiteEnum.门店数据变更同步应答:
                                     {
-                                        Console.WriteLine("收到门店数据同步应答：" + f.FrameJsontxt);
+                                        Debug.WriteLine("收到门店数据同步应答：" + f.FrameJsontxt);
                                         JavaScriptSerializer jss = new JavaScriptSerializer();
                                         //JSON数据格式转换
                                         JsonObject.DataSyncResponse response = jss.Deserialize<JsonObject.DataSyncResponse>(f.FrameJsontxt);
@@ -268,7 +269,7 @@ namespace DSS.Client
                                     break;
                                 case TransmiteEnum.云端数据变更同步请求:
                                     {
-                                        Console.WriteLine("收到云端数据同步应答：" + f.FrameJsontxt);
+                                        Debug.WriteLine("收到云端数据同步应答：" + f.FrameJsontxt);
                                         JavaScriptSerializer jss = new JavaScriptSerializer();
                                         //JSON数据格式转换
                                         JsonObject.DataSyncRequest request = jss.Deserialize<JsonObject.DataSyncRequest>(f.FrameJsontxt);
@@ -308,7 +309,7 @@ namespace DSS.Client
                                             ConnectSendTime = DateTime.Now;
                                         }
                                         else
-                                            Console.WriteLine("云端数据同步应答：签名错误");
+                                            Debug.WriteLine("云端数据同步应答：签名错误");
                                     }
                                     break;
                                 default:
@@ -416,8 +417,9 @@ namespace DSS.Client
                     JsonObject json = new JsonObject();
                     request.SignKey = json.GetSignKey(request, AppSecret);
 
-                    JavaScriptSerializer jss = new JavaScriptSerializer();
-                    string jsonString = jss.Serialize(request);
+                    //JavaScriptSerializer jss = new JavaScriptSerializer();
+                    //string jsonString = jss.Serialize(request);
+                    string jsonString = JsonConvert.SerializeObject(request);
                     SendData(Encoding.UTF8.GetBytes(jsonString), (byte)TransmiteEnum.门店数据变更同步请求);
                     ConnectSendTime = DateTime.Now;
                 }
@@ -502,7 +504,7 @@ namespace DSS.Client
 
             JavaScriptSerializer jss = new JavaScriptSerializer();
             string jsonString = jss.Serialize(regist);
-            Console.WriteLine("发送 注册信息[" + CurToken + "]：" + jsonString);
+            Debug.WriteLine("发送 注册信息[" + CurToken + "]：" + jsonString);
             SendData(Encoding.UTF8.GetBytes(jsonString), (byte)TransmiteEnum.通知服务器上线);
             ConnectSendTime = DateTime.Now;
         }
@@ -560,8 +562,9 @@ namespace DSS.Client
             object o = System.Activator.CreateInstance(t);
 
             model.CovertToDataModel(sql, ref o);
-            JavaScriptSerializer jss = new JavaScriptSerializer();
-            string jsonString = jss.Serialize(o);
+            //JavaScriptSerializer jss = new JavaScriptSerializer();
+            //string jsonString = jss.Serialize(o);
+            string jsonString = JsonConvert.SerializeObject(o);
 
             ServerDataItem item = new ServerDataItem();
             item.IDValue = idValue;
@@ -626,8 +629,9 @@ namespace DSS.Client
                                 DataModel model = new DataModel();
                                 model.Verifiction(request, AppSecret);
 
-                                JavaScriptSerializer jss = new JavaScriptSerializer();
-                                string jsonString = jss.Serialize(request);
+                                //JavaScriptSerializer jss = new JavaScriptSerializer();
+                                //string jsonString = jss.Serialize(request);
+                                string jsonString = JsonConvert.SerializeObject(request);
                                 SendData(Encoding.UTF8.GetBytes(jsonString), (byte)TransmiteEnum.门店数据变更同步请求);
                                 ServerRecvDataList[i].IsProcess = true;
                                 ServerRecvDataList[i].SendTime = DateTime.Now;

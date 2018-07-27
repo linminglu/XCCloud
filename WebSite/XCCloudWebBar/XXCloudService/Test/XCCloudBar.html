@@ -738,7 +738,26 @@
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
+
+
+        function do_dataSync() {
+            var parasObj = {
+                "userToken": userToken
+            };
+            var url = "/xccloud/DataSync?action=dataSync";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
         
+        function do_getRemainderCoins() {
+            var parasObj = {
+                "userToken": userToken
+            };
+            var url = "/xccloud/Foods?action=getRemainderCoins";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -792,6 +811,7 @@
         商品数量:<input id="txt_do_goodBuyBack_goodNum" type="text" value="2" style="width:60px" />
         使用余额类型:<select id="txt_do_goodBuyBack_balance"><option value="1">代币</option><option value="2">积分</option><option value="3">彩票</option></select>
         <input id="Button_Food_8" type="button" value="do_goodBuyBack(商品回购)" onclick="do_goodBuyBack()" />
+        <input id="Button_Food_9" type="button" value="do_getRemainderCoins(剩余币数)" onclick="do_getRemainderCoins()" />    
     </div>
     <br />
 
@@ -911,6 +931,7 @@
     <div title="WorkStation" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="WorkStation_11111" type="button" value="do_getMd5TokenByRegWorkStation(注册会员)" onclick="do_getMd5TokenByRegWorkStation()" />
         <input id="WorkStation_22222" type="button" value="do_RegWorkStation(注册工作站)" onclick="do_RegWorkStation()" />
+        <input id="WorkStation_33333" type="button" value="do_dataSync(注册工作站)" onclick="do_dataSync()" />
     </div>
 
 

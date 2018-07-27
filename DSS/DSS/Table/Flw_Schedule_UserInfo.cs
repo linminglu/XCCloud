@@ -23,6 +23,7 @@ public decimal? NetTotle { get; set; }
 public decimal? CommissionTotle { get; set; }
 public decimal? RealCash { get; set; }
 public decimal? RealCredit { get; set; }
+public string Note { get; set; }
 public string Verifiction { get; set; }
 }
 }

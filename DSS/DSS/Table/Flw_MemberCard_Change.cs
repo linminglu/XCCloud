@@ -17,7 +17,9 @@ public string OldCardID { get; set; }
 public string NewCardID { get; set; }
 public string FoodSaleID { get; set; }
 public decimal? OpFee { get; set; }
+public int? State { get; set; }
 public string OpStoreID { get; set; }
+public DateTime? OpTime { get; set; }
 public string WorkStation { get; set; }
 public int? UserID { get; set; }
 public string ScheduldID { get; set; }

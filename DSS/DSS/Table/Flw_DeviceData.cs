@@ -24,7 +24,8 @@ public DateTime? RealTime { get; set; }
 public string MemberID { get; set; }
 public string CreateStoreID { get; set; }
 public string MemberName { get; set; }
-public string ICCardID { get; set; }
+public string CardID { get; set; }
+public decimal? Cash { get; set; }
 public int? BalanceIndex { get; set; }
 public decimal? Coin { get; set; }
 public decimal? RemainBalance { get; set; }

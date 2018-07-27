@@ -142,7 +142,9 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Lib\UDP\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="bin\post_logo.png" />
     <Content Include="Config\SysConfig.xml" />
@@ -180,6 +182,14 @@
     <ProjectReference Include="PalletService.TCPService\PalletService.TCPService.csproj">
       <Project>{98eac8bd-9888-4de1-96b9-3051a18fc622}</Project>
       <Name>PalletService.TCPService</Name>
+    </ProjectReference>
+    <ProjectReference Include="RadarService.LogHelper\PalletService.LogHelper.csproj">
+      <Project>{d9342b5b-f4c5-4da5-9e8d-be0bafd1ec6e}</Project>
+      <Name>PalletService.LogHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="RadarService.Notify\PalletService.Notify.csproj">
+      <Project>{68e92126-8f27-4b44-99f0-dfcd6dc25c86}</Project>
+      <Name>PalletService.Notify</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

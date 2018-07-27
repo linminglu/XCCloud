@@ -382,4 +382,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// </summary>
         public int freeCoinType { get; set; }
     }
+
+    public class ChangeCardCostModel
+    {
+        public string Desc { get; set; }
+        public string Cost { get; set; }
+    }
 }

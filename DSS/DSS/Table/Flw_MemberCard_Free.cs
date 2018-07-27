@@ -17,6 +17,7 @@ public int? FreeType { get; set; }
 public int? IsRealCoin { get; set; }
 public int? BalanceIndex { get; set; }
 public decimal? FreeCount { get; set; }
+public DateTime? OpTime { get; set; }
 public int? DeviceID { get; set; }
 public string Note { get; set; }
 public int? UserID { get; set; }

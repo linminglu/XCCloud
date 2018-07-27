@@ -341,6 +341,37 @@ namespace RadarService.Notify
             public string signkey { get; set; }
         }
 
+        public class ScanPayDataRequest
+        {
+            public string signkey { get; set; }
+            public string sn { get; set; }
+            public string token { get; set; }
+            public string orderid { get; set; }
+            public string authcode { get; set; }
+        }
+        public class ScanPayDataResponse
+        {
+            public string result_code { get; set; }
+            public string result_msg { get; set; }
+            public string sn { get; set; }
+            public string signkey { get; set; }
+        }
+        public class ScanPayResultRequest
+        {
+            public string signkey { get; set; }
+            public string sn { get; set; }
+            public string orderid { get; set; }
+            public string paystatus { get; set; }
+            public string errinfo { get; set; }
+        }
+        public class ScanPayResultResponse
+        {
+            public string result_code { get; set; }
+            public string result_msg { get; set; }
+            public string sn { get; set; }
+            public string signkey { get; set; }
+        }
+
         /// <summary>
         /// 获取参数排序
         /// </summary>

@@ -24,6 +24,8 @@ public decimal? RenewFee { get; set; }
 public decimal? ChangeFee { get; set; }
 public decimal? ReissueFee { get; set; }
 public decimal? TotalMoney { get; set; }
+public decimal? RealMoney { get; set; }
+public decimal? FreeMoney { get; set; }
 public int? BuyFoodType { get; set; }
 public decimal? TaxFee { get; set; }
 public decimal? TaxTotal { get; set; }

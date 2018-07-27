@@ -844,12 +844,12 @@ print '@ErrMsg:' + @ErrMsg
 ----------------------------------------------------------------------------------------------------
 --É¢¿Í¹ºÂò
 declare @Return int
-declare @StoreId varchar(15) = '100025420106001'
+declare @StoreId varchar(15) = '100016360103001'
 declare @CustomerType int = 0
 declare @MemberLevelId int = 0
 declare @Mobile varchar(11) = '15618920040'
 declare @ICCardId int = 0
-declare @PayCount decimal(18,2) = 50 + 5.5
+declare @PayCount decimal(18,2) = 9
 declare @FreePay decimal(18,2) = 0
 declare @Deposit decimal(18,2) = 0
 declare @OpenFee decimal(18,2) = 0
@@ -863,11 +863,8 @@ declare @OrderFlwId varchar(32) = 0
 declare @FlwSeedIndex int = 0
 declare @ErrMsg varchar(200) = ''
 declare @FoodSaleDetailList [FoodSaleDetailListType]
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
-declare @FlwSeedId varchar(29) = '100025420106001' + '20180712' + '356987'
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(169,0,1,0,9)
+declare @FlwSeedId varchar(29) = '100016360103001' + '20180719' + '456987'
 create table #TmpBarTableSync(TableName varchar(50),FlwId varchar(32),Status int)
 exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@FreePay,@OpenFee,@Deposit,
 @UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@FlwSeedIndex output,@OrderFlwId output,@ErrMsg output

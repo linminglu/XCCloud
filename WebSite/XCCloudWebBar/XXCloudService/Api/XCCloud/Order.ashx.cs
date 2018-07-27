@@ -883,10 +883,12 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[10] = new SqlParameter("@Return", SqlDbType.Int);
             sqlParameter[10].Direction = ParameterDirection.ReturnValue;
 
-            XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
+
             if (sqlParameter[10].Value.ToString() == "1")
             {
                 return new ResponseModel(Return_Code.T, "", Result_Code.T, "");
+                NewOrderDataSync(ds.Tables[0]);
             }
             else
             {

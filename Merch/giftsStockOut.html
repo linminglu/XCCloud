@@ -41,89 +41,92 @@
 </div>
 <!--入库弹出层-->
 <div id="openModel" style="display: none;padding: 15px;">
-    <form action="" class="layui-form layui-form-pane">
-        <div class="layui-form-item">
-            <div class="layui-inline OrderIDBox">
-                <label class="layui-form-label">出库单号</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="OrderID" id="OrderID" class="layui-input"></input>
+    <div class="layui-card layui-col-md12" style="border: 2px solid #eee;margin-bottom: 15px">
+        <div class="layui-card-body">
+            <form action="" class="layui-form layui-form-pane">
+                <div class="layui-form-item">
+                    <div class="layui-inline OrderIDBox">
+                        <label class="layui-form-label">出库单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="OrderID" id="OrderID" class="layui-input"></input>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">出库仓库</label>
+                        <div class="layui-input-inline">
+                            <select name="DepotID" id="DepotID" lay-filter="DepotID">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">出库类别</label>
+                        <div class="layui-input-inline">
+                            <select name="OrderType" id="OrderType" lay-filter="OrderType">
+                                <option>-请选择-</option>
+                                <option value="0">废品出库</option>
+                                <option value="1">转仓出库</option>
+                                <option value="2">入库退货</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline layui-hide" id="inDepotIDBox">
+                        <label class="layui-form-label">转入仓库</label>
+                        <div class="layui-input-inline">
+                            <select name="inDepotID" id="inDepotID" lay-filter="inDepotID">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline layui-inline-last">
+                        <label class="layui-form-label">出库总数</label>
+                        <div class="layui-input-inline">
+                            <input name="OutCount" id="OutCount" class="layui-input" readonly>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">出库仓库</label>
-                <div class="layui-input-inline">
-                    <select name="DepotID" id="DepotID" lay-filter="DepotID">
-                    </select>
+                <div class="layui-form-item  logisBox">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">出库总额</label>
+                        <div class="layui-input-inline">
+                            <input name="OutTotal" id="OutTotal" class="layui-input" readonly>
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">物流公司</label>
+                        <div class="layui-input-inline">
+                            <select name="logisticsCompany1" id="logisticsCompany1" lay-filter="logisticsCompany1"></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline layui-inline-last">
+                        <label class="layui-form-label">物流单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="logisticsNote1">
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">出库类别</label>
-                <div class="layui-input-inline">
-                    <select name="OrderType" id="OrderType" lay-filter="OrderType">
-                        <option>-请选择-</option>
-                        <option value="0">废品出库</option>
-                        <option value="1">转仓出库</option>
-                        <option value="2">入库退货</option>
-                    </select>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline" style="width: 400px;">
+                            <input type="text" class="layui-input" placeholder="输入商品条码或名称" id="goodsName">
+                        </div>
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn layui-btn-normal" id="searchGoods"><i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline layui-hide" id="inDepotIDBox">
-                <label class="layui-form-label">转入仓库</label>
-                <div class="layui-input-inline">
-                    <select name="inDepotID" id="inDepotID" lay-filter="inDepotID">
-                    </select>
+                <table class="layui-hide" id="goodsStorage" lay-filter="goodsStorage"></table>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <input name="note" id="note" class="layui-input">
+                    </div>
                 </div>
-            </div>
+                <div style="text-align:center;">
+                    <button type="button" class="layui-btn" id="save">确定</button>
+                </div>
+            </form>
         </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">出库总数</label>
-                <div class="layui-input-inline">
-                    <input name="OutCount" id="OutCount" class="layui-input" readonly>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">出库总额</label>
-                <div class="layui-input-inline">
-                    <input name="OutTotal" id="OutTotal" class="layui-input" readonly>
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item  logisBox">
-            <div class="layui-inline">
-                <label class="layui-form-label">物流公司</label>
-                <div class="layui-input-inline">
-                    <select name="logisticsCompany1" id="logisticsCompany1" lay-filter="logisticsCompany1"></select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">物流单号</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="logisticsNote1">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <div class="layui-input-inline" style="width: 400px;">
-                    <input type="text" class="layui-input" placeholder="输入商品条码或名称" id="goodsName">
-                </div>
-                <div class="layui-input-inline">
-                    <button type="button" class="layui-btn layui-btn-normal" id="searchGoods"><i class="layui-icon">&#xe615;</i></button>
-                </div>
-            </div>
-        </div>
-        <table class="layui-hide" id="goodsStorage" lay-filter="goodsStorage"></table>
-        <div class="layui-form-item">
-            <label class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <input name="note" id="note" class="layui-input">
-            </div>
-        </div>
-        <div style="text-align:center;">
-            <button type="button" class="layui-btn" id="save">确定</button>
-        </div>
-    </form>
+    </div>
 </div>
 <!--礼品列表弹出层-->
 <div id="goodsListBox" style="display: none;padding: 15px">
@@ -338,7 +341,7 @@
             layer.open({
                 title:'商品出库',
                 type:1,
-                area:['1000px','655px'],
+                area:['1010px','655px'],
                 content:$('#openModel')
             })
         });

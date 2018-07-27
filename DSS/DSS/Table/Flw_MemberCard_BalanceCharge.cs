@@ -12,6 +12,7 @@ public string ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public string MemberID { get; set; }
+public string CardIndex { get; set; }
 public int? SourceBalanceIndex { get; set; }
 public decimal? SourceCount { get; set; }
 public decimal? SourceRemain { get; set; }

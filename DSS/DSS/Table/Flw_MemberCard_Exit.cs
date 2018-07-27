@@ -13,6 +13,7 @@ public string MerchID { get; set; }
 public string StoreID { get; set; }
 public string MemberID { get; set; }
 public int? OperateType { get; set; }
+public DateTime? OPTime { get; set; }
 public string CardID { get; set; }
 public decimal? Deposit { get; set; }
 public decimal? ExitMoney { get; set; }

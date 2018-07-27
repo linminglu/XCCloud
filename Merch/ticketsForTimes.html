@@ -60,10 +60,8 @@
         'cols': [
             {type:'checkbox', fixed: 'left'},
             {field: 'ID', title: '项目ID', align: 'center', sort: true, fixed: 'left'},
-            {field: 'TicketName', title: '门票名称', align: 'center', fixed: 'left',  templet: function (d) {
-                    let str = d.TicketName;
-
-                    return '<a href="#" class="tableName" name="'+d.ID+'" style="">'+d.TicketName+'</a>';
+            {field: 'TicketName', title: '门票名称', align: 'center', fixed: 'left', templet: function (d) {
+                    return '<a href="#" class="_ticketName" style="color: #1e9fff;text-decoration: underline" data-id="' + d.ID + '">' + d.TicketName + '</a>'
                 }}
             , {field: 'Price', title: '售价', align: 'center'}
             , {field: 'ValidDate', title: '有效期', align: 'center'}
@@ -107,7 +105,6 @@
             , {field: 'ExitLimit', title: '退票信息', align: 'center'}
             , {field: 'BindProjects', title: '项目信息', align: 'center'}
             , {field: 'AllowExitTimes', title: '离场时间', align: 'center'}
-            // ,{fixed: 'right',title: '操作', width:240, align:'center', toolbar: '#barDemo'}
         ]
     };
     xc.getInitData(parm);
@@ -188,7 +185,7 @@
             if (len == 1) {
 
                 layer.open({
-                    title: '修改设置',
+                    title:  '修改'+'<span style="font-size: 14px;color: orange">计次票:'+checkStatus.data[0].TicketName+'</span>',
                     type: 2,
                     area: ['1103px', '650px'],
                     content: 'ticketsIframe.html'
@@ -203,13 +200,20 @@
                 layer.msg('请且勾选一条数据！')
             }
         });
-
+        $('body').on('click', '._ticketName', function () {
+            let _id = $(this).attr('data-id')
+            layer.open({
+                title: '修改'+'<span style="font-size: 14px;color: orange">计次票:'+$(this).text()+'</span>',
+                type: 2,
+                area: ['1100px', '650px'],
+                content: 'ticketsIframe.html'
+            });
+            xc.setStorage('ticketSet', JSON.stringify({
+                'way': 'modify',
+                'name': 'times',
+                'id': _id
+            }))
+        })
     });
 </script>
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
-    <!--<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>-->
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="modify"><i class="layui-icon">&#xe642;</i>修改</a>
-</script>
-
 </html>

@@ -166,5 +166,13 @@ namespace XCCloudService.SocketService.UDP
             public string 订单编号 = "";
             public string 付款码 = "";
         }
+        public class 门店支付请求应答结构
+        {
+            public string result_code { get; set; }
+            public string result_msg { get; set; }
+            public string sn { get; set; }
+            public string signkey { get; set; }
+            public DateTime AckTime { get; set; }
+        }
     }
 }

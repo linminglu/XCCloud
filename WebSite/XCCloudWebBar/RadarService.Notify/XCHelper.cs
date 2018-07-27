@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net;
 using System.Web.Script.Serialization;
+using System.Diagnostics;
 
 namespace RadarService.Notify
 {
@@ -89,6 +90,26 @@ namespace RadarService.Notify
             }
         }
 
+        public delegate void 支付请求应答(JsonObject.ScanPayDataResponse data);
+        public event 支付请求应答 OnPayRequest;
+        public void PayRequest(JsonObject.ScanPayDataResponse data)
+        {
+            if (OnPayRequest != null)
+            {
+                OnPayRequest(data);
+            }
+        }
+
+        public delegate void 支付结果应答(JsonObject.ScanPayResultRequest data);
+        public event 支付结果应答 OnPayResult;
+        public void PayResult(JsonObject.ScanPayResultRequest data)
+        {
+            if (OnPayResult != null)
+            {
+                OnPayResult(data);
+            }
+        }
+
         /// <summary>
         /// 构造函数初始化必要参数
         /// </summary>
@@ -114,6 +135,13 @@ namespace RadarService.Notify
                 ConnectSendTime = DateTime.Now;
                 ConnectRecvTime = DateTime.Now;
 
+                for (int i = 0; i < 100; i++)
+                {
+                    BodySendList[i] = new RepeatDataItem();
+                    BodySendList[i].SN = "";
+                    BodySendList[i].SendFlag = false;
+                }
+
                 if (isRun) return false;
                 tRun = new Thread(new ThreadStart(CommandProcess)) { IsBackground = true, Name = "客户端处理线程" };
                 tRun.Start();
@@ -121,7 +149,8 @@ namespace RadarService.Notify
                 tTick = new Thread(new ThreadStart(TickProcess)) { IsBackground = true, Name = "心跳处理线程" };
                 tTick.Start();
 
-                tRepeat = new Thread(new ThreadStart(RepeatTick)) { IsBackground = true, Name = "指令重发线程" };
+                tRepeat = new Thread(new ThreadStart(SendBodyProcess)) { IsBackground = true, Name = "指令重发线程" };
+                //tRepeat = new Thread(new ThreadStart(RepeatTick)) { IsBackground = true, Name = "指令重发线程" };
                 tRepeat.Start();
 
                 client = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -293,7 +322,7 @@ namespace RadarService.Notify
                             {
                                 JavaScriptSerializer jss = new JavaScriptSerializer();
                                 JsonObject.NotifyResponse notify = jss.Deserialize<JsonObject.NotifyResponse>(f.FrameJsontxt);
-                                CheckRepeat(Convert.ToInt32(notify.sn));
+                                ClearBodySend(notify.sn);
                             }
                             break;
                         case 0x60:  //游戏机变更通知
@@ -310,6 +339,51 @@ namespace RadarService.Notify
                                 JsonObject.DeviceResetRequest device = jss.Deserialize<JsonObject.DeviceResetRequest>(f.FrameJsontxt);
                                 Console.WriteLine("收到设备复位通知：" + f.FrameJsontxt);
                                 DeviceReset(device);
+                            }
+                            break;
+                        case 0x63:  //收到支付请求应答
+                            {
+                                JavaScriptSerializer jss = new JavaScriptSerializer();
+                                JsonObject.ScanPayDataResponse response = jss.Deserialize<JsonObject.ScanPayDataResponse>(f.FrameJsontxt);
+                                JsonObject json = new JsonObject();
+                                string key = json.GetSignKey(response, PwdRead);
+                                if (key != response.signkey)
+                                {
+                                    Debug.WriteLine("应答签名错误");
+                                }
+                                else
+                                {
+                                    ClearBodySend(response.sn);
+                                    PayRequest(response);
+                                }
+                                Debug.WriteLine("收到支付请求应答：" + f.FrameJsontxt);
+                            }
+                            break;
+                        case 0x64:  //收到支付结果请求
+                            {
+                                JavaScriptSerializer jss = new JavaScriptSerializer();
+                                JsonObject.ScanPayResultRequest request = jss.Deserialize<JsonObject.ScanPayResultRequest>(f.FrameJsontxt);
+                                JsonObject json = new JsonObject();
+                                string key = json.GetSignKey(request, PwdRead);
+                                string msg = "", code = "";
+                                if (key != request.signkey)
+                                {
+                                    msg = "应答签名错误";
+                                    code = "0";
+                                    Debug.WriteLine(msg);
+                                }
+                                else
+                                { PayResult(request); code = "1"; }
+
+                                JsonObject.ScanPayResultResponse response = new JsonObject.ScanPayResultResponse();
+                                response.result_code = code;
+                                response.result_msg = msg;
+                                response.sn = request.sn;
+                                response.signkey = json.GetSignKey(response, PwdRead);
+                                string jsonString = jss.Serialize(response);
+                                SendData(Encoding.UTF8.GetBytes(jsonString), 0x34);
+
+                                Debug.WriteLine("收到支付结果请求：" + f.FrameJsontxt);
                             }
                             break;
                     }
@@ -386,100 +460,200 @@ namespace RadarService.Notify
         #region 主发队列缓存
 
         Thread tRepeat = null;
-        class RepeatBody
+
+        class RepeatDataItem
         {
             public byte CmdType { get; set; }
             public byte[] DataBuf { get; set; }
-            public int SN { get; set; }
+            public string SN { get; set; }
             public DateTime LastTime { get; set; }
             public object SendOjbect { get; set; }
             public bool SendFlag { get; set; }
+            public int ReSendTimes { get; set; }
+        }
+        RepeatDataItem[] BodySendList = new RepeatDataItem[100];
+        /// <summary>
+        /// 设置主发队列
+        /// 序列号为空的队列可以占用
+        /// </summary>
+        /// <param name="item"></param>
+        void SetBodySend(RepeatDataItem item)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                if (BodySendList[i].SN == "")
+                {
+                    BodySendList[i].CmdType = item.CmdType;
+                    BodySendList[i].DataBuf = new byte[item.DataBuf.Length];
+                    Array.Copy(item.DataBuf, BodySendList[i].DataBuf, item.DataBuf.Length);
+                    BodySendList[i].LastTime = DateTime.Now;
+                    BodySendList[i].SendFlag = false;
+                    BodySendList[i].SendOjbect = item.SendOjbect;
+                    BodySendList[i].SN = item.SN;
+                    BodySendList[i].ReSendTimes = 0;
+                    return;
+                }
+            }
         }
         /// <summary>
-        /// 主发队列
+        /// 清除主发队列，将该SN清除
         /// </summary>
-        List<RepeatBody> RepeatList = new List<RepeatBody>();
-        void InsertRepeat(RepeatBody item)
+        /// <param name="sn"></param>
+        void ClearBodySend(string sn)
         {
-            lock (RepeatList)
+            for (int i = 0; i < 100; i++)
             {
-                RepeatList.Add(item);
+                if (BodySendList[i].SN == sn)
+                {
+                    BodySendList[i].SN = "";
+                    return;
+                }
+            }
+        }
+        /// <summary>
+        /// 定时刷新主发队列
+        /// </summary>
+        void RefreshBodySend()
+        {
+            DateTime d = DateTime.Now;
+            for (int i = 0; i < 100; i++)
+            {
+                if (BodySendList[i].SN != "" && BodySendList[i].SendFlag)
+                {
+                    if (BodySendList[i].LastTime.AddSeconds(3) < d)
+                    {
+                        //主发超时没有应答需要重发
+                        BodySendList[i].SendFlag = false;
+                        if (BodySendList[i].ReSendTimes >= 30)
+                            BodySendList[i].SN = "";    //重发次数超过30次则清空
+                    }
+                    return;
+                }
             }
         }
 
-        bool CheckRepeat(int curSN)
-        {
-            lock (RepeatList)
-            {
-                foreach (RepeatBody item in RepeatList)
-                {
-                    if (item.SN == curSN)
-                    {
-                        RepeatList.Remove(item);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        void RepeatTick()
+        void SendBodyProcess()
         {
             while (true)
             {
-                bool isBreak = false;
-
-                DateTime d = DateTime.Now;
-                lock (RepeatList)
+                try
                 {
-                    foreach (RepeatBody item in RepeatList)
+                    DateTime d = DateTime.Now;
+                    for (int i = 0; i < 100; i++)
                     {
-                        if (item.LastTime.AddHours(2) < d)
+                        if (BodySendList[i].SN != "" && !BodySendList[i].SendFlag)
                         {
-                            //2小时没有处理的数据则移除
-                            RepeatList.Remove(item);
-                            isBreak = true;
-                            break;
-                        }
-                        else
-                        {
-                            if (item.SendFlag)
-                                item.SendFlag = false;
-                            else
-                            {
-                                if (item.CmdType == 0x12)
-                                {
-                                    JsonObject.ControlResultNotify o = item.SendOjbect as JsonObject.ControlResultNotify;
-                                    if (o != null)
-                                    {
-                                        o.token = CurToken;
-                                        JsonObject json = new JsonObject();
-                                        o.signkey = json.GetSignKey(o, PwdRead);
-
-                                        JavaScriptSerializer jss = new JavaScriptSerializer();
-                                        string jsonString = jss.Serialize(o);
-
-                                        byte[] datalist = Encoding.UTF8.GetBytes(jsonString);
-
-                                        //Console.WriteLine("重发指令【" + item.CmdType.ToString() + "】 action=" + o.action);
-                                        SendData(datalist, 0x12);
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine("重发指令【" + item.CmdType.ToString() + "】");
-                                    SendData(item.DataBuf, item.CmdType);   //指令重发
-                                }
-                                item.SendFlag = true;
-                            }
+                            //需要发送则发送
+                            SendData(BodySendList[i].DataBuf, BodySendList[i].CmdType);
+                            BodySendList[i].ReSendTimes++;
+                            BodySendList[i].LastTime = d;
+                            BodySendList[i].SendFlag = true;
                         }
                     }
-                }
-                if (isBreak)
-                    Thread.Sleep(10);       //如果有队列被移除则短空闲
-                else
+                    RefreshBodySend();
                     Thread.Sleep(2000);
+                }
+                catch (Exception e)
+                {
+                    LogHelper.LogHelper.WriteLog(e);
+                }
             }
         }
+
+        //class RepeatBody
+        //{
+        //    public byte CmdType { get; set; }
+        //    public byte[] DataBuf { get; set; }
+        //    public int SN { get; set; }
+        //    public DateTime LastTime { get; set; }
+        //    public object SendOjbect { get; set; }
+        //    public bool SendFlag { get; set; }
+        //}
+        ///// <summary>
+        ///// 主发队列
+        ///// </summary>
+        //List<RepeatBody> RepeatList = new List<RepeatBody>();
+        //void InsertRepeat(RepeatBody item)
+        //{
+        //    lock (RepeatList)
+        //    {
+        //        RepeatList.Add(item);
+        //    }
+        //}
+
+        //bool CheckRepeat(int curSN)
+        //{
+        //    lock (RepeatList)
+        //    {
+        //        foreach (RepeatBody item in RepeatList)
+        //        {
+        //            if (item.SN == curSN)
+        //            {
+        //                RepeatList.Remove(item);
+        //                return true;
+        //            }
+        //        }
+        //    }
+        //    return false;
+        //}
+        //void RepeatTick()
+        //{
+        //    while (true)
+        //    {
+        //        bool isBreak = false;
+
+        //        DateTime d = DateTime.Now;
+        //        lock (RepeatList)
+        //        {
+        //            foreach (RepeatBody item in RepeatList)
+        //            {
+        //                if (item.LastTime.AddHours(2) < d)
+        //                {
+        //                    //2小时没有处理的数据则移除
+        //                    RepeatList.Remove(item);
+        //                    isBreak = true;
+        //                    break;
+        //                }
+        //                else
+        //                {
+        //                    if (item.SendFlag)
+        //                        item.SendFlag = false;
+        //                    else
+        //                    {
+        //                        if (item.CmdType == 0x12)
+        //                        {
+        //                            JsonObject.ControlResultNotify o = item.SendOjbect as JsonObject.ControlResultNotify;
+        //                            if (o != null)
+        //                            {
+        //                                o.token = CurToken;
+        //                                JsonObject json = new JsonObject();
+        //                                o.signkey = json.GetSignKey(o, PwdRead);
+
+        //                                JavaScriptSerializer jss = new JavaScriptSerializer();
+        //                                string jsonString = jss.Serialize(o);
+
+        //                                byte[] datalist = Encoding.UTF8.GetBytes(jsonString);
+
+        //                                //Console.WriteLine("重发指令【" + item.CmdType.ToString() + "】 action=" + o.action);
+        //                                SendData(datalist, 0x12);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            Console.WriteLine("重发指令【" + item.CmdType.ToString() + "】");
+        //                            SendData(item.DataBuf, item.CmdType);   //指令重发
+        //                        }
+        //                        item.SendFlag = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (isBreak)
+        //            Thread.Sleep(10);       //如果有队列被移除则短空闲
+        //        else
+        //            Thread.Sleep(2000);
+        //    }
+        //}
         #endregion
         #region 应答事件
 
@@ -583,43 +757,6 @@ namespace RadarService.Notify
             Console.WriteLine("设备控制应答：" + jsonString);
         }
 
-        public void Notify(ActionEnum action, string OrderID, string Msg, string Coins)
-        {
-            if (!isRun || !InitFlag) return;
-
-            JsonObject.ControlResultNotify o = new JsonObject.ControlResultNotify()
-            {
-                action = ((int)action).ToString(),
-                orderid = OrderID,
-                result = Msg,
-                token = CurToken,
-                coins = Coins,
-                sn = GetSN().ToString(),
-                signkey = ""
-            };
-
-            JsonObject json = new JsonObject();
-            o.signkey = json.GetSignKey(o, PwdRead);
-
-            JavaScriptSerializer jss = new JavaScriptSerializer();
-            string jsonString = jss.Serialize(o);
-
-            Console.WriteLine("发送 通知结果[" + CurToken + "]：" + jsonString);
-            byte[] datalist = Encoding.UTF8.GetBytes(jsonString);
-
-            SendData(datalist, 0x12);
-            RepeatBody item = new RepeatBody()
-            {
-                CmdType = 0x12,
-                DataBuf = datalist,
-                LastTime = DateTime.Now,
-                SN = Convert.ToInt32(o.sn),
-                SendFlag = true,
-                SendOjbect = o
-            };
-            InsertRepeat(item);
-            ConnectSendTime = DateTime.Now;
-        }
         public void AskGameInfoChange(string code, string msg, string sn)
         {
             JsonObject.GameInfoChangeResponse o = new JsonObject.GameInfoChangeResponse()
@@ -658,6 +795,40 @@ namespace RadarService.Notify
             SendData(Encoding.UTF8.GetBytes(jsonString), 0x32);
             ConnectSendTime = DateTime.Now;
             Console.WriteLine("卡头复位指令：" + jsonString);
+        }
+        /// <summary>
+        /// 托盘应用程序专用发起调用支付接口
+        /// 吧台扫玩家付款码
+        /// </summary>
+        /// <param name="orderID">当前订单号</param>
+        /// <param name="authCode">付款码</param>
+        /// <returns></returns>
+        public bool ScanPayRequest(string orderID, string authCode)
+        {
+            if (!InitFlag) return false;    //服务器未初始化
+
+            //请求结构
+            JsonObject.ScanPayDataRequest o = new JsonObject.ScanPayDataRequest()
+            {
+                authcode = authCode,
+                orderid = orderID,
+                signkey = "",
+                sn = Guid.NewGuid().ToString().Replace("-", ""),
+                token = CurToken
+            };
+            JsonObject json = new JsonObject();
+            o.signkey = json.GetSignKey(o, PwdRead);
+
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            string jsonString = jss.Serialize(o);
+            Console.WriteLine("发送 支付请求[" + CurToken + "]：" + jsonString);
+            RepeatDataItem item = new RepeatDataItem();
+            item.CmdType = 0x33;
+            item.DataBuf = Encoding.UTF8.GetBytes(jsonString);
+            item.SendOjbect = o;
+            SetBodySend(item);
+            ConnectSendTime = DateTime.Now;
+            return true;
         }
         #endregion
     }

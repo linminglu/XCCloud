@@ -181,14 +181,12 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
-        public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
         public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
         public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
         public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
         public virtual DbSet<Flw_Food_Exit_Pay> Flw_Food_Exit_Pay { get; set; }
         public virtual DbSet<Flw_Jackpot> Flw_Jackpot { get; set; }
         public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
-        public virtual DbSet<Flw_MemberCard_Change> Flw_MemberCard_Change { get; set; }
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
         public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
         public virtual DbSet<Flw_MemberInfo_Change> Flw_MemberInfo_Change { get; set; }
@@ -198,5 +196,7 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
         public virtual DbSet<Log_Operation> Log_Operation { get; set; }
         public virtual DbSet<Flw_GameData_WinPrize> Flw_GameData_WinPrize { get; set; }
+        public virtual DbSet<Flw_MemberCard_Change> Flw_MemberCard_Change { get; set; }
+        public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
     }
 }

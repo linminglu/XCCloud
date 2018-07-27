@@ -13,6 +13,7 @@ public int? FreeID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public string MemberID { get; set; }
+public string CardIndex { get; set; }
 public decimal? ChargeTotal { get; set; }
 public int? FreeBalanceType { get; set; }
 public int? FreeCount { get; set; }

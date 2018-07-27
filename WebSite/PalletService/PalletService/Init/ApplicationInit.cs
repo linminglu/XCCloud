@@ -19,11 +19,11 @@ namespace PalletService.Init
                 TCPInit();
                 string appStartPath = System.Windows.Forms.Application.StartupPath;
                 SysConfigBusiness.Init(appStartPath);
-                LogHelper.SaveLog(TxtLogType.SystemInit, "ApplicationInit.Init()");
+                //LogHelper.SaveLog(TxtLogType.SystemInit, "ApplicationInit.Init()");
             }
             catch(Exception e)
             {
-                LogHelper.SaveLog(TxtLogType.SystemInit, e.Message);
+                //LogHelper.SaveLog(TxtLogType.SystemInit, e.Message);
             }
         }
 
@@ -33,11 +33,11 @@ namespace PalletService.Init
             {
                 Server socketServer = new Server();
                 socketServer.Start(SysConfigBusiness.TCPPort);
-                LogHelper.SaveLog(TxtLogType.SystemInit, "TCP Init Sucess");
+                //LogHelper.LogHelper.sa(TxtLogType.SystemInit, "TCP Init Sucess");
             }
             catch (Exception ex)
             {
-                LogHelper.SaveLog(TxtLogType.SystemInit, "TCP Init Fail..." + Utils.GetException(ex));
+                //LogHelper.SaveLog(TxtLogType.SystemInit, "TCP Init Fail..." + Utils.GetException(ex));
             }
         }
     }

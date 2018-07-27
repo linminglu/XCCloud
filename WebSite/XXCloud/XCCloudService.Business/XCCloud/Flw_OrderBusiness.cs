@@ -21,6 +21,41 @@ namespace XCCloudService.Business.XCCloud
 {
     public partial class Flw_OrderBusiness
     {
+        /// <summary>
+        /// 订单支付业务处理异步方法
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <param name="authCode">授权码</param>
+        /// <param name="callback">回调</param>
+        public void OrderPayAsync(string orderId, decimal amount, string channelOrderNo, SelttleType selttleType, PaymentChannel payment, Action<OrderPayResultModel> callback)
+        {
+            Func<OrderPayResultModel> func = () =>
+            {
+                try
+                {
+                    return OrderPayByCall(orderId, amount, channelOrderNo, selttleType, payment);
+                }
+                catch
+                {
+                    return null;
+                }
+            };//声明异步方法实现方式
+            func.BeginInvoke((ar) =>
+            {
+                var result = func.EndInvoke(ar);//调用完毕执行的结果 
+                callback.Invoke(result);//委托执行，回传结果值
+            }, null);
+        }
+
+        public OrderPayResultModel OrderPayByCall(string orderId, decimal amount, string channelOrderNo, SelttleType selttleType, PaymentChannel payment)
+        {
+            OrderPayResultModel resultModel = new OrderPayResultModel() { PayResult = PayResultEnum.交易成功, Result = false, Message = string.Empty };
+            string errMsg = string.Empty;
+            resultModel.Result = OrderPay(orderId, amount, channelOrderNo, selttleType, payment, out errMsg);
+            resultModel.Message = errMsg;
+            return resultModel;
+        }
+
         #region 订单支付成功处理
         /// <summary>
         /// 订单支付成功处理

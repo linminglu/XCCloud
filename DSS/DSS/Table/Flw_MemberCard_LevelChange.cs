@@ -12,7 +12,7 @@ public string ID { get; set; }
 public string MerchID { get; set; }
 public string StoreID { get; set; }
 public string MemberID { get; set; }
-public string ICCardID { get; set; }
+public string CardID { get; set; }
 public int? OldMemberLevelID { get; set; }
 public int? NewMemberLevleID { get; set; }
 public int? ChangeType { get; set; }

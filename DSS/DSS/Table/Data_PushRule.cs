@@ -20,8 +20,8 @@ public int? PushCoin1 { get; set; }
 public int? PushBalanceIndex2 { get; set; }
 public int? PushCoin2 { get; set; }
 public int? Level { get; set; }
-public DateTime? StartTime { get; set; }
-public DateTime? EndTime { get; set; }
+public TimeSpan? StartTime { get; set; }
+public TimeSpan? EndTime { get; set; }
 public DateTime? StartDate { get; set; }
 public DateTime? EndDate { get; set; }
 public string Verifiction { get; set; }

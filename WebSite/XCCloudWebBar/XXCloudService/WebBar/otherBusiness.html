@@ -220,6 +220,10 @@
             <span class="iconfont icon-tongbushuju"></span>
                 同步数据
         </menu-item>
+        <menu-item name="13">
+            <span class="iconfont icon-lingyong"></span>
+                领卡
+        </menu-item>
     </i-menu>
     <row>
         <i-col span="24" v-if="minuData.MenuShow1">
@@ -850,6 +854,22 @@
                 <!--  -->
             </div>
         </i-col>
+        <i-col span="24" v-if="minuData.MenuShow11">
+
+        </i-col>
+        <i-col span="24" v-if="minuData.MenuShow12">
+            <div class="input-group">
+                <span class="input-group-addon addonWidth">订单号：</span>
+                <input class="form-control" v-model="bindNewCard.orderId" @keyup.enter="getOrderState"/>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon addonWidth">支付状态：</span>
+                <input class="form-control" v-model="bindNewCard.orderIdState" readonly/>
+            </div>
+            <div class="input-group">
+                <i-button slot="append" type="button" @click="bindNewCardFnc" :disabled="loading">绑定新卡</i-button>
+            </div>
+        </i-col>
     </row>
     <div class="footer">
         <row type="flex" justify="center" align="middle" class="code-row-bg">
@@ -946,6 +966,8 @@
                 MenuShow8:false,
                 MenuShow9:false,
                 MenuShow10:false,
+                MenuShow11:false,
+                MenuShow12:false,
             },
             buyBack:{
                 search:"",
@@ -1044,9 +1066,15 @@
                 selection:[]
             },
             cardList:[],
+            bindNewCard:{
+                orderId:"",
+                orderIdState:"",
+                CardData:[]
+            },
             radioValue:"",
             icCardId:"",
             msg:"",
+            msgEleven:"",
             ajaxHistoryData:[],
                 // 初始化信息总条数
             dataCount:0,
@@ -1116,9 +1144,8 @@
                                     }
                                     break;
                                 case "5":
-									that.msg = receivedMsg.answerMsg;
-									that.myModal = true;
-									// $('#myModal').modal('show');
+                                    that.bindNewCard.CardData = receivedMsg.dataObj;
+                                    that.NewCardFnc();
                                     break;
 								case "11":
 								    if(that.msgEleven === "0"){
@@ -1130,8 +1157,8 @@
                                         that.cardCheckOut = false;
                                         that.registerFnc();
 									}else if(that.msgEleven === "1"){
-                                        that.dataObj =receivedMsg.dataObj;
-                                        that.supplementCardFnc();
+                                        var msgType5 =JSON.stringify({"msgType":"5", "sObj": {"userToken": that.userToken},"dataObj": {icCardId:that.dataObj.icCardId,repeatCode:that.dataObj.repeatCode}});
+                                        ws.send(msgType5);
 									}
                                     that.msgEleven = "";
                                 	break;
@@ -1280,6 +1307,12 @@
                         break;
                     case "11":
                         that.minuData.MenuShow10 =true;
+                        break;
+                    case "12":
+                        that.minuData.MenuShow11 =true;
+                        break;
+                    case "13":
+                        that.minuData.MenuShow12 =true;
                         break;
                     default:
                         break;
@@ -1735,29 +1768,72 @@
             },
             okClearUp:function(){
                 var that = this;
-                    var projectTicketId = that.siteClearing.selection[0].TicketUseId+"";
-                    for(var i = 1;i<that.siteClearing.selection.length;i++){
-                        projectTicketId =projectTicketId+","+that.siteClearing.selection[i].TicketUseId
+                var projectTicketId = that.siteClearing.selection[0].TicketUseId+"";
+                for(var i = 1;i<that.siteClearing.selection.length;i++){
+                    projectTicketId =projectTicketId+","+that.siteClearing.selection[i].TicketUseId
+                }
+                console.log(projectTicketId)
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,projectTicketId:projectTicketId};
+                console.log(obj);
+                axios.post('/XCCloud/ProjectTicket?action=clearNotSluiceTicket', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.msg = "清理成功！";
+                        that.myModal = true;
+                        that.sluiceList("1")
                     }
-                    console.log(projectTicketId)
-                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,projectTicketId:projectTicketId};
-                    console.log(obj);
-                    axios.post('/XCCloud/ProjectTicket?action=clearNotSluiceTicket', obj).then(function (res) {
-                        console.log(res.data);
-                        that.msgPrompt(res.data);
-                        if (res.data.result_code === '1') {
-                            that.msg = "清理成功！";
-                            that.myModal = true;
-                            that.sluiceList("1")
-                        }
-                    }).catch(function (err) {
-                        console.log(err);
-                    });
+                }).catch(function (err) {
+                    console.log(err);
+                });
                 
             },
 //          会员卡回收
             recycleMemberCard:function(){
 
+            },
+//          领卡
+            getOrderState:function(){
+                var that = this;
+                console.log(1111)
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.bindNewCard.orderId};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=getOrderState', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.bindNewCard.orderIdState = res.data.result_data.OrderState
+                        // if()
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+//          领卡
+            bindNewCardFnc:function(){
+                var that = this;
+                this.loading = true;
+                var msgType11 =JSON.stringify({"msgType":"11", "sObj": {"userToken": that.userToken}});
+                ws.send(msgType11);
+                that.msgEleven = "0"
+            },
+            NewCardFnc:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.bindNewCard.orderId,newCardNo:that.bindNewCard.CardData.icCardID,repeatCode:that.bindNewCard.CardData.repeatCode};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=bindNewCard', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.msg = "开卡成功！, 卡号为"+res.data.result_data.NewICCardId;
+                        that.myModal = true;
+                        setTimeout(function () {
+                            that.myModal = false;
+                        }, 2000);
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
             },
 //			通用消息提示
             msgPrompt:function (res) {

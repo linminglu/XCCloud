@@ -33,6 +33,7 @@
         <br />
         <br />
         <br />
+        订单号：<asp:TextBox ID="TextBox4" runat="server"></asp:TextBox>    
         <asp:Button ID="Button4" runat="server" Text="订单查询" OnClick="Button4_Click" />
         <br />
         <br />

@@ -8,16 +8,17 @@ namespace DSS.Table
 {
 public class Flw_Giveback
 {
-public int? ID { get; set; }
+public string ID { get; set; }
+public string MerchID { get; set; }
 public string StoreID { get; set; }
-public int? CardID { get; set; }
-public int? PICCardID { get; set; }
+public string CardID { get; set; }
+public string PICCardID { get; set; }
 public string MemberName { get; set; }
 public DateTime? RealTime { get; set; }
 public int? Coins { get; set; }
 public int? AuthorID { get; set; }
 public int? UserID { get; set; }
-public int? ScheduleID { get; set; }
+public string ScheduleID { get; set; }
 public string WorkStation { get; set; }
 public DateTime? ExitRealTime { get; set; }
 public int? ExitAuthorID { get; set; }

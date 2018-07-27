@@ -179,8 +179,29 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
     public class OrderCacheModel
     {
+        public string Token { get; set; }
         public string OrderId { get; set; }
         public string SN { get; set; }
         //public DateTime CreateTime { get; set; }
+    }
+
+    public class OrderPayResultModel
+    {
+        public OrderPayResultModel()
+        {
+            this.Message = string.Empty;
+        }
+        /// <summary>
+        /// 业务处理结果
+        /// </summary>
+        public bool Result { get; set; }
+        /// <summary>
+        /// 交易结果代码
+        /// </summary>
+        public PayResultEnum PayResult { get; set; }
+        /// <summary>
+        /// 错误描述
+        /// </summary>
+        public string Message { get; set; }
     }
 }

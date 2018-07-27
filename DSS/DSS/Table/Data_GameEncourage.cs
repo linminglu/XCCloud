@@ -16,8 +16,8 @@ public DateTime? StartDate { get; set; }
 public DateTime? EndDate { get; set; }
 public int? WeekType { get; set; }
 public string Week { get; set; }
-public DateTime? StartTime { get; set; }
-public DateTime? EndTime { get; set; }
+public TimeSpan? StartTime { get; set; }
+public TimeSpan? EndTime { get; set; }
 public int? ContinueTimes { get; set; }
 public string Note { get; set; }
 public int? StartGames { get; set; }

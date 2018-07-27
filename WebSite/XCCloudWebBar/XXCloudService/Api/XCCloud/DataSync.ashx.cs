@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,7 +15,23 @@ namespace XXCloudService.Api.XCCloud
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object dataSync(Dictionary<string, object> dicParas)
         {
-            return null;
+            System.Threading.Thread t = new System.Threading.Thread(dataSync);
+            t.Start();
+            return new ResponseModel(Return_Code.T, "", Result_Code.F, "");    
+        }
+
+
+        private void dataSync()
+        {
+            DataModel model = new DataModel();
+            List<object> dataList = new List<object>();
+            if (model.CovertToDataModel("select * from Sync_DataList where SyncFlag=0", typeof(DSS.Table.Sync_DataList), out dataList))
+            {
+                foreach (DSS.Table.Sync_DataList o in dataList)
+                {
+                    XCCloudService.SyncService.UDP.Client.StoreDataSync(o.TableName, o.IDValue, (int)o.SyncType, false, o.SN);
+                }
+            }
         }
     }
 }

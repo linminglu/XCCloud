@@ -60,6 +60,7 @@
     <Compile Include="Table\Base_DepotInfo.cs" />
     <Compile Include="Table\Base_DeviceInfo.cs" />
     <Compile Include="Table\Base_DeviceInfo_Ext.cs" />
+    <Compile Include="Table\Base_EnumParams.cs" />
     <Compile Include="Table\Base_Goodinfo_Price.cs" />
     <Compile Include="Table\Base_GoodsInfo.cs" />
     <Compile Include="Table\Base_MemberInfo.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Table\Data_GameInfo.cs" />
     <Compile Include="Table\Data_GameInfo_Ext.cs" />
     <Compile Include="Table\Data_GameInfo_Photo.cs" />
+    <Compile Include="Table\Data_Game_PointRule.cs" />
     <Compile Include="Table\Data_Game_StockInfo.cs" />
     <Compile Include="Table\Data_GivebackRule.cs" />
     <Compile Include="Table\Data_GoodExitInfo.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="Table\Flw_MemberCard_LevelChange.cs" />
     <Compile Include="Table\Flw_MemberCard_Renew.cs" />
     <Compile Include="Table\Flw_MemberData.cs" />
+    <Compile Include="Table\Flw_MemberInfo_Change.cs" />
     <Compile Include="Table\Flw_MemberLevelFree.cs" />
     <Compile Include="Table\Flw_MemberLevelFree_Detail.cs" />
     <Compile Include="Table\Flw_Order.cs" />

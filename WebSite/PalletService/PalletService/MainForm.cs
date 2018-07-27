@@ -59,13 +59,12 @@ namespace PalletService
             this.RegisterWorkStation();
             PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "this.RegisterWorkStation()");
         }
-
         private void UpgradeInit()
         {
             CallBackEvent.OnSoftVersionAnswer += new CallBackEvent.软件版本应答(CallBackEvent_OnSoftVersionAnswer);
             CallBackEvent.OnDownLoadComplite += new CallBackEvent.下载文件应答(CallBackEvent_OnDownLoadComplite);
             CallBackEvent.OnDownloadProcess += new CallBackEvent.下载进度(CallBackEvent_OnDownloadProcess);
-            Client.Init(Program.ServerIP, 3456, Program.MyGuid, ClientType.后台客户端);
+            Client.Init(CommonConfig.UpgradeServerIP, 3456, Program.MyGuid, ClientType.后台客户端);
             //ClientCall.软件版本请求指令(Program.MyGuid, Program.StoreID, 1);
             //isWait = true;
             //WaitDelay = 0;
@@ -116,7 +115,7 @@ namespace PalletService
                         isWait = false;
                         WaitDelay = 0;
 
-                        string updatePath = string.Format("{0}{1}{2}", Application.StartupPath, "\\update\\", Program.CurDownload);
+                        string updatePath = string.Format("{0}{1}{2}", Application.StartupPath, "\\update\\", CommonConfig.CurDownload);
                         using (FileStream sw = new FileStream(updatePath,FileMode.Create))
                         {
                             fileStream.CopyTo(sw);
@@ -159,8 +158,8 @@ namespace PalletService
                     {
                         //需要升级
                         //lblInfo.Text = "检测到新版本，正在下载...";
-                        Program.CurDownload = soft.升级包名;
-                        ClientCall.下载文件("update\\" + Program.CurDownload);
+                        CommonConfig.CurDownload = soft.升级包名;
+                        ClientCall.下载文件("update\\" + CommonConfig.CurDownload);
                         Console.WriteLine("下载文件：" + soft.升级包名);
                         WaitType = 2;
                         WaitDelay = 0;
@@ -272,14 +271,14 @@ namespace PalletService
                         {
                             string diskName = Convert.ToChar(67 + diskID).ToString();
                             //lblInfo.Text = "正在检测" + diskName + "盘";
-                            if (File.Exists(diskName + ":\\" + Program.ProcessName + ".zip"))
+                            if (File.Exists(diskName + ":\\" + CommonConfig.ProcessName + ".zip"))
                             {
                                 //找到相关压缩包
                                 tmrUpdate.Enabled = false;
                                 //lblInfo.Text = "正在解压缩...";
                                 if (Directory.Exists(Application.StartupPath + "\\update\\unzip"))
                                     DeletePath(Application.StartupPath + "\\update\\unzip");
-                                if (UnZip(diskName + ":\\" + Program.ProcessName + ".zip", Application.StartupPath + "\\update\\unzip", "", true))
+                                if (UnZip(diskName + ":\\" + CommonConfig.ProcessName + ".zip", Application.StartupPath + "\\update\\unzip", "", true))
                                 {
                                     updateFlag++;
                                     tmrCheck.Enabled = true;
@@ -299,7 +298,7 @@ namespace PalletService
                     case 1:
                         //lblInfo.Text = "从网络检查更新...";
 
-                        ClientCall.软件版本请求指令(Program.MyGuid, Program.StoreID, 1);
+                        ClientCall.软件版本请求指令(Program.MyGuid, CommonConfig.StoreId, 1);
                         isWait = true;
                         WaitDelay = 0;
                         WaitType = 1;
@@ -320,13 +319,13 @@ namespace PalletService
                         //lblInfo.Text = "正在解压缩...";
                         if (Directory.Exists(Application.StartupPath + "\\update\\unzip"))
                             DeletePath(Application.StartupPath + "\\update\\unzip");
-                        if (UnZip(Application.StartupPath + "\\update\\" + Program.CurDownload, Application.StartupPath + "\\update\\unzip", "", true))
+                        if (UnZip(Application.StartupPath + "\\update\\" + CommonConfig.CurDownload, Application.StartupPath + "\\update\\unzip", "", true))
                             updateFlag++;
                         else
                         {
                             //lblInfo.Text = "文件解压失败";
                             Application.DoEvents();
-                            File.Delete(Application.StartupPath + "\\update\\" + Program.CurDownload);
+                            File.Delete(Application.StartupPath + "\\update\\" + CommonConfig.CurDownload);
                             Thread.Sleep(2000);
                             Application.Exit();
                         }
@@ -336,7 +335,7 @@ namespace PalletService
                         foreach (Process p in Process.GetProcesses())
                         {
                             Console.WriteLine(p.ProcessName);
-                            if (p.ProcessName.Contains(Program.ProcessName))
+                            if (p.ProcessName.Contains(CommonConfig.ProcessName))
                             {
                                 p.Kill();
                             }
@@ -370,7 +369,7 @@ namespace PalletService
                         //lblInfo.Text = "正在启动程序...";
                         Process pStart = new Process();
                         pStart.StartInfo.WorkingDirectory = Application.StartupPath;    //要启动程序路径
-                        pStart.StartInfo.FileName = Program.ProcessName + ".exe";//需要启动的程序名     
+                        pStart.StartInfo.FileName = CommonConfig.ProcessName + ".exe";//需要启动的程序名     
                         pStart.Start();//启动 
                         updateFlag++;
 
@@ -428,14 +427,14 @@ namespace PalletService
                     {
                         if (WaitType == 1)
                         {
-                            ClientCall.软件版本请求指令(Program.MyGuid, Program.StoreID, 1);
+                            ClientCall.软件版本请求指令(Program.MyGuid, CommonConfig.StoreId, 1);
                             isWait = true;
                             WaitDelay = 0;
                             WaitType = 1;
                         }
                         else if (WaitType == 2)
                         {
-                            ClientCall.下载文件("update\\" + Program.CurDownload);
+                            ClientCall.下载文件("update\\" + CommonConfig.CurDownload);
                             WaitType = 3;
                             WaitDelay = 0;
                             isWait = true;
@@ -666,6 +665,11 @@ namespace PalletService
             {
                 return false;
             }
+        }
+
+        private bool PayService()
+        {
+            return false;
         }
 
         private void button4_Click(object sender, EventArgs e)

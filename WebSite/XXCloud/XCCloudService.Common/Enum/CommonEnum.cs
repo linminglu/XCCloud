@@ -110,7 +110,7 @@ namespace XCCloudService.Common.Enum
         [Description("门票")]
         ProjectTicket = 1,
 
-        [Description("单品")]
+        [Description("商品")]
         Good = 2,
 
         [Description("会员卡续期")]
@@ -124,6 +124,12 @@ namespace XCCloudService.Common.Enum
 
         [Description("兑换券使用")]
         CouponList = 6,
+
+        [Description("现金投币")]
+        CashCoinIn = 7,
+
+        [Description("余额投币")]
+        BalanceCoinIn = 8,
     }
 
     /// <summary>
@@ -1709,6 +1715,29 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 订单来源
+    /// </summary>
+    public enum OrderPayTypeEnum
+    {
+        [Description("现金")]
+        现金 = 0,
+        [Description("微信")]
+        微信 = 1,
+        [Description("支付宝")]
+        支付宝 = 2,
+        [Description("银联")]
+        银联 = 3,
+        [Description("储值金")]
+        储值金 = 4,
+        [Description("美团点评")]
+        美团点评 = 5,
+        [Description("口碑")]
+        口碑 = 6,
+        [Description("糯米")]
+        糯米 = 7
+    }
+
+    /// <summary>
     /// 订单回调操作
     /// </summary>
     public enum OrderHandleEnum
@@ -1719,6 +1748,16 @@ namespace XCCloudService.Common.Enum
         会员投币 = 3
     }
 
+    /// <summary>
+    /// 支付结果
+    /// </summary>
+    public enum PayResultEnum
+    {
+        交易成功,
+        交易失败,
+        等待授权,
+        交易未知
+    }
 
     public enum AuditOrderType
     {

@@ -14,8 +14,8 @@ public int? FoodID { get; set; }
 public int? MemberLevelID { get; set; }
 public int? TimeType { get; set; }
 public string Week { get; set; }
-public DateTime? StartTime { get; set; }
-public DateTime? EndTime { get; set; }
+public TimeSpan? StartTime { get; set; }
+public TimeSpan? EndTime { get; set; }
 public decimal? VIPPrice { get; set; }
 public decimal? ClientPrice { get; set; }
 public DateTime? StartDate { get; set; }

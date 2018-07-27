@@ -49,7 +49,7 @@
                 <div class="vipCard" v-if="tiedCard">
                     <!--<img class="section_image" slot="img" src="images/vipCard.png">-->
                     <div class="section_cont">
-                        <p class='stored'><span class="sectionTitle">开卡门店：</span> {{StoreName}}</p>
+                        <p class="stored"><span class="sectionTitle">开卡门店：</span> {{StoreName}}</p>
                         <p class="MemberLevel"><span class="sectionTitle">会员等级：</span>{{MemberLevelName}}</p>
                         <p class="ICCard"><span class="sectionTitle">会员卡号：</span>{{ICCardId}}</p>
                     </div>
@@ -61,7 +61,7 @@
                 <yd-grids-group :rows="3">
                     <yd-grids-item v-for="item in cardBalanceList" v-if="tiedCard">
                         <span slot="text">{{item.BalanceName}}</span>
-                        <span slot="text" class="spanSty">{{item.Quantity}}</span>
+                        <span slot="text" class="spanSty">{{item.TotalQuantity}}</span>
                     </yd-grids-item>
                 </yd-grids-group>
             </yd-grids-group>
@@ -80,7 +80,6 @@
             </yd-grids-group>
         </yd-layout>
         <yd-backtop></yd-backtop>
-        
     </div>
 <script src="js/jquery-1.8.3-min.js"></script>
 <!-- 引入 Vue -->
@@ -124,10 +123,10 @@
         methods: {
             Load:function () {
                 var that =this;
-                var deviceToken = "A1493338DB3D4E4294F7351868DF5DC6";
-                var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
-                setStorage("userThirdId",userThirdId);
-                setStorage("deviceNo",deviceToken);
+                // var deviceToken = "86A8AFBDB2E84B8E95BF52C052E8BA7C";
+                // var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
+                // setStorage("userThirdId",userThirdId);
+                // setStorage("deviceNo",deviceToken);
                 var ifScanCode = getStorage("ifScanCode")||"";        //是否是扫码进入
                 var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
                 var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
@@ -219,7 +218,7 @@
                         var coordinates =res.data.result_data;
                         setStorage("coordinates",coordinates);
                         wx.config({
-                            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                             appId: coordinates.AppId, // 必填，公众号的唯一标识
                             timestamp: coordinates.TimeStamp, // 必填，生成签名的时间戳
                             nonceStr: coordinates.NonceStr, // 必填，生成签名的随机串
@@ -308,7 +307,7 @@
                         success: function (res) {
                             var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
                             console.log(result);
-//                            alert(JSON.stringify(result));
+                           alert(JSON.stringify(result));
                             var str = result.toString();
                             strSplit = str.split("/");
                             var strCode = strSplit[strSplit.length - 2];
@@ -388,13 +387,7 @@
 //          切换会员卡或绑卡
             mineCard:function () {
                 var that = this;
-                that.$dialog.confirm({
-                    title: '温馨提示!',
-                    mes: "是否前往绑卡或换卡？",
-                    opts: (function () {
-                        window.location.href ="mineCard.html"
-                    })
-                });
+                window.location.href ="mineCard.html"
             },
 //          充值
             recharge:function(index){

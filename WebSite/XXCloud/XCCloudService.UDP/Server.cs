@@ -23,6 +23,9 @@ using XCCloudService.SocketService.UDP.Common;
 using XCCloudService.Pay;
 using XCCloudService.CacheService;
 using XCCloudService.Model.CustomModel.XCCloud;
+using System.Diagnostics;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
 
 namespace XCCloudService.SocketService.UDP
@@ -273,52 +276,90 @@ namespace XCCloudService.SocketService.UDP
                                 case TransmiteEnum.卡头解绑同步响应:
                                     CommandHandler.CardHeadResetInsNotify(data, item);
                                     break;
-                                case TransmiteEnum.门店条码支付请求响应:
-                                    CommandHandler.BarPayInsNotify(data, item);
-                                    break;
-                                case TransmiteEnum.门店条码支付应答请求:
-                                    CommandHandler.BarPayInsNotify2(data, item);
-                                    break;
-                                //case TransmiteEnum.门店条码支付请求:
-                                //    {
-                                //        string sn = "", secret = "";
-                                //        CommandHandler.ScanPayRequest(data, item, out sn, out secret);
-                                //        if (!AskSNList.ContainsKey(sn))
-                                //        {
-                                //            AskItem ai = new AskItem();
-                                //            ai.Secret = secret;
-                                //            ai.RemotePoint = item.remotePoint;
-                                //            AskSNList.Add(sn, ai);
-                                //        }
-                                //        else
-                                //        {
-                                //            AskSNList[sn].RemotePoint = item.remotePoint;
-                                //            AskSNList[sn].Secret = secret;
-                                //        }
-                                //        ScanPayRequestModel scanpay = JsonHelper.DataContractJsonDeserializer<ScanPayRequestModel>(data);
-
-                                //        OrderCacheModel order = new OrderCacheModel();
-                                //        order.OrderId = scanpay.OrderID;
-                                //        order.SN = scanpay.SN;
-                                //        //order.CreateTime = DateTime.Now;
-                                //        RedisCacheHelper.HashSet<OrderCacheModel>(CommonConfig.UdpOrderSNCache, scanpay.OrderID, order);
-
-                                //        PayOrderHelper payHelper = new PayOrderHelper();
-                                //        string errMsg = string.Empty;
-                                //        bool ret = payHelper.BarcodePay(scanpay.OrderID, scanpay.AuthCode, out errMsg);
-                                //        if(ret)
-                                //        {
-                                //            AskScanPayResult("1", errMsg, sn);
-                                //        }
-                                //        else
-                                //        {
-                                //            AskScanPayResult("0", errMsg, sn);
-                                //        }
-
-                                //        //string strResult = Convert.ToInt32(ret).ToString();
-                                //        //AskScanPayResult(strResult, errMsg, sn);
-                                //    }
+                                //case TransmiteEnum.门店条码支付请求响应:
+                                //    CommandHandler.BarPayInsNotify(data, item);
                                 //    break;
+                                //case TransmiteEnum.门店条码支付应答请求:
+                                //    CommandHandler.BarPayInsNotify2(data, item);
+                                //    break;
+                                case TransmiteEnum.门店条码支付请求请求:
+                                    {
+                                        ScanPayRequestModel scanpay = JsonHelper.DataContractJsonDeserializer<ScanPayRequestModel>(data);
+                                        scanpay.IP = ((IPEndPoint)item.remotePoint).Address.ToString();
+                                        scanpay.Port = ((IPEndPoint)item.remotePoint).Port;
+
+                                        XCGameRadarDeviceTokenModel deviceTokenModel = XCGameRadarDeviceTokenBusiness.GetRadarDeviceTokenModel(scanpay.Token);
+                                        if (deviceTokenModel == null)
+                                        {
+                                            //令牌无效
+                                            Debug.WriteLine("支付请求令牌无效");
+                                            AskScanPayResult(item.remotePoint, "0", "令牌错误", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                            return;
+                                        }
+                                        string store = deviceTokenModel.StoreId;
+                                        string pwd, dbname, msg;
+                                        StoreBusiness storeBusiness = new StoreBusiness();
+                                        //获取门店秘钥
+                                        if (storeBusiness.IsEffectiveStore(deviceTokenModel.StoreId, out dbname, out pwd, out msg))
+                                        {
+                                            if (SignKeyHelper.CheckSignKey(scanpay, pwd))
+                                            {
+                                                //验签成功
+                                                if (RedisCacheHelper.HashExists(CommonConfig.StoreCommandCache, scanpay.SN))
+                                                {
+                                                    //重复指令应答
+                                                    TransmiteObject.门店支付请求应答结构 ask = RedisCacheHelper.HashGet<TransmiteObject.门店支付请求应答结构>(CommonConfig.StoreCommandCache, scanpay.SN);
+                                                    AskScanPayResult(item.remotePoint, ask.result_code, ask.result_msg, scanpay.SN, TransmiteEnum.门店条码支付应答请求);
+                                                }
+                                                else
+                                                {
+                                                    //缓存业务
+                                                    RedisCacheHelper.HashSet<ScanPayRequestModel>(CommonConfig.UdpOrderSNCache, scanpay.OrderID, scanpay);
+                                                    //应答请求结果
+                                                    AskScanPayResult(item.remotePoint, "1", "", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                                    //缓存请求指令，避免重复处理
+                                                    TransmiteObject.门店支付请求应答结构 ask = new TransmiteObject.门店支付请求应答结构();
+                                                    ask.result_code = "1";
+                                                    ask.result_msg = "";
+                                                    ask.sn = scanpay.SN;
+                                                    ask.AckTime = DateTime.Now;
+                                                    RedisCacheHelper.HashSet<TransmiteObject.门店支付请求应答结构>(CommonConfig.StoreCommandCache, scanpay.SN, ask);
+
+                                                    //处理订单支付
+                                                    PayOrderHelper payHelper = new PayOrderHelper();
+                                                    payHelper.BarcodePayAsync(scanpay.OrderID, scanpay.AuthCode, (r) => { 
+                                                        if(r.Result)
+                                                        {
+                                                            if(r.PayResult == PayResultEnum.交易成功)
+                                                            {
+                                                                AskScanPayResult(scanpay.OrderID, "1", "", scanpay.SN);
+                                                                RedisCacheHelper.HashDelete(CommonConfig.UdpOrderSNCache, scanpay.OrderID);
+                                                            }
+                                                            else if (r.PayResult == PayResultEnum.交易失败)
+                                                            {
+                                                                AskScanPayResult(scanpay.OrderID, "0", r.Message, scanpay.SN);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            AskScanPayResult(scanpay.OrderID, "0", r.Message, scanpay.SN);
+                                                        }
+                                                    });
+
+                                                    ////抛出支付请求事件，在外部异步处理
+                                                    //TransmiteObject.门店支付请求结构 pay=new TransmiteObject.门店支付请求结构 ();
+                                                    //pay.订单编号=scanpay.OrderID;
+                                                    //pay.付款码=scanpay.AuthCode;
+                                                    //CallBackEvent.ScanPayRequest(pay);
+                                                }
+                                            }
+                                            else
+                                                AskScanPayResult(item.remotePoint, "0", "签名验证失败", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                        }
+                                        else
+                                            AskScanPayResult(item.remotePoint, "0", "门店秘钥验证失败", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                    }
+                                    break;
                                 //case TransmiteEnum.远程门店账目应答通知指令:
                                 //    CommandHandler.StoreQueryNotify(data, item, packId, packNum);
                                 //    break;
@@ -548,25 +589,32 @@ namespace XCCloudService.SocketService.UDP
         /// <summary>
         /// 应答门店条码支付结果
         /// </summary>
+        /// <param name="orderID">订单编号</param>
         /// <param name="result">支付结果 0 支付失败 1 支付成功</param>
         /// <param name="msg">失败时返回错误消息</param>
         /// <param name="sn">应答支付流水号</param>
-        public static bool AskScanPayResult(string result, string msg, string sn)
+        public static bool AskScanPayResult(string orderID, string result, string msg, string sn)
         {
-            if (AskSNList.ContainsKey(sn))
+            if (RedisCacheHelper.HashExists(CommonConfig.UdpOrderSNCache, orderID))
             {
-                EndPoint p = AskSNList[sn].RemotePoint;
-                ScanPayResponseModel response = new ScanPayResponseModel(result, msg, sn);
-                response.SignKey = SignKeyHelper.GetSignKey(response, AskSNList[sn].Secret);
-                //对象序列化为字节数组
-                byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(response);
-                //生成发送数据包
-                byte[] requestPackages = DataFactory.CreateResponseProtocolData(TransmiteEnum.远程门店出票条码数据请求, dataByteArr);
-                Send(p, requestPackages);
-                AskSNList.Remove(sn);
+                ScanPayRequestModel order = RedisCacheHelper.HashGet<ScanPayRequestModel>(CommonConfig.UdpOrderSNCache, orderID);
+                IPEndPoint clients = new IPEndPoint(IPAddress.Parse(order.IP), order.Port);
+                EndPoint epSender = (EndPoint)clients;
+                AskScanPayResult(epSender, result, msg, sn, TransmiteEnum.门店条码支付应答请求);
                 return true;
             }
             return false;
+        }
+        public static bool AskScanPayResult(EndPoint p, string result, string msg, string sn, TransmiteEnum cmdType)
+        {
+            ScanPayResponseModel response = new ScanPayResponseModel(result, msg, sn);
+            response.SignKey = SignKeyHelper.GetSignKey(response, AskSNList[sn].Secret);
+            //对象序列化为字节数组
+            byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(response);
+            //生成发送数据包
+            byte[] requestPackages = DataFactory.CreateResponseProtocolData(cmdType, dataByteArr);
+            Send(p, requestPackages);
+            return true;
         }
     }
 }

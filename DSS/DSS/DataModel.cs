@@ -228,6 +228,26 @@ namespace DSS
                 throw;
             }
         }
+
+        public static TimeSpan StrToTimeSpan(string str)
+        {
+            return StrToTimeSpan(str, new TimeSpan(0, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
+        }
+
+        public static TimeSpan StrToTimeSpan(string str, TimeSpan defValue)
+        {
+            if (!string.IsNullOrEmpty(str))
+            {
+                string[] time = str.Split(':');
+                int hours = Convert.ToInt32(time[0]);
+                int minutes = (time.Length == 2 || time.Length == 3) ? Convert.ToInt32(time[1]) : 0;
+                int seconds = (time.Length == 3) ? Convert.ToInt32(time[2]) : 0;
+                TimeSpan ts = new TimeSpan(0, hours, minutes, seconds);
+                return ts;
+            }
+            return defValue;
+        }
+
         public bool CovertToDataModel(string sql, ref object o)
         {
             try
@@ -257,6 +277,9 @@ namespace DSS
                                     break;
                                 case "decimal":
                                     pi.SetValue(o, Convert.ToDecimal(row[pi.Name]), null);
+                                    break;
+                                case "timespan":
+                                    pi.SetValue(o, (object)StrToTimeSpan(Convert.ToString(row[pi.Name])), null);
                                     break;
                                 default:
                                     if (pi.PropertyType.FullName.Contains("DateTime"))
@@ -308,6 +331,9 @@ namespace DSS
                                         break;
                                     case "decimal":
                                         pi.SetValue(o, Convert.ToDecimal(row[pi.Name]), null);
+                                        break;
+                                    case "timespan":
+                                        pi.SetValue(o, (object)StrToTimeSpan(Convert.ToString(row[pi.Name])), null);
                                         break;
                                     default:
                                         if (pi.PropertyType.FullName.Contains("DateTime"))

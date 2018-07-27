@@ -23,7 +23,9 @@ namespace XCCloudWebBar.Model.XCCloud
         public string NewCardID { get; set; }
         public string FoodSaleID { get; set; }
         public Nullable<decimal> OpFee { get; set; }
+        public Nullable<int> State { get; set; }
         public string OpStoreID { get; set; }
+        public Nullable<System.DateTime> OpTime { get; set; }
         public string WorkStation { get; set; }
         public Nullable<int> UserID { get; set; }
         public string ScheduldID { get; set; }
