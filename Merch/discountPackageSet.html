@@ -746,8 +746,6 @@
             form.render('checkbox');
             $('#setpresent').val('');
         });
-
-
         form.on('select(FoodType)', function (data) {
             FoodType = data.value == '-请选择-' ? '' : data.value;
         });
@@ -925,6 +923,7 @@
                 });
             } else {
                 if (obj.checked == true) {
+                    layer.msg('请设置商品数')
                     giftList = [{
                         'FoodDetailType': 1,
                         'FoodDetailTypeStr': '礼品',
@@ -932,8 +931,8 @@
                         'OperateType': '',
                         'ContainId': obj.data.ID,
                         'ProjectName': obj.data.GoodName,
-                        'WeightValue': obj.data.Price,
-                        'ContainCount': 1
+                        'WeightValue': parseInt(obj.data.Price)*parseInt(obj.data.GoodCount),
+                        'ContainCount': obj.data.GoodCount
                     }]
                 } else {
                     giftList = [];
@@ -953,6 +952,17 @@
                 });
             }
         });
+        table.on('edit(giftTable)', function (obj) {
+            console.log(obj.data);
+            if(giftList.length>0){
+                for(let i in giftList){
+                    if(giftList[i].ProjectName==obj.data.GoodName&&giftList[i].ContainId==obj.data.ID){
+                        giftList[i].ContainCount=obj.value;
+                        giftList[i].WeightValue= parseInt(obj.data.Price)*parseInt(obj.data.GoodCount);
+                    }
+                }
+            }
+        })
         //新增一个套餐
         $('.addNewPackage').on('click', () => {
             foodID = '';
@@ -1010,7 +1020,6 @@
             html.find('input').val('');
             html.find('select').val('').removeAttr('id');
             $('.changeBox').append(html);
-            console.log(html)
         });
         $('.changeBox').on('click', '.changeItem .delChangeBtn', function () {
             console.log($('.changeBox').find('.changeItem').length)
@@ -1036,7 +1045,7 @@
                    $(this).parents('.changeItem').find('input[name="CashValue"]').val('');
             }
 
-        })
+        });
         $('.changeBox').on('click', '.changeItem .saveChangeBtn', function () {
             if ($(this).parents('.changeItem').find('input[name="UseCount"]').val() != '' &&
                 $(this).parents('.changeItem').find('select[name="BalanceType"]').val() != '' &&
@@ -1049,7 +1058,7 @@
             } else {
                 layer.msg('必填项不能为空！')
             }
-        })
+        });
         //会员币种
         $('#vipCoinBtn').on('click', () => {
             xc.getBalanceTypeDic('1', token, layer, form, 'vipCoinType');
@@ -1160,17 +1169,18 @@
                 for(let i in FoodDetial){
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
-                if(FoodDetial.length==0){
+                if(FoodDetial.length==1){
                     FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
-                    for(let i=0; i< FoodDetial.length-2;i++){
+                    for(let i=0; i< FoodDetial.length-1;i++){
                         let _precent=parseInt(FoodDetial[i].WeightValue)/sum*100
-                        FoodDetial[i].wp=
-                            sumPrecent+=parseInt(_precent.toFixed(2))
+                        FoodDetial[i].wp=_precent.toFixed(2);
+                        sumPrecent+=parseFloat(FoodDetial[i].wp)
                     }
-                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
+                    FoodDetial[FoodDetial.length-1].wp= 100-sumPrecent
                 }
+
             }
             layer.close(index);
             newFoodDetialsTable(table, FoodDetial, layer, form)
@@ -1183,17 +1193,18 @@
                 for(let i in FoodDetial){
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
-                if(FoodDetial.length==0){
+                if(FoodDetial.length==1){
                     FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
-                    for(let i=0; i< FoodDetial.length-2;i++){
+                    for(let i=0; i< FoodDetial.length-1;i++){
                         let _precent=parseInt(FoodDetial[i].WeightValue)/sum*100
-                        FoodDetial[i].wp=
-                            sumPrecent+=parseInt(_precent.toFixed(2))
+                        FoodDetial[i].wp=_precent.toFixed(2);
+                        sumPrecent+=parseFloat(FoodDetial[i].wp)
                     }
-                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
+                    FoodDetial[FoodDetial.length-1].wp= 100-sumPrecent
                 }
+
             }
             newFoodDetialsTable(table, FoodDetial, layer, form)
         });
@@ -1212,17 +1223,18 @@
                 for(let i in FoodDetial){
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
-                if(FoodDetial.length==0){
+                if(FoodDetial.length==1){
                     FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
-                    for(let i=0; i< FoodDetial.length-2;i++){
+                    for(let i=0; i< FoodDetial.length-1;i++){
                         let _precent=parseInt(FoodDetial[i].WeightValue)/sum*100
-                        FoodDetial[i].wp=
-                            sumPrecent+=parseInt(_precent.toFixed(2))
+                        FoodDetial[i].wp=_precent.toFixed(2);
+                        sumPrecent+=parseFloat(FoodDetial[i].wp)
                     }
-                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
+                    FoodDetial[FoodDetial.length-1].wp= 100-sumPrecent
                 }
+
             }
             layer.close(index);
             newFoodDetialsTable(table, FoodDetial, layer, form)
@@ -1242,17 +1254,18 @@
                 for(let i in FoodDetial){
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
-                if(FoodDetial.length==0){
+                if(FoodDetial.length==1){
                     FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
-                    for(let i=0; i< FoodDetial.length-2;i++){
+                    for(let i=0; i< FoodDetial.length-1;i++){
                         let _precent=parseInt(FoodDetial[i].WeightValue)/sum*100
-                        FoodDetial[i].wp=
-                            sumPrecent+=parseInt(_precent.toFixed(2))
+                        FoodDetial[i].wp=_precent.toFixed(2);
+                        sumPrecent+=parseFloat(FoodDetial[i].wp)
                     }
-                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
+                    FoodDetial[FoodDetial.length-1].wp= 100-sumPrecent
                 }
+
             }
             layer.close(index);
             newFoodDetialsTable(table, FoodDetial, layer, form)
@@ -1272,17 +1285,18 @@
                 for(let i in FoodDetial){
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
-                if(FoodDetial.length==0){
+                if(FoodDetial.length==1){
                     FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
-                    for(let i=0; i< FoodDetial.length-2;i++){
+                    for(let i=0; i< FoodDetial.length-1;i++){
                         let _precent=parseInt(FoodDetial[i].WeightValue)/sum*100
-                        FoodDetial[i].wp=
-                            sumPrecent+=parseInt(_precent.toFixed(2))
+                        FoodDetial[i].wp=_precent.toFixed(2);
+                        sumPrecent+=parseFloat(FoodDetial[i].wp)
                     }
-                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
+                    FoodDetial[FoodDetial.length-1].wp= 100-sumPrecent
                 }
+
             }
             layer.close(index);
             newFoodDetialsTable(table, FoodDetial, layer, form)
@@ -1471,17 +1485,18 @@
                                 for(let i in FoodDetial){
                                     sum+=parseInt(FoodDetial[i].WeightValue)
                                 }
-                                if(FoodDetial.length==0){
+                                if(FoodDetial.length==1){
                                     FoodDetial[0].wp= 100
                                 }else {
                                     let sumPrecent=0;
-                                    for(let i=0; i< FoodDetial.length-2;i++){
+                                    for(let i=0; i< FoodDetial.length-1;i++){
                                         let _precent=parseInt(FoodDetial[i].WeightValue)/sum*100
-                                        FoodDetial[i].wp=
-                                            sumPrecent+=parseInt(_precent.toFixed(2))
+                                        FoodDetial[i].wp=_precent.toFixed(2);
+                                        sumPrecent+=parseFloat(FoodDetial[i].wp)
                                     }
-                                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
+                                    FoodDetial[FoodDetial.length-1].wp= 100-sumPrecent
                                 }
+
                             }
                             newFoodDetialsTable(table, arr.FoodDetials, layer, form)
                             FoodLevel = arr.FoodLevels;
@@ -1581,10 +1596,28 @@
                         FoodDetial[i].ContainCount == data.ContainCount &&
                         FoodDetial[i].WeightValue == data.WeightValue) {
                         FoodDetial.splice(i, 1);
-                        // console.log(FoodDetial)
-                        obj.del();
+                        if(FoodDetial.length>0){
+                            let sum=0;
+                            for(let i in FoodDetial){
+                                sum+=parseInt(FoodDetial[i].WeightValue)
+                            }
+                            if(FoodDetial.length==1){
+                                FoodDetial[0].wp= 100
+                            }else {
+                                let sumPrecent=0;
+                                for(let i=0; i< FoodDetial.length-1;i++){
+                                    let _precent=parseInt(FoodDetial[i].WeightValue)/sum*100
+                                    FoodDetial[i].wp=_precent.toFixed(2);
+                                    sumPrecent+=parseFloat(FoodDetial[i].wp)
+                                }
+                                FoodDetial[FoodDetial.length-1].wp= 100-sumPrecent
+                            }
+
+                        }
+                        newFoodDetialsTable(table, FoodDetial, layer, form)
                     }
                 }
+
             }
         });
         table.on('tool(ticketsTable)', function (obj) {
@@ -1692,7 +1725,7 @@
                 , {field: 'ProjectName', title: '项目名称', align: 'center', width: 170}
                 , {field: 'ContainCount', title: '套餐内容数量', align: 'center', width: 170}
                 , {field: 'WeightValue', title: '权重值', align: 'center', width: 170,edit:true,}
-                , {field: 'wp', title: '权重%比', align: 'center', width: 170,templet:function (d) {
+                , {field: 'wp', title: '权重比', align: 'center', width: 170,templet:function (d) {
                         return d.wp+'%'
                     }}
                 , {fixed: 'right', title: '操作', width: 170, align: 'center', toolbar: '#barDemo1'}]]
@@ -1743,10 +1776,13 @@
             'size': 'sm',
             'cols': [{type: 'checkbox'},
                 {field: 'ID', title: '商品ID', align: 'center',width:170}
-                , {field: 'Barcode', title: '商品条码', align: 'center',width:170}
-                , {field: 'GoodName', title: '商品名称', align: 'center',width:170}
-                , {field: 'GoodTypeStr', title: '商品类别', align: 'center',width:170}
-                , {field: 'Price', title: '价格', align: 'center',width:170}
+                , {field: 'Barcode', title: '商品条码', align: 'center',width:200}
+                , {field: 'GoodName', title: '商品名称', align: 'center',width:150}
+                , {field: 'GoodTypeStr', title: '商品类别', align: 'center',width:150}
+                , {field: 'GoodCount', title: '商品数量', align: 'center', width: 150,edit:true,templet:function (d) {
+                        return 1
+                    }}
+                , {field: 'Price', title: '价格', align: 'center',width:100}
             ]
         };
         xc.getInitData(parm);
@@ -1801,6 +1837,17 @@
             }
         })
     };
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>停用</a>
+</script>
+<script type="text/html" id="barDemo1">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+</script>
+<script type="text/html" id="barDemo2">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
 </script>
 <script type="text/html" id="operateType1">
     {{# if(d.OperateType=='1'){ }}

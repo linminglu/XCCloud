@@ -75,7 +75,8 @@ namespace XXCloudService.Api.XCCloud
 //                            ";
 
                 string sql = @"SELECT
-                                    a.*, b.ProjectName + (case when b.Cnt > 1 then '等多个' else '' end) as BindProjects
+                                    a.*, b.ProjectName + (case when b.Cnt > 1 then '等多个' else '' end) as BindProjects,
+                                    '' AS ValidDate, '' AS WeekTypeStr, '' AS PeriodLimit, '' AS NoDate, '' AS ExitLimit
                                 FROM
                                 	Data_ProjectTicket a
                                 LEFT JOIN (                                
