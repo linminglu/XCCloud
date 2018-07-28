@@ -1161,7 +1161,7 @@
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
                 if(FoodDetial.length==0){
-                    FoodDetial[0].wp= 1
+                    FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
                     for(let i=0; i< FoodDetial.length-2;i++){
@@ -1169,9 +1169,8 @@
                         FoodDetial[i].wp=
                             sumPrecent+=parseInt(_precent.toFixed(2))
                     }
-                    FoodDetial[FoodDetial.length-1].wp= 1-sumPrecent
+                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
                 }
-
             }
             layer.close(index);
             newFoodDetialsTable(table, FoodDetial, layer, form)
@@ -1185,7 +1184,7 @@
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
                 if(FoodDetial.length==0){
-                    FoodDetial[0].wp= 1
+                    FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
                     for(let i=0; i< FoodDetial.length-2;i++){
@@ -1193,9 +1192,8 @@
                         FoodDetial[i].wp=
                             sumPrecent+=parseInt(_precent.toFixed(2))
                     }
-                    FoodDetial[FoodDetial.length-1].wp= 1-sumPrecent
+                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
                 }
-
             }
             newFoodDetialsTable(table, FoodDetial, layer, form)
         });
@@ -1215,7 +1213,7 @@
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
                 if(FoodDetial.length==0){
-                    FoodDetial[0].wp= 1
+                    FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
                     for(let i=0; i< FoodDetial.length-2;i++){
@@ -1223,9 +1221,8 @@
                         FoodDetial[i].wp=
                             sumPrecent+=parseInt(_precent.toFixed(2))
                     }
-                    FoodDetial[FoodDetial.length-1].wp= 1-sumPrecent
+                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
                 }
-
             }
             layer.close(index);
             newFoodDetialsTable(table, FoodDetial, layer, form)
@@ -1246,7 +1243,7 @@
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
                 if(FoodDetial.length==0){
-                    FoodDetial[0].wp= 1
+                    FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
                     for(let i=0; i< FoodDetial.length-2;i++){
@@ -1254,9 +1251,8 @@
                         FoodDetial[i].wp=
                             sumPrecent+=parseInt(_precent.toFixed(2))
                     }
-                    FoodDetial[FoodDetial.length-1].wp= 1-sumPrecent
+                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
                 }
-
             }
             layer.close(index);
             newFoodDetialsTable(table, FoodDetial, layer, form)
@@ -1277,17 +1273,16 @@
                     sum+=parseInt(FoodDetial[i].WeightValue)
                 }
                 if(FoodDetial.length==0){
-                    FoodDetial[0].wp= 1
+                    FoodDetial[0].wp= 100
                 }else {
                     let sumPrecent=0;
                     for(let i=0; i< FoodDetial.length-2;i++){
                         let _precent=parseInt(FoodDetial[i].WeightValue)/sum*100
                         FoodDetial[i].wp=
-                        sumPrecent+=parseInt(_precent.toFixed(2))
+                            sumPrecent+=parseInt(_precent.toFixed(2))
                     }
-                    FoodDetial[FoodDetial.length-1].wp= 1-sumPrecent
+                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
                 }
-
             }
             layer.close(index);
             newFoodDetialsTable(table, FoodDetial, layer, form)
@@ -1477,7 +1472,7 @@
                                     sum+=parseInt(FoodDetial[i].WeightValue)
                                 }
                                 if(FoodDetial.length==0){
-                                    FoodDetial[0].wp= 1
+                                    FoodDetial[0].wp= 100
                                 }else {
                                     let sumPrecent=0;
                                     for(let i=0; i< FoodDetial.length-2;i++){
@@ -1485,9 +1480,8 @@
                                         FoodDetial[i].wp=
                                             sumPrecent+=parseInt(_precent.toFixed(2))
                                     }
-                                    FoodDetial[FoodDetial.length-1].wp= 1-sumPrecent
+                                    FoodDetial[FoodDetial.length-1].wp= (1-sumPrecent)
                                 }
-
                             }
                             newFoodDetialsTable(table, arr.FoodDetials, layer, form)
                             FoodLevel = arr.FoodLevels;
@@ -1807,17 +1801,6 @@
             }
         })
     };
-</script>
-
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>停用</a>
-</script>
-<script type="text/html" id="barDemo1">
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
-</script>
-<script type="text/html" id="barDemo2">
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
 </script>
 <script type="text/html" id="operateType1">
     {{# if(d.OperateType=='1'){ }}
