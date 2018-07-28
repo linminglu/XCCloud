@@ -13,6 +13,7 @@ using PalletService.DeviceUtility.Common;
 using PalletService.Model;
 using PalletService.Model.Device;
 using PalletService.Model.WorkStation;
+using PalletService.Notify;
 using PalletService.Utility.Dog;
 using PalletService.Utility.MemberCard;
 using PalletService.Utility.PeopleCard;
@@ -48,6 +49,7 @@ namespace PalletService
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.PayServiceInit();
             Computer.ComputeInfo();
             PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "Computer.ComputeInfo()");
             this.SysConfigInit();
@@ -58,6 +60,7 @@ namespace PalletService
             PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "this.UpgradeInit()");
             this.RegisterWorkStation();
             PalletService.Common.LogHelper.SaveLog(TxtLogType.SystemInit, "this.RegisterWorkStation()");
+
         }
         private void UpgradeInit()
         {
@@ -667,9 +670,9 @@ namespace PalletService
             }
         }
 
-        private bool PayService()
+        private void PayServiceInit()
         {
-            return false;
+            PalletService.Business.Pay.PayService.PayServiceInit();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -742,6 +745,11 @@ namespace PalletService
                     answerMsg = cardMsg,
                 };
             }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            PalletService.Business.Pay.PayService.ScanPayRequest("10001636010300120180719566987000", "134645186924298453");
         }
     }
 }

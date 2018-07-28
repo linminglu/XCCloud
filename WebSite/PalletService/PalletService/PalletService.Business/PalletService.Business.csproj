@@ -43,6 +43,7 @@
     <Compile Include="Device\DeviceBusiness.cs" />
     <Compile Include="Dog\DogBusiness.cs" />
     <Compile Include="Member\MemberBusiness.cs" />
+    <Compile Include="Pay\PayService.cs" />
     <Compile Include="security\WorkstationBusiness.cs" />
     <Compile Include="Store\StoreBusiness.cs" />
     <Compile Include="SysConfig\SysConfigBusiness.cs" />
@@ -62,6 +63,14 @@
     <ProjectReference Include="..\..\PalletService.Model\PalletService.Model.csproj">
       <Project>{d1ad1804-3dff-4adc-a9e0-f0b925c357e7}</Project>
       <Name>PalletService.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RadarService.LogHelper\PalletService.LogHelper.csproj">
+      <Project>{d9342b5b-f4c5-4da5-9e8d-be0bafd1ec6e}</Project>
+      <Name>PalletService.LogHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RadarService.Notify\PalletService.Notify.csproj">
+      <Project>{68e92126-8f27-4b44-99f0-dfcd6dc25c86}</Project>
+      <Name>PalletService.Notify</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

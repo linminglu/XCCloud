@@ -44,5 +44,6 @@ namespace XCCloudService.Model.Socket.UDP
         public string  Token { get; set; }
         public string IP { get; set; }
         public int Port { get; set; }
+        public string SecretKey { get; set; }
     }
 }

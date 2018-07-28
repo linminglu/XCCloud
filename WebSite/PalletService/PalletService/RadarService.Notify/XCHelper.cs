@@ -146,6 +146,14 @@ namespace PalletService.Notify
                 //tRepeat = new Thread(new ThreadStart(RepeatTick)) { IsBackground = true, Name = "指令重发线程" };
                 tRepeat.Start();
 
+                for (int i = 0; i < 100; i++)
+                {
+                    BodySendList[i] = new RepeatDataItem();
+                    BodySendList[i].CmdType = 0;
+                    BodySendList[i].SN = "";
+                    BodySendList[i].SendFlag = false;
+                }
+
                 client = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 byte[] optionInValue = { Convert.ToByte(false) };
                 byte[] optionOutValue = new byte[4];
@@ -348,7 +356,7 @@ namespace PalletService.Notify
                                 {
                                     ClearBodySend(response.sn);
                                     PayRequest(response);
-                                }                                
+                                }
                                 Debug.WriteLine("收到支付请求应答：" + f.FrameJsontxt);
                             }
                             break;

@@ -293,7 +293,6 @@ namespace XCCloudService.SocketService.UDP
                                         {
                                             //令牌无效
                                             Debug.WriteLine("支付请求令牌无效");
-                                            AskScanPayResult(item.remotePoint, "0", "令牌错误", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
                                             return;
                                         }
                                         string store = deviceTokenModel.StoreId;
@@ -302,6 +301,7 @@ namespace XCCloudService.SocketService.UDP
                                         //获取门店秘钥
                                         if (storeBusiness.IsEffectiveStore(deviceTokenModel.StoreId, out dbname, out pwd, out msg))
                                         {
+                                            scanpay.SecretKey = pwd;
                                             if (SignKeyHelper.CheckSignKey(scanpay, pwd))
                                             {
                                                 //验签成功
@@ -309,14 +309,14 @@ namespace XCCloudService.SocketService.UDP
                                                 {
                                                     //重复指令应答
                                                     TransmiteObject.门店支付请求应答结构 ask = RedisCacheHelper.HashGet<TransmiteObject.门店支付请求应答结构>(CommonConfig.StoreCommandCache, scanpay.SN);
-                                                    AskScanPayResult(item.remotePoint, ask.result_code, ask.result_msg, scanpay.SN, TransmiteEnum.门店条码支付应答请求);
+                                                    AskScanPayResult(item.remotePoint, ask.result_code, ask.result_msg, scanpay.SN, TransmiteEnum.门店条码支付应答请求, scanpay);
                                                 }
                                                 else
                                                 {
                                                     //缓存业务
                                                     RedisCacheHelper.HashSet<ScanPayRequestModel>(CommonConfig.UdpOrderSNCache, scanpay.OrderID, scanpay);
                                                     //应答请求结果
-                                                    AskScanPayResult(item.remotePoint, "1", "", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                                    AskScanPayResult(item.remotePoint, "1", "", scanpay.SN, TransmiteEnum.门店条码支付请求响应, scanpay);
                                                     //缓存请求指令，避免重复处理
                                                     TransmiteObject.门店支付请求应答结构 ask = new TransmiteObject.门店支付请求应答结构();
                                                     ask.result_code = "1";
@@ -327,10 +327,11 @@ namespace XCCloudService.SocketService.UDP
 
                                                     //处理订单支付
                                                     PayOrderHelper payHelper = new PayOrderHelper();
-                                                    payHelper.BarcodePayAsync(scanpay.OrderID, scanpay.AuthCode, (r) => { 
-                                                        if(r.Result)
+                                                    payHelper.BarcodePayAsync(scanpay.OrderID, scanpay.AuthCode, (r) =>
+                                                    {
+                                                        if (r.Result)
                                                         {
-                                                            if(r.PayResult == PayResultEnum.交易成功)
+                                                            if (r.PayResult == PayResultEnum.交易成功)
                                                             {
                                                                 AskScanPayResult(scanpay.OrderID, "1", "", scanpay.SN);
                                                                 RedisCacheHelper.HashDelete(CommonConfig.UdpOrderSNCache, scanpay.OrderID);
@@ -354,10 +355,12 @@ namespace XCCloudService.SocketService.UDP
                                                 }
                                             }
                                             else
-                                                AskScanPayResult(item.remotePoint, "0", "签名验证失败", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                                //AskScanPayResult(item.remotePoint, "0", "签名验证失败", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                                Debug.WriteLine("签名验证失败");
                                         }
                                         else
-                                            AskScanPayResult(item.remotePoint, "0", "门店秘钥验证失败", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                            //AskScanPayResult(item.remotePoint, "0", "门店秘钥验证失败", scanpay.SN, TransmiteEnum.门店条码支付请求响应);
+                                            Debug.WriteLine("门店秘钥验证失败");
                                     }
                                     break;
                                 //case TransmiteEnum.远程门店账目应答通知指令:
@@ -600,15 +603,15 @@ namespace XCCloudService.SocketService.UDP
                 ScanPayRequestModel order = RedisCacheHelper.HashGet<ScanPayRequestModel>(CommonConfig.UdpOrderSNCache, orderID);
                 IPEndPoint clients = new IPEndPoint(IPAddress.Parse(order.IP), order.Port);
                 EndPoint epSender = (EndPoint)clients;
-                AskScanPayResult(epSender, result, msg, sn, TransmiteEnum.门店条码支付应答请求);
+                AskScanPayResult(epSender, result, msg, sn, TransmiteEnum.门店条码支付应答请求, order);
                 return true;
             }
             return false;
         }
-        public static bool AskScanPayResult(EndPoint p, string result, string msg, string sn, TransmiteEnum cmdType)
+        public static bool AskScanPayResult(EndPoint p, string result, string msg, string sn, TransmiteEnum cmdType, ScanPayRequestModel model)
         {
             ScanPayResponseModel response = new ScanPayResponseModel(result, msg, sn);
-            response.SignKey = SignKeyHelper.GetSignKey(response, AskSNList[sn].Secret);
+            response.SignKey = SignKeyHelper.GetSignKey(response, model.SecretKey);
             //对象序列化为字节数组
             byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(response);
             //生成发送数据包
