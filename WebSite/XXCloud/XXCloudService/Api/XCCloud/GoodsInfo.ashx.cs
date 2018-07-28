@@ -249,6 +249,9 @@ namespace XXCloudService.Api.XCCloud
                 var barCode = dicParas.Get("barCode");
                 var goodInfoPrice = dicParas.GetArray("goodInfoPrice");
 
+                if (barCode.Length > 20)
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "商品条码长度不能超过20个字符");
+
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
