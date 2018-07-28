@@ -358,7 +358,7 @@ namespace DSS.Server
                                         else
                                         {
                                             //Debug.WriteLine("门店" + response.StoreID + ":签名错误");
-                                        }                                            
+                                        }
                                     }
                                     break;
                                 case TransmiteEnum.门店数据变更同步请求:
@@ -381,7 +381,11 @@ namespace DSS.Server
                                                     //令牌校验成功
                                                     DSS.DataAccess ac = new DSS.DataAccess();
                                                     if (request.Action == 0)
+                                                    {
+                                                        if (ac.SyncExists(request.TableName, request.IdValue))
+                                                            ac.SyncDeleteData(request.TableName, request.IdValue);
                                                         ac.SyncAddData(request.TableName, request.JsonText, secret);//新增同步
+                                                    }
                                                     else if (request.Action == 1)
                                                         ac.SyncUpdateData(request.TableName, request.IdValue, request.JsonText, secret); //修改同步
                                                     else if (request.Action == 2)
@@ -568,11 +572,11 @@ namespace DSS.Server
                     CloudDataSync(merchID, secret, tableName, idValue, action, writeBuf, sn);
                     return true;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.WriteLine(e.Message);
                     return false;
-                }                
+                }
             };//声明异步方法实现方式
             func.BeginInvoke((ar) =>
             {
@@ -598,10 +602,15 @@ namespace DSS.Server
             Type t = asmb.GetType("DSS.Table." + tableName);
             object o = System.Activator.CreateInstance(t);
 
-            model.CovertToDataModel(sql, ref o);
-            //JavaScriptSerializer jss = new JavaScriptSerializer();            
-            //string jsonString = jss.Serialize(o);
-            string jsonString = JsonConvert.SerializeObject(o);
+            string jsonString = "";
+            if (action != 2)
+            {
+                //非删除同步需要获取数据内容，并拼接为JSON
+                if (model.CovertToDataModel(sql, ref o))
+                    jsonString = JsonConvert.SerializeObject(o);
+                else
+                    return; //未找到有效数据
+            }
 
             ClientDataItem item = new ClientDataItem();
             item.IDValue = idValue;
@@ -613,8 +622,12 @@ namespace DSS.Server
                 item.SN = sn;
             item.SyncType = action;
             item.TableName = tableName;
-
+            SyncDataSend(merchID, action, secret, item, writeBuf);
+        }
+        void SyncDataSend(string merchID, int action, string secret, ClientDataItem item, bool writeBuf)
+        {
             DataAccess ac = new DataAccess();
+            DataModel model = new DataModel();
             DataTable dt = ac.ExecuteQueryReturnTable("select distinct StoreID from Base_ChainRule_Store where MerchID='" + merchID + "'");
             foreach (DataRow row in dt.Rows)
             {
@@ -623,12 +636,12 @@ namespace DSS.Server
                 {
                     Table.Sync_DataList sync = new Table.Sync_DataList();
                     sync.CreateTime = DateTime.Now;
-                    sync.IDValue = idValue;
+                    sync.IDValue = item.IDValue;
                     sync.MerchID = merchID;
                     sync.StoreID = storeID;
                     sync.SyncFlag = 0;
                     sync.SyncType = action;
-                    sync.TableName = tableName;
+                    sync.TableName = item.TableName;
                     sync.SN = item.SN;
                     sync.Verifiction = model.Verifiction(sync, secret, true);
                     model.Add(sync, true);

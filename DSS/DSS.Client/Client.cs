@@ -284,7 +284,12 @@ namespace DSS.Client
                                                 //令牌校验成功
                                                 DSS.DataAccess ac = new DSS.DataAccess();
                                                 if (request.Action == 0)
+                                                {
+                                                    //判断主键是否存在，否则删除
+                                                    if (ac.SyncExists(request.TableName, request.IdValue))
+                                                        ac.SyncDeleteData(request.TableName, request.IdValue);
                                                     ac.SyncAddData(request.TableName, request.JsonText, AppSecret);//新增同步
+                                                }
                                                 else if (request.Action == 1)
                                                     ac.SyncUpdateData(request.TableName, request.IdValue, request.JsonText, AppSecret); //修改同步
                                                 else if (request.Action == 2)
@@ -442,7 +447,9 @@ namespace DSS.Client
             cmd.Add(0xfe);
             cmd.Add(0xfe);
 
-            client.BeginSendTo(cmd.ToArray(), 0, cmd.Count(), SocketFlags.None, serverP, new AsyncCallback(SendCallBack), client);
+            client.SendTo(cmd.ToArray(), serverP);
+
+            //client.BeginSendTo(cmd.ToArray(), 0, cmd.Count(), SocketFlags.None, serverP, new AsyncCallback(SendCallBack), client);
         }
 
         void SendCallBack(IAsyncResult ar)
@@ -465,26 +472,33 @@ namespace DSS.Client
             int i = 0;
             while (true)
             {
-                SendCommandSend();
-                if (InitFlag)
+                try
                 {
-                    if (ConnectRecvTime.AddSeconds(60) < ConnectSendTime)
+                    SendCommandSend();
+                    if (InitFlag)
                     {
-                        //超过1分钟没有收到任何服务器的数据则视为服务器断开
-                        InitFlag = false;
+                        if (ConnectRecvTime.AddSeconds(60) < ConnectSendTime)
+                        {
+                            //超过1分钟没有收到任何服务器的数据则视为服务器断开
+                            InitFlag = false;
+                        }
+                        if (i > 10)
+                        {
+                            i = 0;
+                            TickConnectServer();
+                        }
+                        i++;
                     }
-                    if (i > 10)
+                    else
                     {
-                        i = 0;
-                        TickConnectServer();
+                        RegistRouteDevice();
                     }
-                    i++;
                 }
-                else
+                catch (Exception e)
                 {
-                    RegistRouteDevice();
+                    Debug.WriteLine(e);
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
             }
         }
         /// <summary>
@@ -557,15 +571,24 @@ namespace DSS.Client
             DataModel model = new DataModel();
             string sql = "select * from " + tableName + " where id='" + idValue + "'";
             //Assembly asmb = Assembly.LoadFrom("DSS.dll");
-            Assembly asmb = Assembly.LoadFrom(AppDomain.CurrentDomain.RelativeSearchPath + "\\DSS.dll");
+            string path = "";
+            if (AppDomain.CurrentDomain.RelativeSearchPath == null)
+                path = "DSS.dll";
+            else
+                path = AppDomain.CurrentDomain.RelativeSearchPath + "\\DSS.dll";
+            Assembly asmb = Assembly.LoadFrom(path);
             Type t = asmb.GetType("DSS.Table." + tableName);
             object o = System.Activator.CreateInstance(t);
 
-            model.CovertToDataModel(sql, ref o);
-            //JavaScriptSerializer jss = new JavaScriptSerializer();
-            //string jsonString = jss.Serialize(o);
-            string jsonString = JsonConvert.SerializeObject(o);
+            string jsonString = "";
 
+            if (action != 2)
+            {
+                if (model.CovertToDataModel(sql, ref o))
+                    jsonString = JsonConvert.SerializeObject(o);
+                else
+                    return;
+            }
             ServerDataItem item = new ServerDataItem();
             item.IDValue = idValue;
             item.JsonData = jsonString;
@@ -576,7 +599,8 @@ namespace DSS.Client
                 item.SN = sn;
             item.SyncType = action;
             item.TableName = tableName;
-
+            SetCommandSend(item);
+            Debug.WriteLine("向云端发送数据");
             if (writeBuf)
             {
                 Table.Sync_DataList sync = new Table.Sync_DataList();
@@ -591,8 +615,6 @@ namespace DSS.Client
                 sync.Verifiction = model.Verifiction(sync, AppSecret, true);
                 model.Add(sync, true);
             }
-            //心跳没有超时，表示门店同步服务在线允许发送
-            SetCommandSend(item);
             Debug.WriteLine("向云端发送数据");
         }
         void SendProcess()

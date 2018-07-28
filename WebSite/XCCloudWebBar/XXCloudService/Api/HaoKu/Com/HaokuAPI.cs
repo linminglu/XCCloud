@@ -82,7 +82,7 @@ namespace XXCloudService.Api.HaoKu.Com
         /// <returns></returns>
         public string Get(string url, object data, int timeout)
         {
-            System.GC.Collect();//垃圾回收，回收没有正常关闭的http连接
+            //System.GC.Collect();//垃圾回收，回收没有正常关闭的http连接
 
             string result = "";//返回结果
 

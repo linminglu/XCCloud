@@ -211,12 +211,13 @@
         methods: {
             Load:function () {
                 var that =this;
-                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
+                var deviceToken = getStorage("deviceToken")||"";       //获取设备令牌
                 var userThirdId = getStorage("userThirdId")||"";       //获取第三方令牌
                 that.headimgurl = getStorage("headimgurl")||"";       //获取第三方令牌{{}}
                 console.log(that.headimgurl);
                 that.deviceToken = deviceToken;
                 that.userThirdId = userThirdId;
+                alert(that.deviceToken)
                 this.$dialog.loading.open('');
                 var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:that.userThirdId,deviceToken:that.deviceToken};
                 console.log(getDeviceInfo);
@@ -507,6 +508,7 @@
                             that.$dialog.loading.close();
                             that.msgPrompt(res.data);
                             console.log(res.data);
+                            alert(JSON.stringify(res.data));
                             if (res.data.result_code === '1') {
                                 WeixinJSBridge.invoke(
                                     'getBrandWCPayRequest',
@@ -519,7 +521,7 @@
                                         "paySign": res.data.result_data.paySign //微信签名
                                     },
                                     function (res) {
-        //                                   alert(JSON.stringify(res));
+                                          alert(JSON.stringify(res));
                                         if (res.err_msg == "get_brand_wcpay_request:ok") {
                                             that.$dialog.toast({
                                                 mes: "付款成功!",

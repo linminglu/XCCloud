@@ -253,7 +253,7 @@
 //          登录跳转
             loginFnc:function () {
                 var that = this;
-                window.location.href = "login.html";
+                window.location.href = "login.html?t=" + new Date().getTime();
 //                that.$dialog.confirm({
 //                    title: '温馨提示!',
 //                    mes: "即将前往登录或注册页面？",
@@ -269,13 +269,13 @@
                 if(that.CurrentCardInfo != null || index == 1 || index == 2){
                     switch (index){
                         case 0:
-                            window.location.href = "MyOrder.html";
+                            window.location.href = "MyOrder.html?t=" + new Date().getTime();
                             break;
                         case 1:
                            that.scanCode();
                            break;
                         case 2:
-                            window.location.href = "home.html";
+                            window.location.href = "home.html?t=" + new Date().getTime();
                             break;
                         case 3:
                             that.$dialog.toast({
@@ -292,7 +292,7 @@
                         title: '温馨提示!',
                         mes: "前往绑定会员卡",
                         opts: (function () {
-                            window.location.href = "mineCard.html"
+                            window.location.href = "mineCard.html?t=" + new Date().getTime()
                         })
                     });
                 }
@@ -335,6 +335,7 @@
                         var strCode = strSplit[strSplit.length - 2];
                         if (strCode=="m"){
                             var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
+                            alert(deviceToken)
                             that.jumpFnc(deviceToken);
                         }else {
                             that.$dialog.toast({
@@ -364,16 +365,16 @@
                     that.msgPrompt(res.data);
                     console.log(res.data);
                     if (res.data.result_code === '1') {
-//                        setStorage("deviceToken",deviceToken);
+                       setStorage("deviceToken",deviceToken);
                         switch (res.data.result_data.DeviceType) {
                             case 0:
-                                window.location.href = "games.html";
+                                window.location.href = "games.html?t=" + new Date().getTime();
                                 break;
                             case 2:
-                                window.location.href = "coinOperation.html";
+                                window.location.href = "coinOperation.html?t =" + new Date().getTime();
                                 break;
                             case 3:
-                                window.location.href = "coinOperation.html";
+                                window.location.href = "coinOperation.html?t =" + new Date().getTime();
                                 break;
                             default:
                                 break;
@@ -387,7 +388,7 @@
 //          切换会员卡或绑卡
             mineCard:function () {
                 var that = this;
-                window.location.href ="mineCard.html"
+                window.location.href ="mineCard.html?t=" + new Date().getTime()
             },
 //          充值
             recharge:function(index){
@@ -396,7 +397,7 @@
                 if(that.CurrentCardInfo != null || index == 1){
                     switch (index){
                         case 0:
-                           window.location.href = "mall.html";
+                           window.location.href = "mall.html?t=" + new Date().getTime();
                             break;
                         case 1:
                             that.$dialog.toast({
@@ -419,7 +420,7 @@
                         title: '温馨提示!',
                         mes: "请先选择会员卡",
                         opts: (function () {
-                            window.location.href = "mineCard.html"
+                            window.location.href = "mineCard.html?t=" + new Date().getTime()
                         })
                     });
                 }

@@ -38,8 +38,8 @@ namespace DSS
                         da.Fill(dt);
                     }
                     conn.Close();
-                    conn.Dispose();
-                    GC.Collect();
+                    //conn.Dispose();
+                    //GC.Collect();
                 }
             }
             catch (Exception ex)
@@ -73,8 +73,8 @@ namespace DSS
                         count = cmd.ExecuteNonQuery();
                     }
                     conn.Close();
-                    conn.Dispose();
-                    GC.Collect();
+                    //conn.Dispose();
+                    //GC.Collect();
                 }
             }
             catch (Exception ex)
@@ -106,8 +106,8 @@ namespace DSS
                         da.Fill(ds);
                     }
                     conn.Close();
-                    conn.Dispose();
-                    GC.Collect();
+                    //conn.Dispose();
+                    //GC.Collect();
                 }
             }
             catch (Exception ex)
@@ -156,6 +156,12 @@ namespace DSS
             DataModel model = new DataModel();
             model.Delete(tableName, "where ID='" + idValue + "'");
             return true;
+        }
+        public bool SyncExists(string tableName, string idValue)
+        {
+            string sql = "select * from " + tableName + " where id='" + idValue + "'";
+            DataTable dt = ExecuteQueryReturnTable(sql);
+            return dt.Rows.Count > 0;
         }
         /// <summary>
         /// 雷达数据接收日志

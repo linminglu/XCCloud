@@ -981,6 +981,23 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "删除游戏机信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
+
+                            //解除设备绑定信息
+                            foreach (var deviceInfo in Base_DeviceInfoService.I.GetModels(p => p.GameIndexID == data_GameInfo.ID))
+                            {                                
+                                deviceInfo.GameIndexID = (int?)null;
+                                deviceInfo.BindDeviceID = (int?)null;
+                                deviceInfo.SiteName = string.Empty;
+                                deviceInfo.segment = string.Empty;
+                                deviceInfo.Address = string.Empty;
+                                Base_DeviceInfoService.I.UpdateModel(deviceInfo, true, merchId, merchSecret);
+                            }
+
+                            if (!Base_DeviceInfoService.I.SaveChanges())
+                            {
+                                errMsg = "解除设备绑定失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
                         }
 
                         ts.Complete();

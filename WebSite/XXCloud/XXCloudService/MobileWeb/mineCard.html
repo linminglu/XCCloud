@@ -128,11 +128,11 @@
             },
 //          绑卡跳转
             tiedCard:function () {
-                window.location.href = "tiedCard.html"
+                window.location.href = "tiedCard.html?t=" + new Date().getTime()
             },
 //          返回
             goBack:function () {
-                window.location.href = "index.html";
+                window.location.href = "index.html?t=" + new Date().getTime();
             },
 //          选择卡
             chooseCard:function (index) {
@@ -149,7 +149,7 @@
                     that.msgPrompt(res.data);
                     console.log(res.data);
                     if (res.data.result_code === '1') {
-                        window.location.href = "index.html"
+                        window.location.href = "index.html?t=" + new Date().getTime()
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
@@ -162,7 +162,7 @@
                 console.log(this.memberCard)
                 var virtualCardId = this.memberCard[index].Id;
                 setStorage("virtualCardId",virtualCardId);
-                window.location.href = "openCard.html"
+                window.location.href = "openCard.html?t=" + new Date().getTime()
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

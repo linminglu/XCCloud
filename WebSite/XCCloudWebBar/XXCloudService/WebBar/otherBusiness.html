@@ -125,6 +125,64 @@
         </div>
         <!--导航-->
     </div>
+    <div class="modal fade bs-example-modal-lg" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
+				<div class="modal-body row" v-if="inputCashFocus">
+					<div class="col-lg-4 col-md-4">
+						<div v-for="(item,index) in shopping" :key="index" class="col-lg-12 col-md-12 shopCStyle">
+							<div class="col-lg-7 col-md-7 text-left shopCStyle">{{item.typeName}}</div>
+							<div class="col-lg-5 col-md-5 text-right shopCStyle">{{item.payNum}}</div>
+						</div>
+						<ul class="col-lg-12 col-md-12 payment shopCStyle">
+							<li>
+								<div class="inputNm col-lg-12 col-md-12 shopCStyle">
+									<span class="col-lg-5 col-md-5 shopCStyle">实收现金：</span>
+									<label class="col-lg-7 col-md-7"><input :autofocus="inputCashFocus" v-model.number="inputCash" @focus.once="sumPrice()" class="form-control"/></label>
+								</div>
+								<div class="col-lg-12 col-md-12 shopCStyle">
+									<span class="col-lg-5 col-md-5 shopCStyle">找零：</span>
+									<label class="col-lg-7 col-md-7"><input class="form-control" v-model.number="cashChange" placeholder="" readonly></label></div>
+							</li>
+							<li class="hidden">
+								<div class="col-lg-12 col-md-12 shopCStyle"><span class="col-lg-5 col-md-5 pad_0">扣储值金：</span><label class="col-lg-7 col-md-7"><input id="input3"  class="form-control" /></label></div>
+								<div class="col-lg-12 col-md-12 shopCStyle hidden"><span class="col-lg-5 col-md-5 pad_0">找零：</span><label class="col-lg-7 col-md-7"><input  class="form-control" /></label></div>
+							</li>
+							<li class="hidden">
+								<h4 class="">请扫描客户手机付款码</h4>
+								<label class="col-lg-12 col-md-12 pad_0"><input id="input5"  class="form-control" /></label>
+							</li>
+						</ul>
+						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="shopCheckOut"><button type="button" class="btn btn-danger" @click="shopcloseAccounts" :disabled="loading">结账</button></div>
+					</div>
+					<div class="formNum formNum2 col-lg-4 col-md-4">
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">1</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">2</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">3</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">4</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">5</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">6</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">7</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">8</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">9</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">.</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">0</a></div>
+						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="remove" >删除</a></div>
+					</div>
+					<ul class="col-lg-2 col-md-2 payList">
+						<li><button type="button" class="btn btn-primary btn-lg">现金</button></li>
+						<li><button type="button" class="btn btn-primary btn-lg">储值卡</button></li>
+						<li><button type="button" class="btn btn-primary btn-lg">扫码支付</button></li>
+						<button type="button" class="btn btn-primary btn-lg">打印</button>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
     <!--查询获取卡列表-->
     <modal v-model="cardListModel" title="温馨提示！" width="900">
         <row v-if="cardListModel">
@@ -925,6 +983,10 @@
                 userToken:""
             },
             modalDelete:false,
+            inputCashFocus:false,
+            inputCash:"",
+            cashChange:"",
+            shopping:[],
             switch1:false,
             cardListModel:false,
             myModal:false,
@@ -1088,6 +1150,17 @@
             this.WebSocketTest()
         },
         watch: {
+            inputCash:function () {
+                var that = this;
+                for(var i =0;i<that.shopping.length;i++){
+                    if(that.shopping[i].typeName == "现金"){
+                       var payNum =that.shopping[i].payNum
+                    }
+                }
+                console.log(this.shopping);
+                var cashChange = this.inputCash - payNum*1;
+                this.cashChange = cashChange.toFixed(2);
+            },
         },
         methods: {
             Initialize:function () {
@@ -1152,10 +1225,7 @@
                                         that.dataObj =receivedMsg.dataObj;
                                         $('#checkoutModal').modal('show');
                                         that.inputCashFocus = true;
-                                        that.registerCheckOut = true;
-                                        that.shopCheckOut = false;
-                                        that.cardCheckOut = false;
-                                        that.registerFnc();
+                                        that.shopCheckOut = true;
 									}else if(that.msgEleven === "1"){
                                         var msgType5 =JSON.stringify({"msgType":"5", "sObj": {"userToken": that.userToken},"dataObj": {icCardId:that.dataObj.icCardId,repeatCode:that.dataObj.repeatCode}});
                                         ws.send(msgType5);
@@ -1792,18 +1862,39 @@
             recycleMemberCard:function(){
 
             },
-//          领卡
+//          领卡获取订单状态
             getOrderState:function(){
                 var that = this;
-                console.log(1111)
+                console.log("10001642011100120180727000039000")
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.bindNewCard.orderId};
+                // var obj={sysId: sysId,versionNo: versionNo,userToken:"9620e5ebcc0149ddbc882609a59d8bc7",orderId:"10001642011100120180727000039000"};
                 console.log(obj);
                 axios.post('/XCCloud/Member?action=getOrderState', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        that.bindNewCard.orderIdState = res.data.result_data.OrderState
-                        // if()
+                        switch(res.data.result_data.OrderState){
+                            case 0:
+                                that.bindNewCard.orderIdState = "未结算";               
+                                break;
+                            case 1:
+                                that.bindNewCard.orderIdState = "等待支付";               
+                                break;
+                            case 2:
+                                that.bindNewCard.orderIdState = "已支付";                       
+                                break;
+                            case 3:
+                                that.bindNewCard.orderIdState = "支付异常";                    
+                                break;
+                            default:
+                                break;
+                        }
+                        if(res.data.result_data.OrderState == 0 || res.data.result_data.OrderState== 1){
+                            $('#checkoutModal').modal('show');
+                            that.inputCashFocus = true;
+                            that.shopCheckOut = true;
+                            that.shopping = [{typeName:"现金",payNum:res.data.result_data.Amount}];
+                        }
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -1835,6 +1926,65 @@
                     console.log(err);
                 });
             },
+//			结账输入
+            sumPrice:function () {
+                var that = this;
+                var isDot = false;
+                $('.formNum2 div .num').click(function () {
+                    var inputV_ = parseFloat(that.inputCash);
+                    if(this.innerHTML == "."){
+                        isDot = true;
+                    } else {
+                        if(isNaN(parseFloat(inputV_))){
+                            inputV_ = "";
+                            console.log("不是数字")
+                        }
+                        if(isDot){
+                            inputVl = inputV_+'.'+this.innerHTML;
+                        }else {
+                            inputVl = inputV_+''+this.innerHTML;
+                        }
+                        isDot = false;
+                        console.log(inputVl);
+                        that.inputCash = inputVl;
+                    }
+                });
+                $('.formNum2 div .remove').click(function() {
+                    var inputV_ = parseFloat(that.inputCash);
+                    var inputVl = inputV_.toString();
+                    if(inputVl.length <= 1){
+                        inputVl = "0"
+                    }else {
+                        inputVl = inputVl.substring(0,inputVl.length-1);
+                    }
+                    that.inputCash = inputVl;
+                });
+            },
+//          结账函数
+            shopcloseAccounts:function(){
+                var that = this;
+                var ojb = [{
+                    userToken:that.userToken,
+                    registerMemberJson:"",
+                    workStationId:"3",
+                    flwOrderId:that.bindNewCard.orderId,
+                    mobile:"",
+                    realPay:that.shopping.Amount,
+                    payType:"0"
+                }];
+                console.log(ojb);
+                axios.post('/xccloud/order?action=payOrder', ojb).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#checkoutModal').modal('hide');
+                        that.bindNewCardFnc();
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                })
+            },
+
 //			通用消息提示
             msgPrompt:function (res) {
                 var that = this;

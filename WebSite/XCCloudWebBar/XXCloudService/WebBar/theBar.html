@@ -156,7 +156,7 @@
 								<label class="col-lg-12 col-md-12 pad_0"><input id="input5"  class="form-control" /></label>
 							</li>
 						</ul>
-						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="shopCheckOut"><button type="button" class="btn btn-danger" :disabled="loading">结账</button></div>
+						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="shopCheckOut"><button type="button" class="btn btn-danger" @click="shopCheckBtn" :disabled="loading">结账</button></div>
 						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="registerCheckOut"><button type="button" class="btn btn-danger" @click="registerCheckBtn" :disabled="loading">结账</button></div>
 						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="cardCheckOut"><button type="button" class="btn btn-danger" @click="cardCheckBtn" :disabled="loading">结账</button></div>
 					</div>
@@ -2044,6 +2044,7 @@
                                 $('#checkoutModal').modal('show');
                                 that.getDiscountRuleList(payCount)
                                 that.inputCashFocus = true;
+                                that.flwOrderId = res.data.result_data.orderFlwId;
                             } 
                         }).catch(function (err) {
                             console.log(err);
@@ -2250,6 +2251,29 @@
                     }
                     that.inputCash = inputVl;
                 });
+            },
+//          购物车结账
+            shopCheckBtn:function(){
+                var that = this;
+                var ojb = {
+                    userToken:that.userToken,
+                    registerMemberJson:"",
+                    workStationId:"3",
+                    flwOrderId:that.flwOrderId,
+                    mobile:"",
+                    realPay:that.OrderIdData.OpFree,
+                    payType:"0"
+                };
+                console.log(ojb);
+                axios.post('/xccloud/order?action=payOrder', ojb).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+						
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                })
             },
 //			会员入会（获取会员套餐）
             membership:function () {
