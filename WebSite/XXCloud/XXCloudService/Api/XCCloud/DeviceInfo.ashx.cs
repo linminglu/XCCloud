@@ -1169,7 +1169,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var barCode = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).Select(o => o.BarCode).FirstOrDefault();
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, barCode);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, barCode);
             }
             catch (Exception e)
             {

@@ -1148,11 +1148,12 @@
 
         let _arr=[];
         $('.pointBox .pointList').each(function () {
-            // if ($(this).find('input[name="chargeOff"]').val() !== '' &&
-            //     $(this).find('select[name="freeRates"] option:selected').val() !== '' &&
-            //     $(this).find('input[name="maxSaveCount"]').val() !== '' &&
-            //     $(this).find('input[name="maxUplife"]').val() !== ''
-            // ) {
+            if (  $(this).find('select[name="pointMemberLevelID"] option:selected').val() !== '' &&
+                $(this).find('input[name="Key1Count"]').val() !== '' &&
+                $(this).find('select[name="Key1BalanceIndex"] option:selected').val() !== '' &&
+                $(this).find('input[name="Key2Count"]').val() !== '' &&
+                $(this).find('select[name="Key2BalanceIndex"] option:selected').val() !== ''
+            ) {
                 _arr.push({
                     'state':PointState,
                     'memberLevelID': $(this).find('select[name="pointMemberLevelID"] option:selected').val(),
@@ -1161,7 +1162,7 @@
                     'Key2Count': $(this).find('input[name="Key2Count"]').val(),
                     'Key2BalanceIndex': $(this).find('select[name="Key2BalanceIndex"] option:selected').val(),
                 });
-            // }
+            }
         });
         let _obj = {
             'ID': id,
